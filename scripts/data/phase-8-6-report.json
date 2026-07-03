@@ -1,0 +1,42 @@
+{
+  "phase": "8.6",
+  "title": "Premium Product Media Management (Admin DAM)",
+  "updatedAt": "2026-06-29",
+  "workflow": {
+    "productMediaTab": "ProductMediaManager with 13 organized sections",
+    "storageLayout": "products/{productId}/{section}/ with originals + optimized variants",
+    "mediaLibrarySync": "Uploads register in media_library (existing schema)",
+    "storefrontSync": "revalidatePath on /, /products, PDP, search, wishlist, cart, checkout"
+  },
+  "upload": {
+    "modes": ["single", "multiple", "folder (webkitdirectory)", "drag-drop", "clipboard paste"],
+    "queueFeatures": ["progress bar", "cancel", "retry", "quality warnings"],
+    "supportedFormats": {
+      "images": ["jpeg", "png", "webp", "gif", "avif"],
+      "videos": ["mp4", "webm"],
+      "documents": ["pdf"],
+      "maxSizeMb": 25
+    }
+  },
+  "optimization": {
+    "onUpload": ["webp main", "avif", "responsive 480-1536", "thumbnail 480", "retina @2x", "blur placeholder"],
+    "preservesOriginal": true
+  },
+  "galleryFeatures": [
+    "drag reorder within section",
+    "set primary",
+    "duplicate",
+    "move between sections",
+    "trash and restore",
+    "bulk trash",
+    "image editor (crop aspect presets, rotate, flip, brightness, contrast)",
+    "SEO suggestions (alt, title, caption, keywords)"
+  ],
+  "mediaLibraryFilters": ["product ID", "bucket", "type", "min width", "search filename", "sort"],
+  "aiReady": "Placeholder section for packaging-reference marketing generation (Phase 8.5A)",
+  "constraintsRespected": [
+    "No database schema changes",
+    "No auth/checkout/orders/payment changes",
+    "product_images remains storefront source of truth"
+  ]
+}

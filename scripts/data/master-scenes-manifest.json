@@ -1,0 +1,97 @@
+{
+  "version": "8.5a",
+  "updatedAt": "2026-06-29T22:55:47.232Z",
+  "scenes": [
+    {
+      "slug": "nursery",
+      "name": "Premium Nursery",
+      "url": "/images/products/phase-8-5a-scenes/nursery.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "bathroom",
+      "name": "Luxury Bathroom",
+      "url": "/images/products/phase-8-5a-scenes/bathroom.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "bedroom",
+      "name": "Calm Bedroom",
+      "url": "/images/products/phase-8-5a-scenes/bedroom.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "wood-table",
+      "name": "Natural Wood Table",
+      "url": "/images/products/phase-8-5a-scenes/wood-table.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "cotton-towel",
+      "name": "Cotton Towel Spa",
+      "url": "/images/products/phase-8-5a-scenes/cotton-towel.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "cream-studio",
+      "name": "Cream Studio",
+      "url": "/images/products/phase-8-5a-scenes/cream-studio.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "pastel-studio",
+      "name": "Pastel Studio",
+      "url": "/images/products/phase-8-5a-scenes/pastel-studio.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "gift-composition",
+      "name": "Gift Composition",
+      "url": "/images/products/phase-8-5a-scenes/gift-composition.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    },
+    {
+      "slug": "floating-botanical",
+      "name": "Floating Botanical",
+      "url": "/images/products/phase-8-5a-scenes/floating-botanical.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "slug": "morning-window",
+      "name": "Morning Window Light",
+      "url": "/images/products/phase-8-5a-scenes/morning-window.webp",
+      "durationMs": 50,
+      "procedural": true,
+      "width": 1280,
+      "height": 960
+    }
+  ],
+  "totalMs": 500
+}

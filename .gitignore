@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local AI (ComfyUI + models — large files)
+/tools/comfyui/ComfyUI/
+/tools/comfyui/venv/
+/tools/comfyui/models/**/*.safetensors
+/tools/comfyui/models/**/*.ckpt
+/.pids/
+
+# generated AI images (keep folder structure via .gitkeep)
+/public/images/generated/**/*
+!/public/images/generated/**/.gitkeep

@@ -1,0 +1,42 @@
+
+══ Phase 8.5 — Premium Product Photography (ComfyUI / FLUX) ══
+
+✓ ComfyUI online at http://127.0.0.1:8188 (17ms)
+✓ Discovered 22 product(s) in CMS
+✓ Batch 1: 6 product(s) targeted
+
+── 2-in-1 Gentle Wash & Shampoo (36 shots × 2 candidates) ──
+  → packaging/front
+    ⚠ candidate 1 failed: ComfyUI generation timed out
+    ⚠ candidate 2 failed: ComfyUI generation timed out
+  ✗ front — all candidates failed
+  → packaging/front-45
+
+══ Phase 8.5 — Premium Product Photography (ComfyUI / FLUX) ══
+
+✓ ComfyUI online at http://127.0.0.1:8188 (45ms)
+✓ Discovered 22 product(s) in CMS
+✓ Batch 1: 6 product(s) targeted
+
+── 2-in-1 Gentle Wash & Shampoo (36 shots × 2 candidates) ──
+  → packaging/front
+    candidate 1: front score=126.5 (577946ms, gen 512×512→1024×1024)
+    candidate 2: front score=125.4 (436880ms, gen 512×512→1024×1024)
+  ✓ front (best 126.5)
+  → packaging/front-45
+    candidate 1: front-45 score=126.6 (428423ms, gen 512×512→1024×1024)
+    candidate 2: front-45 score=124.3 (512319ms, gen 512×512→1024×1024)
+  ✓ front-45 (best 126.6)
+  → packaging/back
+    candidate 1: back score=125 (325580ms, gen 512×512→1024×1024)
+    candidate 2: back score=127.2 (332504ms, gen 512×512→1024×1024)
+  ✓ back (best 127.2)
+  → packaging/side
+    candidate 1: side score=124.7 (415835ms, gen 512×512→1024×1024)
+    candidate 2: side score=123.7 (24317839ms, gen 512×512→1024×1024)
+  ✓ side (best 124.7)
+  → packaging/top
+    candidate 1: top score=119.7 (40231726ms, gen 512×512→1024×1024)
+    candidate 2: top score=125.6 (47834813ms, gen 512×512→1024×1024)
+  ✓ top (best 125.6)
+  → packaging/open-package

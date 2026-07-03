@@ -1,0 +1,86 @@
+{
+  "updatedAt": "2026-06-29T21:40:27.287Z",
+  "assetCount": 190,
+  "assigned": [
+    "brand_promise",
+    "science",
+    "lifestyle",
+    "research_timeline",
+    "newsletter",
+    "featured_categories"
+  ],
+  "skipped": [],
+  "categories": [
+    {
+      "slug": "baby-wipes",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-wipes-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-wipes-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-wipes-transparent-illustration.webp"
+    },
+    {
+      "slug": "baby-wash",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-wash-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-wash-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-wash-transparent-illustration.webp"
+    },
+    {
+      "slug": "baby-lotion",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-lotion-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-lotion-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-lotion-transparent-illustration.webp"
+    },
+    {
+      "slug": "baby-oil",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-oil-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-oil-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-oil-transparent-illustration.webp"
+    },
+    {
+      "slug": "baby-powder",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-powder-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-powder-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/baby-powder-transparent-illustration.webp"
+    },
+    {
+      "slug": "gift-sets",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/gift-sets-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/gift-sets-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/gift-sets-transparent-illustration.webp"
+    },
+    {
+      "slug": "newborn-essentials",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/newborn-essentials-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/newborn-essentials-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/newborn-essentials-transparent-illustration.webp"
+    },
+    {
+      "slug": "organic-care",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/organic-care-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/organic-care-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/organic-care-transparent-illustration.webp"
+    },
+    {
+      "slug": "sleep-care",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/sleep-care-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/sleep-care-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/sleep-care-transparent-illustration.webp"
+    },
+    {
+      "slug": "bath-time",
+      "generated": true,
+      "heroBanner": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/bath-time-hero-banner.webp",
+      "card": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/bath-time-category-card.webp",
+      "icon": "https://dawywibxularpygspogp.supabase.co/storage/v1/object/public/homepage/phase-8-2/categories/bath-time-transparent-illustration.webp"
+    }
+  ],
+  "testimonials": []
+}

@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-06-29T22:03:03.543Z",
+  "categories": 14,
+  "brands": 1,
+  "products": 22,
+  "activeProducts": 22,
+  "variants": 35,
+  "placeholderImages": 22,
+  "approvedImages": 0,
+  "productsWithoutVariants": [],
+  "productsWithoutImages": [],
+  "sampleSlugs": [
+    "2-in-1-wash-shampoo",
+    "ayurvedic-massage-oil",
+    "bamboo-wipes-dispenser",
+    "calendula-gentle-baby-wash",
+    "coconut-nourishing-baby-oil"
+  ],
+  "storefrontReady": true,
+  "issues": [],
+  "searchSample": [
+    {
+      "slug": "pure-gentle-water-baby-wipes",
+      "name": "Pure & Gentle 99% Water Baby Wipes"
+    }
+  ]
+}

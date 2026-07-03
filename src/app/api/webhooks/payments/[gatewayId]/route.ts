@@ -1,0 +1,61 @@
+import { NextResponse } from "next/server";
+
+import { processWebhookPayload } from "@/lib/admin/payment-engine";
+import { logger } from "@/lib/observability/logger";
+
+/**
+ * Public webhook receiver — validates provider signature before storage.
+ * Razorpay: X-Razorpay-Signature HMAC SHA256 on raw body.
+ */
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ gatewayId: string }> },
+) {
+  const { gatewayId } = await context.params;
+
+  const rawBody = await request.text();
+  if (!rawBody.trim()) {
+    return NextResponse.json({ ok: false, error: "Empty payload." }, { status: 400 });
+  }
+
+  let payload: Record<string, unknown>;
+  try {
+    payload = JSON.parse(rawBody) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid JSON payload." }, { status: 400 });
+  }
+
+  const signature =
+    request.headers.get("x-razorpay-signature") ??
+    request.headers.get("x-cashfree-signature") ??
+    request.headers.get("x-phonepe-signature") ??
+    request.headers.get("x-payu-signature") ??
+    request.headers.get("stripe-signature") ??
+    request.headers.get("paypal-transmission-sig") ??
+    request.headers.get("x-signature");
+
+  const eventId = request.headers.get("x-razorpay-event-id");
+
+  const result = await processWebhookPayload(gatewayId, payload, signature, {
+    rawBody,
+    eventId,
+  });
+
+  if (!result.ok) {
+    const status =
+      result.error === "Gateway not found."
+        ? 404
+        : result.error?.includes("signature") || result.error?.includes("Verification")
+          ? 401
+          : 500;
+
+    logger.warn("payment.webhook.http_rejected", { gatewayId, status, error: result.error });
+    return NextResponse.json({ ok: false, error: result.error }, { status });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    webhookId: result.webhookId,
+    duplicate: result.duplicate ?? false,
+  });
+}

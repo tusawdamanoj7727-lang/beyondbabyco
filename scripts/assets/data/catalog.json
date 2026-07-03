@@ -1,0 +1,2271 @@
+{
+  "categories": [
+    "hero",
+    "lifestyle",
+    "research",
+    "science",
+    "products",
+    "ingredients",
+    "newsletter",
+    "timeline",
+    "categories",
+    "trust",
+    "mascots",
+    "backgrounds",
+    "decorative",
+    "marketing",
+    "social",
+    "campaigns",
+    "community",
+    "reviews",
+    "men-care",
+    "women-care",
+    "gift"
+  ],
+  "npmCategoryMap": {
+    "hero": [
+      "hero"
+    ],
+    "lifestyle": [
+      "lifestyle"
+    ],
+    "products": [
+      "products"
+    ],
+    "research": [
+      "research"
+    ],
+    "science": [
+      "science"
+    ],
+    "ingredients": [
+      "ingredients"
+    ],
+    "timeline": [
+      "timeline"
+    ],
+    "newsletter": [
+      "newsletter"
+    ],
+    "trust": [
+      "trust"
+    ],
+    "marketing": [
+      "marketing",
+      "social",
+      "campaigns"
+    ]
+  },
+  "assets": [
+    {
+      "id": "hero/gentle-care-hero",
+      "category": "hero",
+      "slug": "gentle-care-hero",
+      "template": "hero",
+      "subject": "mother cradling newborn in cream nursery morning light",
+      "width": 1920,
+      "height": 1080,
+      "alt": "mother cradling newborn in cream nursery morning light | BeyondBabyCo editorial"
+    },
+    {
+      "id": "hero/science-backed-hero",
+      "category": "hero",
+      "slug": "science-backed-hero",
+      "template": "hero",
+      "subject": "research and care dual narrative soft botanical props",
+      "width": 1920,
+      "height": 1080,
+      "alt": "research and care dual narrative soft botanical props | BeyondBabyCo editorial"
+    },
+    {
+      "id": "hero/collection-hero",
+      "category": "hero",
+      "slug": "collection-hero",
+      "template": "hero",
+      "subject": "curated baby care collection on wood table botanical",
+      "width": 1920,
+      "height": 1080,
+      "alt": "curated baby care collection on wood table botanical | BeyondBabyCo editorial"
+    },
+    {
+      "id": "hero/family-morning-hero",
+      "category": "hero",
+      "slug": "family-morning-hero",
+      "template": "hero",
+      "subject": "Indian family morning routine premium home",
+      "width": 1920,
+      "height": 1080,
+      "alt": "Indian family morning routine premium home | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/diaper-change",
+      "category": "lifestyle",
+      "slug": "diaper-change",
+      "template": "lifestyle",
+      "subject": "mother changing diaper calm nursery natural expression",
+      "width": 1280,
+      "height": 960,
+      "alt": "mother changing diaper calm nursery natural expression | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/bath-time",
+      "category": "lifestyle",
+      "slug": "bath-time",
+      "template": "lifestyle",
+      "subject": "gentle bath time father supporting baby warm bathroom",
+      "width": 1280,
+      "height": 960,
+      "alt": "gentle bath time father supporting baby warm bathroom | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/applying-lotion",
+      "category": "lifestyle",
+      "slug": "applying-lotion",
+      "template": "lifestyle",
+      "subject": "mother applying lotion on baby tender care cotton towel",
+      "width": 1280,
+      "height": 960,
+      "alt": "mother applying lotion on baby tender care cotton towel | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/baby-sleeping",
+      "category": "lifestyle",
+      "slug": "baby-sleeping",
+      "template": "lifestyle",
+      "subject": "peaceful sleeping baby cream linen nursery soft light",
+      "width": 1280,
+      "height": 960,
+      "alt": "peaceful sleeping baby cream linen nursery soft light | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/nursery",
+      "category": "lifestyle",
+      "slug": "nursery",
+      "template": "lifestyle",
+      "subject": "minimal premium nursery sage cream decor empty changing area",
+      "width": 1280,
+      "height": 960,
+      "alt": "minimal premium nursery sage cream decor empty changing area | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/morning-routine",
+      "category": "lifestyle",
+      "slug": "morning-routine",
+      "template": "lifestyle",
+      "subject": "morning sunlight family care routine premium home",
+      "width": 1280,
+      "height": 960,
+      "alt": "morning sunlight family care routine premium home | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/father-holding-baby",
+      "category": "lifestyle",
+      "slug": "father-holding-baby",
+      "template": "lifestyle",
+      "subject": "Indian father holding baby quiet bond no studio pose",
+      "width": 1280,
+      "height": 960,
+      "alt": "Indian father holding baby quiet bond no studio pose | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/family",
+      "category": "lifestyle",
+      "slug": "family",
+      "template": "lifestyle",
+      "subject": "Indian family together premium home natural warmth",
+      "width": 1280,
+      "height": 960,
+      "alt": "Indian family together premium home natural warmth | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/organic-ingredients",
+      "category": "lifestyle",
+      "slug": "organic-ingredients",
+      "template": "lifestyle",
+      "subject": "organic botanical ingredients flat lay wood table",
+      "width": 1280,
+      "height": 960,
+      "alt": "organic botanical ingredients flat lay wood table | BeyondBabyCo editorial"
+    },
+    {
+      "id": "lifestyle/premium-home",
+      "category": "lifestyle",
+      "slug": "premium-home",
+      "template": "lifestyle",
+      "subject": "premium Indian home interior uncluttered warm white",
+      "width": 1280,
+      "height": 960,
+      "alt": "premium Indian home interior uncluttered warm white | BeyondBabyCo editorial"
+    },
+    {
+      "id": "research/lab-bench",
+      "category": "research",
+      "slug": "lab-bench",
+      "template": "research",
+      "subject": "clean research bench formulation notes soft editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "clean research bench formulation notes soft editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "research/ingredient-study",
+      "category": "research",
+      "slug": "ingredient-study",
+      "template": "research",
+      "subject": "ingredient sourcing and analysis natural botanicals",
+      "width": 1280,
+      "height": 960,
+      "alt": "ingredient sourcing and analysis natural botanicals | BeyondBabyCo editorial"
+    },
+    {
+      "id": "research/safety-testing",
+      "category": "research",
+      "slug": "safety-testing",
+      "template": "research",
+      "subject": "gentle safety testing visual no medical claims",
+      "width": 1280,
+      "height": 960,
+      "alt": "gentle safety testing visual no medical claims | BeyondBabyCo editorial"
+    },
+    {
+      "id": "research/parent-feedback",
+      "category": "research",
+      "slug": "parent-feedback",
+      "template": "research",
+      "subject": "parent research session calm premium setting",
+      "width": 1280,
+      "height": 960,
+      "alt": "parent research session calm premium setting | BeyondBabyCo editorial"
+    },
+    {
+      "id": "research/formulation",
+      "category": "research",
+      "slug": "formulation",
+      "template": "research",
+      "subject": "formulation development cream texture study",
+      "width": 1280,
+      "height": 960,
+      "alt": "formulation development cream texture study | BeyondBabyCo editorial"
+    },
+    {
+      "id": "science/scientist-portrait",
+      "category": "science",
+      "slug": "scientist-portrait",
+      "template": "science",
+      "subject": "scientist in clean lab coat soft editorial portrait",
+      "width": 1280,
+      "height": 960,
+      "alt": "scientist in clean lab coat soft editorial portrait | BeyondBabyCo editorial"
+    },
+    {
+      "id": "science/dermatologist",
+      "category": "science",
+      "slug": "dermatologist",
+      "template": "science",
+      "subject": "dermatologist reviewing gentle care samples premium clinic aesthetic",
+      "width": 1280,
+      "height": 960,
+      "alt": "dermatologist reviewing gentle care samples premium clinic aesthetic | BeyondBabyCo editorial"
+    },
+    {
+      "id": "science/microscope",
+      "category": "science",
+      "slug": "microscope",
+      "template": "science",
+      "subject": "microscope ingredient analysis macro detail",
+      "width": 1280,
+      "height": 960,
+      "alt": "microscope ingredient analysis macro detail | BeyondBabyCo editorial"
+    },
+    {
+      "id": "science/lab-environment",
+      "category": "science",
+      "slug": "lab-environment",
+      "template": "science",
+      "subject": "modern research lab warm white not cold clinical",
+      "width": 1280,
+      "height": 960,
+      "alt": "modern research lab warm white not cold clinical | BeyondBabyCo editorial"
+    },
+    {
+      "id": "science/testing",
+      "category": "science",
+      "slug": "testing",
+      "template": "science",
+      "subject": "product testing gentle skin compatibility visual",
+      "width": 1280,
+      "height": 960,
+      "alt": "product testing gentle skin compatibility visual | BeyondBabyCo editorial"
+    },
+    {
+      "id": "science/ingredient-research",
+      "category": "science",
+      "slug": "ingredient-research",
+      "template": "science",
+      "subject": "ingredient research botanical and molecular story editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "ingredient research botanical and molecular story editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "products/baby-wipes/front",
+      "category": "products",
+      "slug": "baby-wipes/front",
+      "template": "product",
+      "subject": "Baby Wipes front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "front",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "front"
+      },
+      "alt": "Baby Wipes — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/front-45",
+      "category": "products",
+      "slug": "baby-wipes/front-45",
+      "template": "product",
+      "subject": "Baby Wipes front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "front-45",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "front 45"
+      },
+      "alt": "Baby Wipes — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/back",
+      "category": "products",
+      "slug": "baby-wipes/back",
+      "template": "product",
+      "subject": "Baby Wipes back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "back",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "back"
+      },
+      "alt": "Baby Wipes — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/top",
+      "category": "products",
+      "slug": "baby-wipes/top",
+      "template": "product",
+      "subject": "Baby Wipes top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "top",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "top"
+      },
+      "alt": "Baby Wipes — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/lifestyle",
+      "category": "products",
+      "slug": "baby-wipes/lifestyle",
+      "template": "product",
+      "subject": "Baby Wipes lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "lifestyle"
+      },
+      "alt": "Baby Wipes — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/packaging-closeup",
+      "category": "products",
+      "slug": "baby-wipes/packaging-closeup",
+      "template": "product",
+      "subject": "Baby Wipes packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "packaging closeup"
+      },
+      "alt": "Baby Wipes — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/transparent-png",
+      "category": "products",
+      "slug": "baby-wipes/transparent-png",
+      "template": "product",
+      "subject": "Baby Wipes transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "transparent png"
+      },
+      "alt": "Baby Wipes — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wipes/white-background",
+      "category": "products",
+      "slug": "baby-wipes/white-background",
+      "template": "product",
+      "subject": "Baby Wipes white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wipes",
+      "angle": "white-background",
+      "vars": {
+        "product": "Baby Wipes",
+        "angle": "white background"
+      },
+      "alt": "Baby Wipes — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/front",
+      "category": "products",
+      "slug": "baby-wash/front",
+      "template": "product",
+      "subject": "Baby Wash front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "front",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "front"
+      },
+      "alt": "Baby Wash — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/front-45",
+      "category": "products",
+      "slug": "baby-wash/front-45",
+      "template": "product",
+      "subject": "Baby Wash front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "front-45",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "front 45"
+      },
+      "alt": "Baby Wash — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/back",
+      "category": "products",
+      "slug": "baby-wash/back",
+      "template": "product",
+      "subject": "Baby Wash back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "back",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "back"
+      },
+      "alt": "Baby Wash — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/top",
+      "category": "products",
+      "slug": "baby-wash/top",
+      "template": "product",
+      "subject": "Baby Wash top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "top",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "top"
+      },
+      "alt": "Baby Wash — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/lifestyle",
+      "category": "products",
+      "slug": "baby-wash/lifestyle",
+      "template": "product",
+      "subject": "Baby Wash lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "lifestyle"
+      },
+      "alt": "Baby Wash — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/packaging-closeup",
+      "category": "products",
+      "slug": "baby-wash/packaging-closeup",
+      "template": "product",
+      "subject": "Baby Wash packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "packaging closeup"
+      },
+      "alt": "Baby Wash — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/transparent-png",
+      "category": "products",
+      "slug": "baby-wash/transparent-png",
+      "template": "product",
+      "subject": "Baby Wash transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "transparent png"
+      },
+      "alt": "Baby Wash — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-wash/white-background",
+      "category": "products",
+      "slug": "baby-wash/white-background",
+      "template": "product",
+      "subject": "Baby Wash white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-wash",
+      "angle": "white-background",
+      "vars": {
+        "product": "Baby Wash",
+        "angle": "white background"
+      },
+      "alt": "Baby Wash — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/front",
+      "category": "products",
+      "slug": "baby-lotion/front",
+      "template": "product",
+      "subject": "Baby Lotion front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "front",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "front"
+      },
+      "alt": "Baby Lotion — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/front-45",
+      "category": "products",
+      "slug": "baby-lotion/front-45",
+      "template": "product",
+      "subject": "Baby Lotion front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "front-45",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "front 45"
+      },
+      "alt": "Baby Lotion — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/back",
+      "category": "products",
+      "slug": "baby-lotion/back",
+      "template": "product",
+      "subject": "Baby Lotion back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "back",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "back"
+      },
+      "alt": "Baby Lotion — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/top",
+      "category": "products",
+      "slug": "baby-lotion/top",
+      "template": "product",
+      "subject": "Baby Lotion top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "top",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "top"
+      },
+      "alt": "Baby Lotion — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/lifestyle",
+      "category": "products",
+      "slug": "baby-lotion/lifestyle",
+      "template": "product",
+      "subject": "Baby Lotion lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "lifestyle"
+      },
+      "alt": "Baby Lotion — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/packaging-closeup",
+      "category": "products",
+      "slug": "baby-lotion/packaging-closeup",
+      "template": "product",
+      "subject": "Baby Lotion packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "packaging closeup"
+      },
+      "alt": "Baby Lotion — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/transparent-png",
+      "category": "products",
+      "slug": "baby-lotion/transparent-png",
+      "template": "product",
+      "subject": "Baby Lotion transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "transparent png"
+      },
+      "alt": "Baby Lotion — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-lotion/white-background",
+      "category": "products",
+      "slug": "baby-lotion/white-background",
+      "template": "product",
+      "subject": "Baby Lotion white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-lotion",
+      "angle": "white-background",
+      "vars": {
+        "product": "Baby Lotion",
+        "angle": "white background"
+      },
+      "alt": "Baby Lotion — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/front",
+      "category": "products",
+      "slug": "baby-shampoo/front",
+      "template": "product",
+      "subject": "Baby Shampoo front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "front",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "front"
+      },
+      "alt": "Baby Shampoo — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/front-45",
+      "category": "products",
+      "slug": "baby-shampoo/front-45",
+      "template": "product",
+      "subject": "Baby Shampoo front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "front-45",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "front 45"
+      },
+      "alt": "Baby Shampoo — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/back",
+      "category": "products",
+      "slug": "baby-shampoo/back",
+      "template": "product",
+      "subject": "Baby Shampoo back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "back",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "back"
+      },
+      "alt": "Baby Shampoo — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/top",
+      "category": "products",
+      "slug": "baby-shampoo/top",
+      "template": "product",
+      "subject": "Baby Shampoo top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "top",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "top"
+      },
+      "alt": "Baby Shampoo — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/lifestyle",
+      "category": "products",
+      "slug": "baby-shampoo/lifestyle",
+      "template": "product",
+      "subject": "Baby Shampoo lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "lifestyle"
+      },
+      "alt": "Baby Shampoo — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/packaging-closeup",
+      "category": "products",
+      "slug": "baby-shampoo/packaging-closeup",
+      "template": "product",
+      "subject": "Baby Shampoo packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "packaging closeup"
+      },
+      "alt": "Baby Shampoo — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/transparent-png",
+      "category": "products",
+      "slug": "baby-shampoo/transparent-png",
+      "template": "product",
+      "subject": "Baby Shampoo transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "transparent png"
+      },
+      "alt": "Baby Shampoo — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-shampoo/white-background",
+      "category": "products",
+      "slug": "baby-shampoo/white-background",
+      "template": "product",
+      "subject": "Baby Shampoo white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-shampoo",
+      "angle": "white-background",
+      "vars": {
+        "product": "Baby Shampoo",
+        "angle": "white background"
+      },
+      "alt": "Baby Shampoo — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/front",
+      "category": "products",
+      "slug": "baby-oil/front",
+      "template": "product",
+      "subject": "Baby Oil front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "front",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "front"
+      },
+      "alt": "Baby Oil — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/front-45",
+      "category": "products",
+      "slug": "baby-oil/front-45",
+      "template": "product",
+      "subject": "Baby Oil front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "front-45",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "front 45"
+      },
+      "alt": "Baby Oil — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/back",
+      "category": "products",
+      "slug": "baby-oil/back",
+      "template": "product",
+      "subject": "Baby Oil back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "back",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "back"
+      },
+      "alt": "Baby Oil — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/top",
+      "category": "products",
+      "slug": "baby-oil/top",
+      "template": "product",
+      "subject": "Baby Oil top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "top",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "top"
+      },
+      "alt": "Baby Oil — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/lifestyle",
+      "category": "products",
+      "slug": "baby-oil/lifestyle",
+      "template": "product",
+      "subject": "Baby Oil lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "lifestyle"
+      },
+      "alt": "Baby Oil — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/packaging-closeup",
+      "category": "products",
+      "slug": "baby-oil/packaging-closeup",
+      "template": "product",
+      "subject": "Baby Oil packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "packaging closeup"
+      },
+      "alt": "Baby Oil — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/transparent-png",
+      "category": "products",
+      "slug": "baby-oil/transparent-png",
+      "template": "product",
+      "subject": "Baby Oil transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "transparent png"
+      },
+      "alt": "Baby Oil — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-oil/white-background",
+      "category": "products",
+      "slug": "baby-oil/white-background",
+      "template": "product",
+      "subject": "Baby Oil white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-oil",
+      "angle": "white-background",
+      "vars": {
+        "product": "Baby Oil",
+        "angle": "white background"
+      },
+      "alt": "Baby Oil — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/front",
+      "category": "products",
+      "slug": "baby-powder/front",
+      "template": "product",
+      "subject": "Baby Powder front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "front",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "front"
+      },
+      "alt": "Baby Powder — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/front-45",
+      "category": "products",
+      "slug": "baby-powder/front-45",
+      "template": "product",
+      "subject": "Baby Powder front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "front-45",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "front 45"
+      },
+      "alt": "Baby Powder — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/back",
+      "category": "products",
+      "slug": "baby-powder/back",
+      "template": "product",
+      "subject": "Baby Powder back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "back",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "back"
+      },
+      "alt": "Baby Powder — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/top",
+      "category": "products",
+      "slug": "baby-powder/top",
+      "template": "product",
+      "subject": "Baby Powder top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "top",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "top"
+      },
+      "alt": "Baby Powder — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/lifestyle",
+      "category": "products",
+      "slug": "baby-powder/lifestyle",
+      "template": "product",
+      "subject": "Baby Powder lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "lifestyle"
+      },
+      "alt": "Baby Powder — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/packaging-closeup",
+      "category": "products",
+      "slug": "baby-powder/packaging-closeup",
+      "template": "product",
+      "subject": "Baby Powder packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "packaging closeup"
+      },
+      "alt": "Baby Powder — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/transparent-png",
+      "category": "products",
+      "slug": "baby-powder/transparent-png",
+      "template": "product",
+      "subject": "Baby Powder transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "transparent png"
+      },
+      "alt": "Baby Powder — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/baby-powder/white-background",
+      "category": "products",
+      "slug": "baby-powder/white-background",
+      "template": "product",
+      "subject": "Baby Powder white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "baby-powder",
+      "angle": "white-background",
+      "vars": {
+        "product": "Baby Powder",
+        "angle": "white background"
+      },
+      "alt": "Baby Powder — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/front",
+      "category": "products",
+      "slug": "gift-box/front",
+      "template": "product",
+      "subject": "Gift Box front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "front",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "front"
+      },
+      "alt": "Gift Box — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/front-45",
+      "category": "products",
+      "slug": "gift-box/front-45",
+      "template": "product",
+      "subject": "Gift Box front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "front-45",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "front 45"
+      },
+      "alt": "Gift Box — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/back",
+      "category": "products",
+      "slug": "gift-box/back",
+      "template": "product",
+      "subject": "Gift Box back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "back",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "back"
+      },
+      "alt": "Gift Box — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/top",
+      "category": "products",
+      "slug": "gift-box/top",
+      "template": "product",
+      "subject": "Gift Box top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "top",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "top"
+      },
+      "alt": "Gift Box — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/lifestyle",
+      "category": "products",
+      "slug": "gift-box/lifestyle",
+      "template": "product",
+      "subject": "Gift Box lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "lifestyle"
+      },
+      "alt": "Gift Box — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/packaging-closeup",
+      "category": "products",
+      "slug": "gift-box/packaging-closeup",
+      "template": "product",
+      "subject": "Gift Box packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "packaging closeup"
+      },
+      "alt": "Gift Box — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/transparent-png",
+      "category": "products",
+      "slug": "gift-box/transparent-png",
+      "template": "product",
+      "subject": "Gift Box transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "transparent png"
+      },
+      "alt": "Gift Box — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/gift-box/white-background",
+      "category": "products",
+      "slug": "gift-box/white-background",
+      "template": "product",
+      "subject": "Gift Box white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "gift-box",
+      "angle": "white-background",
+      "vars": {
+        "product": "Gift Box",
+        "angle": "white background"
+      },
+      "alt": "Gift Box — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/front",
+      "category": "products",
+      "slug": "newborn-kit/front",
+      "template": "product",
+      "subject": "Newborn Kit front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "front",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "front"
+      },
+      "alt": "Newborn Kit — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/front-45",
+      "category": "products",
+      "slug": "newborn-kit/front-45",
+      "template": "product",
+      "subject": "Newborn Kit front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "front-45",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "front 45"
+      },
+      "alt": "Newborn Kit — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/back",
+      "category": "products",
+      "slug": "newborn-kit/back",
+      "template": "product",
+      "subject": "Newborn Kit back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "back",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "back"
+      },
+      "alt": "Newborn Kit — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/top",
+      "category": "products",
+      "slug": "newborn-kit/top",
+      "template": "product",
+      "subject": "Newborn Kit top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "top",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "top"
+      },
+      "alt": "Newborn Kit — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/lifestyle",
+      "category": "products",
+      "slug": "newborn-kit/lifestyle",
+      "template": "product",
+      "subject": "Newborn Kit lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "lifestyle"
+      },
+      "alt": "Newborn Kit — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/packaging-closeup",
+      "category": "products",
+      "slug": "newborn-kit/packaging-closeup",
+      "template": "product",
+      "subject": "Newborn Kit packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "packaging closeup"
+      },
+      "alt": "Newborn Kit — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/transparent-png",
+      "category": "products",
+      "slug": "newborn-kit/transparent-png",
+      "template": "product",
+      "subject": "Newborn Kit transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "transparent png"
+      },
+      "alt": "Newborn Kit — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/newborn-kit/white-background",
+      "category": "products",
+      "slug": "newborn-kit/white-background",
+      "template": "product",
+      "subject": "Newborn Kit white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "newborn-kit",
+      "angle": "white-background",
+      "vars": {
+        "product": "Newborn Kit",
+        "angle": "white background"
+      },
+      "alt": "Newborn Kit — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/front",
+      "category": "products",
+      "slug": "men-care/front",
+      "template": "product",
+      "subject": "Men Care front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "front",
+      "vars": {
+        "product": "Men Care",
+        "angle": "front"
+      },
+      "alt": "Men Care — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/front-45",
+      "category": "products",
+      "slug": "men-care/front-45",
+      "template": "product",
+      "subject": "Men Care front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "front-45",
+      "vars": {
+        "product": "Men Care",
+        "angle": "front 45"
+      },
+      "alt": "Men Care — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/back",
+      "category": "products",
+      "slug": "men-care/back",
+      "template": "product",
+      "subject": "Men Care back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "back",
+      "vars": {
+        "product": "Men Care",
+        "angle": "back"
+      },
+      "alt": "Men Care — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/top",
+      "category": "products",
+      "slug": "men-care/top",
+      "template": "product",
+      "subject": "Men Care top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "top",
+      "vars": {
+        "product": "Men Care",
+        "angle": "top"
+      },
+      "alt": "Men Care — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/lifestyle",
+      "category": "products",
+      "slug": "men-care/lifestyle",
+      "template": "product",
+      "subject": "Men Care lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Men Care",
+        "angle": "lifestyle"
+      },
+      "alt": "Men Care — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/packaging-closeup",
+      "category": "products",
+      "slug": "men-care/packaging-closeup",
+      "template": "product",
+      "subject": "Men Care packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Men Care",
+        "angle": "packaging closeup"
+      },
+      "alt": "Men Care — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/transparent-png",
+      "category": "products",
+      "slug": "men-care/transparent-png",
+      "template": "product",
+      "subject": "Men Care transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Men Care",
+        "angle": "transparent png"
+      },
+      "alt": "Men Care — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/men-care/white-background",
+      "category": "products",
+      "slug": "men-care/white-background",
+      "template": "product",
+      "subject": "Men Care white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "men-care",
+      "angle": "white-background",
+      "vars": {
+        "product": "Men Care",
+        "angle": "white background"
+      },
+      "alt": "Men Care — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/front",
+      "category": "products",
+      "slug": "women-care/front",
+      "template": "product",
+      "subject": "Women Care front",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "front",
+      "vars": {
+        "product": "Women Care",
+        "angle": "front"
+      },
+      "alt": "Women Care — front editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/front-45",
+      "category": "products",
+      "slug": "women-care/front-45",
+      "template": "product",
+      "subject": "Women Care front 45",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "front-45",
+      "vars": {
+        "product": "Women Care",
+        "angle": "front 45"
+      },
+      "alt": "Women Care — front 45 editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/back",
+      "category": "products",
+      "slug": "women-care/back",
+      "template": "product",
+      "subject": "Women Care back",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "back",
+      "vars": {
+        "product": "Women Care",
+        "angle": "back"
+      },
+      "alt": "Women Care — back editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/top",
+      "category": "products",
+      "slug": "women-care/top",
+      "template": "product",
+      "subject": "Women Care top",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "top",
+      "vars": {
+        "product": "Women Care",
+        "angle": "top"
+      },
+      "alt": "Women Care — top editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/lifestyle",
+      "category": "products",
+      "slug": "women-care/lifestyle",
+      "template": "product",
+      "subject": "Women Care lifestyle",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "lifestyle",
+      "vars": {
+        "product": "Women Care",
+        "angle": "lifestyle"
+      },
+      "alt": "Women Care — lifestyle editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/packaging-closeup",
+      "category": "products",
+      "slug": "women-care/packaging-closeup",
+      "template": "product",
+      "subject": "Women Care packaging closeup",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "packaging-closeup",
+      "vars": {
+        "product": "Women Care",
+        "angle": "packaging closeup"
+      },
+      "alt": "Women Care — packaging closeup editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/transparent-png",
+      "category": "products",
+      "slug": "women-care/transparent-png",
+      "template": "product",
+      "subject": "Women Care transparent png",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "transparent-png",
+      "vars": {
+        "product": "Women Care",
+        "angle": "transparent png"
+      },
+      "alt": "Women Care — transparent png editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "products/women-care/white-background",
+      "category": "products",
+      "slug": "women-care/white-background",
+      "template": "product",
+      "subject": "Women Care white background",
+      "width": 1024,
+      "height": 1024,
+      "productLine": "women-care",
+      "angle": "white-background",
+      "vars": {
+        "product": "Women Care",
+        "angle": "white background"
+      },
+      "alt": "Women Care — white background editorial render | BeyondBabyCo"
+    },
+    {
+      "id": "ingredients/calendula",
+      "category": "ingredients",
+      "slug": "calendula",
+      "template": "macro-ingredient",
+      "subject": "calendula flower macro golden petals water droplets",
+      "width": 1024,
+      "height": 1024,
+      "alt": "calendula flower macro golden petals water droplets | BeyondBabyCo editorial"
+    },
+    {
+      "id": "ingredients/oat-extract",
+      "category": "ingredients",
+      "slug": "oat-extract",
+      "template": "macro-ingredient",
+      "subject": "oat extract creamy texture macro organic",
+      "width": 1024,
+      "height": 1024,
+      "alt": "oat extract creamy texture macro organic | BeyondBabyCo editorial"
+    },
+    {
+      "id": "ingredients/chamomile",
+      "category": "ingredients",
+      "slug": "chamomile",
+      "template": "macro-ingredient",
+      "subject": "chamomile blossom macro soft white yellow center",
+      "width": 1024,
+      "height": 1024,
+      "alt": "chamomile blossom macro soft white yellow center | BeyondBabyCo editorial"
+    },
+    {
+      "id": "ingredients/aloe-vera",
+      "category": "ingredients",
+      "slug": "aloe-vera",
+      "template": "macro-ingredient",
+      "subject": "aloe vera gel slice macro translucent green",
+      "width": 1024,
+      "height": 1024,
+      "alt": "aloe vera gel slice macro translucent green | BeyondBabyCo editorial"
+    },
+    {
+      "id": "ingredients/coconut-oil",
+      "category": "ingredients",
+      "slug": "coconut-oil",
+      "template": "macro-ingredient",
+      "subject": "coconut oil golden drops macro nourishing",
+      "width": 1024,
+      "height": 1024,
+      "alt": "coconut oil golden drops macro nourishing | BeyondBabyCo editorial"
+    },
+    {
+      "id": "ingredients/shea-butter",
+      "category": "ingredients",
+      "slug": "shea-butter",
+      "template": "macro-ingredient",
+      "subject": "shea butter creamy swirl macro texture",
+      "width": 1024,
+      "height": 1024,
+      "alt": "shea butter creamy swirl macro texture | BeyondBabyCo editorial"
+    },
+    {
+      "id": "newsletter/research-updates",
+      "category": "newsletter",
+      "slug": "research-updates",
+      "template": "newsletter",
+      "subject": "research updates invitation calm cream banner",
+      "width": 1280,
+      "height": 720,
+      "alt": "research updates invitation calm cream banner | BeyondBabyCo editorial"
+    },
+    {
+      "id": "newsletter/new-arrivals",
+      "category": "newsletter",
+      "slug": "new-arrivals",
+      "template": "newsletter",
+      "subject": "new collection announcement soft botanical",
+      "width": 1280,
+      "height": 720,
+      "alt": "new collection announcement soft botanical | BeyondBabyCo editorial"
+    },
+    {
+      "id": "newsletter/care-tips",
+      "category": "newsletter",
+      "slug": "care-tips",
+      "template": "newsletter",
+      "subject": "gentle care tips editorial newsletter header",
+      "width": 1280,
+      "height": 720,
+      "alt": "gentle care tips editorial newsletter header | BeyondBabyCo editorial"
+    },
+    {
+      "id": "timeline/founding",
+      "category": "timeline",
+      "slug": "founding",
+      "template": "timeline",
+      "subject": "brand founding story parents and research origin",
+      "width": 1280,
+      "height": 960,
+      "alt": "brand founding story parents and research origin | BeyondBabyCo editorial"
+    },
+    {
+      "id": "timeline/first-formulation",
+      "category": "timeline",
+      "slug": "first-formulation",
+      "template": "timeline",
+      "subject": "first gentle formulation milestone editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "first gentle formulation milestone editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "timeline/dermatology-review",
+      "category": "timeline",
+      "slug": "dermatology-review",
+      "template": "timeline",
+      "subject": "dermatology review milestone trust visual",
+      "width": 1280,
+      "height": 960,
+      "alt": "dermatology review milestone trust visual | BeyondBabyCo editorial"
+    },
+    {
+      "id": "timeline/community-launch",
+      "category": "timeline",
+      "slug": "community-launch",
+      "template": "timeline",
+      "subject": "community of parents launch moment",
+      "width": 1280,
+      "height": 960,
+      "alt": "community of parents launch moment | BeyondBabyCo editorial"
+    },
+    {
+      "id": "timeline/today",
+      "category": "timeline",
+      "slug": "today",
+      "template": "timeline",
+      "subject": "present day research-led baby care collection",
+      "width": 1280,
+      "height": 960,
+      "alt": "present day research-led baby care collection | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/baby-wipes",
+      "category": "categories",
+      "slug": "baby-wipes",
+      "template": "category",
+      "subject": "baby wipes category collection hero soft pack composition",
+      "width": 1280,
+      "height": 960,
+      "alt": "baby wipes category collection hero soft pack composition | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/baby-wash",
+      "category": "categories",
+      "slug": "baby-wash",
+      "template": "category",
+      "subject": "baby wash category bath time gentle cleansing",
+      "width": 1280,
+      "height": 960,
+      "alt": "baby wash category bath time gentle cleansing | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/baby-shampoo",
+      "category": "categories",
+      "slug": "baby-shampoo",
+      "template": "category",
+      "subject": "baby shampoo category tear-free hair care",
+      "width": 1280,
+      "height": 960,
+      "alt": "baby shampoo category tear-free hair care | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/baby-lotion",
+      "category": "categories",
+      "slug": "baby-lotion",
+      "template": "category",
+      "subject": "baby lotion category daily moisture ritual",
+      "width": 1280,
+      "height": 960,
+      "alt": "baby lotion category daily moisture ritual | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/baby-oil",
+      "category": "categories",
+      "slug": "baby-oil",
+      "template": "category",
+      "subject": "baby oil category massage nourishment",
+      "width": 1280,
+      "height": 960,
+      "alt": "baby oil category massage nourishment | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/baby-powder",
+      "category": "categories",
+      "slug": "baby-powder",
+      "template": "category",
+      "subject": "baby powder category talc-free comfort",
+      "width": 1280,
+      "height": 960,
+      "alt": "baby powder category talc-free comfort | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/gift-sets",
+      "category": "categories",
+      "slug": "gift-sets",
+      "template": "category",
+      "subject": "gift sets category premium ribbon cream paper",
+      "width": 1280,
+      "height": 960,
+      "alt": "gift sets category premium ribbon cream paper | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/men-care",
+      "category": "categories",
+      "slug": "men-care",
+      "template": "category",
+      "subject": "men care category future line editorial placeholder",
+      "width": 1280,
+      "height": 960,
+      "alt": "men care category future line editorial placeholder | BeyondBabyCo editorial"
+    },
+    {
+      "id": "categories/women-care",
+      "category": "categories",
+      "slug": "women-care",
+      "template": "category",
+      "subject": "women care category future line editorial placeholder",
+      "width": 1280,
+      "height": 960,
+      "alt": "women care category future line editorial placeholder | BeyondBabyCo editorial"
+    },
+    {
+      "id": "trust/dermatologist-tested",
+      "category": "trust",
+      "slug": "dermatologist-tested",
+      "template": "trust",
+      "subject": "dermatologist tested badge visual premium editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "dermatologist tested badge visual premium editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "trust/hypoallergenic",
+      "category": "trust",
+      "slug": "hypoallergenic",
+      "template": "trust",
+      "subject": "hypoallergenic gentle formula trust visual",
+      "width": 1280,
+      "height": 960,
+      "alt": "hypoallergenic gentle formula trust visual | BeyondBabyCo editorial"
+    },
+    {
+      "id": "trust/no-toxins",
+      "category": "trust",
+      "slug": "no-toxins",
+      "template": "trust",
+      "subject": "free from harsh ingredients clean formula story",
+      "width": 1280,
+      "height": 960,
+      "alt": "free from harsh ingredients clean formula story | BeyondBabyCo editorial"
+    },
+    {
+      "id": "trust/parent-approved",
+      "category": "trust",
+      "slug": "parent-approved",
+      "template": "trust",
+      "subject": "parent approved authentic Indian family trust",
+      "width": 1280,
+      "height": 960,
+      "alt": "parent approved authentic Indian family trust | BeyondBabyCo editorial"
+    },
+    {
+      "id": "trust/research-backed",
+      "category": "trust",
+      "slug": "research-backed",
+      "template": "trust",
+      "subject": "research backed science credibility editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "research backed science credibility editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "mascots/gentle-bear",
+      "category": "mascots",
+      "slug": "gentle-bear",
+      "template": "decorative",
+      "subject": "soft premium baby brand mascot gentle bear minimal not cartoonish",
+      "width": 1024,
+      "height": 1024,
+      "alt": "soft premium baby brand mascot gentle bear minimal not cartoonish | BeyondBabyCo editorial"
+    },
+    {
+      "id": "mascots/botanical-friend",
+      "category": "mascots",
+      "slug": "botanical-friend",
+      "template": "decorative",
+      "subject": "botanical mascot sage leaf character minimal premium",
+      "width": 1024,
+      "height": 1024,
+      "alt": "botanical mascot sage leaf character minimal premium | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/nursery",
+      "category": "backgrounds",
+      "slug": "nursery",
+      "template": "background",
+      "subject": "minimal nursery cream sage empty surface product placement",
+      "width": 1920,
+      "height": 1080,
+      "alt": "minimal nursery cream sage empty surface product placement | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/bathroom",
+      "category": "backgrounds",
+      "slug": "bathroom",
+      "template": "background",
+      "subject": "luxury bathroom marble shelf soft steam light empty",
+      "width": 1920,
+      "height": 1080,
+      "alt": "luxury bathroom marble shelf soft steam light empty | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/wood-table",
+      "category": "backgrounds",
+      "slug": "wood-table",
+      "template": "background",
+      "subject": "natural wood table botanical props empty center",
+      "width": 1920,
+      "height": 1080,
+      "alt": "natural wood table botanical props empty center | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/cotton-towel",
+      "category": "backgrounds",
+      "slug": "cotton-towel",
+      "template": "background",
+      "subject": "white cotton towel spa composition soft folds",
+      "width": 1920,
+      "height": 1080,
+      "alt": "white cotton towel spa composition soft folds | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/cream-wall",
+      "category": "backgrounds",
+      "slug": "cream-wall",
+      "template": "background",
+      "subject": "warm cream wall soft shadow minimal",
+      "width": 1920,
+      "height": 1080,
+      "alt": "warm cream wall soft shadow minimal | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/botanical",
+      "category": "backgrounds",
+      "slug": "botanical",
+      "template": "background",
+      "subject": "botanical eucalyptus cotton stems cream backdrop",
+      "width": 1920,
+      "height": 1080,
+      "alt": "botanical eucalyptus cotton stems cream backdrop | BeyondBabyCo editorial"
+    },
+    {
+      "id": "backgrounds/premium-home",
+      "category": "backgrounds",
+      "slug": "premium-home",
+      "template": "background",
+      "subject": "premium Indian home interior uncluttered warm",
+      "width": 1920,
+      "height": 1080,
+      "alt": "premium Indian home interior uncluttered warm | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/botanical-illustration",
+      "category": "decorative",
+      "slug": "botanical-illustration",
+      "template": "decorative",
+      "subject": "botanical illustration sage eucalyptus line art soft",
+      "width": 1024,
+      "height": 1024,
+      "alt": "botanical illustration sage eucalyptus line art soft | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/leaf-overlay",
+      "category": "decorative",
+      "slug": "leaf-overlay",
+      "template": "decorative",
+      "subject": "leaf overlay transparent-style organic sage",
+      "width": 1024,
+      "height": 1024,
+      "alt": "leaf overlay transparent-style organic sage | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/organic-blob",
+      "category": "decorative",
+      "slug": "organic-blob",
+      "template": "decorative",
+      "subject": "organic blob shape cream sage gradient soft",
+      "width": 1024,
+      "height": 1024,
+      "alt": "organic blob shape cream sage gradient soft | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/glass-reflection",
+      "category": "decorative",
+      "slug": "glass-reflection",
+      "template": "decorative",
+      "subject": "glass reflection premium UI overlay subtle",
+      "width": 1024,
+      "height": 1024,
+      "alt": "glass reflection premium UI overlay subtle | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/water-ripples",
+      "category": "decorative",
+      "slug": "water-ripples",
+      "template": "decorative",
+      "subject": "water ripples macro clean fresh texture",
+      "width": 1024,
+      "height": 1024,
+      "alt": "water ripples macro clean fresh texture | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/cotton-texture",
+      "category": "decorative",
+      "slug": "cotton-texture",
+      "template": "decorative",
+      "subject": "cotton fabric texture macro warm white",
+      "width": 1024,
+      "height": 1024,
+      "alt": "cotton fabric texture macro warm white | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/cream-paper",
+      "category": "decorative",
+      "slug": "cream-paper",
+      "template": "decorative",
+      "subject": "cream paper texture subtle grain premium",
+      "width": 1024,
+      "height": 1024,
+      "alt": "cream paper texture subtle grain premium | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/noise-texture",
+      "category": "decorative",
+      "slug": "noise-texture",
+      "template": "decorative",
+      "subject": "fine film grain noise overlay warm neutral",
+      "width": 512,
+      "height": 512,
+      "alt": "fine film grain noise overlay warm neutral | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/decorative-shadow",
+      "category": "decorative",
+      "slug": "decorative-shadow",
+      "template": "decorative",
+      "subject": "soft decorative shadow ellipse premium UI",
+      "width": 1024,
+      "height": 256,
+      "alt": "soft decorative shadow ellipse premium UI | BeyondBabyCo editorial"
+    },
+    {
+      "id": "decorative/premium-gradient",
+      "category": "decorative",
+      "slug": "premium-gradient",
+      "template": "decorative",
+      "subject": "premium gradient ivory cream sage vertical",
+      "width": 1920,
+      "height": 1080,
+      "alt": "premium gradient ivory cream sage vertical | BeyondBabyCo editorial"
+    },
+    {
+      "id": "marketing/hero-banner",
+      "category": "marketing",
+      "slug": "hero-banner",
+      "template": "marketing",
+      "subject": "wide cinematic hero banner negative space left third",
+      "width": 1920,
+      "height": 800,
+      "alt": "wide cinematic hero banner negative space left third | BeyondBabyCo editorial"
+    },
+    {
+      "id": "marketing/social-square",
+      "category": "marketing",
+      "slug": "social-square",
+      "template": "marketing",
+      "subject": "square social product composition centered",
+      "width": 1024,
+      "height": 1024,
+      "alt": "square social product composition centered | BeyondBabyCo editorial"
+    },
+    {
+      "id": "marketing/campaign-spring",
+      "category": "marketing",
+      "slug": "campaign-spring",
+      "template": "marketing",
+      "subject": "spring campaign botanical sage cream",
+      "width": 1280,
+      "height": 960,
+      "alt": "spring campaign botanical sage cream | BeyondBabyCo editorial"
+    },
+    {
+      "id": "marketing/campaign-gift",
+      "category": "marketing",
+      "slug": "campaign-gift",
+      "template": "marketing",
+      "subject": "gift season premium ribbon composition",
+      "width": 1280,
+      "height": 960,
+      "alt": "gift season premium ribbon composition | BeyondBabyCo editorial"
+    },
+    {
+      "id": "marketing/floating-product",
+      "category": "marketing",
+      "slug": "floating-product",
+      "template": "marketing",
+      "subject": "floating product soft shadow minimal premium",
+      "width": 1024,
+      "height": 1024,
+      "alt": "floating product soft shadow minimal premium | BeyondBabyCo editorial"
+    },
+    {
+      "id": "social/instagram-story",
+      "category": "social",
+      "slug": "instagram-story",
+      "template": "marketing",
+      "subject": "vertical story format product lifestyle",
+      "width": 1080,
+      "height": 1920,
+      "alt": "vertical story format product lifestyle | BeyondBabyCo editorial"
+    },
+    {
+      "id": "social/instagram-feed",
+      "category": "social",
+      "slug": "instagram-feed",
+      "template": "marketing",
+      "subject": "square feed post product editorial",
+      "width": 1080,
+      "height": 1080,
+      "alt": "square feed post product editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "social/pinterest-pin",
+      "category": "social",
+      "slug": "pinterest-pin",
+      "template": "marketing",
+      "subject": "tall pin format care tips visual",
+      "width": 1000,
+      "height": 1500,
+      "alt": "tall pin format care tips visual | BeyondBabyCo editorial"
+    },
+    {
+      "id": "campaigns/launch",
+      "category": "campaigns",
+      "slug": "launch",
+      "template": "marketing",
+      "subject": "brand launch campaign hero wide",
+      "width": 1920,
+      "height": 1080,
+      "alt": "brand launch campaign hero wide | BeyondBabyCo editorial"
+    },
+    {
+      "id": "campaigns/monsoon-care",
+      "category": "campaigns",
+      "slug": "monsoon-care",
+      "template": "marketing",
+      "subject": "monsoon season gentle skin care campaign",
+      "width": 1280,
+      "height": 960,
+      "alt": "monsoon season gentle skin care campaign | BeyondBabyCo editorial"
+    },
+    {
+      "id": "community/parent-circle",
+      "category": "community",
+      "slug": "parent-circle",
+      "template": "lifestyle",
+      "subject": "parents community gathering warm premium home",
+      "width": 1280,
+      "height": 960,
+      "alt": "parents community gathering warm premium home | BeyondBabyCo editorial"
+    },
+    {
+      "id": "community/care-sharing",
+      "category": "community",
+      "slug": "care-sharing",
+      "template": "lifestyle",
+      "subject": "parents sharing care tips authentic moment",
+      "width": 1280,
+      "height": 960,
+      "alt": "parents sharing care tips authentic moment | BeyondBabyCo editorial"
+    },
+    {
+      "id": "reviews/testimonial-backdrop",
+      "category": "reviews",
+      "slug": "testimonial-backdrop",
+      "template": "trust",
+      "subject": "soft backdrop for customer testimonial cards",
+      "width": 1280,
+      "height": 720,
+      "alt": "soft backdrop for customer testimonial cards | BeyondBabyCo editorial"
+    },
+    {
+      "id": "reviews/five-star-moment",
+      "category": "reviews",
+      "slug": "five-star-moment",
+      "template": "trust",
+      "subject": "authentic parent satisfaction quiet joy nursery",
+      "width": 1280,
+      "height": 960,
+      "alt": "authentic parent satisfaction quiet joy nursery | BeyondBabyCo editorial"
+    },
+    {
+      "id": "men-care/line-hero",
+      "category": "men-care",
+      "slug": "line-hero",
+      "template": "product",
+      "subject": "men care future line hero packaging editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "men care future line hero packaging editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "men-care/grooming-routine",
+      "category": "men-care",
+      "slug": "grooming-routine",
+      "template": "product",
+      "subject": "father grooming routine premium bathroom",
+      "width": 1280,
+      "height": 960,
+      "alt": "father grooming routine premium bathroom | BeyondBabyCo editorial"
+    },
+    {
+      "id": "women-care/line-hero",
+      "category": "women-care",
+      "slug": "line-hero",
+      "template": "product",
+      "subject": "women care future line hero packaging editorial",
+      "width": 1280,
+      "height": 960,
+      "alt": "women care future line hero packaging editorial | BeyondBabyCo editorial"
+    },
+    {
+      "id": "women-care/self-care-routine",
+      "category": "women-care",
+      "slug": "self-care-routine",
+      "template": "product",
+      "subject": "mother self-care moment calm premium home",
+      "width": 1280,
+      "height": 960,
+      "alt": "mother self-care moment calm premium home | BeyondBabyCo editorial"
+    },
+    {
+      "id": "gift/gift-box-hero",
+      "category": "gift",
+      "slug": "gift-box-hero",
+      "template": "lifestyle",
+      "subject": "premium gift box ribbon cream paper composition",
+      "width": 1280,
+      "height": 960,
+      "alt": "premium gift box ribbon cream paper composition | BeyondBabyCo editorial"
+    },
+    {
+      "id": "gift/newborn-kit-flatlay",
+      "category": "gift",
+      "slug": "newborn-kit-flatlay",
+      "template": "lifestyle",
+      "subject": "newborn essentials kit flat lay wood table",
+      "width": 1280,
+      "height": 960,
+      "alt": "newborn essentials kit flat lay wood table | BeyondBabyCo editorial"
+    },
+    {
+      "id": "gift/hamper-unboxing",
+      "category": "gift",
+      "slug": "hamper-unboxing",
+      "template": "lifestyle",
+      "subject": "gift hamper unboxing moment soft morning light",
+      "width": 1280,
+      "height": 960,
+      "alt": "gift hamper unboxing moment soft morning light | BeyondBabyCo editorial"
+    }
+  ]
+}

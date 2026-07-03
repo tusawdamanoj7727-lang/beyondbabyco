@@ -1,0 +1,1383 @@
+{
+  "phase": "11.4a",
+  "threshold": 90,
+  "updatedAt": "2026-07-02T09:24:51.202Z",
+  "slots": {
+    "EDITORIAL.hero": {
+      "slot": "EDITORIAL.hero",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "source": "hero/phase-8-1/hero-background/hero-background-01"
+    },
+    "EDITORIAL.heroAlt": {
+      "slot": "EDITORIAL.heroAlt",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/hero-background/hero-background-02",
+      "score": 100,
+      "source": "hero/phase-8-1/hero-background/hero-background-02"
+    },
+    "EDITORIAL.science": {
+      "slot": "EDITORIAL.science",
+      "assigned": false,
+      "category": "science",
+      "slug": "dermatologist",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.lifestyleHero": {
+      "slot": "EDITORIAL.lifestyleHero",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/mother-baby/mother-baby-01",
+      "score": 100,
+      "source": "hero/phase-8-1/mother-baby/mother-baby-01"
+    },
+    "EDITORIAL.lifestyleCards.0": {
+      "slot": "EDITORIAL.lifestyleCards.0",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "diaper-change",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.lifestyleCards.1": {
+      "slot": "EDITORIAL.lifestyleCards.1",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "bath-time",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.lifestyleCards.2": {
+      "slot": "EDITORIAL.lifestyleCards.2",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/mother-baby/mother-baby-02",
+      "score": 100,
+      "source": "hero/phase-8-1/mother-baby/mother-baby-02"
+    },
+    "EDITORIAL.brandPromise.0": {
+      "slot": "EDITORIAL.brandPromise.0",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/mother-baby/mother-baby-03",
+      "score": 100,
+      "source": "hero/phase-8-1/mother-baby/mother-baby-03"
+    },
+    "EDITORIAL.brandPromise.1": {
+      "slot": "EDITORIAL.brandPromise.1",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "organic-ingredients",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.brandPromise.2": {
+      "slot": "EDITORIAL.brandPromise.2",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "family",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.newsletter": {
+      "slot": "EDITORIAL.newsletter",
+      "assigned": false,
+      "category": "newsletter",
+      "slug": "care-tips",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.newsletterAlt": {
+      "slot": "EDITORIAL.newsletterAlt",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "baby-sleeping",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.beyondCareMen": {
+      "slot": "EDITORIAL.beyondCareMen",
+      "assigned": false,
+      "category": "men-care",
+      "slug": "grooming-routine",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.beyondCareWomen": {
+      "slot": "EDITORIAL.beyondCareWomen",
+      "assigned": false,
+      "category": "women-care",
+      "slug": "self-care-routine",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.trustBackdrop": {
+      "slot": "EDITORIAL.trustBackdrop",
+      "assigned": false,
+      "category": "reviews",
+      "slug": "testimonial-backdrop",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "EDITORIAL.meetFriendsBg": {
+      "slot": "EDITORIAL.meetFriendsBg",
+      "assigned": false,
+      "category": "backgrounds",
+      "slug": "nursery",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.about": {
+      "slot": "CONTENT_EDITORIAL.about",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "family",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.story": {
+      "slot": "CONTENT_EDITORIAL.story",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/hero-background/hero-background-03",
+      "score": 100,
+      "source": "hero/phase-8-1/hero-background/hero-background-03"
+    },
+    "CONTENT_EDITORIAL.research": {
+      "slot": "CONTENT_EDITORIAL.research",
+      "assigned": false,
+      "category": "research",
+      "slug": "lab-bench",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.ingredients": {
+      "slot": "CONTENT_EDITORIAL.ingredients",
+      "assigned": false,
+      "category": "ingredients",
+      "slug": "calendula",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.why": {
+      "slot": "CONTENT_EDITORIAL.why",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/mother-baby/mother-baby-04",
+      "score": 100,
+      "source": "hero/phase-8-1/mother-baby/mother-baby-04"
+    },
+    "CONTENT_EDITORIAL.manufacturing": {
+      "slot": "CONTENT_EDITORIAL.manufacturing",
+      "assigned": false,
+      "category": "research",
+      "slug": "formulation",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.certifications": {
+      "slot": "CONTENT_EDITORIAL.certifications",
+      "assigned": false,
+      "category": "science",
+      "slug": "testing",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.safety": {
+      "slot": "CONTENT_EDITORIAL.safety",
+      "assigned": false,
+      "category": "trust",
+      "slug": "hypoallergenic",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.contact": {
+      "slot": "CONTENT_EDITORIAL.contact",
+      "assigned": false,
+      "category": "newsletter",
+      "slug": "research-updates",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.careers": {
+      "slot": "CONTENT_EDITORIAL.careers",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "source": "hero/phase-8-1/mother-baby/mother-baby-07"
+    },
+    "CONTENT_EDITORIAL.scienceLab": {
+      "slot": "CONTENT_EDITORIAL.scienceLab",
+      "assigned": false,
+      "category": "science",
+      "slug": "lab-environment",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.family": {
+      "slot": "CONTENT_EDITORIAL.family",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "family",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.ingredientOat": {
+      "slot": "CONTENT_EDITORIAL.ingredientOat",
+      "assigned": false,
+      "category": "ingredients",
+      "slug": "oat-extract",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.ingredientChamomile": {
+      "slot": "CONTENT_EDITORIAL.ingredientChamomile",
+      "assigned": false,
+      "category": "ingredients",
+      "slug": "chamomile",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.ingredientAloe": {
+      "slot": "CONTENT_EDITORIAL.ingredientAloe",
+      "assigned": false,
+      "category": "ingredients",
+      "slug": "aloe-vera",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.microscope": {
+      "slot": "CONTENT_EDITORIAL.microscope",
+      "assigned": false,
+      "category": "science",
+      "slug": "microscope",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "CONTENT_EDITORIAL.scientist": {
+      "slot": "CONTENT_EDITORIAL.scientist",
+      "assigned": false,
+      "category": "science",
+      "slug": "scientist-portrait",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.research": {
+      "slot": "TRUST_EDITORIAL.research",
+      "assigned": false,
+      "category": "research",
+      "slug": "lab-bench",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.ingredient": {
+      "slot": "TRUST_EDITORIAL.ingredient",
+      "assigned": false,
+      "category": "ingredients",
+      "slug": "calendula",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.laboratory": {
+      "slot": "TRUST_EDITORIAL.laboratory",
+      "assigned": false,
+      "category": "science",
+      "slug": "lab-environment",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.safety": {
+      "slot": "TRUST_EDITORIAL.safety",
+      "assigned": false,
+      "category": "science",
+      "slug": "testing",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.dermatology": {
+      "slot": "TRUST_EDITORIAL.dermatology",
+      "assigned": false,
+      "category": "science",
+      "slug": "dermatologist",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.pediatric": {
+      "slot": "TRUST_EDITORIAL.pediatric",
+      "assigned": false,
+      "category": "science",
+      "slug": "scientist-portrait",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.clinical": {
+      "slot": "TRUST_EDITORIAL.clinical",
+      "assigned": false,
+      "category": "research",
+      "slug": "safety-testing",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.manufacturing": {
+      "slot": "TRUST_EDITORIAL.manufacturing",
+      "assigned": false,
+      "category": "research",
+      "slug": "formulation",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.quality": {
+      "slot": "TRUST_EDITORIAL.quality",
+      "assigned": false,
+      "category": "trust",
+      "slug": "research-backed",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.feedback": {
+      "slot": "TRUST_EDITORIAL.feedback",
+      "assigned": false,
+      "category": "reviews",
+      "slug": "five-star-moment",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.rawMaterials": {
+      "slot": "TRUST_EDITORIAL.rawMaterials",
+      "assigned": false,
+      "category": "ingredients",
+      "slug": "oat-extract",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.inspection": {
+      "slot": "TRUST_EDITORIAL.inspection",
+      "assigned": false,
+      "category": "research",
+      "slug": "ingredient-study",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.production": {
+      "slot": "TRUST_EDITORIAL.production",
+      "assigned": false,
+      "category": "research",
+      "slug": "parent-feedback",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.packaging": {
+      "slot": "TRUST_EDITORIAL.packaging",
+      "assigned": false,
+      "category": "products",
+      "slug": "baby-wipes/packaging-closeup",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.warehouse": {
+      "slot": "TRUST_EDITORIAL.warehouse",
+      "assigned": false,
+      "category": "backgrounds",
+      "slug": "premium-home",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.shipping": {
+      "slot": "TRUST_EDITORIAL.shipping",
+      "assigned": true,
+      "category": "hero",
+      "slug": "phase-8-1/mother-baby/mother-baby-08",
+      "score": 100,
+      "source": "hero/phase-8-1/mother-baby/mother-baby-08"
+    },
+    "TRUST_EDITORIAL.delivery": {
+      "slot": "TRUST_EDITORIAL.delivery",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "family",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.sustainability": {
+      "slot": "TRUST_EDITORIAL.sustainability",
+      "assigned": false,
+      "category": "lifestyle",
+      "slug": "organic-ingredients",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.doctorAdvisory": {
+      "slot": "TRUST_EDITORIAL.doctorAdvisory",
+      "assigned": false,
+      "category": "science",
+      "slug": "dermatologist",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    },
+    "TRUST_EDITORIAL.trustHero": {
+      "slot": "TRUST_EDITORIAL.trustHero",
+      "assigned": false,
+      "category": "trust",
+      "slug": "dermatologist-tested",
+      "score": 0,
+      "source": null,
+      "reason": "no passing candidate"
+    }
+  },
+  "products": {
+    "baby-wipes": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/front",
+        "score": 0,
+        "source": "products/baby-wipes/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/front-45",
+        "score": 0,
+        "source": "products/baby-wipes/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/back",
+        "score": 0,
+        "source": "products/baby-wipes/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/top",
+        "score": 0,
+        "source": "products/baby-wipes/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/lifestyle",
+        "score": 0,
+        "source": "products/baby-wipes/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/bathroom",
+        "score": 0,
+        "source": "products/baby-wipes/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/nursery",
+        "score": 0,
+        "source": "products/baby-wipes/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/shelf",
+        "score": 0,
+        "source": "products/baby-wipes/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/reflection",
+        "score": 0,
+        "source": "products/baby-wipes/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/transparent-png",
+        "score": 0,
+        "source": "products/baby-wipes/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wipes/white-background",
+        "score": 0,
+        "source": "products/baby-wipes/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "baby-wash": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/front",
+        "score": 0,
+        "source": "products/baby-wash/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/front-45",
+        "score": 0,
+        "source": "products/baby-wash/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/back",
+        "score": 0,
+        "source": "products/baby-wash/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/top",
+        "score": 0,
+        "source": "products/baby-wash/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/lifestyle",
+        "score": 0,
+        "source": "products/baby-wash/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/bathroom",
+        "score": 0,
+        "source": "products/baby-wash/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/nursery",
+        "score": 0,
+        "source": "products/baby-wash/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/shelf",
+        "score": 0,
+        "source": "products/baby-wash/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/reflection",
+        "score": 0,
+        "source": "products/baby-wash/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/transparent-png",
+        "score": 0,
+        "source": "products/baby-wash/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-wash/white-background",
+        "score": 0,
+        "source": "products/baby-wash/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "baby-lotion": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/front",
+        "score": 0,
+        "source": "products/baby-lotion/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/front-45",
+        "score": 0,
+        "source": "products/baby-lotion/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/back",
+        "score": 0,
+        "source": "products/baby-lotion/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/top",
+        "score": 0,
+        "source": "products/baby-lotion/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/lifestyle",
+        "score": 0,
+        "source": "products/baby-lotion/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/bathroom",
+        "score": 0,
+        "source": "products/baby-lotion/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/nursery",
+        "score": 0,
+        "source": "products/baby-lotion/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/shelf",
+        "score": 0,
+        "source": "products/baby-lotion/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/reflection",
+        "score": 0,
+        "source": "products/baby-lotion/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/transparent-png",
+        "score": 0,
+        "source": "products/baby-lotion/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-lotion/white-background",
+        "score": 0,
+        "source": "products/baby-lotion/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "baby-shampoo": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/front",
+        "score": 0,
+        "source": "products/baby-shampoo/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/front-45",
+        "score": 0,
+        "source": "products/baby-shampoo/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/back",
+        "score": 0,
+        "source": "products/baby-shampoo/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/top",
+        "score": 0,
+        "source": "products/baby-shampoo/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/lifestyle",
+        "score": 0,
+        "source": "products/baby-shampoo/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/bathroom",
+        "score": 0,
+        "source": "products/baby-shampoo/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/nursery",
+        "score": 0,
+        "source": "products/baby-shampoo/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/shelf",
+        "score": 0,
+        "source": "products/baby-shampoo/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/reflection",
+        "score": 0,
+        "source": "products/baby-shampoo/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/transparent-png",
+        "score": 0,
+        "source": "products/baby-shampoo/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-shampoo/white-background",
+        "score": 0,
+        "source": "products/baby-shampoo/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "baby-oil": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/front",
+        "score": 0,
+        "source": "products/baby-oil/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/front-45",
+        "score": 0,
+        "source": "products/baby-oil/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/back",
+        "score": 0,
+        "source": "products/baby-oil/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/top",
+        "score": 0,
+        "source": "products/baby-oil/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/lifestyle",
+        "score": 0,
+        "source": "products/baby-oil/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/bathroom",
+        "score": 0,
+        "source": "products/baby-oil/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/nursery",
+        "score": 0,
+        "source": "products/baby-oil/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/shelf",
+        "score": 0,
+        "source": "products/baby-oil/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/reflection",
+        "score": 0,
+        "source": "products/baby-oil/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/transparent-png",
+        "score": 0,
+        "source": "products/baby-oil/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-oil/white-background",
+        "score": 0,
+        "source": "products/baby-oil/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "baby-powder": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/front",
+        "score": 0,
+        "source": "products/baby-powder/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/front-45",
+        "score": 0,
+        "source": "products/baby-powder/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/back",
+        "score": 0,
+        "source": "products/baby-powder/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/top",
+        "score": 0,
+        "source": "products/baby-powder/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/lifestyle",
+        "score": 0,
+        "source": "products/baby-powder/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/bathroom",
+        "score": 0,
+        "source": "products/baby-powder/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/nursery",
+        "score": 0,
+        "source": "products/baby-powder/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/shelf",
+        "score": 0,
+        "source": "products/baby-powder/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/reflection",
+        "score": 0,
+        "source": "products/baby-powder/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/transparent-png",
+        "score": 0,
+        "source": "products/baby-powder/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "baby-powder/white-background",
+        "score": 0,
+        "source": "products/baby-powder/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "gift-box": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/front",
+        "score": 0,
+        "source": "products/gift-box/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/front-45",
+        "score": 0,
+        "source": "products/gift-box/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/back",
+        "score": 0,
+        "source": "products/gift-box/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/top",
+        "score": 0,
+        "source": "products/gift-box/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/lifestyle",
+        "score": 0,
+        "source": "products/gift-box/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/bathroom",
+        "score": 0,
+        "source": "products/gift-box/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/nursery",
+        "score": 0,
+        "source": "products/gift-box/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/shelf",
+        "score": 0,
+        "source": "products/gift-box/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/reflection",
+        "score": 0,
+        "source": "products/gift-box/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/transparent-png",
+        "score": 0,
+        "source": "products/gift-box/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "gift-box/white-background",
+        "score": 0,
+        "source": "products/gift-box/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "newborn-kit": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/front",
+        "score": 0,
+        "source": "products/newborn-kit/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/front-45",
+        "score": 0,
+        "source": "products/newborn-kit/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/back",
+        "score": 0,
+        "source": "products/newborn-kit/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/top",
+        "score": 0,
+        "source": "products/newborn-kit/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/lifestyle",
+        "score": 0,
+        "source": "products/newborn-kit/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/bathroom",
+        "score": 0,
+        "source": "products/newborn-kit/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/nursery",
+        "score": 0,
+        "source": "products/newborn-kit/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/shelf",
+        "score": 0,
+        "source": "products/newborn-kit/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/reflection",
+        "score": 0,
+        "source": "products/newborn-kit/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/transparent-png",
+        "score": 0,
+        "source": "products/newborn-kit/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "newborn-kit/white-background",
+        "score": 0,
+        "source": "products/newborn-kit/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "men-care": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/front",
+        "score": 0,
+        "source": "products/men-care/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/front-45",
+        "score": 0,
+        "source": "products/men-care/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/back",
+        "score": 0,
+        "source": "products/men-care/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/top",
+        "score": 0,
+        "source": "products/men-care/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/lifestyle",
+        "score": 0,
+        "source": "products/men-care/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/bathroom",
+        "score": 0,
+        "source": "products/men-care/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/nursery",
+        "score": 0,
+        "source": "products/men-care/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/shelf",
+        "score": 0,
+        "source": "products/men-care/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/reflection",
+        "score": 0,
+        "source": "products/men-care/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/transparent-png",
+        "score": 0,
+        "source": "products/men-care/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "men-care/white-background",
+        "score": 0,
+        "source": "products/men-care/white-background",
+        "reason": "score 0 < 90"
+      }
+    },
+    "women-care": {
+      "front": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/front",
+        "score": 0,
+        "source": "products/women-care/front",
+        "reason": "score 0 < 90"
+      },
+      "front-45": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/front-45",
+        "score": 0,
+        "source": "products/women-care/front-45",
+        "reason": "score 0 < 90"
+      },
+      "back": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/back",
+        "score": 0,
+        "source": "products/women-care/back",
+        "reason": "score 0 < 90"
+      },
+      "top": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/top",
+        "score": 0,
+        "source": "products/women-care/top",
+        "reason": "score 0 < 90"
+      },
+      "lifestyle": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/lifestyle",
+        "score": 0,
+        "source": "products/women-care/lifestyle",
+        "reason": "score 0 < 90"
+      },
+      "bathroom": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/bathroom",
+        "score": 0,
+        "source": "products/women-care/bathroom",
+        "reason": "not generated"
+      },
+      "nursery": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/nursery",
+        "score": 0,
+        "source": "products/women-care/nursery",
+        "reason": "not generated"
+      },
+      "shelf": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/shelf",
+        "score": 0,
+        "source": "products/women-care/shelf",
+        "reason": "not generated"
+      },
+      "reflection": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/reflection",
+        "score": 0,
+        "source": "products/women-care/reflection",
+        "reason": "not generated"
+      },
+      "transparent-png": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/transparent-png",
+        "score": 0,
+        "source": "products/women-care/transparent-png",
+        "reason": "score 0 < 90"
+      },
+      "white-background": {
+        "assigned": false,
+        "category": "products",
+        "slug": "women-care/white-background",
+        "score": 0,
+        "source": "products/women-care/white-background",
+        "reason": "score 0 < 90"
+      }
+    }
+  },
+  "summary": {
+    "slotsAssigned": 9,
+    "slotsTotal": 53,
+    "productsAssigned": 0,
+    "productsTotal": 110
+  }
+}

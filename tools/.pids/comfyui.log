@@ -1,0 +1,158 @@
+Adding extra search path checkpoints /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/models/checkpoints
+Adding extra search path clip /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/models/clip
+Adding extra search path vae /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/models/vae
+Adding extra search path diffusion_models /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/models/diffusion_models
+Adding extra search path unet /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/models/unet
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.5.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/main.py", line 145, in <module>
+    import comfy.utils
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/utils.py", line 20, in <module>
+    import torch
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/__init__.py", line 1477, in <module>
+    from .functional import *  # noqa: F403
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/functional.py", line 9, in <module>
+    import torch.nn.functional as F
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/nn/__init__.py", line 1, in <module>
+    from .modules import *  # noqa: F403
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/nn/modules/__init__.py", line 35, in <module>
+    from .transformer import TransformerEncoder, TransformerDecoder, \
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py", line 20, in <module>
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+Warning, you are using an old pytorch version and some ckpt/pt files might be loaded unsafely. Upgrading to 2.4 or above is recommended.
+Total VRAM 65536 MB, total RAM 65536 MB
+pytorch version: 2.2.2
+Mac Version (26, 4, 1)
+Set vram state to: SHARED
+Device: mps
+[transformers] Disabling PyTorch because PyTorch >= 2.4 is required but found 2.2.2
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Using sub quadratic optimization for attention, if you have memory or speed issues try using: --use-split-cross-attention
+Python version: 3.12.13 (main, Mar  3 2026, 12:39:30) [Clang 21.0.0 (clang-2100.0.123.102)]
+ComfyUI version: 0.3.49
+ComfyUI frontend version: 1.23.4
+[Prompt Server] web root: /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/comfyui_frontend_package/static
+
+Import times for custom nodes:
+   0.0 seconds: /Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/custom_nodes/websocket_image_save.py
+
+setup plugin alembic.autogenerate.schemas
+setup plugin alembic.autogenerate.tables
+setup plugin alembic.autogenerate.types
+setup plugin alembic.autogenerate.constraints
+setup plugin alembic.autogenerate.defaults
+setup plugin alembic.autogenerate.comments
+Context impl SQLiteImpl.
+Will assume non-transactional DDL.
+No target revision found.
+Starting server
+
+To see the GUI go to: http://127.0.0.1:8188
+got prompt
+Using split attention in VAE
+Using split attention in VAE
+VAE load device: mps, offload device: cpu, dtype: torch.bfloat16
+Requested to load FluxClipModel_
+loaded completely 9.5367431640625e+25 9319.23095703125 True
+CLIP/text encoder model load device: cpu, offload device: cpu, current: cpu, dtype: torch.float16
+clip missing: ['text_projection.weight']
+model weight dtype torch.float8_e4m3fn, manual cast: torch.bfloat16
+model_type FLOW
+Requested to load Flux
+loaded completely 9.5367431640625e+25 11340.311584472656 True
+  0%|          | 0/4 [00:00<?, ?it/s]  0%|          | 0/4 [00:00<?, ?it/s]
+!!! Exception during processing !!! BFloat16 is not supported on MPS
+Traceback (most recent call last):
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/execution.py", line 496, in execute
+    output_data, output_ui, has_subgraph, has_pending_tasks = await get_output_data(prompt_id, unique_id, obj, input_data_all, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb, hidden_inputs=hidden_inputs)
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/execution.py", line 315, in get_output_data
+    return_values = await _async_map_node_over_list(prompt_id, unique_id, obj, input_data_all, obj.FUNCTION, allow_interrupt=True, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb, hidden_inputs=hidden_inputs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/execution.py", line 289, in _async_map_node_over_list
+    await process_inputs(input_dict, i)
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/execution.py", line 277, in process_inputs
+    result = f(**inputs)
+             ^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/nodes.py", line 1521, in sample
+    return common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=denoise)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/nodes.py", line 1488, in common_ksampler
+    samples = comfy.sample.sample(model, noise, steps, cfg, sampler_name, scheduler, positive, negative, latent_image,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/sample.py", line 45, in sample
+    samples = sampler.sample(noise, positive, negative, cfg=cfg, latent_image=latent_image, start_step=start_step, last_step=last_step, force_full_denoise=force_full_denoise, denoise_mask=noise_mask, sigmas=sigmas, callback=callback, disable_pbar=disable_pbar, seed=seed)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 1143, in sample
+    return sample(self.model, noise, positive, negative, cfg, self.device, sampler, sigmas, self.model_options, latent_image=latent_image, denoise_mask=denoise_mask, callback=callback, disable_pbar=disable_pbar, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 1033, in sample
+    return cfg_guider.sample(noise, latent_image, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 1018, in sample
+    output = executor.execute(noise, latent_image, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/patcher_extension.py", line 111, in execute
+    return self.original(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 986, in outer_sample
+    output = self.inner_sample(noise, latent_image, device, sampler, sigmas, denoise_mask, callback, disable_pbar, seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 969, in inner_sample
+    samples = executor.execute(self, sigmas, extra_args, callback, noise, latent_image, denoise_mask, disable_pbar)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/patcher_extension.py", line 111, in execute
+    return self.original(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 748, in sample
+    samples = self.sampler_function(model_k, noise, sigmas, extra_args=extra_args, callback=k_callback, disable=disable_pbar, **self.extra_options)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/k_diffusion/sampling.py", line 190, in sample_euler
+    denoised = model(x, sigma_hat * s_in, **extra_args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 400, in __call__
+    out = self.inner_model(x, sigma, model_options=model_options, seed=seed)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 949, in __call__
+    return self.predict_noise(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 952, in predict_noise
+    return sampling_function(self.inner_model, x, timestep, self.conds.get("negative", None), self.conds.get("positive", None), self.cfg, model_options=model_options, seed=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 380, in sampling_function
+    out = calc_cond_batch(model, conds, x, timestep, model_options)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 206, in calc_cond_batch
+    return executor.execute(model, conds, x_in, timestep, model_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/patcher_extension.py", line 111, in execute
+    return self.original(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/samplers.py", line 325, in _calc_cond_batch
+    output = model.apply_model(input_x, timestep_, **c).chunk(batch_chunks)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/model_base.py", line 155, in apply_model
+    return comfy.patcher_extension.WrapperExecutor.new_class_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/patcher_extension.py", line 111, in execute
+    return self.original(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/manojtusawda/Desktop/BABY BEYOND CO/beyondbabyco/tools/comfyui/ComfyUI/comfy/model_base.py", line 174, in _apply_model
+    xc = xc.to(dtype)
+         ^^^^^^^^^^^^
+TypeError: BFloat16 is not supported on MPS
+
+Prompt executed in 35.05 seconds

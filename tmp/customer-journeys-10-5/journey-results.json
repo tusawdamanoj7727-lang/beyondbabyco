@@ -1,0 +1,775 @@
+{
+  "generatedAt": "2026-07-02T07:41:00.417Z",
+  "baseUrl": "http://localhost:3001",
+  "totalJourneys": 50,
+  "passed": 35,
+  "withIssues": 15,
+  "results": [
+    {
+      "journeyId": 1,
+      "name": "Google organic → COD checkout intent",
+      "persona": "New parent",
+      "clicks": 5,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/checkout",
+      "maxLoadMs": 1921,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "16 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=O2VUzW7fyMuMOLx1",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/products/daily-care-gift-hamper?_rsc=O2VUzW7fyMuMOLx1",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/products/newborn-essentials-gift-set?_rsc=O2VUzW7fyMuMOLx1",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 2,
+      "name": "Instagram → search → wishlist",
+      "persona": "Social visitor",
+      "clicks": 3,
+      "finalUrl": "http://localhost:3001/wishlist",
+      "maxLoadMs": 755,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "3 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=gVBRBBJ30N1YdoqB",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=gVBRBBJ30N1YdoqB",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/products/daily-care-gift-hamper?_rsc=gVBRBBJ30N1YdoqB",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 3,
+      "name": "Homepage → category browse → PDP",
+      "persona": "Browser",
+      "clicks": 3,
+      "finalUrl": "http://localhost:3001/products/daily-care-gift-hamper",
+      "maxLoadMs": 1326,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "6 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=O2VUzW7fyMuMOLx1",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/products/daily-care-gift-hamper?_rsc=O2VUzW7fyMuMOLx1",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/?_rsc=O2VUzW7fyMuMOLx1",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 4,
+      "name": "Returning customer account",
+      "persona": "Logged-out return",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 569,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "1 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=0UvqREyjVju0MHxO",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 5,
+      "name": "Guest cart then checkout gate",
+      "persona": "Guest",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/checkout",
+      "maxLoadMs": 447,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "7 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=bEa9vNqu_Tbla-3O",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=bEa9vNqu_Tbla-3O",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/products?_rsc=bEa9vNqu_Tbla-3O",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 6,
+      "name": "Payment failure page",
+      "persona": "Post-payment",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/checkout/failure",
+      "maxLoadMs": 284,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 7,
+      "name": "Order success page direct",
+      "persona": "Post-order",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 347,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 8,
+      "name": "Forgot password",
+      "persona": "Account recovery",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/forgot-password",
+      "maxLoadMs": 409,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 9,
+      "name": "Order tracking via account",
+      "persona": "Customer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 320,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 10,
+      "name": "Contact support",
+      "persona": "Help seeker",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 325,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "2 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=li2vmFOPthxerWZG",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=li2vmFOPthxerWZG",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 11,
+      "name": "Trust center research",
+      "persona": "Safety-conscious parent",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/trust-center",
+      "maxLoadMs": 476,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 12,
+      "name": "Community → review gallery",
+      "persona": "Social proof",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/reviews/gallery",
+      "maxLoadMs": 669,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "10 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=0F5ocOspaIfvzABs",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/research?_rsc=0F5ocOspaIfvzABs",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/reviews/gallery?_rsc=0F5ocOspaIfvzABs",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 13,
+      "name": "About → our story",
+      "persona": "Brand researcher",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/our-story",
+      "maxLoadMs": 393,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "1 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=uDJgoLLT5g-k5GdY",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 14,
+      "name": "FAQ self-service",
+      "persona": "Pre-purchase",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/faq",
+      "maxLoadMs": 299,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 15,
+      "name": "Legal privacy read",
+      "persona": "Compliance",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/terms",
+      "maxLoadMs": 299,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "1 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=YjiRaEdnwp6Pe_me",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 16,
+      "name": "Shipping & returns policies",
+      "persona": "Buyer",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/return-policy",
+      "maxLoadMs": 299,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "1 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=Pj-MVJAcfb85csj-",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 17,
+      "name": "Register new account",
+      "persona": "New user",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/register",
+      "maxLoadMs": 259,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 18,
+      "name": "Login with redirect to checkout",
+      "persona": "Buyer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/checkout",
+      "maxLoadMs": 295,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 19,
+      "name": "Product search empty query",
+      "persona": "Explorer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/search",
+      "maxLoadMs": 283,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 20,
+      "name": "Product search brand filter",
+      "persona": "Explorer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/products?sort=newest",
+      "maxLoadMs": 747,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 21,
+      "name": "Ingredients transparency",
+      "persona": "Ingredient-aware",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/ingredients",
+      "maxLoadMs": 315,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 22,
+      "name": "Manufacturing story",
+      "persona": "Trust",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/manufacturing",
+      "maxLoadMs": 318,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 23,
+      "name": "Certifications page",
+      "persona": "Trust",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/certifications",
+      "maxLoadMs": 314,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 24,
+      "name": "Safety standards",
+      "persona": "Parent",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/safety-standards",
+      "maxLoadMs": 315,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 25,
+      "name": "Why BeyondBabyCo",
+      "persona": "Comparison shopper",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/why-beyondbabyco",
+      "maxLoadMs": 464,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 26,
+      "name": "Research deep dive",
+      "persona": "Research-driven",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/research",
+      "maxLoadMs": 328,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 27,
+      "name": "Careers page",
+      "persona": "Job seeker",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/careers",
+      "maxLoadMs": 372,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 28,
+      "name": "Press page",
+      "persona": "Media",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/press",
+      "maxLoadMs": 300,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 29,
+      "name": "Cookies policy",
+      "persona": "Privacy",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/cookies",
+      "maxLoadMs": 244,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 30,
+      "name": "Refund policy",
+      "persona": "Buyer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/refund-policy",
+      "maxLoadMs": 323,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 31,
+      "name": "Account profile gate",
+      "persona": "Customer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 358,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 32,
+      "name": "Account addresses gate",
+      "persona": "Customer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 375,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 33,
+      "name": "Account downloads gate",
+      "persona": "Customer",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/login?redirectTo=/account",
+      "maxLoadMs": 502,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 34,
+      "name": "Homepage anchor products section",
+      "persona": "Scroller",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/#products",
+      "maxLoadMs": 1045,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 35,
+      "name": "Robots.txt SEO",
+      "persona": "Crawler",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/robots.txt",
+      "maxLoadMs": 17,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 36,
+      "name": "Sitemap.xml SEO",
+      "persona": "Crawler",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/sitemap.xml",
+      "maxLoadMs": 224,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 37,
+      "name": "404 unknown product",
+      "persona": "Broken link",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/products/this-product-does-not-exist-xyz",
+      "maxLoadMs": 237,
+      "issues": [
+        {
+          "type": "console",
+          "severity": "P1",
+          "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        }
+      ],
+      "networkFailures": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ]
+    },
+    {
+      "journeyId": 38,
+      "name": "404 unknown CMS page",
+      "persona": "Broken link",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/not-a-real-page-xyz",
+      "maxLoadMs": 224,
+      "issues": [
+        {
+          "type": "console",
+          "severity": "P1",
+          "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        }
+      ],
+      "networkFailures": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ]
+    },
+    {
+      "journeyId": 39,
+      "name": "Logout route",
+      "persona": "Session end",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/",
+      "maxLoadMs": 648,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 40,
+      "name": "Mobile homepage",
+      "persona": "Mobile user",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/",
+      "maxLoadMs": 625,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 41,
+      "name": "Mobile products grid",
+      "persona": "Mobile shopper",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/products",
+      "maxLoadMs": 819,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 42,
+      "name": "Mobile PDP",
+      "persona": "Mobile shopper",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/products/daily-care-gift-hamper",
+      "maxLoadMs": 1417,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 43,
+      "name": "Mobile cart empty",
+      "persona": "Mobile guest",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/cart",
+      "maxLoadMs": 357,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 44,
+      "name": "Mobile trust center",
+      "persona": "Mobile parent",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/trust-center",
+      "maxLoadMs": 465,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 45,
+      "name": "Mobile search",
+      "persona": "Mobile",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/search?q=baby",
+      "maxLoadMs": 669,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 46,
+      "name": "Health API (customer uptime)",
+      "persona": "Monitor",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001",
+      "maxLoadMs": 0,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 47,
+      "name": "Homepage → PDP reviews scroll",
+      "persona": "Reviewer",
+      "clicks": 2,
+      "finalUrl": "http://localhost:3001/reviews/gallery",
+      "maxLoadMs": 1310,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "4 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=oJbNP9w6pWXuoP_m",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=oJbNP9w6pWXuoP_m",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/products?_rsc=oJbNP9w6pWXuoP_m",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 48,
+      "name": "Wishlist empty state",
+      "persona": "Guest",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/wishlist",
+      "maxLoadMs": 446,
+      "issues": [],
+      "networkFailures": [],
+      "consoleErrors": []
+    },
+    {
+      "journeyId": 49,
+      "name": "Campaign landing (if exists)",
+      "persona": "Email click",
+      "clicks": 1,
+      "finalUrl": "http://localhost:3001/campaigns/summer-sale",
+      "maxLoadMs": 237,
+      "issues": [
+        {
+          "type": "console",
+          "severity": "P1",
+          "detail": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        }
+      ],
+      "networkFailures": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ]
+    },
+    {
+      "journeyId": 50,
+      "name": "Full footer legal loop",
+      "persona": "Diligent buyer",
+      "clicks": 4,
+      "finalUrl": "http://localhost:3001/products",
+      "maxLoadMs": 691,
+      "issues": [
+        {
+          "type": "network",
+          "severity": "P2",
+          "detail": "4 failed request(s)"
+        }
+      ],
+      "networkFailures": [
+        {
+          "url": "http://localhost:3001/?_rsc=li2vmFOPthxerWZG",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/wishlist?_rsc=li2vmFOPthxerWZG",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:3001/?_rsc=rdXZes3t4M0XODO6",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "consoleErrors": []
+    }
+  ]
+}

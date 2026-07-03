@@ -1,0 +1,19 @@
+{
+  "benchmark": {
+    "productCount": 22,
+    "candidates": 1,
+    "masterScenes": 10,
+    "fluxPerProduct": 14,
+    "compositePerProduct": 22,
+    "oldFluxCalls": 1584,
+    "newFluxCalls": 318,
+    "compositeCalls": 484,
+    "fluxReductionPct": 79.9,
+    "oldTotalMinutes": 12672,
+    "newTotalMinutes": 2564,
+    "timeSavedPct": 79.8,
+    "oldMsPerAsset": 960000,
+    "newMsPerAsset": 194255
+  },
+  "updatedAt": "2026-06-29T22:55:25.929Z"
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
+    <rect width="320" height="240" rx="24" fill="#FDF8F3"/>
+    <ellipse cx="100" cy="118" rx="38" ry="34" fill="#E8DDD4"/>
+         <ellipse cx="72" cy="72" rx="14" ry="28" fill="#E8DDD4" transform="rotate(-18 72 72)"/>
+         <ellipse cx="128" cy="72" rx="14" ry="28" fill="#E8DDD4" transform="rotate(18 128 72)"/>
+    <text x="160" y="200" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#1B4332">Research updates soon</text>
+  </svg>

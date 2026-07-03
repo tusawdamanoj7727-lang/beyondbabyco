@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+      <ellipse cx="200" cy="120" rx="22" ry="40" fill="#E8A88A" opacity="0.55" transform="rotate(0 200 150)"/><ellipse cx="200" cy="120" rx="22" ry="40" fill="#E8A88A" opacity="0.55" transform="rotate(72 200 150)"/><ellipse cx="200" cy="120" rx="22" ry="40" fill="#E8A88A" opacity="0.55" transform="rotate(144 200 150)"/><ellipse cx="200" cy="120" rx="22" ry="40" fill="#E8A88A" opacity="0.55" transform="rotate(216 200 150)"/><ellipse cx="200" cy="120" rx="22" ry="40" fill="#E8A88A" opacity="0.55" transform="rotate(288 200 150)"/>
+      <circle cx="200" cy="150" r="18" fill="#CD6A45" opacity="0.7"/>
+    </svg>

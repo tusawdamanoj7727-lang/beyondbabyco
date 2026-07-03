@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BeyondBabyCo — Enterprise Admin Platform
 
-## Getting Started
+Next.js 15 + Supabase admin and storefront for Beyond Baby Co.
 
-First, run the development server:
+## Quick start
 
 ```bash
+cp .env.example .env.local
+# Fill in Supabase URL and anon key
+
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Storefront: http://localhost:3000
+- Admin: http://localhost:3000/admin
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Production server |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript check |
+| `npm run test` | Vitest unit + integration |
+| `npm run test:e2e` | Playwright E2E |
+| `npm run validate:migrations` | SQL migration audit |
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) and [docs/PRODUCTION_CHECKLIST.md](./docs/PRODUCTION_CHECKLIST.md).
 
-## Deploy on Vercel
+## Docker
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+docker compose up --build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Health
+
+- `GET /api/health` — aggregate status
+- `GET /api/health/database` — Supabase DB
+- `GET /api/health/storage` — Supabase Storage
+- `GET /api/health/queue` — marketing queues
+- `GET /api/health/memory` — process memory
+
+## Security
+
+CSP, HSTS (production), rate limiting, and CSRF validation are applied via middleware and `next.config.ts`. See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md#security).
+
+## Documentation
+
+- [Developer Guide](./docs/DEVELOPER_GUIDE.md)
+- [Admin Guide](./docs/ADMIN_GUIDE.md)
+- [API Reference](./docs/API.md)
+- [Troubleshooting](./docs/TROUBLESHOOTING.md)
+- [Database migrations](./supabase/database/README.md)

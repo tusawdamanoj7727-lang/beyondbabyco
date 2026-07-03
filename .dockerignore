@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.github
+tmp
+coverage
+playwright-report
+test-results
+*.md
+!README.md
+.env*
+!.env.example
+tools/comfyui
+docs

@@ -1,0 +1,102 @@
+{
+  "phase": "13.0",
+  "auditedAt": "2026-07-02T11:06:22.288Z",
+  "pagesAudited": [
+    "Homepage /",
+    "Products /products",
+    "Product Detail /products/[slug]",
+    "Cart /cart",
+    "Checkout /checkout",
+    "Wishlist /wishlist",
+    "Search /search",
+    "Account /account",
+    "Trust Center /trust-center",
+    "Community /community",
+    "Review Gallery /reviews/gallery",
+    "404 not-found",
+    "Error boundary",
+    "Admin /admin/*",
+    "AI Assets /admin/ai-assets"
+  ],
+  "routeCount": 119,
+  "bugHunt": {
+    "todoFiles": 4,
+    "fixmeFiles": 0,
+    "consoleLogFiles": 0,
+    "todoLocations": [
+      "src/lib/admin/finance-actions.ts",
+      "src/lib/admin/finance-types.ts",
+      "src/lib/admin/gateway-adapters/index.ts",
+      "src/lib/admin/marketing-actions.ts"
+    ],
+    "consoleLogLocations": []
+  },
+  "seo": {
+    "robots": true,
+    "sitemap": true,
+    "manifest": true,
+    "ogDefault": true,
+    "jsonLd": true
+  },
+  "brandQa": {
+    "phase": "12.0",
+    "auditedAt": "2026-07-02T10:47:23.560Z",
+    "brandAssets": {
+      "present": 18,
+      "missing": [],
+      "total": 18
+    },
+    "socialAssets": {
+      "missing": [],
+      "complete": true
+    },
+    "appIcons": [
+      {
+        "file": "src/app/favicon.ico",
+        "exists": true
+      },
+      {
+        "file": "src/app/icon.png",
+        "exists": true
+      },
+      {
+        "file": "src/app/apple-icon.png",
+        "exists": true
+      }
+    ],
+    "realAssets": {
+      "total": 0,
+      "editorial": 0,
+      "products": 0,
+      "categories": 0,
+      "og": 0
+    },
+    "generatedAssetsOnDisk": 1096,
+    "legacyPlaceholdersOnDisk": [
+      "product-botanical.svg",
+      "forest-canopy.svg",
+      "science-care.svg",
+      "lifestyle-family.svg",
+      "beyondbabyco-logo.png"
+    ],
+    "altIssues": [],
+    "retinaReady": true,
+    "productionReady": true
+  },
+  "accessibility": {
+    "skipLink": true,
+    "focusRingToken": true,
+    "reducedMotionCss": true
+  },
+  "performance": {
+    "dynamicImports": 13,
+    "imageComponents": 35
+  },
+  "issuesFixed": [
+    "Removed unused imports (BrandPromise, ResearchTimeline, NewsletterCTA)",
+    "Premium copy on review gallery + PDP community notes",
+    "404/error pages use premium-page-bg",
+    "Global responsive safe-area + reduced-motion guard",
+    "Gallery page premium background"
+  ]
+}

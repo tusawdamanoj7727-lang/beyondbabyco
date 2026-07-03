@@ -1,0 +1,373 @@
+{
+  "version": "12.0",
+  "updatedAt": "2026-07-02T14:10:40.405Z",
+  "assets": {
+    "hero/phase-8-1/hero-background/hero-background-01": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-01.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-02": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-02.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-03": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-03.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-04": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-04.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-05": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-05.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-06": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-06.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-07": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-07.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-08": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-08.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-09": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-09.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-background/hero-background-10": {
+      "path": "/images/real/hero/phase-8-1/hero-background/hero-background-10.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-01": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-01.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-02": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-02.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-03": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-03.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-04": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-04.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-05": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-05.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-06": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-06.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-07": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-07.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-08": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-08.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-09": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-09.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/hero-glass/hero-glass-10": {
+      "path": "/images/real/hero/phase-8-1/hero-glass/hero-glass-10.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-01": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-01.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-02": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-02.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-03": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-03.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-04": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-04.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-05": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-05.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-06": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-06.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-07": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-07.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-08": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-08.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-09": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-09.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-10": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-10.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-11": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-11.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-12": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-12.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-13": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-13.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-14": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-14.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-15": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-15.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-16": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-16.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-17": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-17.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-18": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-18.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-19": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-19.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/mother-baby/mother-baby-20": {
+      "path": "/images/real/hero/phase-8-1/mother-baby/mother-baby-20.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-01": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-01.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-02": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-02.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-03": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-03.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-04": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-04.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-05": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-05.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-06": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-06.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-07": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-07.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-08": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-08.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-09": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-09.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "hero/phase-8-1/trust-background/trust-background-10": {
+      "path": "/images/real/hero/phase-8-1/trust-background/trust-background-10.webp",
+      "format": "webp",
+      "width": 1536,
+      "height": 1024
+    },
+    "products/baby-shampoo/back": {
+      "path": "/images/real/products/baby-shampoo/back.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-shampoo/front-45": {
+      "path": "/images/real/products/baby-shampoo/front-45.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-shampoo/front": {
+      "path": "/images/real/products/baby-shampoo/front.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-shampoo/side": {
+      "path": "/images/real/products/baby-shampoo/side.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-shampoo/top": {
+      "path": "/images/real/products/baby-shampoo/top.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-wash/back": {
+      "path": "/images/real/products/baby-wash/back.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-wash/front-45": {
+      "path": "/images/real/products/baby-wash/front-45.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-wash/front": {
+      "path": "/images/real/products/baby-wash/front.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-wash/side": {
+      "path": "/images/real/products/baby-wash/side.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    },
+    "products/baby-wash/top": {
+      "path": "/images/real/products/baby-wash/top.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "stats": {
+    "total": 60,
+    "editorial": 0,
+    "products": 10,
+    "categories": 0,
+    "og": 0
+  }
+}

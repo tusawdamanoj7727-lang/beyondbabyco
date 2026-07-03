@@ -1,0 +1,10 @@
+# ComfyUI extra model paths — loaded via --extra-model-paths-config
+# Paths are relative to this file's directory (tools/comfyui/).
+
+beyondbabyco:
+  base_path: models
+  checkpoints: checkpoints
+  clip: clip
+  vae: vae
+  diffusion_models: diffusion_models
+  unet: unet

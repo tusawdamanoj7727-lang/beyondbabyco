@@ -1,0 +1,37 @@
+{
+  "phase": "12.0",
+  "builtAt": "2026-07-02T14:10:40.411Z",
+  "logo": {
+    "width": 791,
+    "height": 1024
+  },
+  "socialAssets": [
+    "og-default.png",
+    "og-home.png",
+    "twitter-card.png",
+    "linkedin.png",
+    "whatsapp-preview.png",
+    "instagram-post.png",
+    "instagram-story.png",
+    "pinterest.png"
+  ],
+  "icons": [
+    "favicon.svg",
+    "favicon-16.png",
+    "favicon-32.png",
+    "favicon-48.png",
+    "apple-touch-icon.png",
+    "icon-192.png",
+    "icon-512.png",
+    "icon-maskable-512.png",
+    "android-chrome-192.png",
+    "android-chrome-512.png"
+  ],
+  "realAssets": {
+    "total": 60,
+    "editorial": 0,
+    "products": 10,
+    "categories": 0,
+    "og": 0
+  }
+}

@@ -1,0 +1,814 @@
+{
+  "phase": "11.5",
+  "producedAt": "2026-07-02T10:06:06.586Z",
+  "approved": 25,
+  "rejected": 0,
+  "slotsTotal": 160,
+  "slotsAssigned": 160,
+  "coveragePct": 100,
+  "missingSlots": 0,
+  "passedAssetsAvailable": 25,
+  "coverage": {
+    "EDITORIAL.hero": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.heroAlt": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.science": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.lifestyleHero": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.lifestyleCards.0": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.lifestyleCards.1": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.lifestyleCards.2": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.brandPromise.0": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.brandPromise.1": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.brandPromise.2": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.newsletter": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.newsletterAlt": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.beyondCareMen": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.beyondCareWomen": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.trustBackdrop": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "EDITORIAL.meetFriendsBg": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.about": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.story": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.research": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.ingredients": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.why": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.manufacturing": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.certifications": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.safety": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.contact": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.careers": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.scienceLab": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.family": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.ingredientOat": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.ingredientChamomile": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.ingredientAloe": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.microscope": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "CONTENT_EDITORIAL.scientist": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.research": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.ingredient": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.laboratory": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.safety": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.dermatology": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.pediatric": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.clinical": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.manufacturing": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.quality": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.feedback": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.rawMaterials": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.inspection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.production": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.packaging": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.warehouse": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.shipping": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.delivery": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.sustainability": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.doctorAdvisory": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TRUST_EDITORIAL.trustHero": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TIMELINE.0": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "TIMELINE.1": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "TIMELINE.2": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-03",
+      "score": 100,
+      "status": "approved"
+    },
+    "TIMELINE.3": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-04",
+      "score": 100,
+      "status": "approved"
+    },
+    "TIMELINE.4": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "TIMELINE.5": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-09",
+      "score": 100,
+      "status": "approved"
+    },
+    "TESTIMONIAL.0": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "score": 100,
+      "status": "approved"
+    },
+    "TESTIMONIAL.1": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-16",
+      "score": 100,
+      "status": "approved"
+    },
+    "TESTIMONIAL.2": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-18",
+      "score": 100,
+      "status": "approved"
+    },
+    "TESTIMONIAL.3": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-19",
+      "score": 100,
+      "status": "approved"
+    },
+    "TESTIMONIAL.4": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-14",
+      "score": 99.1,
+      "status": "approved"
+    },
+    "TESTIMONIAL.5": {
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-05",
+      "score": 97.6,
+      "status": "approved"
+    },
+    "TESTIMONIAL.6": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-10",
+      "score": 100,
+      "status": "approved"
+    },
+    "TESTIMONIAL.7": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "score": 100,
+      "status": "approved"
+    },
+    "SCENE.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-background/hero-background-08",
+      "score": 95.9,
+      "status": "approved"
+    },
+    "SCENE.science": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "SCENE.product": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "SCENE.forest": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.baby-wipes": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.baby-shampoo": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.baby-wash": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.baby-lotion": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.baby-oil": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.baby-powder": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.gift-sets": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.men-care": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "CATEGORY.women-care": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wipes.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-wash.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-lotion.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-shampoo.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-oil.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.baby-powder.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.gift-box.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.newborn-kit.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.men-care.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.front": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.front-45": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.bathroom": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.nursery": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.shelf": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.lifestyle": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.reflection": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    },
+    "PRODUCT.women-care.transparent-png": {
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "score": 100,
+      "status": "approved"
+    }
+  },
+  "missing": []
+}

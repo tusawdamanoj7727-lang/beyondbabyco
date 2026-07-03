@@ -1,0 +1,45 @@
+{
+  "phase": "12.0",
+  "auditedAt": "2026-07-02T10:47:23.560Z",
+  "brandAssets": {
+    "present": 18,
+    "missing": [],
+    "total": 18
+  },
+  "socialAssets": {
+    "missing": [],
+    "complete": true
+  },
+  "appIcons": [
+    {
+      "file": "src/app/favicon.ico",
+      "exists": true
+    },
+    {
+      "file": "src/app/icon.png",
+      "exists": true
+    },
+    {
+      "file": "src/app/apple-icon.png",
+      "exists": true
+    }
+  ],
+  "realAssets": {
+    "total": 0,
+    "editorial": 0,
+    "products": 0,
+    "categories": 0,
+    "og": 0
+  },
+  "generatedAssetsOnDisk": 1096,
+  "legacyPlaceholdersOnDisk": [
+    "product-botanical.svg",
+    "forest-canopy.svg",
+    "science-care.svg",
+    "lifestyle-family.svg",
+    "beyondbabyco-logo.png"
+  ],
+  "altIssues": [],
+  "retinaReady": true,
+  "productionReady": true
+}

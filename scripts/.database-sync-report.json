@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-07-01T11:36:44.997Z",
+  "dryRun": false,
+  "migrations": [
+    {
+      "migration": "003_rls.sql",
+      "status": "applied",
+      "statementsTotal": 50,
+      "statementsApplied": 50,
+      "statementsSkipped": 0,
+      "statementErrors": []
+    }
+  ],
+  "skippedStatements": [],
+  "errors": [],
+  "conflictWarnings": []
+}

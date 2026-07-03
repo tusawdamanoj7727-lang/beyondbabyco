@@ -1,0 +1,811 @@
+{
+  "syncedAt": "2026-07-02T14:10:35.913Z",
+  "summary": {
+    "approvedAssets": 25,
+    "heroProductionSynced": 50,
+    "productProductionSynced": 10,
+    "newlyCopied": 25,
+    "realAssetKeys": 60,
+    "slotsWithReal": 18,
+    "slotsFluxFallback": 0
+  },
+  "slotCoverage": [
+    {
+      "slot": "EDITORIAL.newsletter",
+      "priority": 4,
+      "destKey": "hero/phase-8-1/trust-background/trust-background-06",
+      "status": "real",
+      "assetId": "hero/phase-8-1/trust-background/trust-background-06"
+    },
+    {
+      "slot": "TIMELINE.0",
+      "priority": 5,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-01",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01"
+    },
+    {
+      "slot": "TIMELINE.1",
+      "priority": 5,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-02",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-02"
+    },
+    {
+      "slot": "TIMELINE.2",
+      "priority": 5,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-03",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-03"
+    },
+    {
+      "slot": "TIMELINE.3",
+      "priority": 5,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-04",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-04"
+    },
+    {
+      "slot": "TIMELINE.4",
+      "priority": 5,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-07",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-07"
+    },
+    {
+      "slot": "TIMELINE.5",
+      "priority": 5,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-09",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-09"
+    },
+    {
+      "slot": "EDITORIAL.lifestyleCards.1",
+      "priority": 6,
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-04",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-04"
+    },
+    {
+      "slot": "SCENE.lifestyle",
+      "priority": 6,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-08",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-08"
+    },
+    {
+      "slot": "TESTIMONIAL.0",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "status": "real",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07"
+    },
+    {
+      "slot": "TESTIMONIAL.1",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-16",
+      "status": "real",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-16"
+    },
+    {
+      "slot": "TESTIMONIAL.2",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-18",
+      "status": "real",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-18"
+    },
+    {
+      "slot": "TESTIMONIAL.3",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-19",
+      "status": "real",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-19"
+    },
+    {
+      "slot": "TESTIMONIAL.4",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-14",
+      "status": "real",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-14"
+    },
+    {
+      "slot": "TESTIMONIAL.5",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-05",
+      "status": "real",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-05"
+    },
+    {
+      "slot": "TESTIMONIAL.6",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/hero-background/hero-background-10",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-10"
+    },
+    {
+      "slot": "TESTIMONIAL.7",
+      "priority": 8,
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01"
+    },
+    {
+      "slot": "SCENE.forest",
+      "priority": 50,
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "status": "real",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02"
+    }
+  ],
+  "hero": [
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-01",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-01.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-02",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-02.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-03",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-03.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-04",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-04.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-05",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-05.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-06",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-06.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-07",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-07.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-08",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-08.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-09",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-09.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-10",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-10.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-01.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-02.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-03",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-03.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-04",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-04.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-05",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-05.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-06",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-06.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-07",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-07.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-08",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-08.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-09",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-09.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-10",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-10.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-01",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-01.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-02",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-02.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-03",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-03.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-04",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-04.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-05",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-05.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-06",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-06.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-07.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-08",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-08.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-09",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-09.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-10",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-10.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-11",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-11.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-12",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-12.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-13",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-13.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-14",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-14.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-15",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-15.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-16",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-16.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-17",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-17.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-18",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-18.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-19",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-19.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-20",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-20.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-01",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-01.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-02",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-02.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-03",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-03.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-04",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-04.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-05",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-05.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-06",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-06.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-07",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-07.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-08",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-08.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-09",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-09.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-10",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-10.webp",
+      "copied": true,
+      "reason": "synced",
+      "priority": "hero"
+    }
+  ],
+  "products": [
+    {
+      "destKey": "products/baby-wash/back",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/back.webp",
+      "productLine": "baby-wash",
+      "angle": "back",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-shampoo/back",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/back.webp",
+      "productLine": "baby-shampoo",
+      "angle": "back",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-wash/front-45",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/front-45.webp",
+      "productLine": "baby-wash",
+      "angle": "front-45",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-shampoo/front-45",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/front-45.webp",
+      "productLine": "baby-shampoo",
+      "angle": "front-45",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-wash/front",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/front.webp",
+      "productLine": "baby-wash",
+      "angle": "front",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-shampoo/front",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/front.webp",
+      "productLine": "baby-shampoo",
+      "angle": "front",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-wash/side",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/side.webp",
+      "productLine": "baby-wash",
+      "angle": "side",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-shampoo/side",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/side.webp",
+      "productLine": "baby-shampoo",
+      "angle": "side",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-wash/top",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/top.webp",
+      "productLine": "baby-wash",
+      "angle": "top",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    },
+    {
+      "destKey": "products/baby-shampoo/top",
+      "source": "public/images/products/phase-8-5/2-in-1-wash-shampoo/packaging/top.webp",
+      "productLine": "baby-shampoo",
+      "angle": "top",
+      "copied": false,
+      "reason": "up-to-date",
+      "priority": "product"
+    }
+  ],
+  "approved": [
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-01",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-01",
+      "slotKey": "TIMELINE.0",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-01.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-02",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-02",
+      "slotKey": "TIMELINE.1",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-02.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-03",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-03",
+      "slotKey": "TIMELINE.2",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-03.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-04",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-04",
+      "slotKey": "TIMELINE.3",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-04.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-07",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-07",
+      "slotKey": "TIMELINE.4",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-07.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-08",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-08",
+      "slotKey": "SCENE.lifestyle",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-08.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-09",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-09",
+      "slotKey": "TIMELINE.5",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-09.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-background/hero-background-10",
+      "assetId": "hero/phase-8-1/hero-background/hero-background-10",
+      "slotKey": "TESTIMONIAL.6",
+      "source": "public/images/hero/phase-8-1/hero-background/hero-background-10.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-01",
+      "slotKey": "TESTIMONIAL.7",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-01.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-02",
+      "slotKey": "SCENE.forest",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-02.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-03",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-03",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-03.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-04",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-04",
+      "slotKey": "EDITORIAL.lifestyleCards.1",
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-04.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-05",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-05",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-05.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-06",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-06",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-06.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-09",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-09",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-09.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/hero-glass/hero-glass-10",
+      "assetId": "hero/phase-8-1/hero-glass/hero-glass-10",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/hero-glass/hero-glass-10.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-05",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-05",
+      "slotKey": "TESTIMONIAL.5",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-05.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-07",
+      "slotKey": "TESTIMONIAL.0",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-07.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-14",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-14",
+      "slotKey": "TESTIMONIAL.4",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-14.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-16",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-16",
+      "slotKey": "TESTIMONIAL.1",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-16.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-18",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-18",
+      "slotKey": "TESTIMONIAL.2",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-18.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/mother-baby/mother-baby-19",
+      "assetId": "hero/phase-8-1/mother-baby/mother-baby-19",
+      "slotKey": "TESTIMONIAL.3",
+      "source": "public/images/hero/phase-8-1/mother-baby/mother-baby-19.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-05",
+      "assetId": "hero/phase-8-1/trust-background/trust-background-05",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-05.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-06",
+      "assetId": "hero/phase-8-1/trust-background/trust-background-06",
+      "slotKey": "EDITORIAL.newsletter",
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-06.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    },
+    {
+      "destKey": "hero/phase-8-1/trust-background/trust-background-07",
+      "assetId": "hero/phase-8-1/trust-background/trust-background-07",
+      "slotKey": null,
+      "source": "public/images/hero/phase-8-1/trust-background/trust-background-07.webp",
+      "copied": false,
+      "reason": "up-to-date",
+      "fallback": "real"
+    }
+  ]
+}

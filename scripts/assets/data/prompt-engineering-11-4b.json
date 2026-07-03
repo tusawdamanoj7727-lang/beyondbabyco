@@ -1,0 +1,21 @@
+{
+  "phase": "11.4b",
+  "masterPrompt": "Luxury commercial baby skincare campaign photograph for BeyondBabyCo. Ultra realistic. Shot on Canon EOS R5. 85mm RF lens. Natural morning window light. Premium editorial photography. Indian parents. Healthy happy baby. Luxury nursery. Cream walls. Soft sage botanical accents. Warm ivory palette. Natural skin texture. Professional commercial color grading. Shallow depth of field. Magazine quality. Award-winning advertising photography.",
+  "negativePrompt": "plastic skin, cgi, cartoon, anime, illustration, painting, duplicate child, deformed hands, extra fingers, text, watermark, logo, cropped face, blurry, bad anatomy, wrong packaging, dark lighting, harsh shadows, oversaturated, low resolution, 3D render, deformed face, unrealistic eyes, fake smile, busy background, neon, AI artifacts, wrong colors, packaging distortion, incorrect logos",
+  "generation": {
+    "candidatesMin": 5,
+    "candidatesMax": 8,
+    "candidatesDefault": 6,
+    "keepTop": 2,
+    "qualityThreshold": 90
+  },
+  "hardReject": {
+    "maxDarkBrightness": 95,
+    "minResolutionPixels": 786432,
+    "minPngBytes": 180000,
+    "maxSaturationSpread": 85,
+    "minFaceRegionContrast": 8,
+    "maxFaceRegionChaos": 55
+  },
+  "productReferenceRoot": "public/images/generated/products"
+}

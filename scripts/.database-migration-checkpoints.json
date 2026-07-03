@@ -1,0 +1,137 @@
+[
+  {
+    "migration": "007_products_admin.sql",
+    "number": 7,
+    "status": "applied",
+    "statementsApplied": 4,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:19.766Z"
+  },
+  {
+    "migration": "008_categories_brands_admin.sql",
+    "number": 8,
+    "status": "applied",
+    "statementsApplied": 12,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:22.900Z"
+  },
+  {
+    "migration": "009_media_library.sql",
+    "number": 9,
+    "status": "applied",
+    "statementsApplied": 11,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:26.613Z"
+  },
+  {
+    "migration": "010_homepage_cms.sql",
+    "number": 10,
+    "status": "applied",
+    "statementsApplied": 7,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:30.237Z"
+  },
+  {
+    "migration": "011_inventory_warehouse.sql",
+    "number": 11,
+    "status": "applied",
+    "statementsApplied": 15,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:33.947Z"
+  },
+  {
+    "migration": "012_orders_fulfillment.sql",
+    "number": 12,
+    "status": "applied",
+    "statementsApplied": 18,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:37.898Z"
+  },
+  {
+    "migration": "013_customers_crm.sql",
+    "number": 13,
+    "status": "applied",
+    "statementsApplied": 10,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:41.286Z"
+  },
+  {
+    "migration": "014_reviews_moderation.sql",
+    "number": 14,
+    "status": "applied",
+    "statementsApplied": 12,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:44.985Z"
+  },
+  {
+    "migration": "015_returns_rma.sql",
+    "number": 15,
+    "status": "applied",
+    "statementsApplied": 14,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:49.128Z"
+  },
+  {
+    "migration": "016_coupons_promotions.sql",
+    "number": 16,
+    "status": "applied",
+    "statementsApplied": 17,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:53.152Z"
+  },
+  {
+    "migration": "017_shipping_logistics.sql",
+    "number": 17,
+    "status": "applied",
+    "statementsApplied": 19,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:33:58.231Z"
+  },
+  {
+    "migration": "018_payments_gateway.sql",
+    "number": 18,
+    "status": "applied",
+    "statementsApplied": 24,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:34:04.358Z"
+  },
+  {
+    "migration": "019_reports_analytics.sql",
+    "number": 19,
+    "status": "applied",
+    "statementsApplied": 13,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:34:08.396Z"
+  },
+  {
+    "migration": "020_accounting_finance.sql",
+    "number": 20,
+    "status": "applied",
+    "statementsApplied": 23,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:34:14.117Z"
+  },
+  {
+    "migration": "021_marketing_automation.sql",
+    "number": 21,
+    "status": "applied",
+    "statementsApplied": 24,
+    "statementsSkipped": 0,
+    "verified": true,
+    "at": "2026-07-01T11:34:20.643Z"
+  }
+]

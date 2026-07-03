@@ -1,0 +1,37 @@
+import { redirect } from "next/navigation";
+
+import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
+import CheckoutClient from "@/components/checkout/CheckoutClient";
+import { getCheckoutInitialDataAction } from "@/lib/checkout/actions";
+
+import { buildPageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = buildPageMetadata({
+  title: "Checkout",
+  path: "/checkout",
+  noIndex: true,
+});
+
+export default async function CheckoutPage() {
+  const initial = await getCheckoutInitialDataAction();
+  if (!initial) redirect("/login?redirectTo=/checkout");
+
+  return (
+    <>
+      <CatalogBreadcrumb
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Cart", href: "/cart" },
+          { label: "Checkout" },
+        ]}
+      />
+      <div className="container mx-auto max-w-7xl px-4 pb-16">
+        <header className="mb-8">
+          <h1 className="font-heading text-3xl font-bold text-green-900 sm:text-4xl">Checkout</h1>
+          <p className="mt-2 text-green-700/70">Secure, research-backed care — delivered to your door.</p>
+        </header>
+        <CheckoutClient initial={initial} />
+      </div>
+    </>
+  );
+}

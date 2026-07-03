@@ -1,0 +1,688 @@
+[
+  {
+    "page": "home",
+    "path": "/",
+    "form": "desktop",
+    "scores": {
+      "performance": 97,
+      "accessibility": 93,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.4 s",
+        "numeric": 423.89169999999996
+      },
+      "largest-contentful-paint": {
+        "display": "1.0 s",
+        "numeric": 1019.7292499999999
+      },
+      "total-blocking-time": {
+        "display": "0 ms",
+        "numeric": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0.0002263441066164667
+      },
+      "speed-index": {
+        "display": "1.3 s",
+        "numeric": 1344.8408085256906
+      },
+      "interactive": {
+        "display": "1.0 s",
+        "numeric": 1021.7382749999999
+      },
+      "max-potential-fid": {
+        "display": "40 ms",
+        "numeric": 36
+      },
+      "server-response-time": {
+        "display": "Root document took 1,430 ms",
+        "numeric": 1432
+      }
+    },
+    "unusedJs": 67199,
+    "unusedCss": 0,
+    "bootup": 223.83300000000116,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "home",
+    "path": "/",
+    "form": "mobile",
+    "scores": {
+      "performance": 90,
+      "accessibility": 93,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.4 s",
+        "numeric": 1405.8116
+      },
+      "largest-contentful-paint": {
+        "display": "3.2 s",
+        "numeric": 3173.6232
+      },
+      "total-blocking-time": {
+        "display": "170 ms",
+        "numeric": 174
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "2.4 s",
+        "numeric": 2389.216112015383
+      },
+      "interactive": {
+        "display": "5.0 s",
+        "numeric": 5002.87139
+      },
+      "max-potential-fid": {
+        "display": "160 ms",
+        "numeric": 156
+      },
+      "server-response-time": {
+        "display": "Root document took 950 ms",
+        "numeric": 949
+      }
+    },
+    "unusedJs": 67199,
+    "unusedCss": 0,
+    "bootup": 934.5520000000029,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "products",
+    "path": "/products",
+    "form": "desktop",
+    "scores": {
+      "performance": 99,
+      "accessibility": 96,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.3 s",
+        "numeric": 329.413
+      },
+      "largest-contentful-paint": {
+        "display": "1.0 s",
+        "numeric": 958.239
+      },
+      "total-blocking-time": {
+        "display": "0 ms",
+        "numeric": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0.0002253833399001839
+      },
+      "speed-index": {
+        "display": "0.8 s",
+        "numeric": 752.6421340019879
+      },
+      "interactive": {
+        "display": "1.0 s",
+        "numeric": 960.239
+      },
+      "max-potential-fid": {
+        "display": "30 ms",
+        "numeric": 33
+      },
+      "server-response-time": {
+        "display": "Root document took 420 ms",
+        "numeric": 422
+      }
+    },
+    "unusedJs": 67200,
+    "unusedCss": 0,
+    "bootup": 188.75300000000084,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "products",
+    "path": "/products",
+    "form": "mobile",
+    "scores": {
+      "performance": 86,
+      "accessibility": 96,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.2 s",
+        "numeric": 1208.064
+      },
+      "largest-contentful-paint": {
+        "display": "3.7 s",
+        "numeric": 3691.1280000000006
+      },
+      "total-blocking-time": {
+        "display": "200 ms",
+        "numeric": 195
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "2.3 s",
+        "numeric": 2262.3367297113355
+      },
+      "interactive": {
+        "display": "4.0 s",
+        "numeric": 3998.0956000000015
+      },
+      "max-potential-fid": {
+        "display": "130 ms",
+        "numeric": 132
+      },
+      "server-response-time": {
+        "display": "Root document took 400 ms",
+        "numeric": 396
+      }
+    },
+    "unusedJs": 67200,
+    "unusedCss": 0,
+    "bootup": 920.8080000000023,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "pdp",
+    "path": "/products/daily-care-gift-hamper",
+    "form": "desktop",
+    "scores": {
+      "performance": 99,
+      "accessibility": 97,
+      "best-practices": 100,
+      "seo": 92
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.3 s",
+        "numeric": 329.536
+      },
+      "largest-contentful-paint": {
+        "display": "0.9 s",
+        "numeric": 920.5280000000002
+      },
+      "total-blocking-time": {
+        "display": "0 ms",
+        "numeric": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0.0002253833399001839
+      },
+      "speed-index": {
+        "display": "1.0 s",
+        "numeric": 958.9986079189845
+      },
+      "interactive": {
+        "display": "0.9 s",
+        "numeric": 925.2432000000003
+      },
+      "max-potential-fid": {
+        "display": "40 ms",
+        "numeric": 40.000000000000114
+      },
+      "server-response-time": {
+        "display": "Root document took 380 ms",
+        "numeric": 380
+      }
+    },
+    "unusedJs": 67200,
+    "unusedCss": 0,
+    "bootup": 139.88600000000017,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "pdp",
+    "path": "/products/daily-care-gift-hamper",
+    "form": "mobile",
+    "scores": {
+      "performance": 82,
+      "accessibility": 97,
+      "best-practices": 100,
+      "seo": 92
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.2 s",
+        "numeric": 1207.594
+      },
+      "largest-contentful-paint": {
+        "display": "4.2 s",
+        "numeric": 4167.8835
+      },
+      "total-blocking-time": {
+        "display": "220 ms",
+        "numeric": 220
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "2.6 s",
+        "numeric": 2613.364210061023
+      },
+      "interactive": {
+        "display": "4.2 s",
+        "numeric": 4172.99365
+      },
+      "max-potential-fid": {
+        "display": "140 ms",
+        "numeric": 136
+      },
+      "server-response-time": {
+        "display": "Root document took 400 ms",
+        "numeric": 395
+      }
+    },
+    "unusedJs": 67200,
+    "unusedCss": 0,
+    "bootup": 922.936000000002,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "checkout",
+    "path": "/checkout",
+    "form": "desktop",
+    "scores": {
+      "performance": 99,
+      "accessibility": 95,
+      "best-practices": 100,
+      "seo": 69
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.3 s",
+        "numeric": 295.1811
+      },
+      "largest-contentful-paint": {
+        "display": "0.9 s",
+        "numeric": 874.5433
+      },
+      "total-blocking-time": {
+        "display": "0 ms",
+        "numeric": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "0.5 s",
+        "numeric": 534.1704232463173
+      },
+      "interactive": {
+        "display": "0.9 s",
+        "numeric": 877.784245
+      },
+      "max-potential-fid": {
+        "display": "40 ms",
+        "numeric": 35
+      },
+      "server-response-time": {
+        "display": "Root document took 480 ms",
+        "numeric": 484
+      }
+    },
+    "unusedJs": 67196,
+    "unusedCss": 0,
+    "bootup": 101.08700000000016,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "checkout",
+    "path": "/checkout",
+    "form": "mobile",
+    "scores": {
+      "performance": 87,
+      "accessibility": 95,
+      "best-practices": 100,
+      "seo": 69
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.1 s",
+        "numeric": 1061.4207
+      },
+      "largest-contentful-paint": {
+        "display": "3.9 s",
+        "numeric": 3859.6828000000005
+      },
+      "total-blocking-time": {
+        "display": "140 ms",
+        "numeric": 142
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "1.5 s",
+        "numeric": 1472.6802159928366
+      },
+      "interactive": {
+        "display": "3.9 s",
+        "numeric": 3947.582800000001
+      },
+      "max-potential-fid": {
+        "display": "130 ms",
+        "numeric": 132
+      },
+      "server-response-time": {
+        "display": "Root document took 470 ms",
+        "numeric": 469
+      }
+    },
+    "unusedJs": 67196,
+    "unusedCss": 0,
+    "bootup": 692.8440000000008,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "account",
+    "path": "/account",
+    "form": "desktop",
+    "scores": {
+      "performance": 99,
+      "accessibility": 95,
+      "best-practices": 100,
+      "seo": 69
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.3 s",
+        "numeric": 292.086
+      },
+      "largest-contentful-paint": {
+        "display": "0.9 s",
+        "numeric": 863.6935000000001
+      },
+      "total-blocking-time": {
+        "display": "0 ms",
+        "numeric": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "0.6 s",
+        "numeric": 567.7526860004633
+      },
+      "interactive": {
+        "display": "0.9 s",
+        "numeric": 867.4456500000001
+      },
+      "max-potential-fid": {
+        "display": "30 ms",
+        "numeric": 33
+      },
+      "server-response-time": {
+        "display": "Root document took 530 ms",
+        "numeric": 533
+      }
+    },
+    "unusedJs": 67196,
+    "unusedCss": 0,
+    "bootup": 130.39200000000028,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "account",
+    "path": "/account",
+    "form": "mobile",
+    "scores": {
+      "performance": 86,
+      "accessibility": 95,
+      "best-practices": 100,
+      "seo": 69
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.1 s",
+        "numeric": 1060.7132
+      },
+      "largest-contentful-paint": {
+        "display": "4.0 s",
+        "numeric": 4006.3528000000006
+      },
+      "total-blocking-time": {
+        "display": "140 ms",
+        "numeric": 141
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "1.5 s",
+        "numeric": 1476.663645989357
+      },
+      "interactive": {
+        "display": "4.0 s",
+        "numeric": 4011.8028000000004
+      },
+      "max-potential-fid": {
+        "display": "130 ms",
+        "numeric": 132
+      },
+      "server-response-time": {
+        "display": "Root document took 500 ms",
+        "numeric": 497
+      }
+    },
+    "unusedJs": 67196,
+    "unusedCss": 0,
+    "bootup": 661.1520000000004,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "trust-center",
+    "path": "/trust-center",
+    "form": "desktop",
+    "scores": {
+      "performance": 99,
+      "accessibility": 93,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.4 s",
+        "numeric": 381.3941
+      },
+      "largest-contentful-paint": {
+        "display": "0.9 s",
+        "numeric": 890.3941
+      },
+      "total-blocking-time": {
+        "display": "0 ms",
+        "numeric": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0.0002253833399001839
+      },
+      "speed-index": {
+        "display": "0.6 s",
+        "numeric": 587.0851560843405
+      },
+      "interactive": {
+        "display": "0.9 s",
+        "numeric": 894.3941
+      },
+      "max-potential-fid": {
+        "display": "40 ms",
+        "numeric": 35
+      },
+      "server-response-time": {
+        "display": "Root document took 360 ms",
+        "numeric": 364
+      }
+    },
+    "unusedJs": 67200,
+    "unusedCss": 0,
+    "bootup": 131.88700000000048,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "trust-center",
+    "path": "/trust-center",
+    "form": "mobile",
+    "scores": {
+      "performance": 83,
+      "accessibility": 93,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.4 s",
+        "numeric": 1406.489
+      },
+      "largest-contentful-paint": {
+        "display": "3.9 s",
+        "numeric": 3912.4890000000005
+      },
+      "total-blocking-time": {
+        "display": "250 ms",
+        "numeric": 248.99999999999955
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "1.7 s",
+        "numeric": 1659.0390004944038
+      },
+      "interactive": {
+        "display": "4.6 s",
+        "numeric": 4607.84695
+      },
+      "max-potential-fid": {
+        "display": "190 ms",
+        "numeric": 187.99999999999955
+      },
+      "server-response-time": {
+        "display": "Root document took 420 ms",
+        "numeric": 419
+      }
+    },
+    "unusedJs": 67200,
+    "unusedCss": 0,
+    "bootup": 1083.5120000000002,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "admin-login",
+    "path": "/admin/login",
+    "form": "desktop",
+    "scores": {
+      "performance": 100,
+      "accessibility": 94,
+      "best-practices": 100,
+      "seo": 58
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "0.3 s",
+        "numeric": 292.0923
+      },
+      "largest-contentful-paint": {
+        "display": "0.6 s",
+        "numeric": 603.6153750000001
+      },
+      "total-blocking-time": {
+        "display": "10 ms",
+        "numeric": 13
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "0.3 s",
+        "numeric": 340.14319499827593
+      },
+      "interactive": {
+        "display": "0.6 s",
+        "numeric": 603.6153750000001
+      },
+      "max-potential-fid": {
+        "display": "60 ms",
+        "numeric": 63
+      },
+      "server-response-time": {
+        "display": "Root document took 150 ms",
+        "numeric": 153
+      }
+    },
+    "unusedJs": 44721,
+    "unusedCss": 0,
+    "bootup": 102.62100000000012,
+    "thirdParty": "n/a"
+  },
+  {
+    "page": "admin-login",
+    "path": "/admin/login",
+    "form": "mobile",
+    "scores": {
+      "performance": 95,
+      "accessibility": 94,
+      "best-practices": 100,
+      "seo": 58
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "display": "1.1 s",
+        "numeric": 1064.0328
+      },
+      "largest-contentful-paint": {
+        "display": "2.7 s",
+        "numeric": 2749.541
+      },
+      "total-blocking-time": {
+        "display": "130 ms",
+        "numeric": 128.4918
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "numeric": 0
+      },
+      "speed-index": {
+        "display": "1.1 s",
+        "numeric": 1064.0328
+      },
+      "interactive": {
+        "display": "2.8 s",
+        "numeric": 2754.99182
+      },
+      "max-potential-fid": {
+        "display": "230 ms",
+        "numeric": 233
+      },
+      "server-response-time": {
+        "display": "Root document took 20 ms",
+        "numeric": 15
+      }
+    },
+    "unusedJs": 44734,
+    "unusedCss": 0,
+    "bootup": 653.3360000000013,
+    "thirdParty": "n/a"
+  }
+]

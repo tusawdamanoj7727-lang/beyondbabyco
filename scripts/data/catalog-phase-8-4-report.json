@@ -1,0 +1,147 @@
+{
+  "updatedAt": "2026-06-29T21:59:52.880Z",
+  "categories": 13,
+  "collections": 9,
+  "brands": 1,
+  "products": 22,
+  "variants": 35,
+  "ingredients": 10,
+  "benefits": 10,
+  "tags": 15,
+  "productIds": {
+    "pure-gentle-water-baby-wipes": "3374014c-139b-45f6-b1d7-cb05ca5d84f6",
+    "sensitive-skin-water-wipes": "8331ae95-f09b-4b20-b5a9-67b90efb5c42",
+    "calendula-gentle-baby-wash": "8aeb117b-5969-40bc-9ff8-6b268739720b",
+    "organic-botanical-baby-wash": "25cbe401-3530-4248-a20e-c1b710d5c1c5",
+    "tear-free-baby-shampoo": "5775485e-78ef-4f80-8e4f-16b6dc26ed95",
+    "2-in-1-wash-shampoo": "93f116e7-65ee-4978-aa47-65d3cdeb7e95",
+    "shea-butter-baby-lotion": "92e2c683-4f1a-43ae-bfa5-76609941383a",
+    "sensitive-daily-lotion": "c8228703-fda7-40f5-a46b-4c3c2a2b7b38",
+    "diaper-rash-protection-cream": "386487eb-83d6-4ea3-b5e9-e9c50faf44a5",
+    "soothing-night-cream": "4a45b9ae-461d-4253-8ff4-5e871422b845",
+    "coconut-nourishing-baby-oil": "4208c0c9-ded1-4d9c-843d-450879d37980",
+    "ayurvedic-massage-oil": "6cf2ac5c-e693-4720-a5d9-ed84ee68a321",
+    "natural-talc-free-powder": "9f2e4bb7-0565-4f55-b879-5b343c55ea5c",
+    "mild-baby-soap-bars": "0c6512d6-c2b3-4aec-847e-e2d3c5962cdf",
+    "zinc-diaper-rash-cream": "bb34ec74-fae4-46fc-9c63-01e2e6e6a572",
+    "newborn-essentials-gift-set": "946708f8-7fe7-4a10-8a06-5b0508bc7b91",
+    "daily-care-gift-hamper": "9a97f9b1-c250-4abb-b88a-cf4dfbacb16e",
+    "premium-discovery-gift-set": "43678329-e10f-4590-9eda-56f3bdeb7aa4",
+    "travel-essentials-kit": "2e4abf67-2251-4537-ac00-b7f0ce4787ab",
+    "on-the-go-wipes-wash-kit": "18a402b8-6e62-4cd0-8241-3ed271b70a52",
+    "soft-cotton-washcloth-set": "21df6247-4fa9-4c8b-a5e7-6309527a69bd",
+    "bamboo-wipes-dispenser": "59993d82-975c-4a79-90d8-56ba977b350a"
+  },
+  "readyForAi": [
+    {
+      "slug": "pure-gentle-water-baby-wipes",
+      "id": "3374014c-139b-45f6-b1d7-cb05ca5d84f6",
+      "name": "Pure & Gentle 99% Water Baby Wipes"
+    },
+    {
+      "slug": "sensitive-skin-water-wipes",
+      "id": "8331ae95-f09b-4b20-b5a9-67b90efb5c42",
+      "name": "Sensitive Skin Water Wipes"
+    },
+    {
+      "slug": "calendula-gentle-baby-wash",
+      "id": "8aeb117b-5969-40bc-9ff8-6b268739720b",
+      "name": "Calendula Gentle Baby Wash"
+    },
+    {
+      "slug": "organic-botanical-baby-wash",
+      "id": "25cbe401-3530-4248-a20e-c1b710d5c1c5",
+      "name": "Organic Botanical Baby Wash"
+    },
+    {
+      "slug": "tear-free-baby-shampoo",
+      "id": "5775485e-78ef-4f80-8e4f-16b6dc26ed95",
+      "name": "Tear-Free Baby Shampoo"
+    },
+    {
+      "slug": "2-in-1-wash-shampoo",
+      "id": "93f116e7-65ee-4978-aa47-65d3cdeb7e95",
+      "name": "2-in-1 Gentle Wash & Shampoo"
+    },
+    {
+      "slug": "shea-butter-baby-lotion",
+      "id": "92e2c683-4f1a-43ae-bfa5-76609941383a",
+      "name": "Shea Butter Daily Baby Lotion"
+    },
+    {
+      "slug": "sensitive-daily-lotion",
+      "id": "c8228703-fda7-40f5-a46b-4c3c2a2b7b38",
+      "name": "Sensitive Skin Daily Lotion"
+    },
+    {
+      "slug": "diaper-rash-protection-cream",
+      "id": "386487eb-83d6-4ea3-b5e9-e9c50faf44a5",
+      "name": "Diaper Rash Protection Cream"
+    },
+    {
+      "slug": "soothing-night-cream",
+      "id": "4a45b9ae-461d-4253-8ff4-5e871422b845",
+      "name": "Soothing Night Cream"
+    },
+    {
+      "slug": "coconut-nourishing-baby-oil",
+      "id": "4208c0c9-ded1-4d9c-843d-450879d37980",
+      "name": "Coconut Nourishing Baby Oil"
+    },
+    {
+      "slug": "ayurvedic-massage-oil",
+      "id": "6cf2ac5c-e693-4720-a5d9-ed84ee68a321",
+      "name": "Ayurvedic Baby Massage Oil"
+    },
+    {
+      "slug": "natural-talc-free-powder",
+      "id": "9f2e4bb7-0565-4f55-b879-5b343c55ea5c",
+      "name": "Natural Talc-Free Baby Powder"
+    },
+    {
+      "slug": "mild-baby-soap-bars",
+      "id": "0c6512d6-c2b3-4aec-847e-e2d3c5962cdf",
+      "name": "Mild Baby Soap Bars"
+    },
+    {
+      "slug": "zinc-diaper-rash-cream",
+      "id": "bb34ec74-fae4-46fc-9c63-01e2e6e6a572",
+      "name": "Zinc Oxide Diaper Rash Cream"
+    },
+    {
+      "slug": "newborn-essentials-gift-set",
+      "id": "946708f8-7fe7-4a10-8a06-5b0508bc7b91",
+      "name": "Newborn Essentials Gift Set"
+    },
+    {
+      "slug": "daily-care-gift-hamper",
+      "id": "9a97f9b1-c250-4abb-b88a-cf4dfbacb16e",
+      "name": "Daily Care Gift Hamper"
+    },
+    {
+      "slug": "premium-discovery-gift-set",
+      "id": "43678329-e10f-4590-9eda-56f3bdeb7aa4",
+      "name": "Premium Discovery Gift Set"
+    },
+    {
+      "slug": "travel-essentials-kit",
+      "id": "2e4abf67-2251-4537-ac00-b7f0ce4787ab",
+      "name": "Travel Essentials Kit"
+    },
+    {
+      "slug": "on-the-go-wipes-wash-kit",
+      "id": "18a402b8-6e62-4cd0-8241-3ed271b70a52",
+      "name": "On-the-Go Wipes & Wash Kit"
+    },
+    {
+      "slug": "soft-cotton-washcloth-set",
+      "id": "21df6247-4fa9-4c8b-a5e7-6309527a69bd",
+      "name": "Soft Cotton Washcloth Set"
+    },
+    {
+      "slug": "bamboo-wipes-dispenser",
+      "id": "59993d82-975c-4a79-90d8-56ba977b350a",
+      "name": "Bamboo Wipes Dispenser"
+    }
+  ]
+}

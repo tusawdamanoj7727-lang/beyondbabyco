@@ -1,0 +1,852 @@
+{
+  "generatedAt": "2026-07-02T07:40:13.586Z",
+  "totals": {
+    "fileCount": 775,
+    "totalMb": 126.5,
+    "byExt": {
+      "png": 240,
+      "svg": 35,
+      "webp": 495,
+      "avif": 5
+    },
+    "byCategory": {
+      "brand": 20,
+      "hero": 150,
+      "homepage": 550,
+      "products": 55
+    }
+  },
+  "largest": [
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-02.png",
+      "format": "png",
+      "sizeBytes": 2674274,
+      "sizeKb": 2612,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-19.png",
+      "format": "png",
+      "sizeBytes": 2392179,
+      "sizeKb": 2336,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-06.png",
+      "format": "png",
+      "sizeBytes": 2382611,
+      "sizeKb": 2327,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-10.png",
+      "format": "png",
+      "sizeBytes": 2268927,
+      "sizeKb": 2216,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-10.png",
+      "format": "png",
+      "sizeBytes": 2259380,
+      "sizeKb": 2206,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-05.png",
+      "format": "png",
+      "sizeBytes": 2256657,
+      "sizeKb": 2204,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-08.png",
+      "format": "png",
+      "sizeBytes": 2223782,
+      "sizeKb": 2172,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-02.png",
+      "format": "png",
+      "sizeBytes": 2190678,
+      "sizeKb": 2139,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-11.png",
+      "format": "png",
+      "sizeBytes": 2164898,
+      "sizeKb": 2114,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-18.png",
+      "format": "png",
+      "sizeBytes": 2156552,
+      "sizeKb": 2106,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-14.png",
+      "format": "png",
+      "sizeBytes": 2137737,
+      "sizeKb": 2088,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-17.png",
+      "format": "png",
+      "sizeBytes": 2122834,
+      "sizeKb": 2073,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-09.png",
+      "format": "png",
+      "sizeBytes": 2095377,
+      "sizeKb": 2046,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-06.png",
+      "format": "png",
+      "sizeBytes": 2088906,
+      "sizeKb": 2040,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-05.png",
+      "format": "png",
+      "sizeBytes": 2042121,
+      "sizeKb": 1994,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-04.png",
+      "format": "png",
+      "sizeBytes": 2036843,
+      "sizeKb": 1989,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-06.png",
+      "format": "png",
+      "sizeBytes": 2032954,
+      "sizeKb": 1985,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-01.png",
+      "format": "png",
+      "sizeBytes": 2031691,
+      "sizeKb": 1984,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-13.png",
+      "format": "png",
+      "sizeBytes": 2027502,
+      "sizeKb": 1980,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-06.png",
+      "format": "png",
+      "sizeBytes": 2026561,
+      "sizeKb": 1979,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-20.png",
+      "format": "png",
+      "sizeBytes": 2024428,
+      "sizeKb": 1977,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-07.png",
+      "format": "png",
+      "sizeBytes": 2020699,
+      "sizeKb": 1973,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-07.png",
+      "format": "png",
+      "sizeBytes": 1997691,
+      "sizeKb": 1951,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-12.png",
+      "format": "png",
+      "sizeBytes": 1989998,
+      "sizeKb": 1943,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-05.png",
+      "format": "png",
+      "sizeBytes": 1938304,
+      "sizeKb": 1893,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    }
+  ],
+  "pngWithoutWebp": [
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-02.png",
+      "format": "png",
+      "sizeBytes": 2674274,
+      "sizeKb": 2612,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-19.png",
+      "format": "png",
+      "sizeBytes": 2392179,
+      "sizeKb": 2336,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-06.png",
+      "format": "png",
+      "sizeBytes": 2382611,
+      "sizeKb": 2327,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-10.png",
+      "format": "png",
+      "sizeBytes": 2268927,
+      "sizeKb": 2216,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-10.png",
+      "format": "png",
+      "sizeBytes": 2259380,
+      "sizeKb": 2206,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-05.png",
+      "format": "png",
+      "sizeBytes": 2256657,
+      "sizeKb": 2204,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-08.png",
+      "format": "png",
+      "sizeBytes": 2223782,
+      "sizeKb": 2172,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-02.png",
+      "format": "png",
+      "sizeBytes": 2190678,
+      "sizeKb": 2139,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-11.png",
+      "format": "png",
+      "sizeBytes": 2164898,
+      "sizeKb": 2114,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-18.png",
+      "format": "png",
+      "sizeBytes": 2156552,
+      "sizeKb": 2106,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-14.png",
+      "format": "png",
+      "sizeBytes": 2137737,
+      "sizeKb": 2088,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-17.png",
+      "format": "png",
+      "sizeBytes": 2122834,
+      "sizeKb": 2073,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-09.png",
+      "format": "png",
+      "sizeBytes": 2095377,
+      "sizeKb": 2046,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-06.png",
+      "format": "png",
+      "sizeBytes": 2088906,
+      "sizeKb": 2040,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-05.png",
+      "format": "png",
+      "sizeBytes": 2042121,
+      "sizeKb": 1994,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-04.png",
+      "format": "png",
+      "sizeBytes": 2036843,
+      "sizeKb": 1989,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-06.png",
+      "format": "png",
+      "sizeBytes": 2032954,
+      "sizeKb": 1985,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-01.png",
+      "format": "png",
+      "sizeBytes": 2031691,
+      "sizeKb": 1984,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-13.png",
+      "format": "png",
+      "sizeBytes": 2027502,
+      "sizeKb": 1980,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-06.png",
+      "format": "png",
+      "sizeBytes": 2026561,
+      "sizeKb": 1979,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-20.png",
+      "format": "png",
+      "sizeBytes": 2024428,
+      "sizeKb": 1977,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-07.png",
+      "format": "png",
+      "sizeBytes": 2020699,
+      "sizeKb": 1973,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-07.png",
+      "format": "png",
+      "sizeBytes": 1997691,
+      "sizeKb": 1951,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-12.png",
+      "format": "png",
+      "sizeBytes": 1989998,
+      "sizeKb": 1943,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-05.png",
+      "format": "png",
+      "sizeBytes": 1938304,
+      "sizeKb": 1893,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-04.png",
+      "format": "png",
+      "sizeBytes": 1936027,
+      "sizeKb": 1891,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-05.png",
+      "format": "png",
+      "sizeBytes": 1912694,
+      "sizeKb": 1868,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-03.png",
+      "format": "png",
+      "sizeBytes": 1904913,
+      "sizeKb": 1860,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-03.png",
+      "format": "png",
+      "sizeBytes": 1902277,
+      "sizeKb": 1858,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-15.png",
+      "format": "png",
+      "sizeBytes": 1883965,
+      "sizeKb": 1840,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-16.png",
+      "format": "png",
+      "sizeBytes": 1856916,
+      "sizeKb": 1813,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-01.png",
+      "format": "png",
+      "sizeBytes": 1855768,
+      "sizeKb": 1812,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-08.png",
+      "format": "png",
+      "sizeBytes": 1835753,
+      "sizeKb": 1793,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-08.png",
+      "format": "png",
+      "sizeBytes": 1818941,
+      "sizeKb": 1776,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-09.png",
+      "format": "png",
+      "sizeBytes": 1815610,
+      "sizeKb": 1773,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-10.png",
+      "format": "png",
+      "sizeBytes": 1813520,
+      "sizeKb": 1771,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/mother-baby/mother-baby-03.png",
+      "format": "png",
+      "sizeBytes": 1812501,
+      "sizeKb": 1770,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-03.png",
+      "format": "png",
+      "sizeBytes": 1803603,
+      "sizeKb": 1761,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-01.png",
+      "format": "png",
+      "sizeBytes": 1792737,
+      "sizeKb": 1751,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-04.png",
+      "format": "png",
+      "sizeBytes": 1709290,
+      "sizeKb": 1669,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-glass/hero-glass-02.png",
+      "format": "png",
+      "sizeBytes": 1707001,
+      "sizeKb": 1667,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-01.png",
+      "format": "png",
+      "sizeBytes": 1705312,
+      "sizeKb": 1665,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-08.png",
+      "format": "png",
+      "sizeBytes": 1700527,
+      "sizeKb": 1661,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-07.png",
+      "format": "png",
+      "sizeBytes": 1699456,
+      "sizeKb": 1660,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-09.png",
+      "format": "png",
+      "sizeBytes": 1688763,
+      "sizeKb": 1649,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/hero-background/hero-background-07.png",
+      "format": "png",
+      "sizeBytes": 1602161,
+      "sizeKb": 1565,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-02.png",
+      "format": "png",
+      "sizeBytes": 1591774,
+      "sizeKb": 1554,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-09.png",
+      "format": "png",
+      "sizeBytes": 1519950,
+      "sizeKb": 1484,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-04.png",
+      "format": "png",
+      "sizeBytes": 1505200,
+      "sizeKb": 1470,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    },
+    {
+      "path": "/images/generated/hero/phase-8-1/trust-background/trust-background-10.png",
+      "format": "png",
+      "sizeBytes": 1184532,
+      "sizeKb": 1157,
+      "category": "hero",
+      "hasWebp": false,
+      "hasAvif": false
+    }
+  ],
+  "missingAvifCount": 240,
+  "duplicatePairs": [
+    [
+      "/images/generated/hero/phase-8-1/hero-background/hero-background-02.png",
+      "/images/hero/phase-8-1/hero-background/hero-background-02.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-19.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-19.webp"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-10.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-10.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-11.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-11.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-05.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-05.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-07.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-07.png"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-10.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-10.webp"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-02.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-02.png"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-08.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-08.webp"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-08.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-08.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-01.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-01.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-04.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-04.png"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/hero-glass/hero-glass-10.png",
+      "/images/hero/phase-8-1/hero-glass/hero-glass-10.webp"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-06.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-06.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-03.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-03.png"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-12.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-12.png"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-18.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-18.webp"
+    ],
+    [
+      "/images/generated/homepage/phase-8-2/lifestyle/lifestyle-09.png",
+      "/images/generated/homepage/phase-8-2/brand-promise/lifestyle-09.png"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-02.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-02.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-05.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-05.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-14.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-14.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-11.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-11.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/hero-background/hero-background-06.png",
+      "/images/hero/phase-8-1/hero-background/hero-background-06.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-17.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-17.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-04.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-04.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-13.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-13.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-12.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-12.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-20.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-20.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/hero-glass/hero-glass-06.png",
+      "/images/hero/phase-8-1/hero-glass/hero-glass-06.webp"
+    ],
+    [
+      "/images/generated/hero/phase-8-1/mother-baby/mother-baby-09.png",
+      "/images/hero/phase-8-1/mother-baby/mother-baby-09.webp"
+    ]
+  ],
+  "code": {
+    "nextImageComponentFiles": 35,
+    "rawImgTags": 19,
+    "storefrontRawImgTags": 1,
+    "cssBackgroundImages": 1,
+    "storefrontCssBackground": 1,
+    "imagePreloads": [
+      "src/app/(storefront)/(marketing)/trust-center/page.tsx",
+      "src/app/(storefront)/page.tsx"
+    ],
+    "storefrontRawImg": [
+      {
+        "file": "src/lib/communications/layout.ts",
+        "tag": "<img src=\"${logo.url}\" alt=\"${logo.alt}\" width=\"${logo.width}\" height=\"${logo.height}\" style=\"display:block;max-width:16"
+      }
+    ],
+    "storefrontCssBg": [
+      {
+        "file": "src/app/globals.css",
+        "snippet": "background-image: url(...)"
+      }
+    ]
+  },
+  "nextConfig": {
+    "formats": [
+      "avif",
+      "webp"
+    ],
+    "minimumCacheTTL": "24h",
+    "remotePatterns": "**.supabase.co/storage/**"
+  }
+}

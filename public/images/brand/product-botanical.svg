@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none" role="img" aria-label="Botanical pattern">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#f3fbf6"/>
+      <stop offset="45%" stop-color="#fef9eb"/>
+      <stop offset="100%" stop-color="#f8e5d7"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8fd9aa"/>
+      <stop offset="100%" stop-color="#3da764"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <circle cx="320" cy="80" r="120" fill="#dff5e7" opacity="0.55"/>
+  <circle cx="60" cy="340" r="100" fill="#f8e5d7" opacity="0.5"/>
+  <path d="M200 280c-40-60-20-140 40-180 20 50 10 110-20 150-30-25-45-55-35-90 25 35 35 80 15 120z" fill="url(#leaf)" opacity="0.35"/>
+  <path d="M140 220c-25-35-10-85 30-110 12 28 6 62-12 85-18-15-28-32-22-52 15 20 22 45 4 77z" fill="url(#leaf)" opacity="0.28"/>
+  <path d="M260 240c30-40 15-95-25-120-15 32-8 70 10 95 22-18 34-40 28-65-18 25-26 58-13 90z" fill="url(#leaf)" opacity="0.25"/>
+  <circle cx="200" cy="200" r="56" fill="white" fill-opacity="0.72"/>
+  <path d="M200 168c-18 0-32 14-32 32s14 32 32 32 32-14 32-32-14-32-32-32zm0 52c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20z" fill="#2f8450" opacity="0.18"/>
+</svg>

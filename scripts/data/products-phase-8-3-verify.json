@@ -1,0 +1,185 @@
+{
+  "checkedAt": "2026-06-29T22:47:25.006Z",
+  "productCount": 22,
+  "withGallery": 22,
+  "placeholders": [
+    {
+      "product": "2-in-1 Gentle Wash & Shampoo",
+      "slug": "2-in-1-wash-shampoo",
+      "imageId": "4dfcdb87-ee98-4eeb-b5f0-f1d6b147365d",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Ayurvedic Baby Massage Oil",
+      "slug": "ayurvedic-massage-oil",
+      "imageId": "8a0dceae-eedc-474e-9129-ff1d297a3ac7",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Bamboo Wipes Dispenser",
+      "slug": "bamboo-wipes-dispenser",
+      "imageId": "d2c3ec4f-84ed-455e-bba0-d8431c0c7d5d",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Calendula Gentle Baby Wash",
+      "slug": "calendula-gentle-baby-wash",
+      "imageId": "7a240e9b-852f-4757-aabc-0fa8ac7cbac3",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Coconut Nourishing Baby Oil",
+      "slug": "coconut-nourishing-baby-oil",
+      "imageId": "27f87d1d-311d-48da-9cf9-ee80638f43a3",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Daily Care Gift Hamper",
+      "slug": "daily-care-gift-hamper",
+      "imageId": "98b93fba-6b47-4944-9069-fc9db05d8f82",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Diaper Rash Protection Cream",
+      "slug": "diaper-rash-protection-cream",
+      "imageId": "0dac0672-71b7-44b4-8495-2a83862e8dc6",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Mild Baby Soap Bars",
+      "slug": "mild-baby-soap-bars",
+      "imageId": "57f9f9eb-ee9f-4698-a7ec-5824060ecd16",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Natural Talc-Free Baby Powder",
+      "slug": "natural-talc-free-powder",
+      "imageId": "d1a0a4c4-fccc-4044-a0b8-bc9e798e2dfd",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Newborn Essentials Gift Set",
+      "slug": "newborn-essentials-gift-set",
+      "imageId": "af3763f3-090d-455e-935a-5da57fca42a6",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "On-the-Go Wipes & Wash Kit",
+      "slug": "on-the-go-wipes-wash-kit",
+      "imageId": "5bdd4951-f35b-4329-9e55-3ce215ddba72",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Organic Botanical Baby Wash",
+      "slug": "organic-botanical-baby-wash",
+      "imageId": "e5ad000e-ace3-4ae4-bdc8-5560443da760",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Premium Discovery Gift Set",
+      "slug": "premium-discovery-gift-set",
+      "imageId": "73dab006-b20c-496a-8509-b5eb86dd8092",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Pure & Gentle 99% Water Baby Wipes",
+      "slug": "pure-gentle-water-baby-wipes",
+      "imageId": "2413aad1-9453-412d-b147-d18305b7ee3f",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Sensitive Skin Daily Lotion",
+      "slug": "sensitive-daily-lotion",
+      "imageId": "948e59df-4ac3-474a-a39e-e0227451b0d4",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Sensitive Skin Water Wipes",
+      "slug": "sensitive-skin-water-wipes",
+      "imageId": "e793cdc0-d5cb-4e99-8541-c9d501c008b7",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Shea Butter Daily Baby Lotion",
+      "slug": "shea-butter-baby-lotion",
+      "imageId": "791ba7c3-a275-4d76-bc03-56fa4f84e5a9",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Soft Cotton Washcloth Set",
+      "slug": "soft-cotton-washcloth-set",
+      "imageId": "700100e1-45e4-4898-b99f-2324a6217bf6",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Soothing Night Cream",
+      "slug": "soothing-night-cream",
+      "imageId": "9f5b4a0d-167c-44b0-9b05-5d049ef8164b",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Tear-Free Baby Shampoo",
+      "slug": "tear-free-baby-shampoo",
+      "imageId": "e82e64ea-791d-4d8c-9637-fb1159415c66",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Travel Essentials Kit",
+      "slug": "travel-essentials-kit",
+      "imageId": "32c3347f-0923-4f2b-9d74-2d8d276cb0d5",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    },
+    {
+      "product": "Zinc Oxide Diaper Rash Cream",
+      "slug": "zinc-diaper-rash-cream",
+      "imageId": "14d6af4b-86dc-4cff-bab5-b95cf9b0f794",
+      "url": "/images/brand/product-botanical.svg",
+      "isPrimary": true,
+      "reason": "placeholder"
+    }
+  ],
+  "broken": [],
+  "ok": []
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FDF8F3"/>
+        <stop offset="100%" stop-color="#B8CEB5"/>
+      </linearGradient>
+    </defs>
+    <circle cx="100" cy="100" r="92" fill="url(#g)" stroke="#2D6A4F" stroke-width="3"/>
+    <circle cx="100" cy="100" r="72" fill="none" stroke="#CD6A45" stroke-width="2" opacity="0.5"/>
+    <path d="M100 38 L118 78 L162 82 L128 110 L138 154 L100 130 L62 154 L72 110 L38 82 L82 78 Z" fill="#2D6A4F" opacity="0.85"/>
+    <text x="100" y="178" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#1B4332">Dermatologically Tes…</text>
+  </svg>

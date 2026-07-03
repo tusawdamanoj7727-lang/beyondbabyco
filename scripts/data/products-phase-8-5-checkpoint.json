@@ -1,0 +1,21 @@
+{
+  "completedShots": [
+    "2-in-1-wash-shampoo/front",
+    "2-in-1-wash-shampoo/front-45",
+    "2-in-1-wash-shampoo/back",
+    "2-in-1-wash-shampoo/side",
+    "2-in-1-wash-shampoo/top"
+  ],
+  "productsDone": [],
+  "batchesCompleted": [],
+  "generationMs": 49589521,
+  "failed": [
+    {
+      "product": "2-in-1-wash-shampoo",
+      "shot": "front",
+      "at": "2026-06-29T22:15:40.709Z"
+    }
+  ],
+  "startedAt": "2026-06-29T22:07:30.722Z",
+  "updatedAt": "2026-07-01T06:51:49.941Z"
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240">
+    <rect width="320" height="240" rx="24" fill="#FDF8F3"/>
+    
+    <text x="160" y="200" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#1B4332">No reviews yet</text>
+  </svg>

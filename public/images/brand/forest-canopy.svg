@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Forest canopy">
+  <defs>
+    <linearGradient id="forest" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3fbf6" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#bce9cc" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="400" fill="url(#forest)"/>
+  <ellipse cx="200" cy="320" rx="140" ry="160" fill="#3da764" opacity="0.18"/>
+  <ellipse cx="480" cy="300" rx="160" ry="180" fill="#2f8450" opacity="0.16"/>
+  <ellipse cx="760" cy="310" rx="150" ry="170" fill="#3da764" opacity="0.17"/>
+  <ellipse cx="1020" cy="330" rx="130" ry="150" fill="#2f8450" opacity="0.15"/>
+</svg>

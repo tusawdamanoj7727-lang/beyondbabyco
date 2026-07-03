@@ -1,0 +1,196 @@
+{
+  "generatedAt": "2026-07-01T11:37:21.133Z",
+  "projectUrl": "https://dawywibxularpygspogp.supabase.co",
+  "pgCatalogEnabled": true,
+  "migrationFilesOnDisk": 23,
+  "appliedMigrations": [
+    "001_initial_schema.sql",
+    "002_indexes.sql",
+    "003_rls.sql",
+    "004_storage.sql",
+    "005_seed.sql",
+    "006_auth_functions.sql",
+    "007_products_admin.sql",
+    "008_categories_brands_admin.sql",
+    "009_media_library.sql",
+    "010_homepage_cms.sql",
+    "011_inventory_warehouse.sql",
+    "012_orders_fulfillment.sql",
+    "013_customers_crm.sql",
+    "014_reviews_moderation.sql",
+    "015_returns_rma.sql",
+    "016_coupons_promotions.sql",
+    "017_shipping_logistics.sql",
+    "018_payments_gateway.sql",
+    "019_reports_analytics.sql",
+    "020_accounting_finance.sql",
+    "021_marketing_automation.sql",
+    "022_admin_bootstrap.sql",
+    "023_delhivery_integration.sql"
+  ],
+  "missingMigrations": [],
+  "lastAppliedMigration": "023_delhivery_integration.sql",
+  "firstMissingMigration": null,
+  "missingTables": [],
+  "missingFunctions": [],
+  "migrationDetails": [
+    {
+      "file": "001_initial_schema.sql",
+      "table": "roles",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "002_indexes.sql",
+      "table": "products",
+      "column": "slug",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "003_rls.sql",
+      "pgFunction": "is_admin",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "004_storage.sql",
+      "table": "media_folders",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "005_seed.sql",
+      "table": "permissions",
+      "column": "code",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "006_auth_functions.sql",
+      "rpc": "current_user_role",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "007_products_admin.sql",
+      "table": "products",
+      "column": "sale_price",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "008_categories_brands_admin.sql",
+      "table": "categories",
+      "column": "deleted_at",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "009_media_library.sql",
+      "table": "media_library",
+      "column": "original_name",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "010_homepage_cms.sql",
+      "table": "hero_slides",
+      "column": "description",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "011_inventory_warehouse.sql",
+      "table": "warehouses",
+      "column": "is_default",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "012_orders_fulfillment.sql",
+      "table": "orders",
+      "column": "internal_notes",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "013_customers_crm.sql",
+      "table": "customers",
+      "column": "deleted_at",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "014_reviews_moderation.sql",
+      "table": "reviews",
+      "column": "deleted_at",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "015_returns_rma.sql",
+      "table": "returns",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "016_coupons_promotions.sql",
+      "table": "coupons",
+      "column": "deleted_at",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "017_shipping_logistics.sql",
+      "table": "shipping_zones",
+      "column": "deleted_at",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "018_payments_gateway.sql",
+      "table": "payment_gateways",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "019_reports_analytics.sql",
+      "table": "saved_reports",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "020_accounting_finance.sql",
+      "table": "journal_entries",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "021_marketing_automation.sql",
+      "table": "marketing_campaigns",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "022_admin_bootstrap.sql",
+      "permissionCode": "marketing.view",
+      "applied": true,
+      "ok": true
+    },
+    {
+      "file": "023_delhivery_integration.sql",
+      "table": "shipment_tracking",
+      "column": "id",
+      "applied": true,
+      "ok": true
+    }
+  ]
+}
