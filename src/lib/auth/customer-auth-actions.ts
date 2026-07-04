@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { ensureCustomerRecordsForUser } from "@/lib/auth/customer-bootstrap";
+import { getAuthBaseUrlForRequest } from "@/lib/app-url.server";
 import {
   emailVerificationRedirectUrl,
   oauthRedirectUrl,
@@ -142,13 +143,14 @@ export async function customerSignUpAction(
 
   const { fullName, email, password } = parsed.data;
   const supabase = await createSupabaseServerClient();
+  const authBaseUrl = await getAuthBaseUrlForRequest();
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { full_name: fullName },
-      emailRedirectTo: emailVerificationRedirectUrl(),
+      emailRedirectTo: emailVerificationRedirectUrl(authBaseUrl),
     },
   });
 
@@ -199,9 +201,10 @@ export async function customerForgotPasswordAction(
   }
 
   const supabase = await createSupabaseServerClient();
+  const authBaseUrl = await getAuthBaseUrlForRequest();
 
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: passwordResetRedirectUrl(),
+    redirectTo: passwordResetRedirectUrl(authBaseUrl),
   });
 
   if (error) {
@@ -257,11 +260,12 @@ export async function customerOAuthAction(
 
   const supabase = await createSupabaseServerClient();
   const next = resolveCustomerRedirect(redirectTo);
+  const authBaseUrl = await getAuthBaseUrlForRequest();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: oauthRedirectUrl(next),
+      redirectTo: oauthRedirectUrl(next, authBaseUrl),
       skipBrowserRedirect: true,
     },
   });
