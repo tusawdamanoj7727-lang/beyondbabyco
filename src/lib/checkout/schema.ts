@@ -79,6 +79,7 @@ export const placeOrderSchema = z.object({
       quantity: z.number().int().positive(),
       name: z.string(),
       price: z.number().nonnegative(),
+      gstRate: z.number().nonnegative(),
       variantName: z.string().nullable().optional(),
     }),
   ).min(1),
@@ -93,6 +94,7 @@ export const placeOrderSchema = z.object({
     .nullable(),
   shippingTotal: z.number().nonnegative(),
   saveShippingAddress: z.boolean().optional(),
+  buyerGstin: z.string().trim().optional().nullable(),
 });
 
 export type PlaceOrderInput = z.infer<typeof placeOrderSchema>;

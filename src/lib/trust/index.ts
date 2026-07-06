@@ -1,4 +1,4 @@
-export { TRUST_IMAGES, TRUST_BADGES } from "./images";
+export { TRUST_IMAGES, TRUST_BADGES, QUALITY_PROMISE_BADGES } from "./images";
 export { RESEARCH_PROCESS_STEPS, RESEARCH_PROCESS_FAQ } from "./research-process";
 export type { ResearchProcessStep } from "./research-process";
 export { CORE_INGREDIENTS } from "./ingredients";
@@ -11,6 +11,7 @@ export {
   getFeaturedTestimonial,
   mergeTestimonials,
   mapStorefrontTestimonials,
+  mapCommunityReviewToTestimonial,
 } from "./testimonials";
 export type { TrustTestimonial, TestimonialCategory } from "./testimonials";
 export { DOCTOR_ADVISORY_BLOCKS, DOCTOR_ADVISORY_DISCLAIMER, DOCTOR_ADVISORY_IMAGE } from "./doctor-advisory";

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Geist } from "next/font/google";
 
 import JsonLd from "@/components/seo/JsonLd";
 import ResourceHints from "@/components/seo/ResourceHints";
 import AnalyticsRoot from "@/components/analytics/AnalyticsRoot";
+import { AppToaster } from "@/components/ui/AppToaster";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
-import { METADATA_BASE, buildPageMetadata } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { BRAND } from "@/lib/brand/copy";
 import {
   BRAND_APPLE_TOUCH_ICON,
@@ -18,6 +20,9 @@ import {
   BRAND_ICON_512,
 } from "@/lib/brand/logo";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const montserrat = Montserrat({
   weight: ["600", "700", "800"],
@@ -29,7 +34,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: METADATA_BASE,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in"),
   ...buildPageMetadata({
     title: BRAND.siteTitle,
     path: "/",
@@ -58,14 +63,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={montserrat.variable}>
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <head>
         <ResourceHints />
       </head>
       <body className="overflow-x-hidden font-body antialiased bg-background text-foreground">
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <AnalyticsRoot />
+        <AppToaster />
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   );

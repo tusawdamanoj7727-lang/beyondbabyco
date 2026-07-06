@@ -19,7 +19,7 @@ export const contactPage: ContentPage = {
       type: "intro",
       paragraphs: [
         "Whether you have a question about an order, want to learn more about our products, or are interested in partnering with us — we would love to hear from you.",
-        "Our support team is available Monday through Saturday, 10 AM – 6 PM IST.",
+        `Email us directly at ${brandSupportEmail()} or use the form below. Our support team is available Monday through Saturday, 10 AM – 6 PM IST.`,
       ],
     },
     {
@@ -30,7 +30,7 @@ export const contactPage: ContentPage = {
         {
           icon: "heart",
           title: "Customer Support",
-          description: `Order help, product questions, and returns. Email: ${brandSupportEmail()}`,
+          description: `Order help, returns, and product questions.\nEmail: ${brandSupportEmail()}`,
         },
         {
           icon: "beaker",
@@ -94,96 +94,66 @@ export const faqPage: ContentPage = {
     },
     {
       type: "faq",
-      title: "General",
+      title: "Common questions",
       items: [
         {
           question: "What is BeyondBabyCo?",
           answer:
-            "BeyondBabyCo is a research-led baby care brand from Udaipur, India. We create gentle, dermatologically tested products including baby wipes, wash, and skin care essentials for Indian families.",
+            "BeyondBabyCo is a research-led baby care brand from Udaipur, Rajasthan, operated by Tusawda Global Private Limited. We create gentle, dermatologically tested wipes, wash, and skin care for Indian families.",
           category: "General",
         },
         {
           question: "Are BeyondBabyCo products safe for newborns?",
           answer:
-            "Yes. Our products are formulated with newborn skin in mind and undergo dermatological testing. Always check individual product labels for age recommendations and perform a patch test if your baby has known sensitivities.",
-          category: "General",
-        },
-        {
-          question: "Where are BeyondBabyCo products made?",
-          answer:
-            "Our products are manufactured in GMP-certified facilities in India. Learn more on our Manufacturing and Certifications pages.",
-          category: "General",
-        },
-      ],
-    },
-    {
-      type: "faq",
-      title: "Products & Ingredients",
-      items: [
-        {
-          question: "Are your products paraben and sulfate free?",
-          answer:
-            "Yes. BeyondBabyCo formulations are free from parabens, sulfates, and phthalates. Full ingredient lists are available on every product page.",
+            "Yes. Our products are formulated with newborn skin in mind and undergo dermatological testing. Check individual product labels for age guidance and patch test if your baby has known sensitivities.",
           category: "Products",
         },
         {
-          question: "Do you test on animals?",
+          question: "Are your products paraben and sulfate free?",
           answer:
-            "No. BeyondBabyCo is cruelty free. We do not test on animals and validate safety through approved dermatological and laboratory methods.",
+            "Yes. BeyondBabyCo formulations are free from parabens, sulfates, and phthalates. Full ingredient lists are on every product page.",
           category: "Products",
         },
         {
           question: "What makes your baby wipes different?",
           answer:
-            "Our 99% Pure Water Baby Wipes use ultra-purified water as the primary ingredient, with aloe vera and vitamin E for gentle cleansing. They are dermatologically tested and free from harsh chemicals.",
+            "Our 99% Pure Water Baby Wipes use ultra-purified water with aloe vera and vitamin E. They are dermatologically tested and free from harsh chemicals.",
           category: "Products",
         },
-      ],
-    },
-    {
-      type: "faq",
-      title: "Orders & Shipping",
-      items: [
+        {
+          question: "Do you offer Cash on Delivery (COD)?",
+          answer:
+            "Yes. COD is available on eligible pin codes at checkout. Prepaid orders via Razorpay (UPI, cards, net banking) ship after payment confirmation.",
+          category: "Shipping",
+        },
         {
           question: "How long does delivery take?",
           answer:
-            "Standard delivery takes 3–7 business days for metro cities and 5–10 business days for other locations. You will receive tracking information once your order is dispatched.",
-          category: "Orders",
+            "Standard delivery takes 3–7 business days for metro cities and 5–10 business days elsewhere. Tracking is shared once your order is dispatched.",
+          category: "Shipping",
         },
         {
           question: "Do you ship across India?",
           answer:
-            "Yes. We deliver to all serviceable pin codes in India. Enter your pin code at checkout to confirm availability.",
-          category: "Orders",
+            "Yes. We deliver to serviceable pin codes across India through Delhivery, Blue Dart, DTDC, and India Post. Enter your pin code at checkout to confirm availability.",
+          category: "Shipping",
         },
         {
           question: "How can I track my order?",
           answer:
-            "Once dispatched, you will receive a tracking link via email and SMS. You can also view order status in your account under Orders.",
-          category: "Orders",
+            "Once dispatched, you receive a tracking link via email and SMS. You can also view status in your account under Orders.",
+          category: "Shipping",
         },
-      ],
-    },
-    {
-      type: "faq",
-      title: "Returns & Refunds",
-      items: [
         {
           question: "What is your return policy?",
           answer:
-            "Eligible unopened products may be returned within 7 days of delivery. Opened personal care items cannot be returned for hygiene reasons unless defective. See our Return Policy for full details.",
-          category: "Returns",
-        },
-        {
-          question: "How long do refunds take?",
-          answer:
-            "Approved refunds are processed within 5–7 business days to your original payment method. Bank processing may add 3–5 additional days.",
+            "Eligible unopened products may be returned within 7 days of delivery. Opened personal care items cannot be returned for hygiene reasons unless defective. See our Return Policy for details.",
           category: "Returns",
         },
         {
           question: "What if my product arrives damaged?",
           answer:
-            `Contact us at ${brandSupportEmail()} within 48 hours with photos of the damage. We will arrange a free replacement or full refund.`,
+            `Contact us at ${brandSupportEmail()} within 48 hours with photos. We will arrange a free replacement or full refund.`,
           category: "Returns",
         },
       ],

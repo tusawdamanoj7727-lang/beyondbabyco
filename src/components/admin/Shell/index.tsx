@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 
 import Sidebar from "../Sidebar";
 import Topbar from "../Topbar";
@@ -70,41 +69,31 @@ export default function Shell({
       </div>
 
       {/* Mobile drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <div className="fixed inset-0 z-[90] lg:hidden">
-            <motion.div
-              className="absolute inset-0 bg-green-900/40 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+      {mobileOpen ? (
+        <div className="fixed inset-0 z-[90] lg:hidden">
+          <div
+            className="animate-drawer-backdrop-in absolute inset-0 bg-green-900/40 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className="animate-drawer-panel-in absolute left-0 top-0 h-full w-[280px] max-w-[85vw] border-r border-cream-300 shadow-clay"
+          >
+            <button
+              type="button"
               onClick={() => setMobileOpen(false)}
-              aria-hidden="true"
-            />
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation menu"
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute left-0 top-0 h-full w-[280px] max-w-[85vw] border-r border-cream-300 shadow-clay"
+              aria-label="Close navigation menu"
+              className="absolute right-3 top-4 z-10 grid h-9 w-9 place-items-center rounded-2xl bg-cream-100 text-green-800 transition-colors hover:bg-cream-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50"
             >
-              <button
-                type="button"
-                onClick={() => setMobileOpen(false)}
-                aria-label="Close navigation menu"
-                className="absolute right-3 top-4 z-10 grid h-9 w-9 place-items-center rounded-2xl bg-cream-100 text-green-800 transition-colors hover:bg-cream-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50"
-              >
-                <Icon name="close" size={18} />
-              </button>
-              <Sidebar collapsed={false} onNavigate={() => setMobileOpen(false)} />
-            </motion.div>
+              <Icon name="close" size={18} />
+            </button>
+            <Sidebar collapsed={false} onNavigate={() => setMobileOpen(false)} />
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      ) : null}
       </AdminProvider>
       </ToastProvider>
     </AuthProvider>

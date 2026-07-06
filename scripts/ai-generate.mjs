@@ -23,7 +23,11 @@ const args = parseArgs({
   },
 });
 
-const appUrl = args.values.url ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const appUrl =
+  args.values.url ??
+  process.env.NEXT_PUBLIC_APP_URL ??
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://beyondbabyco.in";
 const prompt = args.values.prompt;
 
 if (!prompt?.trim()) {

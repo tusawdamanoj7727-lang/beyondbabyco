@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Heart,
   LogOut,
@@ -41,16 +40,12 @@ export default function AccountDropdownPanel({
   }
 
   return (
-    <motion.div
+    <div
       role="menu"
       aria-label={guest ? "Sign in options" : "Account menu"}
-      initial={{ opacity: 0, y: -8, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -8, scale: 0.98 }}
-      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         headerAccountPanel,
-        "absolute right-0 top-full z-[80] mt-2 w-[min(92vw,18.5rem)] overflow-hidden rounded-3xl",
+        "animate-dropdown-in absolute right-0 top-full z-[80] mt-2 w-[min(92vw,18.5rem)] overflow-hidden rounded-3xl",
       )}
     >
       {guest ? (
@@ -116,7 +111,7 @@ export default function AccountDropdownPanel({
           </div>
         </>
       )}
-    </motion.div>
+    </div>
   );
 }
 

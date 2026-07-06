@@ -5,6 +5,7 @@ import { useRef, useState, useTransition } from "react";
 import Icon from "../Icon";
 import { Spinner } from "../LoadingState";
 import { uploadMediaAsset, deleteMediaAsset } from "@/lib/admin/media-actions";
+import { validateImageUpload, ALLOWED_IMAGE_ACCEPT } from "@/lib/media/upload-validation";
 import type { MediaFolder } from "@/lib/admin/media";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +38,11 @@ export default function ImageField({
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
+    const typeError = validateImageUpload(file);
+    if (typeError) {
+      setError(typeError);
+      return;
+    }
     setError(null);
     setUploading(true);
     try {
@@ -135,7 +141,7 @@ export default function ImageField({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={ALLOWED_IMAGE_ACCEPT}
         className="sr-only"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />

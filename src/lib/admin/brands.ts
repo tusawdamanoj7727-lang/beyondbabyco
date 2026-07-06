@@ -112,7 +112,7 @@ export async function listBrands(
     website: b.website_url,
     productCount: countMap.get(b.id) ?? 0,
     isFeatured: b.is_featured,
-    status: b.status,
+    status: b.status as CatalogStatus,
     position: b.position,
     updatedAt: b.updated_at,
   }));
@@ -145,7 +145,7 @@ export async function getBrandForEdit(id: string): Promise<BrandEditData | null>
     seoDescription: b.seo_description,
     metaKeywords: b.meta_keywords,
     canonicalUrl: b.canonical_url,
-    status: b.status,
+    status: b.status as CatalogStatus,
     isFeatured: b.is_featured,
     position: b.position,
     deletedAt: b.deleted_at,

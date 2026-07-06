@@ -30,17 +30,17 @@ export default function ProductGrid({
   if (products.length === 0) {
     return (
       <CatalogEmptyState
-        title={hasActiveFilters ? MICROCOPY.products.filterEmptyTitle : MICROCOPY.products.emptyTitle}
+        title={hasActiveFilters ? "No products found" : MICROCOPY.products.emptyTitle}
         description={
           hasActiveFilters
             ? MICROCOPY.products.filterEmptyDescription
             : MICROCOPY.products.emptyDescription
         }
-        actionLabel={hasActiveFilters ? MICROCOPY.products.clearFilters : MICROCOPY.products.viewAll}
+        actionLabel={hasActiveFilters ? "Clear filters" : MICROCOPY.products.viewAll}
         actionHref="/products"
         secondaryLabel={MICROCOPY.products.backHome}
         secondaryHref="/"
-        mascot={hasActiveFilters ? "eli-elephant" : "poppy-panda"}
+        mascot="bella-bunny"
       />
     );
   }
@@ -48,12 +48,14 @@ export default function ProductGrid({
   return (
     <QuickCompareProvider enabled={enableCompare}>
       <div className={cn("collection-product-grid", className)}>
-        {products.map((product) => (
+        {products.map((product, index) => (
           <ProductCard
             key={product.id}
             product={product}
             onQuickView={enableQuickView ? setQuickView : undefined}
             enableCompare={enableCompare}
+            showListingCta
+            imagePriority={index < 2}
           />
         ))}
       </div>

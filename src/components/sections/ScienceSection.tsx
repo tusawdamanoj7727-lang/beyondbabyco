@@ -7,6 +7,7 @@ import { sciencePhoto } from "@/lib/homepage/visual-assets";
 import { SCIENCE_SECTION } from "@/lib/brand/copy";
 
 import { editorialImageCrop } from "@/lib/design/ui";
+import { EDITORIAL_IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import type { ScienceConfig } from "@/lib/admin/homepage-schema";
 
 const FEATURE_ACCENTS = ["bg-green-200/80", "bg-terra-200/80", "bg-cream-300/80"];
@@ -46,6 +47,8 @@ export default function ScienceSection({ config }: { config?: ScienceConfig }) {
                 variant="science"
                 imageUrl={imageUrl}
                 alt="Research-backed baby care"
+                sizes={IMAGE_SIZES.lifestyleHero}
+                quality={EDITORIAL_IMAGE_QUALITY}
                 imageClassName={editorialImageCrop}
               />
             </Card>

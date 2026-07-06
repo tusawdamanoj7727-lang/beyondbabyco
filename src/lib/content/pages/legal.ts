@@ -14,7 +14,7 @@ export const privacyPolicyPage: ContentPage = {
     "How BeyondBabyCo collects, uses, and protects your personal information. Read our privacy policy for Indian customers.",
   eyebrow: "Legal",
   relatedLinks: [
-    { label: "Terms of Service", href: "/terms" },
+    { label: "Terms of Service", href: "/terms-of-service" },
     { label: "Cookies Policy", href: "/cookies" },
     { label: "Contact", href: "/contact" },
   ],
@@ -42,27 +42,36 @@ export const privacyPolicyPage: ContentPage = {
           title: "3. How We Use Your Information",
           paragraphs: [
             "To process and fulfil your orders, including shipping and delivery coordination.",
+            "To process payments securely through our payment partner Razorpay Software Private Limited and other authorised payment gateways.",
             "To communicate with you about orders, account activity, and customer support enquiries.",
             "To send marketing communications where you have opted in (you may unsubscribe at any time).",
             "To improve our website, products, and services through analytics and feedback.",
-            "To comply with legal obligations and prevent fraud.",
+            "To comply with legal obligations, GST and tax reporting requirements, and prevent fraud.",
           ],
         },
         {
-          title: "4. Sharing Your Information",
+          title: "4. Payment Information",
+          paragraphs: [
+            "When you pay online, card, UPI, net banking, and wallet details are processed directly by Razorpay and partner banks. BeyondBabyCo does not store your full card number or UPI PIN on our servers.",
+            "We may receive limited transaction metadata (payment status, last four digits where applicable, and Razorpay payment ID) to reconcile orders and process refunds.",
+            "Razorpay's privacy practices are governed by their own policy at razorpay.com/privacy.",
+          ],
+        },
+        {
+          title: "5. Sharing Your Information",
           paragraphs: [
             "We do not sell your personal information. We may share data with trusted service providers who assist in operating our website, processing payments, shipping orders, and sending communications — each bound by confidentiality obligations.",
             "We may disclose information if required by law, court order, or government authority.",
           ],
         },
         {
-          title: "5. Data Security",
+          title: "6. Data Security",
           paragraphs: [
             "We implement reasonable security practices including encryption, access controls, and secure hosting. However, no method of transmission over the internet is 100% secure.",
           ],
         },
         {
-          title: "6. Your Rights",
+          title: "7. Your Rights",
           paragraphs: [
             "You may request access to, correction of, or deletion of your personal data by emailing us at " + EMAIL + ".",
             "You may opt out of marketing emails using the unsubscribe link in any promotional message.",
@@ -70,19 +79,29 @@ export const privacyPolicyPage: ContentPage = {
           ],
         },
         {
-          title: "7. Data Retention",
+          title: "8. Data Retention",
           paragraphs: [
             "We retain personal information for as long as necessary to fulfil the purposes outlined in this policy, comply with legal obligations, and resolve disputes.",
           ],
         },
         {
-          title: "8. Children's Privacy",
+          title: "9. Children's Privacy",
           paragraphs: [
             "Our website is intended for use by parents and guardians. We do not knowingly collect personal information from children under 18 without parental consent.",
           ],
         },
         {
-          title: "9. Contact Us",
+          title: "10. Grievance Officer (India)",
+          paragraphs: [
+            "In accordance with the Information Technology Act, 2000 and applicable rules, you may contact our Grievance Officer for privacy-related complaints:",
+            `Name: Customer Care — ${BRAND}`,
+            `Email: ${EMAIL}`,
+            `Address: ${ADDRESS}`,
+            "We aim to acknowledge grievances within 48 hours and resolve them within 30 days.",
+          ],
+        },
+        {
+          title: "11. Contact Us",
           paragraphs: [
             `${COMPANY} (${BRAND})`,
             `Email: ${EMAIL}`,
@@ -101,7 +120,7 @@ export const privacyPolicyPage: ContentPage = {
 };
 
 export const termsPage: ContentPage = {
-  slug: "terms",
+  slug: "terms-of-service",
   title: "Terms of Service",
   description:
     "Terms and conditions for using the BeyondBabyCo website and purchasing products. Operated by Tusawda Global Private Limited.",
@@ -134,7 +153,9 @@ export const termsPage: ContentPage = {
           title: "3. Orders and Payment",
           paragraphs: [
             "Placing an order constitutes an offer to purchase. We may accept or reject any order at our discretion.",
+            "We accept online payments via Razorpay (credit/debit cards, UPI, net banking, and supported wallets) and Cash on Delivery (COD) where available at checkout.",
             "Payment is processed through secure third-party payment gateways. You represent that you are authorised to use the payment method provided.",
+            "For COD orders, payment is collected at delivery. Failed delivery or refusal to pay may affect future COD eligibility.",
           ],
         },
         {
@@ -160,7 +181,8 @@ export const termsPage: ContentPage = {
         {
           title: "7. Governing Law",
           paragraphs: [
-            "These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Udaipur, Rajasthan.",
+            "These Terms are governed by the laws of India, including the Consumer Protection Act, 2019 where applicable to consumer transactions.",
+            "Any disputes shall be subject to the exclusive jurisdiction of the courts in Udaipur, Rajasthan.",
           ],
         },
         {
@@ -203,36 +225,51 @@ export const shippingPolicyPage: ContentPage = {
         {
           title: "2. Processing Time",
           paragraphs: [
-            "Orders are typically processed within 1–2 business days after payment confirmation. Orders placed on weekends or public holidays are processed on the next business day.",
+            "Orders are typically processed within 1–2 business days after payment confirmation (prepaid) or order confirmation (COD). Orders placed on weekends or public holidays are processed on the next business day.",
           ],
         },
         {
-          title: "3. Delivery Timelines",
+          title: "3. Courier Partners",
+          paragraphs: [
+            "We ship through trusted logistics partners including Delhivery, Blue Dart, DTDC, and India Post (speed post) depending on your pin code and service availability.",
+            "The assigned courier will be selected automatically for the fastest reliable delivery to your location.",
+          ],
+        },
+        {
+          title: "4. Delivery Timelines",
           paragraphs: [
             "Standard delivery: 3–7 business days for metro cities; 5–10 business days for other locations.",
             "Actual delivery times may vary based on location, weather, and carrier availability. You will receive tracking information once your order is dispatched.",
           ],
         },
         {
-          title: "4. Shipping Charges",
+          title: "5. Shipping Charges & Free Delivery",
           paragraphs: [
-            "Shipping charges are calculated at checkout based on your delivery location, order weight, and any active promotions. Free shipping may be available on orders above a specified threshold — check the Site for current offers.",
+            "Shipping charges are calculated at checkout based on your delivery location and order value. Free standard shipping is available on prepaid orders of ₹999 and above (before discounts, where applicable).",
+            "COD orders may incur a nominal COD handling fee shown at checkout.",
           ],
         },
         {
-          title: "5. Order Tracking",
+          title: "6. Payment Methods at Delivery",
+          paragraphs: [
+            "Prepaid: Pay securely online via Razorpay at checkout — your order ships after payment confirmation.",
+            "Cash on Delivery (COD): Pay in cash to the courier executive when your order arrives. Please keep exact change ready where possible.",
+          ],
+        },
+        {
+          title: "7. Order Tracking",
           paragraphs: [
             "Once dispatched, you will receive a tracking link via email and SMS. You can also track your order from your account dashboard under Orders.",
           ],
         },
         {
-          title: "6. Delivery Issues",
+          title: "8. Delivery Issues",
           paragraphs: [
             "If your order is delayed, damaged in transit, or not delivered, please contact us at " + EMAIL + " within 48 hours of the expected delivery date. We will work with our logistics partner to resolve the issue promptly.",
           ],
         },
         {
-          title: "7. Undeliverable Orders",
+          title: "9. Undeliverable Orders",
           paragraphs: [
             "If a delivery attempt fails due to an incorrect address or unavailability, the order may be returned to us. Re-shipping charges may apply.",
           ],
@@ -266,14 +303,21 @@ export const refundPolicyPage: ContentPage = {
       lastUpdated: LAST_UPDATED,
       sections: [
         {
-          title: "1. Refund Eligibility",
+          title: "1. Return Window — 7 Days",
+          paragraphs: [
+            "You may return eligible products within 7 days of delivery for a refund or exchange, provided the items meet the conditions in our Return Policy.",
+            "The 7-day window begins on the date of delivery as confirmed by the courier tracking status.",
+          ],
+        },
+        {
+          title: "2. Refund Eligibility",
           paragraphs: [
             "Refunds are issued for eligible returns as described in our Return Policy, for cancelled orders before dispatch, and for orders that cannot be fulfilled.",
             "Products must be returned in their original condition with seals intact (where applicable) to qualify for a full refund.",
           ],
         },
         {
-          title: "2. Non-Refundable Items",
+          title: "3. Non-Refundable Items",
           paragraphs: [
             "Opened or used personal care products (for hygiene reasons) unless the product is defective or damaged on arrival.",
             "Products returned after the 7-day return window.",
@@ -281,28 +325,34 @@ export const refundPolicyPage: ContentPage = {
           ],
         },
         {
-          title: "3. Refund Processing",
+          title: "4. Refund Process",
           paragraphs: [
-            "Once we receive and inspect your returned item, we will notify you of the approval or rejection of your refund.",
-            "Approved refunds are processed within 5–7 business days to your original payment method. Bank processing times may add 3–5 additional business days.",
+            "Email " + EMAIL + " with your order number, item(s) to return, and reason. Our team will confirm eligibility within 1 business day.",
+            "Once we receive and inspect your returned item, we will notify you of approval or rejection.",
+            "Approved refunds are initiated within 5–7 business days to your original payment method (Razorpay / bank). Bank processing may add 3–5 additional business days.",
+            "For COD orders, refunds are processed via UPI or bank transfer — we will collect your details securely after return approval.",
           ],
         },
         {
-          title: "4. Partial Refunds",
+          title: "5. Partial Refunds",
           paragraphs: [
             "Partial refunds may be issued for items not in their original condition, items returned after 7 days, or items missing parts not due to our error.",
           ],
         },
         {
-          title: "5. Defective or Damaged Products",
+          title: "6. Defective or Damaged Products",
           paragraphs: [
             "If you receive a defective or damaged product, contact us at " + EMAIL + " within 48 hours with photos. We will arrange a replacement or full refund including shipping charges.",
           ],
         },
         {
-          title: "6. Contact",
+          title: "7. Contact",
           paragraphs: [
-            "For refund enquiries, email " + EMAIL + " with your order number and reason for the request.",
+            "For refund and return enquiries:",
+            `Email: ${EMAIL}`,
+            `Company: ${COMPANY} (${BRAND})`,
+            `Address: ${ADDRESS}`,
+            "Support hours: Monday – Saturday, 10:00 AM – 6:00 PM IST",
           ],
         },
       ],
@@ -387,7 +437,7 @@ export const cookiesPage: ContentPage = {
   eyebrow: "Legal",
   relatedLinks: [
     { label: "Privacy Policy", href: "/privacy-policy" },
-    { label: "Terms of Service", href: "/terms" },
+    { label: "Terms of Service", href: "/terms-of-service" },
   ],
   sections: [
     {

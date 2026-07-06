@@ -46,7 +46,7 @@ export const EMAIL_BRAND = {
   },
   legal: {
     privacyUrl: absoluteUrl("/privacy-policy"),
-    termsUrl: absoluteUrl("/terms"),
+    termsUrl: absoluteUrl("/terms-of-service"),
     unsubscribeUrl: "{{unsubscribe_url}}",
   },
   trustBadges: [

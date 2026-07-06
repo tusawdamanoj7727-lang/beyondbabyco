@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 
 import Icon from "../Icon";
 import { ALL_NAV_ITEMS, canSeeNavItem, type NavItem } from "../nav";
@@ -158,31 +157,20 @@ export default function SearchBar() {
         </kbd>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-[100] flex items-start justify-center p-4 pt-[12vh]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+      {open ? (
+        <div className="animate-drawer-backdrop-in fixed inset-0 z-[100] flex items-start justify-center p-4 pt-[12vh]">
+          <div
+            className="absolute inset-0 bg-green-900/30 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Global search"
+            className="animate-search-dialog-in relative z-10 w-full max-w-xl overflow-hidden rounded-4xl border border-cream-300 bg-white shadow-clay"
+            onKeyDown={onListKeyDown}
           >
-            <div
-              className="absolute inset-0 bg-green-900/30 backdrop-blur-sm"
-              onClick={() => setOpen(false)}
-              aria-hidden="true"
-            />
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Global search"
-              initial={{ opacity: 0, y: -12, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.98 }}
-              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 w-full max-w-xl overflow-hidden rounded-4xl border border-cream-300 bg-white shadow-clay"
-              onKeyDown={onListKeyDown}
-            >
               <div className="flex items-center gap-3 border-b border-cream-200 px-4">
                 <span className="text-green-600">
                   <Icon name="search" size={20} />
@@ -261,10 +249,9 @@ export default function SearchBar() {
                   </>
                 )}
               </ul>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

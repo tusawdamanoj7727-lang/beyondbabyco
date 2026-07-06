@@ -1,21 +1,25 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { Eye, Share2, ShoppingBag, Trash2 } from "lucide-react";
+import { Eye, Share2, ShoppingBag, X } from "lucide-react";
 
 import { MICROCOPY } from "@/lib/brand/copy";
 import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
 import ProductCard from "@/components/catalog/ProductCard";
+import { ProductGridSkeleton } from "@/components/catalog/ProductCardSkeleton";
 import QuickViewModal from "@/components/catalog/QuickViewModal";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/ToastProvider";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { useCartOptional } from "@/lib/storefront/cart-context";
+import { focusRing } from "@/lib/design/ui";
+import { buildCartItemInput } from "@/lib/store/cart-mappers";
+import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
 import { getPublicProductsByIds, removeFromWishlistAction } from "@/lib/storefront/wishlist-actions";
 import { readGuestWishlistIds, writeGuestWishlistIds } from "@/lib/storefront/wishlist-storage";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
+import { cn } from "@/lib/utils";
 
 export default function WishlistClient({
   products: initialProducts,
@@ -24,28 +28,44 @@ export default function WishlistClient({
   products: StorefrontProduct[];
   isLoggedIn: boolean;
 }) {
-  const cart = useCartOptional();
+  const addStoreItem = useCartStore((s) => s.addItem);
   const cartUi = useCartUiOptional();
   const toast = useToast();
-  const { isGuest, refresh } = useWishlist();
-  const [products, setProducts] = useState(initialProducts);
+  const { ids, loading: wishlistLoading, refresh } = useWishlist();
+  const idsKey = useMemo(() => [...ids].sort().join(","), [ids]);
+  const [products, setProducts] = useState<StorefrontProduct[]>(initialProducts);
+  const [loading, setLoading] = useState(true);
   const [quickView, setQuickView] = useState<StorefrontProduct | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const loadGuestProducts = useCallback(async () => {
-    const ids = readGuestWishlistIds();
-    if (ids.length === 0) {
-      setProducts([]);
-      return;
-    }
-    const loaded = await getPublicProductsByIds(ids);
-    setProducts(loaded);
-  }, []);
-
   useEffect(() => {
-    if (isGuest) void loadGuestProducts();
-    else setProducts(initialProducts);
-  }, [isGuest, initialProducts, loadGuestProducts]);
+    let cancelled = false;
+
+    async function load() {
+      const idList = idsKey ? idsKey.split(",") : [];
+      if (idList.length === 0) {
+        if (!cancelled) {
+          setProducts([]);
+          setLoading(false);
+        }
+        return;
+      }
+
+      if (!cancelled) setLoading(true);
+      const loaded = await getPublicProductsByIds(idList);
+      if (!cancelled) {
+        setProducts(loaded);
+        setLoading(false);
+      }
+    }
+
+    if (wishlistLoading) return;
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [idsKey, wishlistLoading]);
 
   useEffect(() => {
     function onMerged() {
@@ -55,17 +75,17 @@ export default function WishlistClient({
     return () => window.removeEventListener("bbc:wishlist-merged", onMerged);
   }, [refresh]);
 
+  if (loading || wishlistLoading) {
+    return <ProductGridSkeleton count={4} />;
+  }
+
   if (products.length === 0) {
     return (
       <CatalogEmptyState
-        title={isLoggedIn || isGuest ? MICROCOPY.wishlist.emptyTitle : MICROCOPY.wishlist.guestTitle}
-        description={
-          isLoggedIn || isGuest
-            ? MICROCOPY.wishlist.emptyDescription
-            : MICROCOPY.wishlist.guestDescription
-        }
-        actionLabel={isLoggedIn || isGuest ? MICROCOPY.wishlist.shopCta : MICROCOPY.wishlist.signInCta}
-        actionHref={isLoggedIn || isGuest ? "/products" : "/login?redirectTo=/wishlist"}
+        title={MICROCOPY.wishlist.emptyTitle}
+        description={MICROCOPY.wishlist.emptyDescription}
+        actionLabel={MICROCOPY.wishlist.shopCta}
+        actionHref="/products"
         mascot="bella-bunny"
       />
     );
@@ -75,21 +95,20 @@ export default function WishlistClient({
     startTransition(async () => {
       if (isLoggedIn) {
         await removeFromWishlistAction(productId);
-        setProducts((prev) => prev.filter((p) => p.id !== productId));
+        refresh();
       } else {
-        const ids = readGuestWishlistIds().filter((id) => id !== productId);
-        writeGuestWishlistIds(ids);
-        setProducts((prev) => prev.filter((p) => p.id !== productId));
+        const nextIds = readGuestWishlistIds().filter((id) => id !== productId);
+        writeGuestWishlistIds(nextIds);
         refresh();
       }
-      toast.info("Removed from wishlist");
+      toast.info(MICROCOPY.removedFromWishlist);
     });
   }
 
   function moveToCart(product: StorefrontProduct) {
-    cart?.addItem(product, null, 1);
+    addStoreItem(buildCartItemInput(product));
     cartUi?.openMiniCart();
-    toast.success("Added to cart");
+    toast.success("Added to cart!");
   }
 
   async function shareProduct(product: StorefrontProduct) {
@@ -111,8 +130,22 @@ export default function WishlistClient({
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => (
           <div key={product.id} className="relative flex flex-col">
-            <ProductCard product={product} onQuickView={setQuickView} hideHoverActions hideWishlistButton />
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="relative">
+              <ProductCard product={product} onQuickView={setQuickView} hideHoverActions hideWishlistButton />
+              <button
+                type="button"
+                disabled={pending}
+                aria-label={`Remove ${product.name} from wishlist`}
+                onClick={() => remove(product.id)}
+                className={cn(
+                  "absolute right-3 top-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full border border-cream-200 bg-white/95 text-green-800 shadow-sm backdrop-blur-sm transition hover:bg-terra-50 hover:text-terra-600",
+                  focusRing,
+                )}
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
               <Button
                 variant="primary"
                 size="sm"
@@ -141,15 +174,6 @@ export default function WishlistClient({
               >
                 <Share2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Share</span>
-              </button>
-              <button
-                type="button"
-                disabled={pending}
-                aria-label={`Remove ${product.name} from wishlist`}
-                onClick={() => remove(product.id)}
-                className="inline-flex h-11 items-center justify-center rounded-2xl border border-cream-300 text-terra-600 hover:bg-terra-50"
-              >
-                <Trash2 className="h-4 w-4" />
               </button>
             </div>
           </div>

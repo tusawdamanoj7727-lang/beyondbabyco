@@ -8,7 +8,8 @@ import ProductImageFallback from "@/components/brand/ProductImageFallback";
 import QuantitySelector from "@/components/catalog/QuantitySelector";
 import Badge from "@/components/ui/Badge";
 import { formatInr } from "@/lib/catalog/format";
-import { cartLineKey, type CartItem } from "@/lib/storefront/cart-types";
+import { IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { cartLineKey, CART_MAX_QUANTITY, type CartItem } from "@/lib/storefront/cart-types";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { motionCard, surfaceCard } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
@@ -17,8 +18,10 @@ type CartLineItemProps = {
   item: CartItem;
   onUpdateQuantity: (quantity: number) => void;
   onRemove: () => void;
-  onSaveForLater: () => void;
+  onSaveForLater?: () => void;
   compact?: boolean;
+  /** Show save-for-later and wishlist actions (default true). */
+  showExtras?: boolean;
 };
 
 export default function CartLineItemRow({
@@ -27,6 +30,7 @@ export default function CartLineItemRow({
   onRemove,
   onSaveForLater,
   compact = false,
+  showExtras = true,
 }: CartLineItemProps) {
   const { isWishlisted, toggle } = useWishlist();
   const wishlisted = isWishlisted(item.productId);
@@ -50,7 +54,7 @@ export default function CartLineItemRow({
         className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-cream-50 sm:h-24 sm:w-24"
       >
         {item.imageUrl ? (
-          <Image src={item.imageUrl} alt={item.name} fill className="object-cover" sizes="96px" />
+          <Image src={item.imageUrl} alt={item.name} fill className="object-cover" sizes={IMAGE_SIZES.cartLineItem} />
         ) : (
           <ProductImageFallback compact />
         )}
@@ -107,12 +111,14 @@ export default function CartLineItemRow({
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <QuantitySelector
             value={item.quantity}
-            max={Math.min(item.stock || 99, 99)}
+            min={1}
+            max={Math.min(item.stock || CART_MAX_QUANTITY, CART_MAX_QUANTITY)}
             onChange={onUpdateQuantity}
             disabled={!item.inStock}
             size={compact ? "sm" : "md"}
+            showMaxHint
           />
-          {!compact ? (
+          {showExtras && onSaveForLater ? (
             <>
               <button
                 type="button"

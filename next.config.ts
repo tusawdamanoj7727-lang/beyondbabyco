@@ -8,27 +8,30 @@ const CACHE = {
   nextImageOptimized: "public, max-age=86400, stale-while-revalidate=604800",
 } as const;
 
+// Deployment: Vercel (primary). Docker config kept for future self-hosting reference.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   compress: true,
-  output: process.env.DOCKER_BUILD === "1" ? "standalone" : undefined,
+
+  env: {
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in",
+    NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || "BeyondBabyCo",
+  },
 
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    imageSizes: [48, 64, 96, 128, 256, 384, 640],
     minimumCacheTTL: 60 * 60 * 24,
-    dangerouslyAllowSVG: true,
-    contentDispositionType: "attachment",
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    dangerouslyAllowSVG: false,
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" },
     ],
   },
 
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion", "@radix-ui/react-dialog"],
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-dialog"],
   },
 
   async headers() {
@@ -45,6 +48,12 @@ const nextConfig: NextConfig = {
         source: "/_next/image",
         headers: [{ key: "Cache-Control", value: CACHE.nextImageOptimized }],
       },
+    ];
+  },
+
+  async redirects() {
+    return [
+      { source: "/terms", destination: "/terms-of-service", permanent: true },
     ];
   },
 };

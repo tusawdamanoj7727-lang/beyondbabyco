@@ -2,104 +2,89 @@
 
 import Link from "next/link";
 
-import { MICROCOPY } from "@/lib/brand/copy";
+import CartEmptyState from "@/components/catalog/CartEmptyState";
 import CartLineItemRow, { cartLineKey } from "@/components/catalog/CartLineItemRow";
-import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
+import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import OrderSummary from "@/components/catalog/OrderSummary";
 import { useCart } from "@/lib/storefront/cart-context";
+import { CART_MAX_QUANTITY } from "@/lib/storefront/cart-types";
 
 export default function CartClient() {
-  const { items, savedItems, updateQuantity, removeItem, saveForLater, moveSavedToCart, removeSaved } =
-    useCart();
+  const { items, hydrated, subtotal, updateQuantity, removeItem } = useCart();
 
-  if (items.length === 0 && savedItems.length === 0) {
+  if (!hydrated) {
     return (
-      <CatalogEmptyState
-        title={MICROCOPY.cart.emptyTitle}
-        description={MICROCOPY.cart.emptyDescription}
-        actionLabel={MICROCOPY.cart.shopCta}
-        actionHref="/products"
-        mascot="bella-bunny"
-      />
+      <div className="container mx-auto max-w-7xl px-4 py-16">
+        <div className="animate-pulse space-y-4">
+          <div className="h-10 w-48 rounded-xl bg-[#2d5a27]/10" />
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="h-32 rounded-2xl bg-[#2d5a27]/5" />
+              <div className="h-32 rounded-2xl bg-[#2d5a27]/5" />
+            </div>
+            <div className="h-80 rounded-3xl bg-[#2d5a27]/5" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="min-h-[60vh] bg-[#faf5f0]/40">
+        <CartEmptyState />
+      </div>
     );
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 pb-16">
+    <div className="container mx-auto max-w-7xl px-4 pb-16 pt-6">
       <header className="mb-8">
-        <h1 className="text-h1">{MICROCOPY.cart.pageTitle}</h1>
-        <p className="mt-2 text-green-700/70">
-          {items.length} item{items.length === 1 ? "" : "s"} in your cart
+        <h1 className="font-heading text-[clamp(1.75rem,3vw,2.25rem)] font-bold text-[#2d5a27]">
+          Your Cart
+        </h1>
+        <p className="mt-2 text-sm text-[#2d5a27]/70">
+          {items.length} item{items.length === 1 ? "" : "s"} · Free shipping on orders ₹999+
         </p>
+        <div className="mt-4">
+          <FreeShippingProgress subtotal={subtotal} variant="banner" />
+        </div>
       </header>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px]">
-        <div className="space-y-6">
-          {items.length > 0 ? (
-            <section aria-label="Cart items">
-              <ul className="space-y-4">
-                {items.map((item) => (
-                  <li key={cartLineKey(item.productId, item.variantId)}>
-                    <CartLineItemRow
-                      item={item}
-                      onUpdateQuantity={(qty) => updateQuantity(item.productId, item.variantId, qty)}
-                      onRemove={() => removeItem(item.productId, item.variantId)}
-                      onSaveForLater={() => saveForLater(item.productId, item.variantId)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : (
-            <div className="rounded-3xl border border-dashed border-green-200 bg-white/60 p-8 text-center">
-              <p className="text-green-700/80">No items in your cart right now.</p>
-              <Link href="/products" className="mt-4 inline-block text-sm font-semibold text-terra-600 hover:underline">
-                Continue shopping
-              </Link>
-            </div>
-          )}
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <section aria-label="Cart items">
+            <ul className="space-y-4">
+              {items.map((item) => (
+                <li key={cartLineKey(item.productId, item.variantId)}>
+                  <CartLineItemRow
+                    item={item}
+                    onUpdateQuantity={(qty) =>
+                      updateQuantity(
+                        item.productId,
+                        item.variantId,
+                        Math.max(1, Math.min(qty, CART_MAX_QUANTITY)),
+                      )
+                    }
+                    onRemove={() => removeItem(item.productId, item.variantId)}
+                    showExtras={false}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
 
-          {savedItems.length > 0 ? (
-            <section aria-label="Saved for later" className="mt-10">
-              <h2 className="font-heading text-xl font-bold text-green-900">Saved for later</h2>
-              <ul className="mt-4 space-y-4">
-                {savedItems.map((item) => (
-                  <li
-                    key={cartLineKey(item.productId, item.variantId)}
-                    className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-green-100/80 bg-white/70 p-4"
-                  >
-                    <div>
-                      <p className="font-heading font-semibold text-green-900">{item.name}</p>
-                      {item.variantName ? (
-                        <p className="text-sm text-green-700/70">{item.variantName}</p>
-                      ) : null}
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => moveSavedToCart(item.productId, item.variantId)}
-                        className="rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-cream-50 hover:bg-green-600"
-                      >
-                        Move to cart
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeSaved(item.productId, item.variantId)}
-                        className="rounded-full border border-green-200 px-4 py-2 text-sm font-semibold text-green-800 hover:bg-green-50"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
+          <Link
+            href="/products"
+            className="mt-6 inline-flex text-sm font-semibold text-[#c4673a] hover:underline"
+          >
+            ← Continue Shopping
+          </Link>
         </div>
 
-        {items.length > 0 ? (
+        <div className="lg:col-span-1">
           <OrderSummary />
-        ) : null}
+        </div>
       </div>
     </div>
   );

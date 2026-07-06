@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
 
 import Icon from "../Icon";
 
@@ -38,17 +37,12 @@ export default function NotificationBell() {
         <Icon name="bell" size={20} />
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            role="dialog"
-            aria-label="Notifications"
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-3xl border border-cream-300 bg-white shadow-clay"
-          >
+      {open ? (
+        <div
+          role="dialog"
+          aria-label="Notifications"
+          className="animate-dropdown-in absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-3xl border border-cream-300 bg-white shadow-clay"
+        >
             <div className="flex items-center justify-between border-b border-cream-200 px-4 py-3">
               <p className="font-heading text-sm font-bold text-green-900">Notifications</p>
             </div>
@@ -68,9 +62,8 @@ export default function NotificationBell() {
                 View operations health
               </Link>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      ) : null}
     </div>
   );
 }

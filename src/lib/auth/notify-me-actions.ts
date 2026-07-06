@@ -2,8 +2,7 @@
 
 import { z } from "zod";
 
-import { isSupabaseConfigured } from "@/lib/env";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { subscribeToNotifyMe } from "@/lib/notify-me/subscribe";
 
 export interface NotifyMeState {
   error: string | null;
@@ -13,16 +12,20 @@ export interface NotifyMeState {
 const schema = z.object({
   email: z.string().trim().email("Enter a valid email"),
   product: z.string().trim().min(1, "Product is required"),
+  productId: z.string().uuid().optional(),
   interest: z.string().trim().optional(),
 });
 
+/** Legacy server action — storefront uses POST /api/notify-me */
 export async function notifyMeAction(
   _prev: NotifyMeState,
   formData: FormData,
 ): Promise<NotifyMeState> {
+  const productIdRaw = formData.get("productId");
   const parsed = schema.safeParse({
     email: formData.get("email"),
     product: formData.get("product"),
+    productId: typeof productIdRaw === "string" && productIdRaw.length > 0 ? productIdRaw : undefined,
     interest: formData.get("interest") ?? undefined,
   });
 
@@ -33,35 +36,20 @@ export async function notifyMeAction(
     };
   }
 
-  const { email, product, interest } = parsed.data;
-  const source = interest ? `notify:${product}:${interest}` : `notify:${product}`;
+  const { email, product, productId, interest } = parsed.data;
+  const productCategory = interest ?? product;
 
-  if (!isSupabaseConfigured()) {
-    return {
-      error: null,
-      success: "You're on the list! We'll email you when this product launches.",
-    };
-  }
-
-  const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("newsletter_subscribers").insert({
+  const result = await subscribeToNotifyMe({
     email,
-    source,
-    is_active: true,
+    productCategory,
+    productId,
+    productName: product,
+    mode: productId ? "restock" : "launch",
   });
 
-  if (error) {
-    if (error.code === "23505") {
-      return {
-        error: null,
-        success: "You're already on the list — we'll notify you at launch.",
-      };
-    }
-    return { error: "Something went wrong. Please try again.", success: null };
+  if (!result.success) {
+    return { error: result.message, success: null };
   }
 
-  return {
-    error: null,
-    success: "You're on the list! We'll email you when this product launches.",
-  };
+  return { error: null, success: result.message };
 }

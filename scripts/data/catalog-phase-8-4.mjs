@@ -1,5 +1,11 @@
 /** BeyondBabyCo Phase 8.4 — production catalog definitions. */
 
+/** Storefront launch SKUs — all others seed as coming_soon with zero stock. */
+export const LAUNCH_PRODUCT_SLUGS = new Set([
+  "pure-gentle-water-baby-wipes",
+  "ayurvedic-massage-oil",
+]);
+
 export const BRAND = {
   name: "BeyondBabyCo",
   slug: "beyondbabyco",
@@ -25,6 +31,7 @@ export const PRODUCT_CATEGORIES = [
   { name: "Gift Sets", slug: "gift-sets", description: "Curated gift hampers for new parents.", position: 11 },
   { name: "Travel Kits", slug: "travel-kits", description: "Compact essentials for families on the go.", position: 12 },
   { name: "Accessories", slug: "accessories", description: "Thoughtful accessories for daily baby care.", position: 13 },
+  { name: "Mother Care", slug: "mother-care", description: "Gentle care essentials for new mothers.", position: 14 },
 ];
 
 export const COLLECTIONS_CATEGORY = {
@@ -91,6 +98,46 @@ export const ATTRIBUTE_TAGS = [
 
 export const PLACEHOLDER_IMAGE = "/images/brand/product-botanical.svg";
 
+const BABY_WIPES_IMAGE = "/images/generated/products/baby-wipes/front.webp";
+
+const CATEGORY_PRODUCT_IMAGES = {
+  wash: "/images/placeholders/products/baby-wash.svg",
+  lotion: "/images/placeholders/products/baby-lotion.svg",
+  oil: "/images/placeholders/products/baby-oil.svg",
+  gift: "/images/placeholders/products/gift-sets.svg",
+  "mother-care": "/images/placeholders/products/mother-care.svg",
+};
+
+const CATEGORY_TO_VISUAL = {
+  "baby-wipes": "wipes",
+  "baby-wash": "wash",
+  "baby-shampoo": "wash",
+  "baby-soap": "wash",
+  "baby-lotion": "lotion",
+  "baby-cream": "lotion",
+  "baby-powder": "lotion",
+  "diaper-rash-cream": "lotion",
+  "baby-oil": "oil",
+  "massage-oil": "oil",
+  "gift-sets": "gift",
+  "travel-kits": "gift",
+  accessories: "gift",
+  "mother-care": "mother-care",
+};
+
+/** Category-aware product image for CMS seeding. */
+export function productImageForCategory(categorySlug, productSlug = "") {
+  const visual = CATEGORY_TO_VISUAL[categorySlug] ?? "wash";
+  if (visual === "wipes") return BABY_WIPES_IMAGE;
+  return CATEGORY_PRODUCT_IMAGES[visual];
+}
+
+/** GST % by product category — 12% baby care, 18% hair/ayurvedic oils. */
+export function gstRateForProductCategory(categorySlug) {
+  if (categorySlug === "baby-oil" || categorySlug === "massage-oil") return 18;
+  return 12;
+}
+
 function desc(blocks) {
   return blocks.filter(Boolean).join("\n\n");
 }
@@ -109,7 +156,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 349,
     price: 299,
-    gst: 18,
+    gst: 12,
     weight: 420,
     stock: 500,
     featured: true,
@@ -120,10 +167,10 @@ export const PRODUCTS = [
     benefits: ["Dermatologically Tested", "Hypoallergenic", "Paraben Free", "Made in India"],
     tags: ["attr-age-infant", "attr-skin-sensitive", "attr-fragrance-free", "attr-package-pouch", "attr-country-india", "attr-shelf-24m", "attr-recommended"],
     variants: [
-      { name: "72 Wipes", sku: "BBC-WIPES-PURE-72", mrp: 349, price: 299, stock: 500 },
-      { name: "120 Wipes", sku: "BBC-WIPES-PURE-120", mrp: 549, price: 499, stock: 350 },
-      { name: "Travel Pack 20", sku: "BBC-WIPES-PURE-TRV", mrp: 99, price: 89, stock: 800 },
-      { name: "Family Pack 240", sku: "BBC-WIPES-PURE-FAM", mrp: 999, price: 899, stock: 200 },
+      { name: "72 Wipes", sku: "BBC-WIPES-PURE-72", mrp: 349, price: 299, stock: 500, available: true },
+      { name: "144 Wipes", sku: "BBC-WIPES-PURE-144", mrp: 549, price: 499, stock: 350, available: true },
+      { name: "Travel Pack 20", sku: "BBC-WIPES-PURE-TRV", mrp: 99, price: 89, stock: 800, available: false },
+      { name: "Family Pack 240", sku: "BBC-WIPES-PURE-FAM", mrp: 999, price: 899, stock: 200, available: false },
     ],
   },
   {
@@ -139,7 +186,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 399,
     price: 349,
-    gst: 18,
+    gst: 12,
     weight: 430,
     stock: 320,
     featured: true,
@@ -164,7 +211,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 449,
     price: 399,
-    gst: 18,
+    gst: 12,
     weight: 220,
     stock: 280,
     bestSeller: true,
@@ -189,7 +236,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 499,
     price: 449,
-    gst: 18,
+    gst: 12,
     weight: 225,
     stock: 200,
     newArrival: true,
@@ -214,7 +261,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 449,
     price: 399,
-    gst: 18,
+    gst: 12,
     weight: 210,
     stock: 240,
     ingredients: ["Purified Water", "Chamomile", "Aloe Vera", "Coconut Oil"],
@@ -238,7 +285,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 699,
     price: 599,
-    gst: 18,
+    gst: 12,
     weight: 420,
     stock: 190,
     featured: true,
@@ -263,7 +310,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 499,
     price: 449,
-    gst: 18,
+    gst: 12,
     weight: 230,
     stock: 300,
     bestSeller: true,
@@ -288,7 +335,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 549,
     price: 479,
-    gst: 18,
+    gst: 12,
     weight: 225,
     stock: 210,
     ingredients: ["Purified Water", "Oat Extract", "Shea Butter", "Calendula"],
@@ -309,7 +356,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 399,
     price: 349,
-    gst: 18,
+    gst: 12,
     weight: 120,
     stock: 350,
     bestSeller: true,
@@ -334,7 +381,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 549,
     price: 499,
-    gst: 18,
+    gst: 12,
     weight: 115,
     stock: 150,
     featured: true,
@@ -405,7 +452,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 349,
     price: 299,
-    gst: 18,
+    gst: 12,
     weight: 210,
     stock: 220,
     ingredients: ["Purified Water", "Oat Extract", "Calendula", "Chamomile"],
@@ -426,7 +473,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 299,
     price: 249,
-    gst: 18,
+    gst: 12,
     weight: 240,
     stock: 300,
     ingredients: ["Purified Water", "Shea Butter", "Coconut Oil", "Calendula"],
@@ -447,7 +494,7 @@ export const PRODUCTS = [
     age: "0-12 months",
     mrp: 349,
     price: 299,
-    gst: 18,
+    gst: 12,
     weight: 75,
     stock: 280,
     ingredients: ["Zinc Oxide", "Shea Butter", "Calendula", "Aloe Vera"],
@@ -468,7 +515,7 @@ export const PRODUCTS = [
     age: "0-12 months",
     mrp: 1499,
     price: 1299,
-    gst: 18,
+    gst: 12,
     weight: 980,
     stock: 120,
     featured: true,
@@ -491,7 +538,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 2499,
     price: 2199,
-    gst: 18,
+    gst: 12,
     weight: 1500,
     stock: 80,
     featured: true,
@@ -513,7 +560,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 3499,
     price: 2999,
-    gst: 18,
+    gst: 12,
     weight: 1800,
     stock: 50,
     trending: true,
@@ -535,7 +582,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 699,
     price: 599,
-    gst: 18,
+    gst: 12,
     weight: 380,
     stock: 200,
     newArrival: true,
@@ -560,7 +607,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 499,
     price: 449,
-    gst: 18,
+    gst: 12,
     weight: 320,
     stock: 180,
     ingredients: ["Purified Water", "Aloe Vera", "Calendula"],
@@ -602,7 +649,7 @@ export const PRODUCTS = [
     age: "0-24 months",
     mrp: 799,
     price: 699,
-    gst: 18,
+    gst: 12,
     weight: 450,
     stock: 100,
     ingredients: [],

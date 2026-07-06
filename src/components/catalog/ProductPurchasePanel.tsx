@@ -1,27 +1,32 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { Bell, Heart, Minus, Plus, ShoppingBag } from "lucide-react";
+import { Bell, Heart, ShoppingBag } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
-import Button from "@/components/ui/Button";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import PricingTaxNote from "@/components/catalog/PricingTaxNote";
+import QuantitySelector from "@/components/catalog/QuantitySelector";
 import StarRating from "@/components/catalog/StarRating";
 import { useToast } from "@/components/ui/ToastProvider";
+import { canPurchaseVariant, shouldShowNotifyMe } from "@/lib/catalog/availability";
+import { buildProductNotifyTarget, notifyMeButtonLabel } from "@/lib/notify-me/target";
 import { useNotifyMe } from "@/lib/homepage/notify-me-context";
 import { formatInr } from "@/lib/catalog/format";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/storefront/shipping";
 import type { StorefrontProductDetail } from "@/lib/catalog/types";
-import { useCartOptional } from "@/lib/storefront/cart-context";
+import { CART_MAX_QUANTITY } from "@/lib/storefront/cart-types";
+import { buildCartItemInput, legacyVariantKey } from "@/lib/store/cart-mappers";
+import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { ctaHeight, focusRing, wishlistButton } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 export default function ProductPurchasePanel({ product }: { product: StorefrontProductDetail }) {
-  const cart = useCartOptional();
+  const addStoreItem = useCartStore((s) => s.addItem);
+  const updateStoreQuantity = useCartStore((s) => s.updateQuantity);
   const cartUi = useCartUiOptional();
   const toast = useToast();
   const { openNotifyMe } = useNotifyMe();
@@ -31,27 +36,70 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     product.variants[0]?.id ?? null,
   );
+  const [variantStock, setVariantStock] = useState<Map<string, number>>(
+    () => new Map(product.variants.map((v) => [v.id, v.stockQuantity])),
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refreshStock() {
+      try {
+        const res = await fetch(`/api/inventory/product/${product.id}`, { cache: "no-store" });
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as {
+          variants?: { variantId: string; available: number }[];
+        };
+        if (!data.variants || cancelled) return;
+        setVariantStock(new Map(data.variants.map((v) => [v.variantId, v.available])));
+      } catch {
+        // Keep server-rendered stock on network failure.
+      }
+    }
+
+    void refreshStock();
+    return () => {
+      cancelled = true;
+    };
+  }, [product.id, selectedVariantId]);
 
   const wishlisted = isWishlisted(product.id);
   const isComingSoon = product.status === "coming_soon";
-  const canBuy = product.status === "active" && product.inStock;
-  const showRating = product.ratingCount > 0;
   const selectedVariant =
     product.variants.find((v) => v.id === selectedVariantId) ?? product.variants[0] ?? null;
   const variantId = selectedVariant?.id ?? null;
-  const maxQty = Math.max(product.stock, 1);
+  const selectedStock = selectedVariant ? (variantStock.get(selectedVariant.id) ?? 0) : 0;
+  const canBuy = canPurchaseVariant(product, selectedStock);
+  const notifyMe = shouldShowNotifyMe({ ...product, inStock: canBuy });
+  const notifyTarget = buildProductNotifyTarget(product);
+  const notifyLabel = notifyMeButtonLabel(notifyTarget.mode, product.status);
+  const showRating = product.ratingCount > 0;
+  const maxQty = Math.min(CART_MAX_QUANTITY, Math.max(selectedStock, 1));
   const displaySku = selectedVariant?.sku ?? product.sku;
 
   function addToCart() {
-    if (!canBuy) return;
-    cart?.addItem(product, variantId, qty, selectedVariant?.name ?? null);
+    if (!canBuy) {
+      toast.warning("This item is out of stock");
+      return;
+    }
+    const input = buildCartItemInput(product, {
+      variantId,
+      variantName: selectedVariant?.name ?? null,
+    });
+    addStoreItem(input);
+    if (qty > 1) {
+      updateStoreQuantity(legacyVariantKey(variantId), Math.min(qty, maxQty));
+    }
     cartUi?.openMiniCart();
-    toast.success("Added to cart");
+    toast.success("Added to cart!");
   }
 
   function buyNow() {
-    if (!canBuy) return;
-    cart?.addItem(product, variantId, qty, selectedVariant?.name ?? null);
+    if (!canBuy) {
+      toast.warning("This item is out of stock");
+      return;
+    }
+    addToCart();
     window.location.href = "/cart";
   }
 
@@ -121,13 +169,15 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
               </span>
             ) : null}
           </div>
-          {!isComingSoon && canBuy ? <PricingTaxNote className="mt-2" /> : null}
-          <p className={cn("mt-3 text-sm font-semibold", isComingSoon ? "text-terra-600" : product.inStock ? "text-green-700" : "text-terra-600")}>
+          {!isComingSoon && canBuy ? (
+            <PricingTaxNote className="mt-2" gstRate={product.gstRate} showMrpLabel />
+          ) : null}
+          <p className={cn("mt-3 text-sm font-semibold", isComingSoon ? "text-terra-600" : canBuy ? "text-green-700" : "text-terra-600")}>
             {isComingSoon
               ? "Research complete — be first to know when we launch."
-              : product.inStock
+              : canBuy
                 ? `${product.stock} in stock · ready to ship`
-                : "Currently out of stock"}
+                : "Join the waitlist — we'll notify you when it's available."}
           </p>
         </div>
 
@@ -157,67 +207,58 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         ) : null}
 
         {!isComingSoon ? (
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <span className="text-sm font-semibold text-green-900">Quantity</span>
-            <div className="pdp-qty-control">
-              <button
-                type="button"
-                aria-label="Decrease quantity"
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
-              >
-                <Minus className="h-4 w-4" />
-              </button>
-              <span>{qty}</span>
-              <button
-                type="button"
-                aria-label="Increase quantity"
-                onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
-                disabled={qty >= maxQty}
-                className="disabled:opacity-40"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
+            <QuantitySelector
+              value={qty}
+              min={1}
+              max={Math.min(maxQty, CART_MAX_QUANTITY)}
+              onChange={setQty}
+              disabled={!canBuy}
+              variant="pill"
+            />
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-          {isComingSoon ? (
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
+        <div className="flex flex-col gap-3">
+          {notifyMe ? (
+            <button
               type="button"
-              className={cn(ctaHeight, "text-base font-semibold")}
-              onClick={() => openNotifyMe(product.name, product.categoryName ?? undefined)}
+              onClick={() => openNotifyMe(notifyTarget)}
+              className={cn(
+                "hidden w-full items-center justify-center gap-2 rounded-xl border border-green-300 py-4 text-base font-semibold text-green-800 transition hover:bg-green-50 md:inline-flex",
+                focusRing,
+              )}
             >
               <Bell className="h-4 w-4" aria-hidden="true" />
-              Notify Me
-            </Button>
+              {notifyLabel}
+            </button>
           ) : (
-            <>
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
+            <div className="hidden w-full flex-col gap-3 md:flex">
+              <button
+                type="button"
                 disabled={!canBuy}
                 onClick={addToCart}
-                className={cn(ctaHeight, "flex-1 text-base font-semibold shadow-[var(--shadow-soft)]")}
+                className={cn(
+                  "flex w-full items-center justify-center gap-2 rounded-xl bg-[#2d5a27] py-4 text-lg font-semibold text-white transition hover:bg-[#234a20] disabled:cursor-not-allowed disabled:opacity-50",
+                  focusRing,
+                )}
               >
-                <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+                <ShoppingBag className="h-5 w-5" aria-hidden="true" />
                 Add to Cart
-              </Button>
-              <Button
-                variant="cta"
-                size="lg"
-                fullWidth
+              </button>
+              <button
+                type="button"
                 disabled={!canBuy}
                 onClick={buyNow}
-                className={cn(ctaHeight, "flex-1 text-base font-semibold")}
+                className={cn(
+                  "w-full rounded-xl border-2 border-[#2d5a27] py-4 text-lg font-semibold text-[#2d5a27] transition hover:bg-[#2d5a27]/5 disabled:cursor-not-allowed disabled:opacity-50",
+                  focusRing,
+                )}
               >
                 Buy Now
-              </Button>
-            </>
+              </button>
+            </div>
           )}
           <button
             type="button"
@@ -228,7 +269,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
             className={cn(
               wishlistButton(wishlisted),
               ctaHeight,
-              "w-[3.25rem] shrink-0 rounded-3xl transition-transform duration-[var(--duration-button)] motion-safe:hover:scale-[1.03]",
+              "w-[3.25rem] shrink-0 self-start rounded-3xl transition-transform duration-[var(--duration-button)] motion-safe:hover:scale-[1.03]",
               focusRing,
             )}
           >
@@ -247,36 +288,39 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       </div>
 
       {!isComingSoon && canBuy ? (
-        <div className="pdp-sticky-bar lg:hidden">
-          <div className="container flex items-center gap-3">
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-3 shadow-lg md:hidden">
+          <div className="mx-auto flex max-w-7xl items-center gap-3 px-1">
             <div className="min-w-0 flex-1">
-              <p className="truncate font-heading text-base font-bold text-green-900">{formatInr(product.effectivePrice)}</p>
-              <p className="text-xs text-green-700/70">In stock · ready to ship</p>
+              <p className="truncate font-heading text-base font-bold text-[#2d5a27]">
+                {formatInr(product.effectivePrice)}
+              </p>
+              <p className="text-xs text-gray-500">In stock · ready to ship</p>
             </div>
-            <Button
-              variant="primary"
-              size="lg"
+            <button
               type="button"
               onClick={addToCart}
-              className={cn(ctaHeight, "min-w-[9.5rem] px-6 text-base font-semibold")}
+              className={cn(
+                "shrink-0 rounded-xl bg-[#2d5a27] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#234a20]",
+                focusRing,
+              )}
             >
               Add to Cart
-            </Button>
+            </button>
           </div>
         </div>
-      ) : isComingSoon ? (
-        <div className="pdp-sticky-bar lg:hidden">
-          <div className="container">
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
+      ) : notifyMe ? (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-3 shadow-lg md:hidden">
+          <div className="mx-auto max-w-7xl px-1">
+            <button
               type="button"
-              className={cn(ctaHeight, "text-base font-semibold")}
-              onClick={() => openNotifyMe(product.name, product.categoryName ?? undefined)}
+              onClick={() => openNotifyMe(notifyTarget)}
+              className={cn(
+                "w-full rounded-xl border border-green-300 py-3.5 text-base font-semibold text-green-800 transition hover:bg-green-50",
+                focusRing,
+              )}
             >
-              Notify Me — Launching 2026
-            </Button>
+              {notifyLabel}
+            </button>
           </div>
         </div>
       ) : null}

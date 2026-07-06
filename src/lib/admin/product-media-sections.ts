@@ -61,7 +61,7 @@ export const ASPECT_PRESETS = [
   { id: "hero", label: "Hero preset", ratio: 16 / 9 },
 ] as const;
 
-export const SUPPORTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
+export const SUPPORTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const SUPPORTED_VIDEO_TYPES = ["video/mp4", "video/webm"];
 export const SUPPORTED_DOC_TYPES = ["application/pdf"];
 export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;

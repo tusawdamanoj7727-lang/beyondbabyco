@@ -12,6 +12,8 @@ import Button from "../ui/Button";
 import { Mascot, type MascotPose, type MascotType } from "../mascots";
 import { mascotFloatDuration, mascotLabel } from "../../lib/mascots";
 import { MASCOTS } from "@/lib/brand/copy";
+import { MASCOT_PROFILES } from "@/lib/data";
+import { mascotPagePath } from "@/lib/mascots/profiles";
 import type { MascotsConfig } from "@/lib/admin/homepage-schema";
 
 type Friend = {
@@ -21,65 +23,35 @@ type Friend = {
   role: string;
   description: string;
   cta: string;
+  href: string;
   delay: number;
 };
 
-const DEFAULT_FRIENDS: Friend[] = [
-  {
-    mascot: "bella-bunny",
-    pose: "welcome",
-    name: "Bella Bunny",
-    role: "Warm welcomes",
-    description: "Reminds us that every product should feel as gentle as a first hello.",
-    cta: "Meet Bella",
-    delay: 0.34,
-  },
-  {
-    mascot: "gigi-giraffe",
-    pose: "reading",
-    name: "Gigi Giraffe",
-    role: "Learning guide",
-    description: "Helps families understand ingredients without the jargon.",
-    cta: "Meet Gigi",
-    delay: 0.42,
-  },
-  {
-    mascot: "poppy-panda",
-    pose: "sleeping",
-    name: "Poppy Panda",
-    role: "Calm routines",
-    description: "Celebrates the quiet rituals — bath time, bedtime, and in-between.",
-    cta: "Meet Poppy",
-    delay: 0.5,
-  },
-  {
-    mascot: "eli-elephant",
-    pose: "reading",
-    name: "Eli Elephant",
-    role: "Research guide",
-    description: "Turns formulation science into stories parents can trust.",
-    cta: "Meet Eli",
-    delay: 0.58,
-  },
-  {
-    mascot: "penny-penguin",
-    pose: "hold-product",
-    name: "Penny Penguin",
-    role: "Product guide",
-    description: "Introduces each formula with clarity and a little delight.",
-    cta: "Meet Penny",
-    delay: 0.66,
-  },
-  {
-    mascot: "benny-bear",
-    pose: "celebration",
-    name: "Benny Bear",
-    role: "Everyday joy",
-    description: "Marks the small milestones that make parenthood beautiful.",
-    cta: "Meet Benny",
-    delay: 0.74,
-  },
-];
+const LEGACY_MASCOT_COPY: Partial<Record<MascotType, { role: string; description: string }>> = {
+  "bella-bunny": { role: "Warm welcomes", description: "Reminds us that every product should feel as gentle as a first hello." },
+  "gigi-giraffe": { role: "Learning guide", description: "Helps families understand ingredients without the jargon." },
+  "poppy-panda": { role: "Calm routines", description: "Celebrates the quiet rituals — bath time, bedtime, and in-between." },
+  "eli-elephant": { role: "Research guide", description: "Turns formulation science into stories parents can trust." },
+  "penny-penguin": { role: "Product guide", description: "Introduces each formula with clarity and a little delight." },
+  "benny-bear": { role: "Everyday joy", description: "Marks the small milestones that make parenthood beautiful." },
+  "freddy-ferret": { role: "Everyday joy", description: "Marks the small milestones that make parenthood beautiful." },
+};
+
+const DEFAULT_FRIENDS: Friend[] = MASCOT_PROFILES.map((profile, index) => {
+  const firstName = profile.fullName.split(" ")[0] ?? profile.fullName;
+  const legacy = LEGACY_MASCOT_COPY[profile.mascotId];
+
+  return {
+    mascot: profile.mascotId,
+    pose: profile.hubPose,
+    name: profile.fullName,
+    role: legacy?.role ?? profile.personality,
+    description: legacy?.description ?? profile.tagline,
+    cta: `Meet ${firstName}`,
+    href: mascotPagePath(profile.slug),
+    delay: 0.34 + index * 0.08,
+  };
+});
 
 const MASCOT_ROLES: Partial<Record<MascotType, string>> = {
   "bella-bunny": "Brand Ambassador",
@@ -97,14 +69,17 @@ function resolveFriends(config?: MascotsConfig): Friend[] {
 
   return cmsItems.map((item, index) => {
     const fallback = DEFAULT_FRIENDS.find((f) => f.mascot === item.mascot);
+    const profile = MASCOT_PROFILES.find((p) => p.mascotId === item.mascot);
     const name = mascotLabel(item.mascot);
+    const firstName = name.split(" ")[0] ?? name;
     return {
       mascot: item.mascot,
       pose: item.pose || fallback?.pose || "welcome",
       name,
-      role: MASCOT_ROLES[item.mascot] ?? "Friend",
+      role: MASCOT_ROLES[item.mascot] ?? fallback?.role ?? "Friend",
       description: item.description?.trim() || fallback?.description || "",
-      cta: fallback ? fallback.cta : `Meet ${name.split(" ")[0]}`,
+      cta: fallback?.cta ?? `Meet ${firstName}`,
+      href: profile ? mascotPagePath(profile.slug) : fallback?.href ?? "/mascots",
       delay: 0.34 + index * 0.08,
     };
   });
@@ -196,7 +171,7 @@ export default function MeetOurFriends({ config }: { config?: MascotsConfig }) {
                 </p>
 
                 <div className="mt-auto w-full pt-6">
-                  <Link href="/products">
+                  <Link href={friend.href}>
                     <Button variant="primary" fullWidth type="button">
                       {friend.cta}
                     </Button>

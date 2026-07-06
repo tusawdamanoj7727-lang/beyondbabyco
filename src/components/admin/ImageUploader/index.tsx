@@ -16,6 +16,7 @@ import {
   uploadProductImage,
 } from "@/lib/admin/product-actions";
 import type { ProductImageRecord } from "@/lib/admin/products";
+import { validateImageUpload, ALLOWED_IMAGE_ACCEPT } from "@/lib/media/upload-validation";
 import { cn } from "@/lib/utils";
 
 export default function ImageUploader({
@@ -42,7 +43,11 @@ export default function ImageUploader({
     setUploading(true);
     try {
       for (const file of Array.from(files)) {
-        if (!file.type.startsWith("image/")) continue;
+        const typeError = validateImageUpload(file);
+        if (typeError) {
+          setError(typeError);
+          continue;
+        }
         const fd = new FormData();
         fd.append("file", file);
         const res = await uploadProductImage(productId, fd);
@@ -127,7 +132,7 @@ export default function ImageUploader({
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept={ALLOWED_IMAGE_ACCEPT}
           multiple
           className="sr-only"
           onChange={(e) => handleFiles(e.target.files)}

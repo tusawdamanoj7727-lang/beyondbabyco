@@ -1,4 +1,5 @@
 import type { StorefrontProduct } from "@/lib/catalog/types";
+import { resolveProductGstRate } from "@/lib/catalog/gst-rates";
 
 export interface CartItem {
   productId: string;
@@ -15,7 +16,12 @@ export interface CartItem {
   brandId: string | null;
   stock: number;
   inStock: boolean;
+  /** GST percentage (12 baby care, 18 cosmetics). */
+  gstRate: number;
 }
+
+/** Max quantity per line on the cart page. */
+export const CART_MAX_QUANTITY = 10;
 
 export type CartProductInput = Pick<
   StorefrontProduct,
@@ -30,6 +36,8 @@ export type CartProductInput = Pick<
   | "compareAtPrice"
   | "effectivePrice"
   | "price"
+  | "gstRate"
+  | "categorySlug"
 >;
 
 export interface AppliedCoupon {
@@ -65,6 +73,7 @@ export function productToCartItem(
     brandId: product.brandId,
     stock: product.stock,
     inStock: product.inStock,
+    gstRate: resolveProductGstRate(product.gstRate, product.categorySlug),
   };
 }
 

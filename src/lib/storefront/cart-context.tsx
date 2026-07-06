@@ -11,19 +11,25 @@ import {
 } from "react";
 
 import {
+  buildCartItemInput,
+  legacyCouponToStore,
+  legacyItemToStore,
+  legacyItemsToStore,
+  legacyVariantKey,
+  storeCouponToLegacy,
+  storeItemToLegacy,
+} from "@/lib/store/cart-mappers";
+import { useCartStore } from "@/lib/store/cart-store";
+import {
   mergeGuestCartOnLogin,
   syncServerCartItems,
 } from "@/lib/storefront/cart-actions";
-import {
-  readCartStorage,
-  readSavedStorage,
-  writeCartStorage,
-  writeSavedStorage,
-} from "@/lib/storefront/cart-storage";
+import { readSavedStorage, writeSavedStorage } from "@/lib/storefront/cart-storage";
 import {
   cartItemCount,
   cartLineKey,
   cartSubtotal,
+  mergeCartItems,
   productToCartItem,
   type AppliedCoupon,
   type CartItem,
@@ -56,57 +62,45 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const COUPON_STORAGE_KEY = "bbc_cart_coupon_v1";
-
-function readCoupon(): AppliedCoupon | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(COUPON_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as AppliedCoupon) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeCoupon(coupon: AppliedCoupon | null) {
-  if (typeof window === "undefined") return;
-  if (coupon) localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(coupon));
-  else localStorage.removeItem(COUPON_STORAGE_KEY);
+function currentLegacyItems(): CartItem[] {
+  return useCartStore.getState().items.map(storeItemToLegacy);
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const storeItems = useCartStore((s) => s.items);
+  const storeCoupon = useCartStore((s) => s.coupon);
+
   const [savedItems, setSavedItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [appliedCoupon, setAppliedCouponState] = useState<AppliedCoupon | null>(null);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mergedRef = useRef(false);
 
+  const items = useMemo(() => storeItems.map(storeItemToLegacy), [storeItems]);
+  const appliedCoupon = useMemo(() => storeCouponToLegacy(storeCoupon), [storeCoupon]);
+
   useEffect(() => {
-    setItems(readCartStorage());
     setSavedItems(readSavedStorage());
-    setAppliedCouponState(readCoupon());
-    setHydrated(true);
+    const finish = () => setHydrated(true);
+    const unsub = useCartStore.persist.onFinishHydration(finish);
+    finish();
+    return unsub;
   }, []);
 
-  const persistItems = useCallback(
+  const syncToServer = useCallback(
     (next: CartItem[]) => {
-      setItems(next);
-      writeCartStorage(next);
-      if (isLoggedIn) {
-        if (syncTimer.current) clearTimeout(syncTimer.current);
-        syncTimer.current = setTimeout(() => {
-          void syncServerCartItems(next);
-        }, 600);
-      }
+      if (!isLoggedIn) return;
+      if (syncTimer.current) clearTimeout(syncTimer.current);
+      syncTimer.current = setTimeout(() => {
+        void syncServerCartItems(next);
+      }, 600);
     },
     [isLoggedIn],
   );
 
   const setAppliedCoupon = useCallback((coupon: AppliedCoupon | null) => {
-    setAppliedCouponState(coupon);
-    writeCoupon(coupon);
+    if (coupon) useCartStore.getState().applyCoupon(legacyCouponToStore(coupon));
+    else useCartStore.getState().removeCoupon();
   }, []);
 
   const setLoggedIn = useCallback(
@@ -114,19 +108,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setIsLoggedIn(loggedIn);
       if (loggedIn && hydrated && !mergedRef.current) {
         mergedRef.current = true;
-        const local = readCartStorage();
+        const local = currentLegacyItems();
         void mergeGuestCartOnLogin(local).then((result) => {
           if (result.ok && result.items) {
-            setItems(result.items);
-            writeCartStorage(result.items);
+            const merged = mergeCartItems(local, result.items);
+            useCartStore.getState().replaceItems(legacyItemsToStore(merged));
+            syncToServer(merged);
           }
         });
       }
-      if (!loggedIn) {
-        mergedRef.current = false;
-      }
+      if (!loggedIn) mergedRef.current = false;
     },
-    [hydrated],
+    [hydrated, syncToServer],
   );
 
   const addItem = useCallback(
@@ -136,92 +129,44 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       quantity = 1,
       variantName: string | null = null,
     ) => {
-      setItems((prev) => {
-        const key = cartLineKey(product.id, variantId);
-        const existing = prev.find((i) => cartLineKey(i.productId, i.variantId) === key);
-        let next: CartItem[];
-        if (existing) {
-          const newQty = Math.min(existing.quantity + quantity, Math.max(product.stock, 99));
-          next = prev.map((i) =>
-            cartLineKey(i.productId, i.variantId) === key
-              ? {
-                  ...productToCartItem(product, variantId, variantName ?? i.variantName, newQty),
-                  addedAt: i.addedAt,
-                }
-              : i,
-          );
-        } else {
-          const cappedQty = Math.min(quantity, Math.max(product.stock, 1));
-          next = [...prev, productToCartItem(product, variantId, variantName, cappedQty)];
-        }
-        writeCartStorage(next);
-        if (isLoggedIn) {
-          if (syncTimer.current) clearTimeout(syncTimer.current);
-          syncTimer.current = setTimeout(() => void syncServerCartItems(next), 600);
-        }
-        return next;
-      });
+      const input = buildCartItemInput(product, { variantId, variantName });
+      const add = useCartStore.getState().addItem;
+      for (let i = 0; i < quantity; i += 1) add(input);
+      syncToServer(currentLegacyItems());
     },
-    [isLoggedIn],
+    [syncToServer],
   );
 
   const updateQuantity = useCallback(
     (productId: string, variantId: string | null, quantity: number) => {
-      setItems((prev) => {
-        const key = cartLineKey(productId, variantId);
-        const next =
-          quantity <= 0
-            ? prev.filter((i) => cartLineKey(i.productId, i.variantId) !== key)
-            : prev.map((i) =>
-                cartLineKey(i.productId, i.variantId) === key
-                  ? { ...i, quantity: Math.min(quantity, Math.max(i.stock, 99)) }
-                  : i,
-              );
-        writeCartStorage(next);
-        if (isLoggedIn) {
-          if (syncTimer.current) clearTimeout(syncTimer.current);
-          syncTimer.current = setTimeout(() => void syncServerCartItems(next), 600);
-        }
-        return next;
-      });
+      useCartStore.getState().updateQuantity(legacyVariantKey(variantId), quantity);
+      syncToServer(currentLegacyItems());
     },
-    [isLoggedIn],
+    [syncToServer],
   );
 
   const removeItem = useCallback(
     (productId: string, variantId: string | null) => {
-      const key = cartLineKey(productId, variantId);
-      setItems((prev) => {
-        const next = prev.filter((i) => cartLineKey(i.productId, i.variantId) !== key);
-        writeCartStorage(next);
-        if (isLoggedIn) {
-          if (syncTimer.current) clearTimeout(syncTimer.current);
-          syncTimer.current = setTimeout(() => void syncServerCartItems(next), 600);
-        }
-        return next;
-      });
+      useCartStore.getState().removeItem(legacyVariantKey(variantId));
+      syncToServer(currentLegacyItems());
     },
-    [isLoggedIn],
+    [syncToServer],
   );
 
   const saveForLater = useCallback(
     (productId: string, variantId: string | null) => {
       const key = cartLineKey(productId, variantId);
-      setItems((prev) => {
-        const item = prev.find((i) => cartLineKey(i.productId, i.variantId) === key);
-        if (!item) return prev;
-        const next = prev.filter((i) => cartLineKey(i.productId, i.variantId) !== key);
-        writeCartStorage(next);
-        setSavedItems((saved) => {
-          const savedNext = [...saved.filter((s) => cartLineKey(s.productId, s.variantId) !== key), item];
-          writeSavedStorage(savedNext);
-          return savedNext;
-        });
-        if (isLoggedIn) void syncServerCartItems(next);
-        return next;
+      const item = items.find((i) => cartLineKey(i.productId, i.variantId) === key);
+      if (!item) return;
+      useCartStore.getState().removeItem(legacyVariantKey(variantId));
+      setSavedItems((saved) => {
+        const savedNext = [...saved.filter((s) => cartLineKey(s.productId, s.variantId) !== key), item];
+        writeSavedStorage(savedNext);
+        return savedNext;
       });
+      syncToServer(currentLegacyItems());
     },
-    [isLoggedIn],
+    [items, syncToServer],
   );
 
   const moveSavedToCart = useCallback(
@@ -232,23 +177,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (!item) return saved;
         const savedNext = saved.filter((s) => cartLineKey(s.productId, s.variantId) !== key);
         writeSavedStorage(savedNext);
-        setItems((prev) => {
-          const existing = prev.find((i) => cartLineKey(i.productId, i.variantId) === key);
-          const next = existing
-            ? prev.map((i) =>
-                cartLineKey(i.productId, i.variantId) === key
-                  ? { ...i, quantity: i.quantity + item.quantity }
-                  : i,
-              )
-            : [...prev, item];
-          writeCartStorage(next);
-          if (isLoggedIn) void syncServerCartItems(next);
-          return next;
-        });
+        useCartStore.getState().replaceItems([
+          ...useCartStore.getState().items,
+          legacyItemToStore(item),
+        ]);
+        syncToServer(currentLegacyItems());
         return savedNext;
       });
     },
-    [isLoggedIn],
+    [syncToServer],
   );
 
   const removeSaved = useCallback((productId: string, variantId: string | null) => {
@@ -261,9 +198,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const clear = useCallback(() => {
-    persistItems([]);
-    setAppliedCoupon(null);
-  }, [persistItems, setAppliedCoupon]);
+    useCartStore.getState().clearCart();
+    syncToServer([]);
+  }, [syncToServer]);
 
   const value = useMemo(
     () => ({
@@ -315,4 +252,4 @@ export function useCartOptional() {
   return useContext(CartContext);
 }
 
-export type { CartItem, CartProductInput, AppliedCoupon };
+export type { CartItem, CartProductInput, AppliedCoupon, productToCartItem };

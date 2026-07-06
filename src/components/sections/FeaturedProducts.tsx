@@ -10,6 +10,7 @@ import BrandSceneImage from "@/components/brand/BrandSceneImage";
 import { FEATURED_PRODUCTS as FEATURED_COPY } from "@/lib/brand/copy";
 import { FEATURED_PRODUCTS } from "../../lib/data";
 import type { StorefrontFeaturedProduct } from "@/lib/homepage/storefront";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { ctaHeight, editorialImageCrop, focusRing, homepageGridGap, imageHoverZoom, motionButton } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +74,9 @@ export default function FeaturedProducts({
                   variant="product"
                   imageUrl={product.imageUrl}
                   alt={product.name}
-                  sizes="(max-width: 640px) 88vw, (max-width: 1024px) 44vw, 22vw"
+                  priority={index < 2}
+                  sizes={IMAGE_SIZES.productCard}
+                  quality={IMAGE_QUALITY.product}
                   imageClassName={cn("product-pedestal-image", editorialImageCrop, imageHoverZoom)}
                 />
                 <div aria-hidden="true" className="product-pedestal-reflection" />
@@ -116,8 +119,7 @@ export default function FeaturedProducts({
                     </Link>
                   ) : (
                     <NotifyMeButton
-                      productName={product.name}
-                      category={product.category}
+                      productCategory={product.category}
                       label={FEATURED_COPY.notifyMe}
                       className={cn(ctaHeight, "text-base")}
                     />

@@ -23,7 +23,8 @@ export const QUALITY_STANDARDS: QualityStandard[] = [
     title: "Hypoallergenic",
     description:
       "Formulated to minimise allergen potential using carefully screened ingredients and fragrance-free options where applicable.",
-    icon: "shield-check",
+    badge: TRUST_BADGES.hypoallergenic,
+    badgeAlt: "Hypoallergenic",
   },
   {
     id: "paraben-free",
@@ -38,14 +39,16 @@ export const QUALITY_STANDARDS: QualityStandard[] = [
     title: "Silicone Free",
     description:
       "Our formulations avoid silicones, allowing skin to breathe naturally without occlusive film-forming agents.",
-    icon: "droplets",
+    badge: TRUST_BADGES.siliconeFree,
+    badgeAlt: "Silicone free",
   },
   {
     id: "mineral-oil-free",
     title: "Mineral Oil Free",
     description:
       "We use plant-derived emollients instead of mineral oil, supporting natural skin barrier function.",
-    icon: "leaf",
+    badge: TRUST_BADGES.mineralOilFree,
+    badgeAlt: "Mineral oil free",
   },
   {
     id: "cruelty-free",

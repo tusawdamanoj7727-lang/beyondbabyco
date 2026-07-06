@@ -41,3 +41,6 @@ export async function createSupabaseServerClient() {
     },
   });
 }
+
+/** Alias for sitemap and other metadata routes. */
+export const createClient = createSupabaseServerClient;

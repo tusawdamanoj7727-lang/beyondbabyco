@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import ContentHero from "@/components/content/ContentHero";
 import ContentPageRenderer from "@/components/content/ContentPageRenderer";
 import JsonLd from "@/components/seo/JsonLd";
+import { DEDICATED_CONTENT_SLUGS } from "@/lib/content/dedicated-routes";
 import {
   getAllContentSlugs,
   getAllFaqItems,
@@ -17,7 +18,9 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return getAllContentSlugs().map((slug) => ({ slug }));
+  return getAllContentSlugs()
+    .filter((slug) => !DEDICATED_CONTENT_SLUGS.has(slug))
+    .map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

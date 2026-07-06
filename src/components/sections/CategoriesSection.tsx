@@ -15,7 +15,7 @@ import { categoryBrowseHref } from "@/lib/catalog/category-links";
 import { focusRing } from "@/lib/design/ui";
 import type { StorefrontCategoryItem } from "@/lib/homepage/storefront";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 
 const CARD_DELAYS = [0.28, 0.34, 0.4, 0.46, 0.52, 0.58, 0.64, 0.7];
@@ -83,7 +83,8 @@ export default function CategoriesSection({
                     alt=""
                     fill
                     loading="lazy"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes={IMAGE_SIZES.categoryCard}
+                    quality={IMAGE_QUALITY.editorial}
                     placeholder="blur"
                     blurDataURL={resolveImageBlur(
                       blurForGeneratedUrl(imageSrc),

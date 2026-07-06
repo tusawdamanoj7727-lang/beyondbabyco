@@ -7,6 +7,7 @@ import { getWishlistProductIds, toggleWishlistAction } from "@/lib/storefront/wi
 import {
   readGuestWishlistIds,
   writeGuestWishlistIds,
+  WISHLIST_STORAGE_KEY,
 } from "@/lib/storefront/wishlist-storage";
 
 type WishlistContextValue = {
@@ -28,8 +29,16 @@ export function WishlistProvider({
   initialIds?: string[];
 }) {
   const { user, loading: authLoading } = useAuth();
-  const [ids, setIds] = useState<Set<string>>(() => new Set(initialIds));
-  const [loading, setLoading] = useState(initialIds.length === 0);
+  const [ids, setIds] = useState<Set<string>>(() => {
+    if (typeof window !== "undefined" && initialIds.length === 0) {
+      return new Set(readGuestWishlistIds());
+    }
+    return new Set(initialIds);
+  });
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== "undefined") return false;
+    return initialIds.length === 0;
+  });
   const [, startTransition] = useTransition();
   const isGuest = !user && !authLoading;
 
@@ -59,8 +68,15 @@ export function WishlistProvider({
     function onMerged() {
       refresh();
     }
+    function onStorage(e: StorageEvent) {
+      if (e.key === WISHLIST_STORAGE_KEY) refresh();
+    }
     window.addEventListener("bbc:wishlist-merged", onMerged);
-    return () => window.removeEventListener("bbc:wishlist-merged", onMerged);
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.removeEventListener("bbc:wishlist-merged", onMerged);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [refresh]);
 
   const isWishlisted = useCallback((productId: string) => ids.has(productId), [ids]);

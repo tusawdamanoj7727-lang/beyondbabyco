@@ -98,3 +98,6 @@ export const BRAND_PROMISE_DEFAULTS = BRAND_PROMISE.cards.map((card, index) => (
   imageUrl: brandPromisePhoto(index === 0 ? 1 : index === 1 ? 4 : 7),
   imageBlur: brandPromiseBlur(index === 0 ? 1 : index === 1 ? 4 : 7),
 }));
+
+export { MASCOT_PROFILES } from "@/lib/mascots/profiles";
+export type { MascotProfile, MascotColor } from "@/lib/mascots/profiles";

@@ -1,3 +1,4 @@
+import { resolveProductGstRate } from "@/lib/catalog/gst-rates";
 import type { StorefrontProduct } from "./types";
 
 export function effectivePrice(price: number, salePrice: number | null): number {
@@ -66,6 +67,7 @@ export function mapRowToStorefrontProduct(
     sale_price: number | null;
     status: string;
     stock: number;
+    gst_rate?: number;
     rating_avg: number;
     rating_count: number;
     category_id: string | null;
@@ -125,6 +127,7 @@ export function mapRowToStorefrontProduct(
       isFeatured: row.is_featured,
     }),
     secondaryBadge: productSecondaryBadge({ status: row.status }),
+    gstRate: resolveProductGstRate(row.gst_rate, extras.categorySlug),
   };
 }
 

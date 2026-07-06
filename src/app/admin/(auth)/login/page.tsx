@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 
 import { CALLBACK_ERROR_MESSAGES, callbackErrorMessage } from "@/lib/auth/auth-errors";
 import LoginForm from "./LoginForm";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Admin Login — BeyondBabyCo",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Admin Login",
   description: "Secure admin sign-in for BeyondBabyCo store management.",
-  robots: { index: false, follow: false },
-};
+  path: "/admin/login",
+  noIndex: true,
+});
 
 export default async function AdminLoginPage({
   searchParams,

@@ -7,10 +7,19 @@ import MotionSection from "../ui/MotionSection";
 import Reveal from "../ui/Reveal";
 import AccentBar from "../ui/AccentBar";
 import Logo from "@/components/brand/Logo";
+import InstagramLink from "@/components/ui/InstagramLink";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { formatSocialHandle, INSTAGRAM_ARIA_LABEL, isInstagramSocialLink } from "@/lib/brand/social";
 import { Mascot, type MascotPose, type MascotType } from "../mascots";
 import { ALL_MASCOTS, mascotFloatDuration, mascotLabel } from "../../lib/mascots";
-import { brandSupportEmail } from "@/lib/brand/contact";
+import {
+  brandSupportEmail,
+  brandSupportPhoneDisplay,
+  brandSupportPhoneTel,
+  brandWhatsAppDisplay,
+  brandWhatsAppUrl,
+  isWhatsAppConfigured,
+} from "@/lib/brand/contact";
 import { FOOTER as FOOTER_COPY } from "@/lib/brand/copy";
 import type { FooterConfig } from "@/lib/admin/homepage-schema";
 import { focusRing, trustIconSize } from "@/lib/design/ui";
@@ -19,31 +28,24 @@ import { cn } from "@/lib/utils";
 const QUICK_LINKS: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
-  { label: "About Us", href: "/about" },
-  { label: "Our Story", href: "/our-story" },
-  { label: "Research", href: "/research" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 const COMPANY_LINKS: { label: string; href: string }[] = [
   { label: "Trust Center", href: "/trust-center" },
-  { label: "Why BeyondBabyCo", href: "/why-beyondbabyco" },
-  { label: "Ingredients", href: "/ingredients" },
-  { label: "Manufacturing", href: "/manufacturing" },
-  { label: "Certifications", href: "/certifications" },
-  { label: "Safety Standards", href: "/safety-standards" },
-  { label: "Careers", href: "/careers" },
-  { label: "Press", href: "/press" },
-  { label: "FAQ", href: "/faq" },
+  { label: "Research", href: "/research" },
+  { label: "Our Story", href: "/our-story" },
+  { label: "Blog", href: "/community" },
 ];
 
 const LEGAL_LINKS: { label: string; href: string }[] = [
   { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Service", href: "/terms" },
+  { label: "Terms of Service", href: "/terms-of-service" },
   { label: "Shipping Policy", href: "/shipping-policy" },
   { label: "Refund Policy", href: "/refund-policy" },
   { label: "Return Policy", href: "/return-policy" },
-  { label: "Cookies", href: "/cookies" },
 ];
 
 const FOOTER_TRUST = [
@@ -64,6 +66,11 @@ const FOOTER_MASCOT_POSES: Record<MascotType, MascotPose> = {
 
 const linkClass =
   "motion-link font-body text-sm text-green-700/90 transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-50 rounded";
+
+const socialLinkClass = cn(
+  linkClass,
+  "inline-flex w-fit items-center gap-2 font-medium hover:text-[#2d5a27]",
+);
 
 const linkBtn =
   "inline-flex h-11 items-center justify-center rounded-full bg-green-700 px-6 text-sm font-semibold text-cream-50 shadow-[var(--shadow-premium)] hover:bg-green-800 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-50 motion-button";
@@ -86,7 +93,11 @@ function FooterLink({ href, className, children }: { href: string; className: st
 export default function Footer({ cms }: { cms?: FooterConfig }) {
   const companyInfo = cms?.companyInfo?.trim() || FOOTER_COPY.companyInfo;
   const email = cms?.email?.trim() || brandSupportEmail();
-  const phone = cms?.phone?.trim();
+  const phoneDisplay = cms?.phone?.trim() || (isWhatsAppConfigured() ? brandSupportPhoneDisplay() : "");
+  const phoneTel =
+    cms?.phone?.trim()?.replace(/\s/g, "") ||
+    (isWhatsAppConfigured() ? brandSupportPhoneTel().replace(/\s/g, "") : "");
+  const whatsappUrl = isWhatsAppConfigured() ? brandWhatsAppUrl() : null;
   const address = cms?.address?.trim() || "Udaipur, Rajasthan, India";
   const copyright =
     cms?.copyright?.trim() || "© 2026 BeyondBabyCo. All Rights Reserved.";
@@ -177,46 +188,53 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                     {email}
                   </a>
                 </div>
-                {phone ? (
+                {phoneDisplay ? (
                   <div>
                     <p className="font-semibold text-green-900">Phone</p>
-                    <a href={`tel:${phone.replace(/\s/g, "")}`} className={linkClass}>
-                      {phone}
+                    <a href={`tel:${phoneTel}`} className={linkClass}>
+                      {phoneDisplay}
+                    </a>
+                  </div>
+                ) : null}
+                {whatsappUrl ? (
+                  <div>
+                    <p className="font-semibold text-green-900">WhatsApp</p>
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(linkClass, "inline-flex w-fit items-center gap-2 hover:text-[#128C7E]")}
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-4 w-4 shrink-0 text-[#25D366]">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                      </svg>
+                      {brandWhatsAppDisplay()}
                     </a>
                   </div>
                 ) : null}
                 <div>
                   <p className="mb-2.5 font-semibold text-green-900">Follow Us</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col gap-2">
                     {socialLinks.length > 0 ? (
-                      socialLinks.map((link) => (
-                        <a
-                          key={`${link.platform}-${link.url}`}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={cn(
-                            "icon-btn border border-green-200 bg-white text-green-700 hover:border-green-300 hover:bg-green-50",
-                            focusRing,
-                          )}
-                          aria-label={link.platform}
-                        >
-                          <InstagramIcon className="h-[18px] w-[18px]" />
-                        </a>
-                      ))
+                      socialLinks.map((link) => {
+                        const handle = formatSocialHandle(link.url, link.platform);
+                        const instagram = isInstagramSocialLink(link.url, link.platform);
+                        return (
+                          <a
+                            key={`${link.platform}-${link.url}`}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(socialLinkClass, focusRing)}
+                            aria-label={instagram ? INSTAGRAM_ARIA_LABEL : `${handle} on social media`}
+                          >
+                            {instagram ? <InstagramIcon className="h-5 w-5 shrink-0" /> : null}
+                            <span>{handle}</span>
+                          </a>
+                        );
+                      })
                     ) : (
-                      <a
-                        href="https://instagram.com/beyondbabyco"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={cn(
-                          "icon-btn border border-green-200 bg-white text-green-700 hover:border-green-300 hover:bg-green-50",
-                          focusRing,
-                        )}
-                        aria-label="BeyondBabyCo on Instagram"
-                      >
-                        <InstagramIcon className="h-[18px] w-[18px]" />
-                      </a>
+                      <InstagramLink variant="with-handle" className={cn(socialLinkClass, focusRing)} />
                     )}
                   </div>
                 </div>

@@ -25,7 +25,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const data = await getStorefrontHomepage();
-  const testimonials = mergeTestimonials(data.testimonials);
   const featuredDb = await getFeaturedReviews(10);
   const heroLcpImage = data.hero.imageUrl.trim() || null;
 
@@ -33,6 +32,8 @@ export default async function Home() {
     featuredDb.length > 0
       ? featuredDb.map((r) => ({ ...r, hasVideo: false }))
       : [];
+
+  const testimonials = mergeTestimonials(data.testimonials, communityReviews);
 
   const featuredReview =
     communityReviews.find((r) => r.isFeatured) ?? communityReviews[0] ?? null;
@@ -47,14 +48,17 @@ export default async function Home() {
     })),
   );
 
-  const testimonialSchema = reviewJsonLd(
-    testimonials.slice(0, 5).map((t) => ({
-      author: t.name,
-      rating: t.rating,
-      body: t.text,
-      date: t.date ?? "2026-01-01",
-    })),
-  );
+  const testimonialSchema =
+    testimonials.length > 0
+      ? reviewJsonLd(
+          testimonials.slice(0, 5).map((t) => ({
+            author: t.name,
+            rating: t.rating,
+            body: t.text,
+            date: t.date ?? "2026-01-01",
+          })),
+        )
+      : null;
 
   return (
     <>

@@ -1,33 +1,22 @@
 import { Suspense } from "react";
 
-import ActiveFilterChips from "@/components/catalog/ActiveFilterChips";
-import CatalogBeyondCare from "@/components/catalog/CatalogBeyondCare";
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
-import CatalogBundleRecommendations from "@/components/catalog/CatalogBundleRecommendations";
 import CatalogHero from "@/components/catalog/CatalogHero";
 import CatalogSearchBar from "@/components/catalog/CatalogSearchBar";
 import CategoryChips from "@/components/catalog/CategoryChips";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
-import CatalogToolbar, { CatalogFiltersSidebar } from "@/components/catalog/CatalogFilters";
-import CollectionStickyToolbar from "@/components/catalog/CollectionStickyToolbar";
-import FeaturedCollections from "@/components/catalog/FeaturedCollections";
-import ProductGrid, { Pagination } from "@/components/catalog/ProductGrid";
-import { CatalogPageSkeleton } from "@/components/catalog/ProductCardSkeleton";
-import RecentlyViewed from "@/components/catalog/RecentlyViewed";
-import { parseCatalogParams, catalogParamsToSearchParams } from "@/lib/catalog/params";
-import type { CatalogSearchParams } from "@/lib/catalog/types";
-import {
-  getCatalogBanner,
-  getCatalogFilterOptions,
-  getFeaturedStorefrontProducts,
-  listStorefrontProducts,
-} from "@/lib/catalog/storefront";
+import { CatalogFiltersSidebar } from "@/components/catalog/CatalogFilters";
+import ProductsCatalogSection, { hasBrowseFilters } from "@/components/catalog/ProductsCatalogSection";
+import { ProductGridSkeleton } from "@/components/catalog/ProductCardSkeleton";
+import { parseCatalogParams } from "@/lib/catalog/params";
+import { getCatalogBanner, getCatalogFilterOptions } from "@/lib/catalog/storefront";
 
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import { PRODUCTS_PAGE } from "@/lib/brand/copy";
+import { buildProductsMetadata } from "@/lib/seo/metadata";
 
-export const metadata = buildPageMetadata({
-  title: "Shop the collection",
-  description: "Thoughtfully crafted baby care — gentle formulas developed through research, available now and arriving through 2026.",
+export const metadata = buildProductsMetadata({
+  title: PRODUCTS_PAGE.metaTitle,
+  description: PRODUCTS_PAGE.metaDescription,
   path: "/products",
 });
 
@@ -35,35 +24,13 @@ type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function hasBrowseFilters(params: CatalogSearchParams): boolean {
-  return Boolean(
-    params.q ||
-      params.category ||
-      params.brand ||
-      params.age ||
-      params.type ||
-      params.minPrice != null ||
-      params.maxPrice != null ||
-      params.inStock ||
-      (params.minRating != null && params.minRating > 0) ||
-      (params.page != null && params.page > 1),
-  );
-}
-
 export default async function ProductsPage({ searchParams }: PageProps) {
   const raw = await searchParams;
   const params = parseCatalogParams(raw);
   const showFeatured = !hasBrowseFilters(params);
   const filtered = hasBrowseFilters(params);
 
-  const [banner, filters, result, featured] = await Promise.all([
-    getCatalogBanner(),
-    getCatalogFilterOptions(),
-    listStorefrontProducts(params),
-    showFeatured ? getFeaturedStorefrontProducts(4) : Promise.resolve([]),
-  ]);
-
-  const queryString = catalogParamsToSearchParams(params).toString();
+  const [banner, filters] = await Promise.all([getCatalogBanner(), getCatalogFilterOptions()]);
 
   return (
     <>
@@ -90,29 +57,12 @@ export default async function ProductsPage({ searchParams }: PageProps) {
           <div className="min-w-0 flex-1">
             <CatalogSearchBar />
 
-            <Suspense fallback={<CatalogPageSkeleton />}>
-              {showFeatured ? (
-                <>
-                  <FeaturedCollections products={featured} />
-                  <CatalogBundleRecommendations products={featured} />
-                  <CatalogBeyondCare />
-                </>
-              ) : null}
-
-              <CollectionStickyToolbar>
-                <CatalogToolbar filters={filters} total={result.total} params={params} />
-                <ActiveFilterChips filters={filters} params={params} />
-              </CollectionStickyToolbar>
-
-              <ProductGrid products={result.products} hasActiveFilters={filtered} />
-              <Pagination
-                page={result.page}
-                pageCount={result.pageCount}
-                basePath="/products"
-                search={queryString}
+            <Suspense fallback={<ProductGridSkeleton count={8} />}>
+              <ProductsCatalogSection
+                searchParams={raw}
+                showFeatured={showFeatured}
+                hasActiveFilters={filtered}
               />
-
-              <RecentlyViewed variant="collection" />
             </Suspense>
           </div>
         </div>

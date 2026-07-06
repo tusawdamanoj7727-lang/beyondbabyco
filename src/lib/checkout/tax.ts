@@ -12,9 +12,11 @@ export function calcCheckoutTotals(input: {
   subtotal: number;
   discountTotal: number;
   shippingTotal: number;
+  /** When set, uses itemized GST instead of flat 18%. */
+  taxTotal?: number;
 }) {
   const afterDiscount = Math.max(0, input.subtotal - input.discountTotal);
-  const taxTotal = calcCheckoutTax(afterDiscount);
+  const taxTotal = input.taxTotal ?? calcCheckoutTax(afterDiscount);
   const grandTotal = Math.max(0, afterDiscount + input.shippingTotal + taxTotal);
   return {
     subtotal: input.subtotal,

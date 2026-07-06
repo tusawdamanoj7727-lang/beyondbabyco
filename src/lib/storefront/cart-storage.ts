@@ -25,6 +25,7 @@ export function normalizeCartItems(raw: unknown): CartItem[] {
         brandId: row.brandId ?? null,
         stock: row.stock ?? 99,
         inStock: row.inStock ?? true,
+        gstRate: row.gstRate ?? 12,
       };
     })
     .filter((item): item is CartItem => item !== null);

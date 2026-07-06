@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import StaticSvgImage, { isStaticSvgUrl } from "@/components/media/StaticSvgImage";
 import Card from "@/components/ui/Card";
 import AccentBar from "@/components/ui/AccentBar";
 import Badge from "@/components/ui/Badge";
@@ -93,16 +94,26 @@ function SectionCards({
               >
                 {item.image ? (
                   <span className="relative mx-auto block h-16 w-16">
-                    <Image
-                      src={item.image}
-                      alt={item.imageAlt ?? ""}
-                      fill
-                      loading="lazy"
-                      sizes="64px"
-                      placeholder="blur"
-                      blurDataURL={resolveImageBlur(blurForGeneratedUrl(item.image))}
-                      className="object-contain"
-                    />
+                    {isStaticSvgUrl(item.image) ? (
+                      <StaticSvgImage
+                        src={item.image}
+                        alt={item.imageAlt ?? ""}
+                        width={64}
+                        height={64}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <Image
+                        src={item.image}
+                        alt={item.imageAlt ?? ""}
+                        fill
+                        loading="lazy"
+                        sizes="64px"
+                        placeholder="blur"
+                        blurDataURL={resolveImageBlur(blurForGeneratedUrl(item.image))}
+                        className="object-contain"
+                      />
+                    )}
                   </span>
                 ) : Icon ? (
                   <Icon className="mx-auto h-10 w-10 text-green-700" aria-hidden="true" />
@@ -215,14 +226,24 @@ function SectionTrustBadges({
               className="flex flex-col items-center rounded-2xl border border-green-100 bg-cream-50/80 p-5 text-center"
             >
               {badge.image ? (
-                <Image
-                  src={badge.image}
-                  alt={badge.imageAlt ?? badge.title}
-                  width={56}
-                  height={56}
-                  loading="lazy"
-                  className="h-14 w-14 object-contain"
-                />
+                isStaticSvgUrl(badge.image) ? (
+                  <StaticSvgImage
+                    src={badge.image}
+                    alt={badge.imageAlt ?? badge.title}
+                    width={56}
+                    height={56}
+                    className="h-14 w-14 object-contain"
+                  />
+                ) : (
+                  <Image
+                    src={badge.image}
+                    alt={badge.imageAlt ?? badge.title}
+                    width={56}
+                    height={56}
+                    loading="lazy"
+                    className="h-14 w-14 object-contain"
+                  />
+                )
               ) : null}
               <p className="mt-3 font-heading text-xs font-bold uppercase tracking-wide text-green-800">
                 {badge.title}

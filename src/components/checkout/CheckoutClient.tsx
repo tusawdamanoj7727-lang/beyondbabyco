@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Sentry from "@sentry/nextjs";
 import { Loader2, MapPin, ShieldCheck } from "lucide-react";
 
 import CheckoutOrderSummary, { useCheckoutTotals } from "@/components/checkout/CheckoutOrderSummary";
@@ -21,6 +22,17 @@ import { estimateShippingFee } from "@/lib/storefront/shipping";
 import { trackBeginCheckout, trackPurchase } from "@/lib/analytics/events";
 import { dialogContentCentered, dialogOverlay, formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
+
+function notifyCheckoutError(
+  toast: ReturnType<typeof useToast>,
+  message: string,
+) {
+  if (/out of stock/i.test(message)) {
+    toast.warning("This item is out of stock");
+    return;
+  }
+  toast.error(message || "Something went wrong");
+}
 
 declare global {
   interface Window {
@@ -111,7 +123,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     items.reduce((s, i) => s + i.price * i.quantity, 0),
     appliedCoupon?.freeShipping ?? false,
   );
-  const totals = useCheckoutTotals(shippingFee);
+  const totals = useCheckoutTotals(shippingFee, shipping.state || "Rajasthan");
 
   const checkPin = useCallback(async (pincode: string) => {
     if (pincode.length !== 6) return;
@@ -189,6 +201,17 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     setReviewOpen(true);
   }
 
+  function capturePaymentError(error: unknown, extra: { orderId?: string | null; cartTotal: number }) {
+    Sentry.captureException(error, {
+      tags: { flow: "checkout_payment" },
+      extra: {
+        orderId: extra.orderId ?? null,
+        cartTotal: extra.cartTotal,
+        paymentMethod,
+      },
+    });
+  }
+
   function placeOrder() {
     if (placingRef.current) return;
     const err = validateForm();
@@ -213,6 +236,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             quantity: i.quantity,
             name: i.name,
             price: i.price,
+            gstRate: i.gstRate,
             variantName: i.variantName,
           })),
           coupon: appliedCoupon
@@ -228,19 +252,24 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         });
 
         if (!result.ok || !result.orderId) {
-          toast.error(result.error ?? "Could not place order");
+          capturePaymentError(new Error(result.error ?? "Could not place order"), {
+            cartTotal: totals.total,
+          });
+          notifyCheckoutError(toast, result.error ?? "Could not place order");
           placingRef.current = false;
           return;
         }
 
+        const orderId = result.orderId;
+
         if (result.paymentMethod === "cod") {
           trackPurchase({
-            transactionId: result.orderId,
+            transactionId: orderId,
             value: result.grandTotal ?? totals.total,
             itemCount: items.length,
           });
           clear();
-          router.push(`/checkout/success?orderId=${result.orderId}`);
+          router.push(`/checkout/success?orderId=${orderId}`);
           return;
         }
 
@@ -250,12 +279,24 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         });
 
         if (!result.razorpayOrderId || !result.razorpayKeyId) {
+          capturePaymentError(new Error("Payment could not be initialized"), {
+            orderId,
+            cartTotal: totals.total,
+          });
           toast.error("Payment could not be initialized.");
           placingRef.current = false;
           return;
         }
 
-        await loadRazorpayScript();
+        try {
+          await loadRazorpayScript();
+        } catch (scriptError) {
+          capturePaymentError(scriptError, { orderId, cartTotal: totals.total });
+          toast.error("Could not load payment SDK. Please try again.");
+          placingRef.current = false;
+          return;
+        }
+
         const rzp = new window.Razorpay!({
           key: result.razorpayKeyId,
           amount: Math.round((result.grandTotal ?? totals.total) * 100),
@@ -275,34 +316,39 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             razorpay_signature: string;
           }) => {
             const verified = await verifyRazorpayCheckoutAction({
-              orderId: result.orderId!,
+              orderId,
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
             });
             if (!verified.ok) {
-              router.push(`/checkout/failure?orderId=${result.orderId}&reason=verify`);
+              capturePaymentError(new Error(verified.error ?? "Payment verification failed"), {
+                orderId,
+                cartTotal: totals.total,
+              });
+              router.push(`/checkout/failure?orderId=${orderId}&reason=verify`);
               return;
             }
             trackPurchase({
-              transactionId: result.orderId!,
+              transactionId: orderId,
               value: result.grandTotal ?? totals.total,
               itemCount: items.length,
             });
             clear();
-            router.push(`/checkout/success?orderId=${result.orderId}`);
+            router.push(`/checkout/success?orderId=${orderId}`);
           },
           modal: {
             ondismiss: () => {
               placingRef.current = false;
-              router.push(`/checkout/failure?orderId=${result.orderId}&reason=cancelled`);
+              router.push(`/checkout/failure?orderId=${orderId}&reason=cancelled`);
             },
           },
         });
         rzp.open();
         setReviewOpen(false);
-      } catch {
-        toast.error("Something went wrong. Please try again.");
+      } catch (error) {
+        capturePaymentError(error, { cartTotal: totals.total });
+        toast.error("Something went wrong");
         placingRef.current = false;
       }
     });
@@ -439,6 +485,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
 
         <CheckoutOrderSummary
           shippingTotal={shippingFee}
+          buyerState={shipping.state || "Rajasthan"}
           serviceable={delivery?.serviceable ?? null}
           deliveryEstimate={delivery?.estimatedDelivery}
           codAvailable={delivery?.cod}

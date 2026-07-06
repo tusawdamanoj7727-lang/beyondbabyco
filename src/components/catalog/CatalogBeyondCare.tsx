@@ -8,8 +8,9 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { beyondCarePhotos } from "@/lib/homepage/visual-assets";
 import { useNotifyMe } from "@/lib/homepage/notify-me-context";
+import { buildCategoryNotifyTarget } from "@/lib/notify-me/target";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -61,7 +62,8 @@ export default function CatalogBeyondCare() {
                   alt=""
                   fill
                   loading="lazy"
-                  sizes="(max-width: 768px) 100vw, 480px"
+                  sizes={IMAGE_SIZES.lifestyleHero}
+                  quality={IMAGE_QUALITY.editorial}
                   placeholder="blur"
                   blurDataURL={resolveImageBlur(
                     blurForGeneratedUrl(line.title === "Men Care" ? beyondCarePhotos.men : beyondCarePhotos.women),
@@ -84,7 +86,7 @@ export default function CatalogBeyondCare() {
                   fullWidth
                   type="button"
                   className={cn("mt-4", focusRing)}
-                  onClick={() => openNotifyMe(line.title, "Beyond Care")}
+                  onClick={() => openNotifyMe(buildCategoryNotifyTarget(line.title))}
                 >
                   Notify Me
                 </Button>

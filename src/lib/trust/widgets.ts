@@ -26,7 +26,7 @@ export const TRUST_WIDGETS: TrustWidget[] = [
     label: "Secure Payments",
     description: "Encrypted checkout via trusted gateways",
     icon: "lock",
-    href: "/terms",
+    href: "/terms-of-service",
   },
   {
     id: "returns",

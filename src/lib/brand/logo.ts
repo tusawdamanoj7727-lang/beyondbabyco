@@ -31,8 +31,10 @@ export const BRAND_ANDROID_CHROME_192 = "/images/brand/android-chrome-192.png";
 export const BRAND_ANDROID_CHROME_512 = "/images/brand/android-chrome-512.png";
 
 /** OpenGraph — 1200×630 production cards */
-export const BRAND_OG_IMAGE = "/images/brand/og-default.png";
-export const BRAND_OG_HOME = "/images/brand/og-home.png";
+export const BRAND_OG_IMAGE = "/images/og/og-default.jpg";
+export const BRAND_OG_HOME = "/images/og/og-home.jpg";
+export const BRAND_OG_PRODUCTS = "/images/og/og-products.jpg";
+export const BRAND_OG_DEFAULT = BRAND_OG_IMAGE;
 export const BRAND_OG_WIDTH = 1200;
 export const BRAND_OG_HEIGHT = 630;
 

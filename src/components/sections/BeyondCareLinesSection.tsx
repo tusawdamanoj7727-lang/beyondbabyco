@@ -7,7 +7,7 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { beyondCarePhotos } from "@/lib/homepage/visual-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 
 const CARE_LINES = [
   {
@@ -53,7 +53,8 @@ export default function BeyondCareLinesSection() {
                   alt=""
                   fill
                   loading="lazy"
-                  sizes="(max-width: 1024px) 100vw, 560px"
+                  sizes={IMAGE_SIZES.lifestyleHero}
+                  quality={IMAGE_QUALITY.editorial}
                   placeholder="blur"
                   blurDataURL={resolveImageBlur(line.blur)}
                   className="object-cover object-[center_24%] transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.02]"
@@ -72,7 +73,7 @@ export default function BeyondCareLinesSection() {
                   Launching 2026 · Research complete
                 </p>
                 <div className="mt-5">
-                  <NotifyMeButton productName={line.title} category="Beyond Care" label="Notify Me" />
+                  <NotifyMeButton productCategory={line.title} label="Notify Me" />
                 </div>
               </div>
             </Card>

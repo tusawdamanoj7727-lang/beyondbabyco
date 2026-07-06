@@ -4,7 +4,8 @@
  */
 
 export const PRODUCTION_APP_URL = "https://beyondbabyco.in";
-export const DEVELOPMENT_APP_URL = "http://localhost:3000";
+export const DEVELOPMENT_APP_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || PRODUCTION_APP_URL;
 
 export function normalizeAppUrl(url: string): string {
   return url.trim().replace(/\/+$/, "");
@@ -21,7 +22,9 @@ function isLocalhostUrl(url: string): boolean {
 
 function resolveConfiguredAppUrl(): string | null {
   const configured =
-    process.env.NEXT_PUBLIC_APP_URL?.trim() || process.env.APP_URL?.trim();
+    process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.APP_URL?.trim();
   if (!configured) return null;
 
   const normalized = normalizeAppUrl(configured);
@@ -41,8 +44,8 @@ function resolveConfiguredAppUrl(): string | null {
  * 1. NEXT_PUBLIC_APP_URL / APP_URL (unless localhost in production)
  * 2. https://{VERCEL_URL} on Vercel preview/production
  * 3. https://beyondbabyco.in in production
- * 4. http://localhost:3000 in development
- * 5. http://localhost:3000 in test (when unset)
+ * 4. NEXT_PUBLIC_SITE_URL / NEXT_PUBLIC_APP_URL in development
+ * 5. https://beyondbabyco.in in test (when unset)
  */
 export function getAppUrl(): string {
   const configured = resolveConfiguredAppUrl();

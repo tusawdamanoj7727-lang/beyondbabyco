@@ -1,23 +1,39 @@
 import { formatInr } from "@/lib/catalog/format";
-import { calcCheckoutTax } from "@/lib/checkout/tax";
+import { formatGstRateLabel, MRP_INCLUSIVE_TAX_LABEL } from "@/lib/catalog/gst-rates";
 import { cn } from "@/lib/utils";
 
 type PricingTaxNoteProps = {
   className?: string;
-  /** When set, shows estimated GST amount alongside the disclosure. */
-  taxableAmount?: number;
+  /** Product GST % — defaults to 12% baby care. */
+  gstRate?: number;
+  /** Show MRP inclusive label (product cards / PDP). */
+  showMrpLabel?: boolean;
 };
 
-export default function PricingTaxNote({ className, taxableAmount }: PricingTaxNoteProps) {
-  const estimatedGst =
-    taxableAmount != null && taxableAmount > 0 ? calcCheckoutTax(taxableAmount) : null;
+export default function PricingTaxNote({
+  className,
+  gstRate = 12,
+  showMrpLabel = false,
+}: PricingTaxNoteProps) {
+  const rateLabel = formatGstRateLabel(gstRate);
 
   return (
     <p className={cn("text-xs leading-relaxed text-green-700/75", className)}>
-      GST (18%) calculated at checkout
-      {estimatedGst != null ? (
-        <span className="text-green-700/65"> · Estimated {formatInr(estimatedGst)}</span>
+      {showMrpLabel ? (
+        <>
+          <span className="font-medium text-green-800">{MRP_INCLUSIVE_TAX_LABEL}</span>
+          <span className="text-green-700/65"> · </span>
+        </>
       ) : null}
+      {rateLabel} included in price
     </p>
+  );
+}
+
+export function MrpInclusiveLabel({ className }: { className?: string }) {
+  return (
+    <span className={cn("text-[11px] font-medium text-green-700/70", className)}>
+      {MRP_INCLUSIVE_TAX_LABEL}
+    </span>
   );
 }

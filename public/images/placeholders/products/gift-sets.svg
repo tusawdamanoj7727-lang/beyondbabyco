@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Gift Sets">
+  <defs>
+    <linearGradient id="gift-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fce7f3"/>
+      <stop offset="42%" stop-color="#f9a8d4"/>
+      <stop offset="100%" stop-color="#fdf2f8"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#gift-bg)"/>
+  <rect x="95" y="230" width="210" height="130" rx="16" fill="#ffffff" opacity="0.88"/>
+  <rect x="185" y="190" width="30" height="170" fill="#fbcfe8"/>
+  <rect x="95" y="285" width="210" height="24" fill="#f472b6" opacity="0.55"/>
+  <path d="M200 190 C170 150 130 170 145 205 C160 225 200 210 200 190 Z" fill="#f9a8d4"/>
+  <path d="M200 190 C230 150 270 170 255 205 C240 225 200 210 200 190 Z" fill="#f9a8d4"/>
+  <text x="200" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="#9d174d">Gift Sets</text>
+</svg>

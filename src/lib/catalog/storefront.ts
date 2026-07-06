@@ -4,11 +4,16 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { cache } from "react";
 
+import { PRODUCTS_PAGE } from "@/lib/brand/copy";
 import { resolveProductGalleryImages, resolveProductVisual } from "@/lib/brand/generated-assets";
 import { getHero } from "@/lib/homepage/queries";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { mapRowToStorefrontProduct } from "./format";
+import {
+  getVariantAvailableStock,
+  productInStockFromVariants,
+} from "@/lib/inventory/storefront-stock";
 import type {
   CatalogBanner,
   CatalogFilterOptions,
@@ -23,7 +28,7 @@ import type {
 } from "./types";
 
 const PRODUCT_SELECT =
-  "id,slug,name,short_description,description,price,compare_at_price,sale_price,status,stock,rating_avg,rating_count,category_id,subcategory_id,brand_id,is_featured,is_best_seller,is_new_arrival,is_trending,sku,seo_title,seo_description,created_at,launch_date";
+  "id,slug,name,short_description,description,price,compare_at_price,sale_price,status,stock,gst_rate,rating_avg,rating_count,category_id,subcategory_id,brand_id,is_featured,is_best_seller,is_new_arrival,is_trending,sku,seo_title,seo_description,created_at,launch_date";
 
 const PER_PAGE = 12;
 
@@ -242,8 +247,17 @@ export const getProductBySlug = cache(
         price: v.price ?? base.price,
         compareAtPrice: v.compare_at_price,
         isActive: v.is_active,
+        stockQuantity: 0,
       }))
-      .filter((v) => v.price > 0);
+      .filter((v) => v.price > 0 && v.isActive);
+
+    const variantStock = await getVariantAvailableStock(variants.map((v) => v.id));
+    for (const variant of variants) {
+      variant.stockQuantity = variantStock.get(variant.id) ?? 0;
+    }
+
+    const totalAvailable = variants.reduce((sum, v) => sum + v.stockQuantity, 0);
+    const inStock = productInStockFromVariants(base.status, variants.map((v) => v.stockQuantity));
 
     const faqs: StorefrontFaq[] = faqsRes;
 
@@ -275,6 +289,8 @@ export const getProductBySlug = cache(
 
     return {
       ...base,
+      stock: totalAvailable,
+      inStock,
       imageUrl: cardVisual.imageUrl,
       imageBlurDataUrl: cardVisual.imageBlurDataUrl,
       description: row.description,
@@ -382,23 +398,11 @@ export const getCatalogBanner = cache(async (): Promise<CatalogBanner> => {
   const heroSlides = await getHero();
   const hero = heroSlides[0];
 
-  if (hero) {
-    return {
-      title: hero.title || "Shop BeyondBabyCo",
-      subtitle: hero.subtitle || "Research-backed baby care",
-      description:
-        hero.description ||
-        "Discover gentle, dermatologically tested essentials crafted for your little one.",
-      imageUrl: hero.backgroundUrl || hero.imageUrl || null,
-    };
-  }
-
   return {
-    title: "Shop BeyondBabyCo",
-    subtitle: "Every Baby Deserves The Safest Touch",
-    description:
-      "Discover gentle, dermatologically tested essentials crafted through years of research.",
-    imageUrl: null,
+    title: PRODUCTS_PAGE.heroTitle,
+    subtitle: PRODUCTS_PAGE.heroEyebrow,
+    description: PRODUCTS_PAGE.heroDescription,
+    imageUrl: hero?.backgroundUrl || hero?.imageUrl || null,
   };
 });
 
@@ -428,6 +432,7 @@ async function enrichStorefrontProducts(
     sale_price: number | null;
     status: string;
     stock: number;
+    gst_rate?: number;
     rating_avg: number;
     rating_count: number;
     category_id: string | null;
@@ -544,6 +549,24 @@ export const getFeaturedStorefrontProducts = cache(async (limit = 4): Promise<St
   if (error) throw new Error(error.message);
   return enrichStorefrontProducts(data ?? []);
 });
+
+export async function getStorefrontProductsBySlugs(slugs: string[]): Promise<StorefrontProduct[]> {
+  if (slugs.length === 0) return [];
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .in("slug", slugs)
+    .in("status", ["active", "coming_soon"])
+    .is("deleted_at", null);
+
+  if (error) throw new Error(error.message);
+
+  const enriched = await enrichStorefrontProducts(data ?? []);
+  const bySlug = new Map(enriched.map((p) => [p.slug, p]));
+  return slugs.map((slug) => bySlug.get(slug)).filter((p): p is StorefrontProduct => !!p);
+}
 
 export async function getStorefrontProductsByIds(ids: string[]): Promise<StorefrontProduct[]> {
   if (ids.length === 0) return [];

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 
 import { Mascot } from "@/components/mascots";
 import Button from "@/components/ui/Button";
@@ -16,6 +17,7 @@ export default function Error({
 }) {
   useEffect(() => {
     logger.error("Storefront error boundary", { error, digest: error.digest });
+    Sentry.captureException(error, { extra: { digest: error.digest } });
   }, [error]);
 
   return (

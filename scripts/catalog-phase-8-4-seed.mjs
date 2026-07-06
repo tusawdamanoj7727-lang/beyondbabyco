@@ -22,6 +22,9 @@ import {
   PRODUCTS,
   buildDescription,
   buildSeoKeywords,
+  gstRateForProductCategory,
+  LAUNCH_PRODUCT_SLUGS,
+  productImageForCategory,
 } from "./data/catalog-phase-8-4.mjs";
 import { loadSupabase } from "./lib/product-asset-lib.mjs";
 
@@ -236,12 +239,12 @@ async function seedProduct(supabase, p, ctx) {
     compare_at_price: p.mrp,
     price: p.price,
     sale_price: null,
-    gst_rate: p.gst,
+    gst_rate: p.gst ?? gstRateForProductCategory(p.category),
     tax_class: "GST",
-    stock: p.stock,
+    stock: LAUNCH_PRODUCT_SLUGS.has(p.slug) ? p.stock : 0,
     low_stock_threshold: 10,
     weight_grams: p.weight,
-    status: p.comingSoon ? "coming_soon" : "active",
+    status: LAUNCH_PRODUCT_SLUGS.has(p.slug) ? "active" : "coming_soon",
     is_featured: !!p.featured,
     is_best_seller: !!p.bestSeller,
     is_new_arrival: !!p.newArrival,
@@ -250,7 +253,7 @@ async function seedProduct(supabase, p, ctx) {
     seo_description: p.short,
     meta_keywords: buildSeoKeywords(p, collectionName),
     canonical_url: canonical,
-    published_at: p.comingSoon ? null : new Date().toISOString(),
+    published_at: LAUNCH_PRODUCT_SLUGS.has(p.slug) ? new Date().toISOString() : null,
     launch_date: new Date().toISOString(),
   };
 
@@ -275,18 +278,25 @@ async function seedProduct(supabase, p, ctx) {
     .select("id,url,is_primary")
     .eq("product_id", productId);
 
-  const hasApproved = existingImages?.some(
-    (img) => img.url && !img.url.includes("placeholder") && !img.url.includes("product-botanical"),
-  );
+  const categoryImage = productImageForCategory(p.category, p.slug);
+  const needsImageUpdate =
+    !existingImages?.length ||
+    existingImages.every(
+      (img) =>
+        !img.url ||
+        img.url.includes("placeholder") ||
+        img.url.includes("product-botanical") ||
+        img.url !== categoryImage,
+    );
 
-  if (!hasApproved) {
+  if (needsImageUpdate) {
     if (existingImages?.length) {
       await supabase.from("product_images").delete().eq("product_id", productId);
     }
     await supabase.from("product_images").insert({
       product_id: productId,
-      url: PLACEHOLDER_IMAGE,
-      alt: `${p.name} — AI image pending (Phase 8.3)`,
+      url: categoryImage,
+      alt: `${p.name} | BeyondBabyCo`,
       position: 0,
       is_primary: true,
     });
@@ -304,7 +314,7 @@ async function seedProduct(supabase, p, ctx) {
       price: v.price,
       compare_at_price: v.mrp,
       position: i,
-      is_active: true,
+      is_active: v.available !== false,
     };
     if (bySku.has(v.sku)) {
       await supabase.from("product_variants").update(vRow).eq("id", bySku.get(v.sku));

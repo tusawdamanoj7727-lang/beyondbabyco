@@ -13,8 +13,8 @@ import { badgeCount, dialogOverlay, drawerPanel, focusRing, iconButton } from "@
 import { formatInr } from "@/lib/catalog/format";
 import { useCart } from "@/lib/storefront/cart-context";
 import { useCartUi } from "@/lib/storefront/cart-ui-context";
-import PricingTaxNote from "@/components/catalog/PricingTaxNote";
-import { calcCheckoutTax } from "@/lib/checkout/tax";
+import { calcCartGstBreakdown } from "@/lib/storefront/cart-tax";
+import { formatGstRateLabel } from "@/lib/catalog/gst-rates";
 import { estimateShippingFee } from "@/lib/storefront/shipping";
 import { cartLineKey } from "@/lib/storefront/cart-types";
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ export default function MiniCartDrawer() {
   const freeShipping = appliedCoupon?.freeShipping ?? false;
   const shipping = freeShipping ? 0 : estimateShippingFee(subtotal, false);
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
-  const estimatedGst = calcCheckoutTax(afterDiscount);
+  const gstBreakdown = calcCartGstBreakdown(items, couponDiscount);
   const total = Math.max(0, afterDiscount + shipping);
 
   return (
@@ -110,15 +110,23 @@ export default function MiniCartDrawer() {
                   <span>Shipping</span>
                   <span>{shipping === 0 ? "Free" : formatInr(shipping)}</span>
                 </div>
-                <div className="flex items-center justify-between text-sm text-green-700/80">
-                  <span>Estimated GST (18%)</span>
-                  <span>{formatInr(estimatedGst)}</span>
-                </div>
+                {gstBreakdown.lines.length === 1 ? (
+                  <div className="flex items-center justify-between text-sm text-green-700/80">
+                    <span>{formatGstRateLabel(gstBreakdown.lines[0]!.rate)}</span>
+                    <span>{formatInr(gstBreakdown.lines[0]!.amount)}</span>
+                  </div>
+                ) : (
+                  gstBreakdown.lines.map((line) => (
+                    <div key={line.rate} className="flex items-center justify-between text-sm text-green-700/80">
+                      <span>{formatGstRateLabel(line.rate)}</span>
+                      <span>{formatInr(line.amount)}</span>
+                    </div>
+                  ))
+                )}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-green-700">Estimated total (excl. GST)</span>
+                  <span className="text-sm text-green-700">Total (MRP incl. taxes)</span>
                   <span className="font-heading text-lg font-bold text-green-900">{formatInr(total)}</span>
                 </div>
-                <PricingTaxNote className="pt-1" />
               </div>
               <div className="flex flex-col gap-2">
                 <Button

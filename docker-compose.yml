@@ -1,3 +1,5 @@
+# Optional self-hosting only — see DEPLOYMENT.md. Vercel is the primary deployment.
+
 services:
   app:
     build:

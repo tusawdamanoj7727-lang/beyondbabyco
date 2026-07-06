@@ -16,6 +16,8 @@ export default function CommunityStrip({
   allReviews: EnrichedPublicReview[];
   className?: string;
 }) {
+  if (!featuredReview && allReviews.length === 0) return null;
+
   const summary = computeReviewSummary(allReviews.length ? allReviews : featuredReview ? [featuredReview] : []);
 
   const liveHighlights =

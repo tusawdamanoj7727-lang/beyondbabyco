@@ -1,4 +1,5 @@
-import CartClient from "@/components/catalog/CartClient";
+import CartPageClient from "@/components/cart/CartPageClient";
+import StorefrontErrorBoundary from "@/components/ui/StorefrontErrorBoundary";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildPageMetadata({
@@ -8,5 +9,11 @@ export const metadata = buildPageMetadata({
 });
 
 export default function CartPage() {
-  return <CartClient />;
+  return (
+    <div className="min-h-screen bg-[#faf5f0]/40">
+      <StorefrontErrorBoundary context="cart">
+        <CartPageClient />
+      </StorefrontErrorBoundary>
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
-import CheckoutClient from "@/components/checkout/CheckoutClient";
+import CheckoutRoute from "@/components/checkout/CheckoutRoute";
 import { getCheckoutInitialDataAction } from "@/lib/checkout/actions";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -30,7 +30,7 @@ export default async function CheckoutPage() {
           <h1 className="font-heading text-3xl font-bold text-green-900 sm:text-4xl">Checkout</h1>
           <p className="mt-2 text-green-700/70">Secure, research-backed care — delivered to your door.</p>
         </header>
-        <CheckoutClient initial={initial} />
+        <CheckoutRoute initial={initial} />
       </div>
     </>
   );

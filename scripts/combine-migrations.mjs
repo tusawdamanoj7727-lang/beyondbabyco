@@ -5,6 +5,7 @@
  *
  * Usage: npm run db:combine
  * Output: supabase/database/APPLY_ALL.sql
+ *          supabase/combined_migration.sql  (same content — for SQL Editor)
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -13,6 +14,7 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const migrationDir = join(root, "supabase/database");
 const outFile = join(migrationDir, "APPLY_ALL.sql");
+const combinedOutFile = join(root, "supabase/combined_migration.sql");
 
 const files = readdirSync(migrationDir)
   .filter((f) => /^\d{3}_.+\.sql$/.test(f))
@@ -51,6 +53,8 @@ for (const file of files) {
 }
 
 writeFileSync(outFile, parts.join(""), "utf-8");
+writeFileSync(combinedOutFile, parts.join(""), "utf-8");
 
 console.log(`Combined ${files.length} migrations → supabase/database/APPLY_ALL.sql`);
+console.log(`Combined ${files.length} migrations → supabase/combined_migration.sql`);
 console.log("Apply via Supabase Dashboard → SQL Editor → paste → Run");

@@ -7,6 +7,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { getCurrentUser } from "@/lib/auth/session";
+import { validateImageUpload } from "@/lib/media/upload-validation";
 import { isOptimizableImage, optimizeProductUpload } from "./product-media-optimize";
 import {
   buildStoragePaths,
@@ -99,6 +100,11 @@ export async function uploadProductMedia(
 
   const sectionId = (formData.get("sectionId") as MediaSectionId) || "gallery";
   const section = getSection(sectionId);
+  if (section.accept === "image") {
+    const typeError = validateImageUpload(file);
+    if (typeError) return { ok: false, error: typeError };
+  }
+
   const altOverride = (formData.get("alt") as string)?.trim() || null;
   const seo = suggestProductMediaSeo({ productName, sectionId, originalFilename: file.name });
 

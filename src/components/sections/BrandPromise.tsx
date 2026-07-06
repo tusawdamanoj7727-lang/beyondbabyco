@@ -9,7 +9,7 @@ import { homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 import { BRAND_PROMISE_DEFAULTS } from "../../lib/data";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import type { BrandPromiseConfig } from "@/lib/admin/homepage-schema";
 
 const DEFAULT_CARDS = BRAND_PROMISE_DEFAULTS.map((card) => ({
@@ -43,6 +43,7 @@ export default function BrandPromise({ config }: { config?: BrandPromiseConfig }
             fill
             loading="lazy"
             sizes="100vw"
+            quality={IMAGE_QUALITY.editorial}
             placeholder="blur"
             blurDataURL={resolveImageBlur(blurForGeneratedUrl(backgroundUrl))}
             className="object-cover object-center"
@@ -76,12 +77,14 @@ export default function BrandPromise({ config }: { config?: BrandPromiseConfig }
                   <Image
                     src={card.imageUrl}
                     alt=""
-                    fill
+                    width={400}
+                    height={400}
                     loading="lazy"
-                    sizes="72px"
+                    sizes={IMAGE_SIZES.lifestyleThumbnail}
+                    quality={IMAGE_QUALITY.editorial}
                     placeholder="blur"
                     blurDataURL={resolveImageBlur(blurForGeneratedUrl(card.imageUrl ?? ""))}
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : null}
               </span>

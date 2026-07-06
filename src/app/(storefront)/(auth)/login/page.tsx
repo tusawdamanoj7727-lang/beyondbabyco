@@ -5,12 +5,14 @@ import { ensureCustomerRecordsForUser } from "@/lib/auth/customer-bootstrap";
 import { CALLBACK_ERROR_MESSAGES, callbackErrorMessage } from "@/lib/auth/auth-errors";
 import { getCurrentUser } from "@/lib/auth/session";
 import CustomerLoginForm from "./LoginForm";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Sign In — BeyondBabyCo",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Sign In",
   description: "Sign in to your BeyondBabyCo account to track orders and manage your profile.",
-  robots: { index: false, follow: false },
-};
+  path: "/login",
+  noIndex: true,
+});
 
 export default async function LoginPage({
   searchParams,

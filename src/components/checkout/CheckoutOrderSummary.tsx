@@ -1,13 +1,19 @@
 "use client";
 
 import { formatInr } from "@/lib/catalog/format";
+import { SELLER_STATE } from "@/lib/utils/gst";
 import { useCart } from "@/lib/storefront/cart-context";
 import { cartMrpTotal } from "@/lib/storefront/cart-types";
-import { calcCheckoutTax } from "@/lib/checkout/tax";
 import { ESTIMATED_DELIVERY_DAYS, FREE_SHIPPING_THRESHOLD } from "@/lib/storefront/shipping";
+import {
+  calculateGSTFromCart,
+  gstDisplayLines,
+  type GstLineItem,
+} from "@/lib/utils/gst";
 
 type CheckoutOrderSummaryProps = {
   shippingTotal: number;
+  buyerState?: string;
   deliveryEstimate?: string | null;
   serviceable?: boolean | null;
   codAvailable?: boolean;
@@ -16,6 +22,7 @@ type CheckoutOrderSummaryProps = {
 
 export default function CheckoutOrderSummary({
   shippingTotal,
+  buyerState = SELLER_STATE,
   deliveryEstimate,
   serviceable,
   codAvailable,
@@ -29,8 +36,14 @@ export default function CheckoutOrderSummary({
   const freeShipping = appliedCoupon?.freeShipping ?? false;
   const shipping = freeShipping ? 0 : shippingTotal;
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
-  const tax = calcCheckoutTax(afterDiscount);
-  const total = afterDiscount + shipping + tax;
+  const gstLineItems: GstLineItem[] = items.map((i) => ({
+    price: i.price,
+    quantity: i.quantity,
+    gstRate: i.gstRate,
+  }));
+  const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
+  const gstLines = gstDisplayLines(gstBreakdown, gstLineItems);
+  const total = afterDiscount + shipping + gstBreakdown.total;
   const totalSavings = productSavings + couponDiscount;
 
   return (
@@ -82,10 +95,12 @@ export default function CheckoutOrderSummary({
           <dt>Shipping</dt>
           <dd>{shipping === 0 ? "Free" : formatInr(shipping)}</dd>
         </div>
-        <div className="flex justify-between text-green-700">
-          <dt>GST (18%)</dt>
-          <dd>{formatInr(tax)}</dd>
-        </div>
+        {gstLines.map((line) => (
+          <div key={line.label} className="flex justify-between text-green-700">
+            <dt>{line.label}</dt>
+            <dd>{formatInr(line.amount)}</dd>
+          </div>
+        ))}
       </dl>
 
       {subtotal < FREE_SHIPPING_THRESHOLD && !freeShipping ? (
@@ -123,13 +138,26 @@ export default function CheckoutOrderSummary({
   );
 }
 
-export function useCheckoutTotals(shippingTotal: number) {
-  const { subtotal, appliedCoupon } = useCart();
+export function useCheckoutTotals(shippingTotal: number, buyerState: string) {
+  const { items, subtotal, appliedCoupon } = useCart();
   const couponDiscount = appliedCoupon?.discountAmount ?? 0;
   const freeShipping = appliedCoupon?.freeShipping ?? false;
   const shipping = freeShipping ? 0 : shippingTotal;
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
-  const tax = calcCheckoutTax(afterDiscount);
-  const total = afterDiscount + shipping + tax;
-  return { subtotal, couponDiscount, shipping, tax, total, freeShipping };
+  const gstLineItems: GstLineItem[] = items.map((i) => ({
+    price: i.price,
+    quantity: i.quantity,
+    gstRate: i.gstRate,
+  }));
+  const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
+  const total = afterDiscount + shipping + gstBreakdown.total;
+  return {
+    subtotal,
+    couponDiscount,
+    shipping,
+    tax: gstBreakdown.total,
+    gstBreakdown,
+    total,
+    freeShipping,
+  };
 }

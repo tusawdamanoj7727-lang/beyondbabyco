@@ -53,6 +53,8 @@ export interface StorefrontProduct {
   isTrending: boolean;
   badge: string | null;
   secondaryBadge?: string | null;
+  /** GST % — 12 baby care, 18 cosmetics (from product.gst_rate). */
+  gstRate: number;
 }
 
 export interface StorefrontProductImage {
@@ -85,6 +87,8 @@ export interface StorefrontVariant {
   price: number;
   compareAtPrice: number | null;
   isActive: boolean;
+  /** Sellable units at default warehouse (quantity − reserved). */
+  stockQuantity: number;
 }
 
 export interface StorefrontFaq {

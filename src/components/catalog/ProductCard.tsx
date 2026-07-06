@@ -1,24 +1,22 @@
 "use client";
 
 import { useTransition } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { Bell, Eye, GitCompare, Heart, ShoppingBag } from "lucide-react";
+import { Eye, GitCompare, Heart } from "lucide-react";
 
+import AddToCartButton from "@/components/catalog/AddToCartButton";
+import NotifyMeButton from "@/components/catalog/NotifyMeButton";
 import { MICROCOPY } from "@/lib/brand/copy";
-import ProductImageFallback from "@/components/brand/ProductImageFallback";
+import ProductCardImage from "@/components/catalog/ProductCardImage";
 import { useQuickCompareOptional } from "@/components/catalog/QuickCompareContext";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
 import Badge from "@/components/ui/Badge";
-import Button from "@/components/ui/Button";
 import RatingStars from "@/components/reviews/RatingStars";
 import { useToast } from "@/components/ui/ToastProvider";
-import { useNotifyMe } from "@/lib/homepage/notify-me-context";
+import { canPurchaseProduct } from "@/lib/catalog/availability";
 import { focusRing, premiumCard, textCardTitle, editorialImageCrop, imageHoverZoom, wishlistButton } from "@/lib/design/ui";
 import { formatInr } from "@/lib/catalog/format";
+import { MrpInclusiveLabel } from "@/components/catalog/PricingTaxNote";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { useCartOptional } from "@/lib/storefront/cart-context";
-import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +27,8 @@ type ProductCardProps = {
   hideHoverActions?: boolean;
   hideWishlistButton?: boolean;
   enableCompare?: boolean;
+  showListingCta?: boolean;
+  imagePriority?: boolean;
 };
 
 function badgeVariant(badge: string | null): "success" | "comingSoon" | "info" | "default" {
@@ -45,35 +45,19 @@ export default function ProductCard({
   hideHoverActions = false,
   hideWishlistButton = false,
   enableCompare = false,
+  showListingCta = false,
+  imagePriority = false,
 }: ProductCardProps) {
-  const cart = useCartOptional();
-  const cartUi = useCartUiOptional();
   const toast = useToast();
-  const { openNotifyMe } = useNotifyMe();
   const { isWishlisted, toggle } = useWishlist();
   const compare = useQuickCompareOptional();
   const [wishPending, startWishTransition] = useTransition();
 
   const wishlisted = isWishlisted(product.id);
   const isComingSoon = product.status === "coming_soon";
-  const canPurchase = product.status === "active" && product.inStock;
+  const canPurchase = canPurchaseProduct(product);
   const showRating = product.ratingCount > 0;
   const isHomepageStyle = className?.includes("homepage-product-card");
-
-  function handleAddToCart(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!canPurchase) return;
-    cart?.addItem(product, null, 1);
-    cartUi?.openMiniCart();
-    toast.success(MICROCOPY.addingToCart);
-  }
-
-  function handleNotify(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    openNotifyMe(product.name, product.categoryName ?? undefined);
-  }
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault();
@@ -93,6 +77,22 @@ export default function ProductCard({
 
   const compareSelected = enableCompare && compare?.isSelected(product.id);
 
+  const purchaseButton = canPurchase ? (
+    <AddToCartButton
+      product={product}
+      size="sm"
+      fullWidth={false}
+      className="h-11 flex-1 bg-white/95 text-cream-50 backdrop-blur-sm"
+    />
+  ) : (
+    <NotifyMeButton
+      product={product}
+      size="sm"
+      fullWidth={false}
+      className="h-11 flex-1 bg-white/95 backdrop-blur-sm"
+    />
+  );
+
   return (
     <article
       className={cn(
@@ -103,30 +103,25 @@ export default function ProductCard({
     >
       <Link href={`/products/${product.slug}`} className="flex h-full flex-col">
         <div className={cn("product-image-stage relative overflow-hidden bg-cream-50", isHomepageStyle ? "product-pedestal-stage" : "aspect-[4/5]")}>
-          {product.imageUrl ? (
-            <>
-              <Image
-                src={product.imageUrl}
-                alt={product.name}
-                fill
-                loading="lazy"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                placeholder="blur"
-                blurDataURL={resolveImageBlur(product.imageBlurDataUrl)}
-                className={cn(
-                  isHomepageStyle
-                    ? cn("product-pedestal-image", editorialImageCrop, imageHoverZoom)
-                    : "object-cover object-[center_18%] transition-[transform,opacity] duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.04]",
-                )}
-              />
-              {!isHomepageStyle ? (
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-green-950/12 via-transparent to-white/5 opacity-80 transition-opacity duration-[var(--duration-card)] group-hover:opacity-100" />
-              ) : null}
-              <div aria-hidden="true" className={isHomepageStyle ? "product-pedestal-reflection" : "product-image-reflection"} />
-            </>
-          ) : (
-            <ProductImageFallback productSlug={product.slug} categorySlug={product.categorySlug} />
-          )}
+          <ProductCardImage
+            src={product.imageUrl}
+            alt={product.name}
+            productName={product.name}
+            productSlug={product.slug}
+            categorySlug={product.categorySlug}
+            blurDataUrl={product.imageBlurDataUrl}
+            priority={imagePriority}
+            className="h-full w-full"
+            imageClassName={cn(
+              isHomepageStyle
+                ? cn("product-pedestal-image", editorialImageCrop, imageHoverZoom)
+                : "object-[center_18%] transition-[transform,opacity] duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.04]",
+            )}
+          />
+          {!isHomepageStyle ? (
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-green-950/12 via-transparent to-white/5 opacity-80 transition-opacity duration-[var(--duration-card)] group-hover:opacity-100" />
+          ) : null}
+          <div aria-hidden="true" className={isHomepageStyle ? "product-pedestal-reflection" : "product-image-reflection"} />
 
           <div className="absolute left-3 top-3 flex flex-col gap-1.5">
             {product.badge ? (
@@ -166,30 +161,7 @@ export default function ProductCard({
 
           {!hideHoverActions ? (
             <div className="absolute inset-x-0 bottom-0 flex translate-y-0 gap-2 p-3 transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] lg:translate-y-full lg:group-hover:translate-y-0 lg:group-focus-within:translate-y-0">
-              {isComingSoon ? (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  type="button"
-                  onClick={handleNotify}
-                  className="h-11 flex-1 rounded-full bg-white/95 backdrop-blur-sm"
-                  leftIcon={<Bell aria-hidden="true" />}
-                >
-                  Notify Me
-                </Button>
-              ) : (
-                <Button
-                  variant="primary"
-                  size="sm"
-                  type="button"
-                  onClick={handleAddToCart}
-                  disabled={!canPurchase}
-                  className="h-11 flex-1 rounded-full"
-                  leftIcon={<ShoppingBag aria-hidden="true" />}
-                >
-                  {product.inStock ? "Add to Cart" : "Out of Stock"}
-                </Button>
-              )}
+              {purchaseButton}
               {onQuickView ? (
                 <button
                   type="button"
@@ -241,7 +213,7 @@ export default function ProductCard({
           ) : null}
 
           <div className="mt-4 flex items-end justify-between gap-3 border-t border-green-50 pt-4">
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-2">
                 <span className="product-price">
                   {isComingSoon ? "Launching 2026" : formatInr(product.effectivePrice)}
@@ -254,10 +226,13 @@ export default function ProductCard({
               </div>
               {isComingSoon ? (
                 <span className="text-xs font-medium text-terra-600">Notify for launch updates</span>
-              ) : !product.inStock ? (
-                <span className="text-xs font-medium text-terra-600">Out of stock</span>
+              ) : canPurchase ? (
+                <>
+                  <span className="text-xs font-medium text-green-700">In stock · ships fast</span>
+                  <MrpInclusiveLabel className="mt-1 block" />
+                </>
               ) : (
-                <span className="text-xs font-medium text-green-700">In stock · ships fast</span>
+                <span className="text-xs font-medium text-terra-600">Join the waitlist for updates</span>
               )}
             </div>
 
@@ -278,6 +253,16 @@ export default function ProductCard({
               </button>
             ) : null}
           </div>
+
+          {showListingCta ? (
+            <div className="mt-4">
+              {canPurchase ? (
+                <AddToCartButton product={product} />
+              ) : (
+                <NotifyMeButton product={product} />
+              )}
+            </div>
+          ) : null}
         </div>
       </Link>
     </article>

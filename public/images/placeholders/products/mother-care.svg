@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Mother Care">
+  <defs>
+    <linearGradient id="mother-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="45%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#f5f3ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#mother-bg)"/>
+  <circle cx="200" cy="250" r="88" fill="#ffffff" opacity="0.78"/>
+  <path d="M200 205 C185 230 170 255 175 285 C182 310 218 310 225 285 C230 255 215 230 200 205 Z" fill="#ddd6fe" opacity="0.9"/>
+  <circle cx="200" cy="190" r="34" fill="#ede9fe"/>
+  <text x="200" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="#5b21b6">Mother Care</text>
+</svg>

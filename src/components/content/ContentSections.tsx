@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/ToastProvider";
+import { brandSupportEmail } from "@/lib/brand/contact";
 import { submitContactQueryAction } from "@/lib/account/support-actions";
 import type { ContentFaqItem } from "@/lib/content/types";
 import { formControl } from "@/lib/design/ui";
@@ -54,21 +55,32 @@ export function ContactFormSection() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
-    subject: "General enquiry",
+    orderNumber: "",
     message: "",
   });
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    const subject = form.orderNumber.trim()
+      ? `Order ${form.orderNumber.trim()} — Customer enquiry`
+      : "Customer enquiry";
+    const messageBody = form.orderNumber.trim()
+      ? `Order number: ${form.orderNumber.trim()}\n\n${form.message}`
+      : form.message;
+
     startTransition(async () => {
-      const result = await submitContactQueryAction(form);
+      const result = await submitContactQueryAction({
+        name: form.name,
+        email: form.email,
+        subject,
+        message: messageBody,
+      });
       if (!result.ok) {
         toast.error(result.error ?? "Could not send message");
         return;
       }
       toast.success("Message sent — we'll reply within one business day");
-      setForm({ name: "", email: "", phone: "", subject: "General enquiry", message: "" });
+      setForm({ name: "", email: "", orderNumber: "", message: "" });
     });
   }
 
@@ -77,7 +89,11 @@ export function ContactFormSection() {
       <div className="container max-w-xl">
         <h2 className="font-heading text-2xl font-bold text-green-900">Send us a message</h2>
         <p className="text-body mt-2">
-          Our support team responds Monday–Saturday, 10 AM – 6 PM IST.
+          Reach us at{" "}
+          <a href={`mailto:${brandSupportEmail()}`} className="font-semibold text-terra-600 hover:underline">
+            {brandSupportEmail()}
+          </a>
+          . We respond Monday–Saturday, 10 AM – 6 PM IST.
         </p>
         <form onSubmit={submit} className="mt-8 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -86,6 +102,7 @@ export function ContactFormSection() {
               <input
                 required
                 type="text"
+                autoComplete="name"
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 className={cn("w-full", formControl)}
@@ -96,6 +113,7 @@ export function ContactFormSection() {
               <input
                 required
                 type="email"
+                autoComplete="email"
                 value={form.email}
                 onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                 className={cn("w-full", formControl)}
@@ -103,21 +121,13 @@ export function ContactFormSection() {
             </label>
           </div>
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-green-800">Phone (optional)</span>
+            <span className="mb-1 block text-sm font-medium text-green-800">Order number (optional)</span>
             <input
-              type="tel"
-              value={form.phone}
-              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-              className={cn("w-full", formControl)}
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-sm font-medium text-green-800">Subject</span>
-            <input
-              required
               type="text"
-              value={form.subject}
-              onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
+              inputMode="text"
+              placeholder="e.g. BBC-12345"
+              value={form.orderNumber}
+              onChange={(e) => setForm((f) => ({ ...f, orderNumber: e.target.value }))}
               className={cn("w-full", formControl)}
             />
           </label>

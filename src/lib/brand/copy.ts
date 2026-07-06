@@ -53,12 +53,14 @@ export const HERO = {
 } as const;
 
 export const TICKER_ITEMS = [
-  "Free shipping on orders above ₹999",
-  "Bundle & save 15%",
-  "Formulations developed through research",
-  "Made with care in India",
-  "Dermatologically tested",
-  "New launches arriving through 2026",
+  "Dermatologically Tested",
+  "Made in India",
+  "5 Years of R&D",
+  "Free Shipping on ₹999+",
+  "Paraben Free",
+  "Hypoallergenic",
+  "Cruelty Free",
+  "Safe for Newborns",
 ] as const;
 
 export const TRUST_STATS = [
@@ -198,28 +200,8 @@ export const CATEGORIES = {
 export const TESTIMONIALS = {
   eyebrow: "From families",
   heading: "Voices from\nour community",
-  intro:
-    "Early feedback from parents who have tried our first launches — shared with permission.",
-  items: [
-    {
-      name: "Priya Sharma",
-      city: "Jaipur",
-      rating: 5,
-      text: "The wipes feel soft and uncomplicated — exactly what I wanted for everyday changes.",
-    },
-    {
-      name: "Ananya Patel",
-      city: "Ahmedabad",
-      rating: 5,
-      text: "I appreciate that the brand talks about research openly. It helps me choose with clarity.",
-    },
-    {
-      name: "Neha Verma",
-      city: "Delhi",
-      rating: 5,
-      text: "The quality feels considered — from packaging to how gentle the formula is on skin.",
-    },
-  ],
+  intro: "Verified reviews from parents will appear here as families share their experience.",
+  items: [] as { name: string; city: string; rating: number; text: string }[],
 } as const;
 
 export const NEWSLETTER = {
@@ -245,6 +227,17 @@ export const FOOTER = {
     "Thoughtfully crafted baby care — developed through research and made with care in India for growing families.",
   supportHours: "Monday–Saturday, 10 AM – 6 PM IST",
   madeWith: "Made with care for every growing family.",
+} as const;
+
+/** /products collection page hero — fixed copy (not CMS-driven). */
+export const PRODUCTS_PAGE = {
+  heroEyebrow: "Research-backed baby care",
+  heroTitle: "Shop Gentle Baby Care",
+  heroDescription:
+    "Dermatologically tested formulas, crafted with 5 years of research for your little one's everyday routine.",
+  metaTitle: "Shop Gentle Baby Care",
+  metaDescription:
+    "Dermatologically tested baby care formulas, crafted with 5 years of research for your little one's everyday routine.",
 } as const;
 
 export const MICROCOPY = {
@@ -281,11 +274,11 @@ export const MICROCOPY = {
     checkoutEmptyDescription: "Add something from the collection, then return here when you're ready.",
   },
   wishlist: {
-    emptyTitle: "Nothing saved yet",
-    emptyDescription: "Tap the heart on any product to keep it here for later.",
-    guestTitle: "Sign in to save favourites",
-    guestDescription: "Your saved items sync across devices when you're signed in.",
-    shopCta: "Explore the collection",
+    emptyTitle: "Your wishlist is empty",
+    emptyDescription: "Tap the heart on any product to save it here for later.",
+    guestTitle: "Your wishlist is empty",
+    guestDescription: "Tap the heart on any product to save it here for later.",
+    shopCta: "Browse Products",
     signInCta: "Sign in",
   },
   notFound: {
@@ -357,10 +350,11 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 4,
     name: "Ayurvedic Baby Oil",
     category: "Massage & care",
-    badge: "Coming 2026",
+    badge: "Available Now",
     description: "A calming massage oil inspired by gentle Indian care traditions.",
-    price: "Arriving 2026",
-    comingSoon: true,
+    price: "From ₹499",
+    slug: "ayurvedic-massage-oil",
+    comingSoon: false,
   },
   {
     id: 5,

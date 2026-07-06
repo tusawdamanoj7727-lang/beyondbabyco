@@ -2,18 +2,17 @@
 
 import Button from "@/components/ui/Button";
 import { useNotifyMe } from "@/lib/homepage/notify-me-context";
+import { buildCategoryNotifyTarget } from "@/lib/notify-me/target";
 import { focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 export default function NotifyMeButton({
-  productName,
-  category,
-  label,
+  productCategory,
+  label = "Notify Me",
   className,
 }: {
-  productName: string;
-  category: string;
-  label: string;
+  productCategory: string;
+  label?: string;
   className?: string;
 }) {
   const { openNotifyMe } = useNotifyMe();
@@ -24,7 +23,7 @@ export default function NotifyMeButton({
       fullWidth
       type="button"
       className={cn(focusRing, className)}
-      onClick={() => openNotifyMe(productName, category)}
+      onClick={() => openNotifyMe(buildCategoryNotifyTarget(productCategory))}
     >
       {label}
     </Button>

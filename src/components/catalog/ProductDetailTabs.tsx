@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import ProductCard from "@/components/catalog/ProductCard";
+import ProductDetailTabNav, { type ProductDetailTab } from "@/components/catalog/ProductDetailTabNav";
 import RecentlyViewed from "@/components/catalog/RecentlyViewed";
 import { MICROCOPY } from "@/lib/brand/copy";
 import ProductQASection from "@/components/reviews/ProductQASection";
@@ -15,18 +16,7 @@ import type { StorefrontBenefit, StorefrontFaq, StorefrontIngredient, Storefront
 import type { EnrichedPublicReview, ProductQuestion } from "@/lib/reviews/types";
 import { cn } from "@/lib/utils";
 
-const TABS = [
-  "Benefits",
-  "Ingredients",
-  "Directions",
-  "Safety",
-  "FAQ",
-  "Research",
-  "Reviews",
-  "Q&A",
-] as const;
-
-type Tab = (typeof TABS)[number];
+type Tab = ProductDetailTab;
 
 export default function ProductDetailTabs({
   product,
@@ -46,24 +36,7 @@ export default function ProductDetailTabs({
 
   return (
     <div className="mt-20 space-y-14 lg:mt-24">
-      <div className="pdp-tabs-nav overflow-x-auto">
-        <div role="tablist" aria-label="Product information" className="flex min-w-max gap-1 pb-px">
-          {TABS.map((t) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              id={`tab-${t}`}
-              aria-selected={tab === t}
-              aria-controls={`panel-${t}`}
-              onClick={() => setTab(t)}
-              className="pdp-tab-trigger"
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ProductDetailTabNav activeTab={tab} onTabChange={setTab} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         <div className="pdp-tab-panel">
           {tab === "Benefits" ? <BenefitsPanel benefits={product.benefits} /> : null}

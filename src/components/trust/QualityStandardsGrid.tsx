@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import StaticSvgImage from "@/components/media/StaticSvgImage";
 import Badge from "@/components/ui/Badge";
 import AccentBar from "@/components/ui/AccentBar";
 import { TrustIcon } from "@/components/trust/TrustIcons";
@@ -59,13 +58,12 @@ export default function QualityStandardsGrid({ id = "quality", compact = false }
               <div className="quality-promise-card flex h-full min-h-[11rem] flex-col items-center p-5 text-center sm:p-6">
                 {standard.badge ? (
                   <span className="quality-icon-box">
-                    <Image
+                    <StaticSvgImage
                       src={standard.badge}
                       alt={standard.badgeAlt ?? standard.title}
-                      width={40}
-                      height={40}
+                      width={48}
+                      height={48}
                       className="h-10 w-10 object-contain"
-                      loading="lazy"
                     />
                   </span>
                 ) : standard.icon ? (

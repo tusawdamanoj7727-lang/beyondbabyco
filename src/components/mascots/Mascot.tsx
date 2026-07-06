@@ -1,11 +1,14 @@
 "use client";
 
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 
-import { cn } from "../../lib/utils";
-import { floatingAnimation, mascotHover } from "../../lib/animations";
+import {
+  fixedImageSizes,
+  IMAGE_QUALITY,
+  IMAGE_SIZES,
+} from "@/lib/media/image-delivery";
+import { cn } from "@/lib/utils";
 import {
   mascotFloatDuration,
   mascotLabel,
@@ -67,7 +70,6 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
     },
     ref,
   ) {
-    const prefersReducedMotion = useReducedMotion();
     const candidates = useMemo(
       () => resolveMascotAssetCandidates(mascot, pose),
       [mascot, pose],
@@ -77,6 +79,15 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
     const resolvedAlt = alt === "" ? "" : (alt ?? `${mascotLabel(mascot)} mascot`);
     const floatDuration = duration ?? mascotFloatDuration(mascot);
     const exhausted = !src || candidateIndex >= candidates.length;
+
+    const floatStyle = useMemo(
+      () =>
+        ({
+          "--mascot-float-duration": `${Math.min(Math.max(floatDuration, 5), 7)}s`,
+          "--mascot-float-delay": `${delay}s`,
+        }) as CSSProperties,
+      [floatDuration, delay],
+    );
 
     const handleError = () => {
       setCandidateIndex((index) => index + 1);
@@ -96,6 +107,8 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
         height={size}
         priority={priority}
         loading={priority ? undefined : "lazy"}
+        sizes={size <= 160 ? fixedImageSizes(size) : IMAGE_SIZES.mascot}
+        quality={IMAGE_QUALITY.mascot}
         draggable={false}
         onError={handleError}
         className={cn(
@@ -112,21 +125,18 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
     }
 
     return (
-      <motion.div
+      <div
         ref={ref as React.Ref<HTMLDivElement>}
         className={cn(
           "inline-block transform-gpu will-change-transform",
-          interactive && "cursor-default",
+          floating && "mascot-float",
+          interactive && "mascot-interactive cursor-default",
           className,
         )}
-        style={{ transform: "translateZ(0)" }}
-        {...(floating && !prefersReducedMotion
-          ? floatingAnimation(floatDuration, delay)
-          : {})}
-        {...(interactive && !prefersReducedMotion ? mascotHover : {})}
+        style={floating ? floatStyle : undefined}
       >
         {image}
-      </motion.div>
+      </div>
     );
   },
 );

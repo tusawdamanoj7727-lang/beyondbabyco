@@ -41,7 +41,7 @@ export default function TickerBar({
     >
       <div
         className={cn(
-          "flex w-max items-center py-2.5",
+          "flex w-max items-center py-2.5 will-change-transform",
           "animate-[ticker_40s_linear_infinite]",
           "group-hover:[animation-play-state:paused]",
           "motion-reduce:animate-none",

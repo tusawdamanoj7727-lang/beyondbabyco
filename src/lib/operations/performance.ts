@@ -56,7 +56,7 @@ export function getPerformanceReport(): PerformanceReportItem[] {
       id: "packages",
       label: "Package imports",
       value: "Optimized",
-      hint: "lucide-react, framer-motion, @radix-ui/react-dialog tree-shaken",
+      hint: "lucide-react, @radix-ui/react-dialog tree-shaken",
       status: "ready",
     },
   ];

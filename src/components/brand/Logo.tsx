@@ -19,10 +19,10 @@ type LogoProps = {
 
 /** Height-only sizing (+35% vs Phase 10.7) — width follows intrinsic aspect ratio. */
 const sizeMap = {
-  /** Navbar: ~49px mobile, ~65px desktop */
+  /** Navbar: 110px mobile, 140px desktop width */
   nav: {
-    className: "h-12 w-auto lg:h-16",
-    sizes: "(max-width: 1024px) 49px, 65px",
+    className: "h-auto w-[110px] lg:w-[140px]",
+    sizes: "(max-width: 1024px) 110px, 140px",
   },
   /** Auth, checkout, admin login */
   md: {
@@ -46,7 +46,7 @@ export default function Logo({
   href = "/",
   size = "md",
   variant,
-  priority = false,
+  priority = size === "nav",
 }: LogoProps) {
   const resolvedVariant = variant ?? "default";
   const dims = sizeMap[size];
@@ -61,7 +61,7 @@ export default function Logo({
       height={height}
       priority={priority}
       sizes={dims.sizes}
-      unoptimized={src.endsWith(".svg") || src.endsWith(".png")}
+      unoptimized={src.endsWith(".png")}
       className={cn(dims.className, "object-contain object-left", className)}
     />
   );

@@ -2,12 +2,10 @@ import Image from "next/image";
 
 import { HERO_DEFAULT_BLUR, HERO_DEFAULT_IMAGE } from "@/lib/homepage/visual-assets";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, fixedImageSizes, resolveImageBlur } from "@/lib/media/image-delivery";
 import { resolveMascotAssetSrc } from "@/lib/mascots";
 import type { MascotPose, MascotType } from "@/components/mascots/Mascot";
 import { cn } from "@/lib/utils";
-
-const HERO_IMAGE_SIZES = "(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 520px";
 
 const HERO_MASCOTS: {
   id: MascotType;
@@ -62,6 +60,8 @@ export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualPro
               height={mascot.size}
               loading="lazy"
               draggable={false}
+              sizes={fixedImageSizes(mascot.size)}
+              quality={IMAGE_QUALITY.mascot}
               className="pointer-events-none select-none object-contain"
             />
           </div>
@@ -73,8 +73,9 @@ export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualPro
           src={resolvedUrl}
           alt={heroImageAlt}
           fill
-          priority
-          sizes={HERO_IMAGE_SIZES}
+          priority={true}
+          sizes={IMAGE_SIZES.hero}
+          quality={IMAGE_QUALITY.hero}
           placeholder="blur"
           blurDataURL={heroBlur}
           className="hero-editorial-image object-cover object-[center_22%]"

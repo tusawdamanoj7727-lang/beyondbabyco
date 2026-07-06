@@ -3,6 +3,7 @@
 import { randomUUID } from "crypto";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { validateImageUpload } from "@/lib/media/upload-validation";
 import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { MEDIA_BUCKET, type MediaFolder, type MediaUploadResult } from "./media";
@@ -32,8 +33,9 @@ export async function uploadMediaAsset(
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, error: "No file provided." };
   }
-  if (!file.type.startsWith("image/")) {
-    return { ok: false, error: "Only image files are allowed." };
+  const typeError = validateImageUpload(file);
+  if (typeError) {
+    return { ok: false, error: typeError };
   }
   if (file.size > 5 * 1024 * 1024) {
     return { ok: false, error: "Image must be 5 MB or smaller." };

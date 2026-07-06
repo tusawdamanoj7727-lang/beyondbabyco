@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 
 export default function CatalogBundleRecommendations({
   products,
@@ -37,7 +38,8 @@ export default function CatalogBundleRecommendations({
                     alt={product.name}
                     fill
                     loading="lazy"
-                    sizes="(max-width: 640px) 40vw, 180px"
+                    sizes={IMAGE_SIZES.productCard}
+                    quality={IMAGE_QUALITY.product}
                     className="object-cover object-center transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.02]"
                   />
                 ) : null}
@@ -53,7 +55,7 @@ export default function CatalogBundleRecommendations({
         </div>
 
         <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-terra-600">
-          Bundle &amp; save 15% — coming with full collection launch
+          Pair essentials from our daily care range — gentle formulas designed to work together
         </p>
       </div>
     </section>

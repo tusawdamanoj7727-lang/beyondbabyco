@@ -1,22 +1,30 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Loader2, MapPin, Tag, Truck } from "lucide-react";
+import { Check, Loader2, Tag, Truck, X } from "lucide-react";
 
+import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import Button from "@/components/ui/Button";
-import { useToast } from "@/components/ui/ToastProvider";
-import { useCustomerAuth } from "@/lib/auth/customer-hooks";
 import { formatInr } from "@/lib/catalog/format";
+import { INDIAN_STATES } from "@/lib/checkout/schema";
 import { formControl } from "@/lib/design/ui";
-import { cn } from "@/lib/utils";
+import { apiCouponToStore } from "@/lib/store/cart-mappers";
+import { useCartStore } from "@/lib/store/cart-store";
+import { applyCouponViaApi } from "@/lib/storefront/cart-coupons";
 import { useCart } from "@/lib/storefront/cart-context";
-import { cartMrpTotal } from "@/lib/storefront/cart-types";
-import { validateCartCouponAction } from "@/lib/storefront/coupon-actions";
-import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
-import PricingTaxNote from "@/components/catalog/PricingTaxNote";
-import { calcCheckoutTax } from "@/lib/checkout/tax";
-import { estimateShippingFee, FREE_SHIPPING_THRESHOLD } from "@/lib/storefront/shipping";
+import {
+  calculateGSTFromCart,
+  gstDisplayLines,
+  SELLER_STATE,
+  type GstLineItem,
+} from "@/lib/utils/gst";
+import {
+  estimateShippingFee,
+  FREE_SHIPPING_THRESHOLD,
+  STANDARD_SHIPPING_FEE,
+} from "@/lib/storefront/shipping";
+import { cn } from "@/lib/utils";
 
 type OrderSummaryProps = {
   compact?: boolean;
@@ -25,73 +33,70 @@ type OrderSummaryProps = {
 
 export default function OrderSummary({ compact = false, onCheckout }: OrderSummaryProps) {
   const { items, appliedCoupon, setAppliedCoupon, subtotal } = useCart();
-  const { isLoggedIn, loading: authLoading } = useCustomerAuth();
-  const toast = useToast();
+  const [buyerState, setBuyerState] = useState(SELLER_STATE);
   const [couponInput, setCouponInput] = useState(appliedCoupon?.code ?? "");
-  const [pincode, setPincode] = useState("");
-  const [delivery, setDelivery] = useState<{
-    serviceable: boolean;
-    estimatedDelivery?: string;
-    cod?: boolean;
-    prepaid?: boolean;
-  } | null>(null);
-  const [couponPending, startCoupon] = useTransition();
-  const [deliveryPending, startDelivery] = useTransition();
+  const [couponMessage, setCouponMessage] = useState<{ type: "success" | "error"; text: string } | null>(
+    null,
+  );
+  const [applying, setApplying] = useState(false);
 
-  const mrpTotal = cartMrpTotal(items);
-  const productDiscount = Math.max(0, mrpTotal - subtotal);
-  const shippingBeforeCoupon = estimateShippingFee(subtotal, false);
   const couponDiscount = appliedCoupon?.discountAmount ?? 0;
-  const freeShipping = appliedCoupon?.freeShipping ?? false;
-  const shipping = freeShipping ? 0 : estimateShippingFee(subtotal, false);
-  const totalDiscount = productDiscount + couponDiscount;
   const afterDiscount = Math.max(0, subtotal - couponDiscount);
-  const estimatedGst = calcCheckoutTax(afterDiscount);
-  const total = Math.max(0, afterDiscount + shipping);
+  const shipping = estimateShippingFee(afterDiscount, appliedCoupon?.freeShipping ?? false);
+  const gstLineItems: GstLineItem[] = items.map((i) => ({
+    price: i.price,
+    quantity: i.quantity,
+    gstRate: i.gstRate,
+  }));
+  const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
+  const gstLines = gstDisplayLines(gstBreakdown, gstLineItems);
+  const total = Math.max(0, afterDiscount + shipping + gstBreakdown.total);
 
-  function applyCoupon() {
-    startCoupon(async () => {
-      const result = await validateCartCouponAction(couponInput, items, shippingBeforeCoupon);
-      if (!result.ok) {
-        toast.error(result.error ?? "Invalid coupon");
+  async function applyCoupon() {
+    setApplying(true);
+    setCouponMessage(null);
+
+    try {
+      const result = await applyCouponViaApi(couponInput, subtotal);
+
+      if (!result.valid) {
+        setCouponMessage({ type: "error", text: result.error });
         return;
       }
+
       setAppliedCoupon({
-        code: result.code!,
-        couponId: result.couponId!,
-        discountAmount: result.discountAmount ?? 0,
-        freeShipping: result.freeShipping ?? false,
+        code: result.code,
+        couponId: result.couponId,
+        discountAmount: result.savings,
+        freeShipping: false,
       });
-      toast.success(`Coupon ${result.code} applied`);
-    });
+      useCartStore.getState().applyCoupon(
+        apiCouponToStore({
+          code: result.code,
+          discountType: result.discountType,
+          discountValue: result.discountValue,
+          savings: result.savings,
+        }),
+      );
+      setCouponMessage({
+        type: "success",
+        text: result.message,
+      });
+    } catch {
+      setCouponMessage({
+        type: "error",
+        text: "Could not validate coupon. Please try again.",
+      });
+    } finally {
+      setApplying(false);
+    }
   }
 
   function removeCoupon() {
     setAppliedCoupon(null);
+    useCartStore.getState().removeCoupon();
     setCouponInput("");
-    toast.info("Coupon removed");
-  }
-
-  function checkDelivery() {
-    startDelivery(async () => {
-      const result = await checkDeliveryEstimateAction(pincode);
-      if (!result.ok) {
-        toast.error(result.error ?? "Could not check delivery");
-        return;
-      }
-      if (!result.serviceable) {
-        setDelivery({ serviceable: false });
-        toast.error("Delivery not available to this PIN code");
-        return;
-      }
-      setDelivery({
-        serviceable: true,
-        estimatedDelivery: result.estimatedDelivery,
-        cod: result.cod,
-        prepaid: result.prepaid,
-      });
-      toast.success("Delivery available");
-    });
+    setCouponMessage(null);
   }
 
   return (
@@ -99,56 +104,74 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
       className={
         compact
           ? "space-y-4"
-          : "sticky top-32 rounded-3xl border border-green-100/80 bg-white/90 p-6 shadow-card backdrop-blur-sm"
+          : "sticky top-32 rounded-3xl border border-[#2d5a27]/10 bg-[#faf5f0]/90 p-6 shadow-[0_8px_32px_rgba(45,90,39,0.08)] backdrop-blur-sm"
       }
       aria-label="Order summary"
     >
       {!compact ? (
-        <h2 className="font-heading text-xl font-bold text-green-900">Order Summary</h2>
+        <h2 className="font-heading text-xl font-bold text-[#2d5a27]">Order Summary</h2>
       ) : null}
 
-      <dl className="mt-4 space-y-3 text-sm">
-        <div className="flex justify-between text-green-700">
+      <dl className={cn("space-y-3 text-sm", compact ? "mt-0" : "mt-5")}>
+        <div className="flex justify-between text-[#2d5a27]/85">
           <dt>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</dt>
-          <dd className="font-medium text-green-900">{formatInr(subtotal)}</dd>
+          <dd className="font-medium text-[#2d5a27]">{formatInr(subtotal)}</dd>
         </div>
-        {productDiscount > 0 ? (
-          <div className="flex justify-between text-terra-600">
-            <dt>Product savings</dt>
-            <dd className="font-medium">−{formatInr(productDiscount)}</dd>
+
+        {appliedCoupon && couponDiscount > 0 ? (
+          <div className="flex justify-between text-emerald-700">
+            <dt className="flex items-center gap-1">
+              Discount ({appliedCoupon.code})
+            </dt>
+            <dd className="font-semibold">−{formatInr(couponDiscount)}</dd>
           </div>
         ) : null}
-        {appliedCoupon ? (
-          <div className="flex justify-between text-terra-600">
-            <dt>Coupon ({appliedCoupon.code})</dt>
-            <dd className="font-medium">−{formatInr(couponDiscount)}</dd>
+
+        {gstLines.map((line) => (
+          <div key={line.label} className="flex justify-between text-[#2d5a27]/85">
+            <dt>{line.label}</dt>
+            <dd className="font-medium text-[#2d5a27]">{formatInr(line.amount)}</dd>
           </div>
-        ) : null}
-        <div className="flex justify-between text-green-700">
+        ))}
+
+        <div className="flex justify-between text-[#2d5a27]/85">
           <dt className="flex items-center gap-1.5">
-            <Truck className="h-4 w-4" aria-hidden="true" />
-            Shipping
+            <Truck className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Delivery
           </dt>
-          <dd className="font-medium text-green-900">
-            {shipping === 0 ? <span className="text-green-600">Free</span> : formatInr(shipping)}
+          <dd className="font-medium text-[#2d5a27]">
+            {shipping === 0 ? (
+              <span className="font-semibold text-emerald-700">FREE</span>
+            ) : (
+              formatInr(STANDARD_SHIPPING_FEE)
+            )}
           </dd>
-        </div>
-        {subtotal < FREE_SHIPPING_THRESHOLD && !freeShipping ? (
-          <p className="text-xs text-green-600/80">
-            Add {formatInr(FREE_SHIPPING_THRESHOLD - subtotal)} more for free shipping
-          </p>
-        ) : null}
-        <div className="flex justify-between text-green-700/80">
-          <dt>Estimated GST (18%)</dt>
-          <dd className="font-medium text-green-900">{formatInr(estimatedGst)}</dd>
         </div>
       </dl>
 
-      <PricingTaxNote className="mt-2" />
+      {!compact ? (
+        <div className="mt-4 space-y-2 border-t border-[#2d5a27]/10 pt-4">
+          <label htmlFor="summary-gst-state" className="text-xs font-semibold text-[#2d5a27]/70">
+            Delivery state (GST estimate)
+          </label>
+          <select
+            id="summary-gst-state"
+            value={buyerState}
+            onChange={(e) => setBuyerState(e.target.value)}
+            className={cn("w-full text-sm bg-white", formControl)}
+          >
+            {INDIAN_STATES.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
 
       {!compact ? (
-        <div className="mt-5 space-y-3 border-t border-green-100 pt-5">
-          <label htmlFor="coupon-code" className="flex items-center gap-1.5 text-sm font-semibold text-green-800">
+        <div className="mt-5 space-y-2 border-t border-[#2d5a27]/10 pt-5">
+          <label htmlFor="coupon-code" className="flex items-center gap-1.5 text-sm font-semibold text-[#2d5a27]">
             <Tag className="h-4 w-4" aria-hidden="true" />
             Coupon code
           </label>
@@ -157,91 +180,66 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
               id="coupon-code"
               type="text"
               value={couponInput}
-              onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+              onChange={(e) => {
+                setCouponInput(e.target.value.toUpperCase());
+                if (couponMessage) setCouponMessage(null);
+              }}
               placeholder="Enter code"
-              disabled={!!appliedCoupon || couponPending}
-              className={cn("min-w-0 flex-1 uppercase", formControl, "text-sm")}
+              disabled={!!appliedCoupon || applying}
+              className={cn("min-w-0 flex-1 uppercase", formControl, "text-sm bg-white")}
             />
             {appliedCoupon ? (
-              <Button variant="secondary" size="sm" type="button" onClick={removeCoupon}>
-                Remove
-              </Button>
+              <button
+                type="button"
+                onClick={removeCoupon}
+                aria-label="Remove coupon"
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#2d5a27]/20 bg-white text-[#2d5a27] transition-colors hover:bg-[#2d5a27]/5"
+              >
+                <X className="h-4 w-4" />
+              </button>
             ) : (
               <Button
                 variant="secondary"
                 size="sm"
                 type="button"
-                disabled={couponPending || !couponInput.trim()}
-                onClick={applyCoupon}
+                disabled={applying || !couponInput.trim()}
+                onClick={() => void applyCoupon()}
+                className="shrink-0 min-w-[4.5rem]"
               >
-                {couponPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
+                {applying ? <Loader2 className="h-4 w-4 animate-spin" aria-label="Validating coupon" /> : "Apply"}
               </Button>
             )}
           </div>
-        </div>
-      ) : null}
-
-      {!compact ? (
-        <div className="mt-5 space-y-3 border-t border-green-100 pt-5">
-          <label
-            htmlFor="delivery-pincode"
-            className="flex items-center gap-1.5 text-sm font-semibold text-green-800"
-          >
-            <MapPin className="h-4 w-4" aria-hidden="true" />
-            Delivery estimate
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="delivery-pincode"
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="PIN code"
-              className={cn("min-w-0 flex-1", formControl, "text-sm")}
-            />
-            <Button
-              variant="secondary"
-              size="sm"
-              type="button"
-              disabled={deliveryPending || pincode.length !== 6}
-              onClick={checkDelivery}
-            >
-              {deliveryPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Check"}
-            </Button>
-          </div>
-          {delivery ? (
-            <div className="rounded-xl bg-green-50 px-3 py-2 text-sm text-green-800">
-              {delivery.serviceable ? (
-                <>
-                  <p className="font-medium">Delivery available</p>
-                  {delivery.estimatedDelivery ? (
-                    <p className="mt-0.5 text-green-700/80">Est. {delivery.estimatedDelivery}</p>
-                  ) : null}
-                  <p className="mt-0.5 text-xs text-green-600/80">
-                    {delivery.prepaid ? "Prepaid" : ""}
-                    {delivery.prepaid && delivery.cod ? " · " : ""}
-                    {delivery.cod ? "COD available" : ""}
-                  </p>
-                </>
-              ) : (
-                <p className="font-medium text-terra-700">Not serviceable to this PIN</p>
+          {couponMessage ? (
+            <p
+              role="status"
+              className={cn(
+                "flex items-start gap-1.5 text-xs font-medium",
+                couponMessage.type === "success" ? "text-emerald-700" : "text-red-600",
               )}
-            </div>
+            >
+              {couponMessage.type === "success" ? (
+                <Check className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              ) : null}
+              {couponMessage.text}
+            </p>
           ) : null}
         </div>
       ) : null}
 
-      <div className="mt-5 flex items-center justify-between border-t border-green-100 pt-5">
-        <span className="font-heading text-lg font-bold text-green-900">Estimated total (excl. GST)</span>
-        <span className="font-heading text-2xl font-bold text-green-900">{formatInr(total)}</span>
-      </div>
-      {totalDiscount > 0 ? (
-        <p className="text-right text-sm font-medium text-terra-600">
-          Total savings {formatInr(totalDiscount)}
-        </p>
+      {!compact ? (
+        <div className="mt-5 border-t border-[#2d5a27]/10 pt-5">
+          <FreeShippingProgress
+            subtotal={subtotal}
+            unlocked={appliedCoupon?.freeShipping ?? subtotal >= FREE_SHIPPING_THRESHOLD}
+          />
+        </div>
       ) : null}
+
+      <div className="mt-5 flex items-center justify-between border-t border-[#2d5a27]/10 pt-5">
+        <span className="font-heading text-lg font-bold text-[#2d5a27]">Total</span>
+        <span className="font-heading text-2xl font-bold text-[#2d5a27]">{formatInr(total)}</span>
+      </div>
 
       <div className="mt-5 flex flex-col gap-3">
         <Button
@@ -250,24 +248,13 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
           type="button"
           disabled={items.length === 0 || items.some((i) => !i.inStock)}
           onClick={onCheckout ?? (() => { window.location.href = "/checkout"; })}
+          className="bg-[#2d5a27] hover:bg-[#244a20] border-transparent font-semibold"
         >
           Proceed to Checkout
         </Button>
-        {!authLoading && !isLoggedIn ? (
-          <p className="text-center text-xs text-green-700/80">
-            <Link href="/login?redirectTo=/checkout" className="font-semibold text-terra-600 hover:underline">
-              Sign in
-            </Link>{" "}
-            to complete your order. New here?{" "}
-            <Link href="/register?redirectTo=/checkout" className="font-semibold text-terra-600 hover:underline">
-              Create an account
-            </Link>
-            .
-          </p>
-        ) : null}
         <Link
           href="/products"
-          className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-green-200 px-5 py-2.5 text-sm font-semibold text-green-800 transition-colors hover:bg-green-50"
+          className="inline-flex min-h-[44px] items-center justify-center text-sm font-semibold text-[#c4673a] transition-colors hover:text-[#a85532] hover:underline"
         >
           Continue Shopping
         </Link>

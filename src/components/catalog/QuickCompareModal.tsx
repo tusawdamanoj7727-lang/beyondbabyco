@@ -10,6 +10,7 @@ import RatingStars from "@/components/reviews/RatingStars";
 import Button from "@/components/ui/Button";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { ctaHeight, focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +74,7 @@ function CompareColumn({ product }: { product: StorefrontProduct }) {
     <article className="flex flex-col overflow-hidden rounded-2xl border border-cream-200 bg-white shadow-[var(--shadow-soft)]">
       <div className="relative aspect-square bg-cream-50">
         {product.imageUrl ? (
-          <Image src={product.imageUrl} alt={product.name} fill className="object-cover object-center" sizes="280px" />
+          <Image src={product.imageUrl} alt={product.name} fill className="object-cover object-center" sizes={IMAGE_SIZES.productCard} quality={IMAGE_QUALITY.product} />
         ) : (
           <ProductImageFallback productSlug={product.slug} categorySlug={product.categorySlug} />
         )}
@@ -101,7 +102,7 @@ function CompareColumn({ product }: { product: StorefrontProduct }) {
           <div className="flex justify-between gap-3">
             <dt className="text-green-700/70">Availability</dt>
             <dd className="font-semibold text-green-900">
-              {isComingSoon ? "Coming soon" : canPurchase ? "In stock" : "Out of stock"}
+              {isComingSoon ? "Coming soon" : canPurchase ? "In stock" : "Waitlist open"}
             </dd>
           </div>
           {product.ageGroupName ? (

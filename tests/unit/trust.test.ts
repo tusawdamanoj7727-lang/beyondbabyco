@@ -8,7 +8,6 @@ import {
   TRUST_WIDGETS,
   computeAverageRating,
   mergeTestimonials,
-  TRUST_TESTIMONIALS,
 } from "@/lib/trust";
 import { faqJsonLd, organizationJsonLd, articleJsonLd } from "@/lib/seo/json-ld";
 import { getAllContentSlugs } from "@/lib/content/registry";
@@ -44,14 +43,50 @@ describe("trust data", () => {
   });
 
   it("computes average rating", () => {
-    const avg = computeAverageRating(TRUST_TESTIMONIALS);
+    const avg = computeAverageRating([
+      {
+        id: "t1",
+        name: "Parent",
+        city: "Mumbai",
+        rating: 5,
+        text: "Wonderful",
+        category: "parent",
+      },
+      {
+        id: "t2",
+        name: "Parent",
+        city: "Delhi",
+        rating: 4,
+        text: "Great",
+        category: "parent",
+      },
+    ]);
     expect(avg).toBeGreaterThanOrEqual(4);
     expect(avg).toBeLessThanOrEqual(5);
   });
 
-  it("merges CMS testimonials with static fallbacks", () => {
-    const merged = mergeTestimonials([]);
-    expect(merged.length).toBeGreaterThanOrEqual(3);
+  it("merges CMS testimonials with community reviews", () => {
+    const merged = mergeTestimonials(
+      [{ name: "Asha", city: "Pune", rating: 5, text: "Gentle and effective." }],
+      [
+        {
+          id: "db-1",
+          productId: "p1",
+          rating: 5,
+          title: "Love it",
+          body: "Our go-to wash.",
+          pros: null,
+          cons: null,
+          customerName: "Riya",
+          verifiedPurchase: true,
+          isFeatured: true,
+          imageUrls: [],
+          createdAt: "2026-01-01",
+        },
+      ],
+    );
+    expect(merged.length).toBe(2);
+    expect(merged[0]?.name).toBe("Riya");
   });
 });
 

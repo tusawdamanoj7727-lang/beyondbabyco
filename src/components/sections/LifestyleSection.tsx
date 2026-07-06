@@ -11,7 +11,7 @@ import { LIFESTYLE_SECTION } from "@/lib/brand/copy";
 import type { LifestyleConfig } from "@/lib/admin/homepage-schema";
 import { editorialImageCrop } from "@/lib/design/ui";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 
 const FEATURE_ACCENTS = ["bg-green-100/90", "bg-terra-100/90", "bg-cream-200/90"];
 
@@ -59,9 +59,11 @@ export default function LifestyleSection({ config }: { config?: LifestyleConfig 
                     <Image
                       src={feature.imageUrl}
                       alt=""
-                      width={48}
-                      height={48}
+                      width={400}
+                      height={400}
                       loading="lazy"
+                      sizes={IMAGE_SIZES.lifestyleThumbnail}
+                      quality={IMAGE_QUALITY.editorial}
                       placeholder="blur"
                       blurDataURL={resolveImageBlur(blurForGeneratedUrl(feature.imageUrl))}
                       className="h-full w-full object-cover object-[center_25%]"
@@ -89,6 +91,8 @@ export default function LifestyleSection({ config }: { config?: LifestyleConfig 
               variant="lifestyle"
               imageUrl={imageUrl}
               alt="Everyday family moments"
+              sizes={IMAGE_SIZES.lifestyleHero}
+              quality={IMAGE_QUALITY.editorial}
               imageClassName={editorialImageCrop}
             />
           </Card>

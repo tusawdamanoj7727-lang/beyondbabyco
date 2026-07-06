@@ -15,8 +15,14 @@ export default function FeaturedCollections({ products }: { products: Storefront
         </h2>
       </div>
       <div className={cn("homepage-section-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4", homepageGridGap)}>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} className="homepage-product-card" hideHoverActions />
+        {products.map((product, index) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            className="homepage-product-card"
+            hideHoverActions
+            imagePriority={index < 2}
+          />
         ))}
       </div>
     </section>

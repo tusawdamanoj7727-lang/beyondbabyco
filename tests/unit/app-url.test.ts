@@ -30,7 +30,7 @@ describe("app-url", () => {
     expect(getAppUrl()).toBe(PRODUCTION_APP_URL);
   });
 
-  it("falls back to localhost in development when unset", () => {
+  it("falls back to configured site URL in development when unset", () => {
     vi.stubEnv("NODE_ENV", "development");
     expect(getAppUrl()).toBe(DEVELOPMENT_APP_URL);
   });

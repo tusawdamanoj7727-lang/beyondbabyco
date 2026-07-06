@@ -9,22 +9,30 @@ import {
   type ReactNode,
 } from "react";
 
-import NotifyMeDialog from "@/components/homepage/NotifyMeDialog";
+import NotifyMeModal from "@/components/catalog/NotifyMeModal";
+import {
+  buildCategoryNotifyTarget,
+  type NotifyMeTarget,
+} from "@/lib/notify-me/target";
 
 type NotifyMeContextValue = {
-  openNotifyMe: (productName: string, interest?: string) => void;
+  openNotifyMe: (target: NotifyMeTarget | string) => void;
 };
 
 const NotifyMeContext = createContext<NotifyMeContextValue | null>(null);
 
+const emptyTarget: NotifyMeTarget = { productCategory: "" };
+
 export function NotifyMeProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  const [productName, setProductName] = useState("");
-  const [interest, setInterest] = useState<string | undefined>();
+  const [target, setTarget] = useState<NotifyMeTarget>(emptyTarget);
 
-  const openNotifyMe = useCallback((product: string, category?: string) => {
-    setProductName(product);
-    setInterest(category);
+  const openNotifyMe = useCallback((input: NotifyMeTarget | string) => {
+    if (typeof input === "string") {
+      setTarget(buildCategoryNotifyTarget(input));
+    } else {
+      setTarget(input);
+    }
     setOpen(true);
   }, []);
 
@@ -33,10 +41,12 @@ export function NotifyMeProvider({ children }: { children: ReactNode }) {
   return (
     <NotifyMeContext.Provider value={value}>
       {children}
-      <NotifyMeDialog
+      <NotifyMeModal
         open={open}
-        productName={productName}
-        interest={interest}
+        productCategory={target.productCategory}
+        productId={target.productId}
+        productName={target.productName}
+        mode={target.mode}
         onClose={() => setOpen(false)}
       />
     </NotifyMeContext.Provider>
@@ -50,3 +60,5 @@ export function useNotifyMe(): NotifyMeContextValue {
   }
   return ctx;
 }
+
+export type { NotifyMeTarget };

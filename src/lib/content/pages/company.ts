@@ -20,17 +20,17 @@ export const aboutPage: ContentPage = {
     {
       type: "intro",
       paragraphs: [
-        "BeyondBabyCo is a baby care brand built on a simple belief: parents deserve complete confidence in what touches their baby's skin. Founded in Udaipur, Rajasthan, we are part of Tusawda Global Private Limited — a company committed to bringing research-backed, gentle formulations to Indian families.",
+        "BeyondBabyCo is a baby care brand born from five years of research in Udaipur, Rajasthan. Operated by Tusawda Global Private Limited, we create gentle, dermatologically tested products for Indian families — because parents deserve complete confidence in what touches their baby's skin.",
         "We do not rush products to market. Every BeyondBabyCo formulation begins with ingredient research, safety validation, and quality testing — because your baby's skin deserves nothing less than our best work.",
       ],
     },
     {
       type: "stats",
       items: [
+        { value: "5 Years", label: "Of research" },
         { value: "2021", label: "Research began" },
+        { value: "Made in", label: "Udaipur, India 🇮🇳" },
         { value: "100%", label: "Dermatologically tested" },
-        { value: "Made in", label: "India 🇮🇳" },
-        { value: "5L+", label: "Families we aim to serve" },
       ],
     },
     {

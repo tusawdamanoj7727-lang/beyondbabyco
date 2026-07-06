@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+# Optional self-hosting only — see DEPLOYMENT.md. Vercel is the primary deployment.
 
 FROM node:20-alpine AS base
 WORKDIR /app

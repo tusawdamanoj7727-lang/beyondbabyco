@@ -124,7 +124,7 @@ export async function listCategories(
     image: c.image_url,
     productCount: countMap.get(c.id) ?? 0,
     isFeatured: c.is_featured,
-    status: c.status,
+    status: c.status as CatalogStatus,
     position: c.position,
     updatedAt: c.updated_at,
   }));
@@ -159,7 +159,7 @@ export async function getCategoryForEdit(
     seoDescription: c.seo_description,
     metaKeywords: c.meta_keywords,
     canonicalUrl: c.canonical_url,
-    status: c.status,
+    status: c.status as CatalogStatus,
     isFeatured: c.is_featured,
     position: c.position,
     deletedAt: c.deleted_at,

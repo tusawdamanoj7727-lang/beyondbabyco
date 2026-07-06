@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 import Icon from "../Icon";
 import { initialsFrom, useAdmin } from "../context";
@@ -58,17 +57,12 @@ export default function UserMenu() {
         </span>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            role="menu"
-            aria-label="User menu"
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-3xl border border-cream-300 bg-white shadow-clay"
-          >
+      {open ? (
+        <div
+          role="menu"
+          aria-label="User menu"
+          className="animate-dropdown-in absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-3xl border border-cream-300 bg-white shadow-clay"
+        >
             <div className="flex items-center gap-3 border-b border-cream-200 px-4 py-3">
               <span className="grid h-10 w-10 place-items-center rounded-2xl bg-green-500 text-sm font-bold text-cream-50">
                 {initialsFrom(user)}
@@ -102,9 +96,8 @@ export default function UserMenu() {
                 </button>
               </form>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      ) : null}
     </div>
   );
 }

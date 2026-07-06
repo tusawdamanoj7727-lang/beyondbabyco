@@ -1,51 +1,37 @@
 import type { MetadataRoute } from "next";
 
-import { getAllContentSlugs } from "@/lib/content/registry";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { absoluteUrl } from "@/lib/seo/site";
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const contentRoutes: MetadataRoute.Sitemap = getAllContentSlugs().map((slug) => ({
-    url: absoluteUrl(`/${slug}`),
-    changeFrequency: "monthly" as const,
-    priority: slug === "about" || slug === "faq" ? 0.8 : 0.6,
-  }));
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in").replace(/\/$/, "");
 
-  const trustCenterRoute: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/trust-center"), changeFrequency: "weekly", priority: 0.85 },
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
+    { url: `${baseUrl}/products`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/shipping-policy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${baseUrl}/refund-policy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
   ];
 
-  const communityRoutes: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/community"), changeFrequency: "weekly", priority: 0.8 },
-    { url: absoluteUrl("/reviews/gallery"), changeFrequency: "weekly", priority: 0.75 },
-  ];
-
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/"), changeFrequency: "daily", priority: 1 },
-    { url: absoluteUrl("/products"), changeFrequency: "daily", priority: 0.9 },
-    { url: absoluteUrl("/search"), changeFrequency: "weekly", priority: 0.5 },
-    ...trustCenterRoute,
-    ...communityRoutes,
-    ...contentRoutes,
-  ];
-
+  let productPages: MetadataRoute.Sitemap = [];
   try {
-    const supabase = await createSupabaseServerClient();
+    const { createClient } = await import("@/lib/supabase/server");
+    const supabase = await createClient();
     const { data: products } = await supabase
       .from("products")
       .select("slug, updated_at")
       .in("status", ["active", "coming_soon"])
       .is("deleted_at", null);
 
-    const productRoutes: MetadataRoute.Sitemap = (products ?? []).map((p) => ({
-      url: absoluteUrl(`/products/${p.slug}`),
-      lastModified: p.updated_at ? new Date(p.updated_at) : undefined,
-      changeFrequency: "weekly",
+    productPages = (products || []).map((p) => ({
+      url: `${baseUrl}/products/${p.slug}`,
+      lastModified: new Date(p.updated_at || Date.now()),
+      changeFrequency: "weekly" as const,
       priority: 0.8,
     }));
-
-    return [...staticRoutes, ...productRoutes];
-  } catch {
-    return staticRoutes;
+  } catch (e) {
+    console.error("Sitemap: Could not fetch products", e);
   }
+
+  return [...staticPages, ...productPages];
 }

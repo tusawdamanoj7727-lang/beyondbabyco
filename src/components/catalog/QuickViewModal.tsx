@@ -5,10 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 
+import AddToCartButton from "@/components/catalog/AddToCartButton";
+import NotifyMeButton from "@/components/catalog/NotifyMeButton";
 import ProductImageFallback from "@/components/brand/ProductImageFallback";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { canPurchaseProduct } from "@/lib/catalog/availability";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { focusRing } from "@/lib/design/ui";
@@ -26,6 +29,7 @@ export default function QuickViewModal({
   if (!product) return null;
 
   const isComingSoon = product.status === "coming_soon";
+  const canPurchase = canPurchaseProduct(product);
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -57,7 +61,8 @@ export default function QuickViewModal({
                   src={product.imageUrl}
                   alt={product.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, 400px"
+                  sizes={IMAGE_SIZES.productCard}
+                  quality={IMAGE_QUALITY.product}
                   placeholder="blur"
                   blurDataURL={resolveImageBlur(product.imageBlurDataUrl)}
                   className="object-cover"
@@ -87,18 +92,22 @@ export default function QuickViewModal({
                 {isComingSoon ? "Launching 2026" : formatInr(product.effectivePrice)}
               </p>
               <div className="mt-auto flex flex-col gap-3 pt-6">
+                {canPurchase ? (
+                  <AddToCartButton
+                    product={product}
+                    onAction={() => onOpenChange(false)}
+                  />
+                ) : (
+                  <NotifyMeButton
+                    product={product}
+                    onAction={() => onOpenChange(false)}
+                  />
+                )}
                 <Link href={`/products/${product.slug}`} onClick={() => onOpenChange(false)}>
-                  <Button variant="primary" fullWidth type="button">
+                  <Button variant={canPurchase ? "secondary" : "ghost"} fullWidth type="button">
                     View Full Details
                   </Button>
                 </Link>
-                {isComingSoon ? (
-                  <Link href={`/products/${product.slug}`} onClick={() => onOpenChange(false)}>
-                    <Button variant="secondary" fullWidth type="button">
-                      Notify Me
-                    </Button>
-                  </Link>
-                ) : null}
               </div>
             </div>
           </div>

@@ -28,4 +28,4 @@ export const TRUST_IMAGE_BLURS = Object.fromEntries(
   Object.entries(TRUST_EDITORIAL).map(([k, v]) => [k, v.blur]),
 ) as Record<keyof typeof TRUST_EDITORIAL, string>;
 
-export { TRUST_BADGES } from "@/lib/content/images";
+export { TRUST_BADGES, QUALITY_PROMISE_BADGES } from "@/lib/content/images";

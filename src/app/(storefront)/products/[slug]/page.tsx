@@ -90,7 +90,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           { label: product.name },
         ]}
       />
-      <div className="container pb-28 lg:pb-20">
+      <div className="container pb-28 md:pb-20">
         <div className="pdp-above-fold grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-24">
           <ProductGallery images={product.images} productName={product.name} />
           <ProductPurchasePanel product={product} />

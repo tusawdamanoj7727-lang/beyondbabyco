@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isAllowedImageType } from "@/lib/media/upload-validation";
 import { requirePermission } from "@/lib/auth/guards";
 import { getCurrentUser } from "@/lib/auth/session";
 import { PERMISSIONS } from "@/lib/auth/permissions";
@@ -43,6 +44,9 @@ export async function uploadMedia(formData: FormData): Promise<MediaActionResult
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, error: "No file provided." };
+  }
+  if (file.type.startsWith("image/") && !isAllowedImageType(file.type)) {
+    return { ok: false, error: "Only JPG, PNG, WebP allowed" };
   }
 
   const bucket = String(formData.get("bucket") ?? "media") as MediaBucket;
@@ -208,6 +212,9 @@ export async function replaceMedia(id: string, formData: FormData): Promise<Medi
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, error: "No file provided." };
+  }
+  if (file.type.startsWith("image/") && !isAllowedImageType(file.type)) {
+    return { ok: false, error: "Only JPG, PNG, WebP allowed" };
   }
 
   const supabase = await createSupabaseServerClient();

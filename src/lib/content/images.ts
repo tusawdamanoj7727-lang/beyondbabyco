@@ -35,14 +35,27 @@ export const CONTENT_IMAGE_BLURS = {
 
 /** SVG trust badges — keep as-is per Phase 11.4 spec. */
 export const TRUST_BADGES = {
-  dermatologicallyTested: "/images/homepage/phase-8-2/trust/dermatologically-tested.svg",
+  dermatologicallyTested: "/icons/badges/dermatologically-tested.svg",
   clinicallyTested: "/images/homepage/phase-8-2/trust/clinically-tested.svg",
   madeInIndia: "/images/homepage/phase-8-2/trust/made-in-india.svg",
   naturalIngredients: "/images/homepage/phase-8-2/trust/natural-ingredients.svg",
-  crueltyFree: "/images/homepage/phase-8-2/trust/cruelty-free.svg",
-  parabenFree: "/images/homepage/phase-8-2/trust/paraben-free.svg",
+  crueltyFree: "/icons/badges/cruelty-free.svg",
+  parabenFree: "/icons/badges/paraben-free.svg",
   sulfateFree: "/images/homepage/phase-8-2/trust/sulfate-free.svg",
+  hypoallergenic: "/icons/badges/hypoallergenic.svg",
+  siliconeFree: "/icons/badges/silicone-free.svg",
+  mineralOilFree: "/icons/badges/mineral-oil-free.svg",
   gmpManufacturing: "/images/homepage/phase-8-2/trust/gmp-manufacturing.svg",
   isoQuality: "/images/homepage/phase-8-2/trust/iso-quality.svg",
   pediatricianRecommended: "/images/homepage/phase-8-2/trust/pediatrician-recommended.svg",
 } as const;
+
+/** Homepage quality promise row — first six standards shown in compact grid. */
+export const QUALITY_PROMISE_BADGES = [
+  { id: "dermatologically-tested", title: "Dermatologically Tested", badge: TRUST_BADGES.dermatologicallyTested },
+  { id: "hypoallergenic", title: "Hypoallergenic", badge: TRUST_BADGES.hypoallergenic },
+  { id: "paraben-free", title: "Paraben Free", badge: TRUST_BADGES.parabenFree },
+  { id: "silicone-free", title: "Silicone Free", badge: TRUST_BADGES.siliconeFree },
+  { id: "mineral-oil-free", title: "Mineral Oil Free", badge: TRUST_BADGES.mineralOilFree },
+  { id: "cruelty-free", title: "Cruelty Free", badge: TRUST_BADGES.crueltyFree },
+] as const;

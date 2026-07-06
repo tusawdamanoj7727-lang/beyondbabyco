@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 
 import ProductImageFallback from "@/components/brand/ProductImageFallback";
 import { focusRing, imageHoverZoom } from "@/lib/design/ui";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 import type { StorefrontProductImage } from "@/lib/catalog/types";
 
@@ -64,6 +64,7 @@ export default function ProductGallery({
               fetchPriority={isLcpSlide ? "high" : undefined}
               loading={isLcpSlide ? undefined : "lazy"}
               sizes="(max-width: 1024px) 100vw, 50vw"
+              quality={IMAGE_QUALITY.product}
               placeholder="blur"
               blurDataURL={resolveImageBlur(current.blurDataUrl)}
               className={cn(

@@ -1,0 +1,62 @@
+"use client";
+
+import { ShoppingBag } from "lucide-react";
+
+import { useToast } from "@/components/ui/ToastProvider";
+import { canPurchaseProduct } from "@/lib/catalog/availability";
+import type { StorefrontProduct } from "@/lib/catalog/types";
+import { buildCartItemInput } from "@/lib/store/cart-mappers";
+import { useCartStore } from "@/lib/store/cart-store";
+import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
+import { focusRing } from "@/lib/design/ui";
+import { cn } from "@/lib/utils";
+
+type AddToCartButtonProps = {
+  product: StorefrontProduct;
+  className?: string;
+  size?: "sm" | "md";
+  fullWidth?: boolean;
+  showIcon?: boolean;
+  label?: string;
+  onAction?: () => void;
+};
+
+export default function AddToCartButton({
+  product,
+  className,
+  size = "md",
+  fullWidth = true,
+  showIcon = true,
+  label = "Add to Cart",
+  onAction,
+}: AddToCartButtonProps) {
+  const addItem = useCartStore((s) => s.addItem);
+  const cartUi = useCartUiOptional();
+  const toast = useToast();
+
+  if (!canPurchaseProduct(product)) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addItem(buildCartItemInput(product));
+        cartUi?.openMiniCart();
+        toast.success("Added to cart!");
+        onAction?.();
+      }}
+      className={cn(
+        "inline-flex items-center justify-center gap-2 rounded-full bg-[#2d5a27] font-semibold text-white transition hover:bg-[#234a20]",
+        size === "sm" ? "h-11 px-4 text-sm" : "h-11 px-5 text-sm",
+        fullWidth && "w-full",
+        focusRing,
+        className,
+      )}
+    >
+      {showIcon ? <ShoppingBag className="h-4 w-4" aria-hidden="true" /> : null}
+      {label}
+    </button>
+  );
+}

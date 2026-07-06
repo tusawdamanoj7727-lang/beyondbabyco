@@ -9,6 +9,7 @@ import { Spinner } from "@/components/admin/LoadingState";
 import { Select } from "@/components/admin/FormField";
 import { cn } from "@/lib/utils";
 import { readImageMeta } from "@/lib/media/image-meta";
+import { isAllowedImageType, ALLOWED_IMAGE_ACCEPT } from "@/lib/media/upload-validation";
 import { MEDIA_BUCKETS } from "@/lib/admin/media-types";
 import { uploadMedia } from "@/lib/admin/media-library-actions";
 
@@ -56,8 +57,12 @@ export default function UploadClient({ folders }: { folders: FolderOption[] }) {
     const next: QueueItem[] = Array.from(files).map((file) => ({
       id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
       file,
-      status: "queued",
-      previewUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
+      status: file.type.startsWith("image/") && !isAllowedImageType(file.type) ? "error" as const : "queued",
+      error:
+        file.type.startsWith("image/") && !isAllowedImageType(file.type)
+          ? "Only JPG, PNG, WebP allowed"
+          : undefined,
+      previewUrl: file.type.startsWith("image/") && isAllowedImageType(file.type) ? URL.createObjectURL(file) : undefined,
     }));
     setItems((prev) => [...prev, ...next]);
   }
@@ -168,7 +173,7 @@ export default function UploadClient({ folders }: { folders: FolderOption[] }) {
         >
           <Icon name="plus" size={16} /> Browse files
         </button>
-        <input ref={inputRef} type="file" multiple className="sr-only" onChange={(e) => addFiles(e.target.files)} />
+        <input ref={inputRef} type="file" multiple accept={ALLOWED_IMAGE_ACCEPT} className="sr-only" onChange={(e) => addFiles(e.target.files)} />
       </div>
 
       {/* Queue */}

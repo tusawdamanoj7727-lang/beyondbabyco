@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Baby Oil">
+  <defs>
+    <linearGradient id="oil-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="45%" stop-color="#fcd34d"/>
+      <stop offset="100%" stop-color="#fffbeb"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#oil-bg)"/>
+  <ellipse cx="200" cy="310" rx="88" ry="98" fill="#ffffff" opacity="0.84"/>
+  <path d="M176 175 L224 175 L210 230 L190 230 Z" fill="#fde68a"/>
+  <rect x="182" y="230" width="36" height="88" rx="10" fill="#fffbeb" stroke="#f59e0b" stroke-width="3"/>
+  <circle cx="200" cy="350" r="18" fill="#fbbf24" opacity="0.35"/>
+  <text x="200" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="#92400e">Baby Oil</text>
+</svg>

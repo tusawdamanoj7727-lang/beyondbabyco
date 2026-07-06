@@ -1,26 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useRef } from "react";
+import { useState, type FormEvent } from "react";
 
 import Reveal from "../ui/Reveal";
 import AccentBar from "../ui/AccentBar";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
-import { useToast } from "@/components/ui/ToastProvider";
 import type { NewsletterConfig } from "@/lib/admin/homepage-schema";
-import {
-  newsletterSubscribeAction,
-  type NewsletterSubscribeState,
-} from "@/lib/auth/newsletter-actions";
+import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import { NEWSLETTER } from "@/lib/brand/copy";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
 import { ctaHeight, formControl } from "@/lib/design/ui";
 import { newsletterPhoto } from "@/lib/homepage/visual-assets";
-import { resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
-
-const initialState: NewsletterSubscribeState = { error: null, success: null };
 
 function renderHeading(text: string) {
   if (text.includes("\n")) {
@@ -35,9 +29,9 @@ function renderHeading(text: string) {
 }
 
 export default function NewsletterCTA({ config }: { config?: NewsletterConfig }) {
-  const toast = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction, isPending] = useActionState(newsletterSubscribeAction, initialState);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
   const heading = config?.heading?.trim() || NEWSLETTER.heading;
   const description = config?.description?.trim() || NEWSLETTER.description;
@@ -46,14 +40,41 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
     config?.imageUrl?.trim() || config?.artworkUrl?.trim() || newsletterPhoto.main;
   const artwork = resolveVisualUrl(artworkRaw, { category: "newsletter", slug: "care-tips" });
 
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.success);
-      formRef.current?.reset();
-    } else if (state.error) {
-      toast.error(state.error);
+  async function handleSubscribe() {
+    if (!email.trim()) return;
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "homepage_newsletter" }),
+      });
+
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+        error?: string;
+      };
+
+      setStatus(data.success ? "success" : "error");
+      setMessage(data.message || data.error || NEWSLETTER_MESSAGES.error);
+
+      if (data.success) {
+        setEmail("");
+      }
+    } catch {
+      setStatus("error");
+      setMessage(NEWSLETTER_MESSAGES.error);
     }
-  }, [state.success, state.error, toast]);
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    await handleSubscribe();
+  }
 
   return (
     <section
@@ -85,8 +106,7 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
 
             <Reveal as="div" variant="fadeUp" delay={0.34} className="mt-10 w-full">
               <form
-                ref={formRef}
-                action={formAction}
+                onSubmit={(e) => void handleSubmit(e)}
                 className="homepage-newsletter-form flex w-full max-w-[36rem] flex-col gap-3 sm:flex-row sm:items-stretch"
                 noValidate
               >
@@ -97,12 +117,24 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
                   id="newsletter-email"
                   type="email"
                   name="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (status !== "idle") {
+                      setStatus("idle");
+                      setMessage("");
+                    }
+                  }}
                   placeholder={NEWSLETTER.placeholder}
                   required
-                  disabled={isPending}
-                  aria-invalid={state.error ? true : undefined}
+                  disabled={status === "loading"}
+                  aria-invalid={status === "error" ? true : undefined}
                   aria-describedby={
-                    state.error ? "newsletter-error" : state.success ? "newsletter-success" : undefined
+                    status === "error"
+                      ? "newsletter-error"
+                      : status === "success"
+                        ? "newsletter-success"
+                        : undefined
                   }
                   className={cn(formControl, "flex-1 rounded-full px-5 shadow-[var(--shadow-premium)]")}
                 />
@@ -110,20 +142,26 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
                   variant="primary"
                   type="submit"
                   size="lg"
+                  loading={status === "loading"}
                   className={cn("w-full shrink-0 sm:w-auto sm:min-w-[11rem]", ctaHeight)}
-                  disabled={isPending}
+                  disabled={status === "loading"}
                 >
-                  {isPending ? "Joining…" : buttonText}
+                  {buttonText}
                 </Button>
               </form>
-              {state.error ? (
-                <p id="newsletter-error" role="alert" className="mt-3 text-sm text-terra-600">
-                  {state.error}
+              {status === "loading" ? (
+                <p className="mt-3 text-sm text-green-800/70" aria-live="polite">
+                  Subscribing…
                 </p>
               ) : null}
-              {state.success ? (
-                <p id="newsletter-success" role="status" className="mt-3 text-sm text-green-700">
-                  {state.success}
+              {status === "error" && message ? (
+                <p id="newsletter-error" role="alert" className="mt-3 text-sm text-red-600">
+                  {message}
+                </p>
+              ) : null}
+              {status === "success" && message ? (
+                <p id="newsletter-success" role="status" className="mt-3 text-sm font-medium text-green-700">
+                  {message}
                 </p>
               ) : null}
             </Reveal>
@@ -139,7 +177,8 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
                 alt=""
                 fill
                 loading="lazy"
-                sizes="(max-width: 1024px) 70vw, 336px"
+                sizes={IMAGE_SIZES.lifestyleHero}
+                quality={IMAGE_QUALITY.editorial}
                 placeholder="blur"
                 blurDataURL={resolveImageBlur(artwork.blur)}
                 className="object-cover object-[center_22%]"

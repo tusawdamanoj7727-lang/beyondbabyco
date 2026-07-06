@@ -6,6 +6,12 @@ import { applyCoupon } from "@/lib/coupons/queries";
 import { generateOrderNumber, calcLineTotal } from "@/lib/admin/order-schema";
 import { fulfillOrderWithDelhivery } from "@/lib/checkout/fulfillment";
 import { calcCheckoutTotals } from "@/lib/checkout/tax";
+import { calculateGSTFromCart } from "@/lib/utils/gst";
+import {
+  decrementOrderStock,
+  restoreOrderStock,
+  type OrderStockLine,
+} from "@/lib/inventory/storefront-stock";
 import { placeOrderSchema, type PlaceOrderInput } from "@/lib/checkout/schema";
 import { createRazorpayOrder } from "@/lib/checkout/razorpay-client";
 import { getEnabledRazorpayGateway } from "@/lib/checkout/gateways";
@@ -91,30 +97,52 @@ export async function placeStorefrontOrder(
   const supabase = createSupabaseServiceClient();
   const subtotal = input.cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
   const discountTotal = input.coupon?.discountAmount ?? 0;
+  const gstBreakdown = calculateGSTFromCart(
+    input.cartItems.map((i) => ({
+      price: i.price,
+      quantity: i.quantity,
+      gstRate: i.gstRate,
+    })),
+    input.shipping.state,
+    discountTotal,
+  );
   const totals = calcCheckoutTotals({
     subtotal,
     discountTotal,
     shippingTotal: input.shippingTotal,
+    taxTotal: gstBreakdown.total,
   });
 
   const warehouseId = await getDefaultWarehouseId(supabase);
   const orderNumber = generateOrderNumber();
 
+  const stockLines: OrderStockLine[] = [];
   const lineItems = [];
   for (const item of input.cartItems) {
     const variant = await resolveVariantId(supabase, item.productId, item.variantId);
+    if (!variant?.id) {
+      return { ok: false, error: "One or more items are no longer available." };
+    }
+    stockLines.push({ variantId: variant.id, quantity: item.quantity });
     lineItems.push({
       product_id: item.productId,
-      product_variant_id: variant?.id ?? null,
+      product_variant_id: variant.id,
       name: item.variantName ? `${item.name} — ${item.variantName}` : item.name,
-      sku: variant?.sku ?? null,
+      sku: variant.sku ?? null,
       unit_price: item.price,
       quantity: item.quantity,
-      tax_rate: 0,
+      tax_rate: item.gstRate,
       total: calcLineTotal(item.price, item.quantity, 0),
     });
   }
 
+  const stockResult = await decrementOrderStock(stockLines);
+  if (!stockResult.ok) {
+    return { ok: false, error: stockResult.error };
+  }
+
+  let keepStock = false;
+  try {
   const { data: order, error: orderErr } = await supabase
     .from("orders")
     .insert({
@@ -127,6 +155,11 @@ export async function placeStorefrontOrder(
       tax_total: totals.taxTotal,
       shipping_total: totals.shippingTotal,
       grand_total: totals.grandTotal,
+      cgst_amount: gstBreakdown.cgst,
+      sgst_amount: gstBreakdown.sgst,
+      igst_amount: gstBreakdown.igst,
+      shipping_state: input.shipping.state,
+      buyer_gstin: input.buyerGstin?.trim() || null,
       coupon_id: input.coupon?.couponId ?? null,
       placed_at: new Date().toISOString(),
       notes: `idempotency:${input.idempotencyKey}`,
@@ -137,7 +170,6 @@ export async function placeStorefrontOrder(
   if (orderErr || !order) {
     return { ok: false, error: orderErr?.message ?? "Could not create order." };
   }
-
   const { error: itemsErr } = await supabase.from("order_items").insert(
     lineItems.map((item) => ({ order_id: order.id, ...item })),
   );
@@ -209,6 +241,7 @@ export async function placeStorefrontOrder(
       .eq("id", payment.id);
 
     const fulfillment = await fulfillOrderWithDelhivery(order.id);
+    keepStock = true;
     if (!fulfillment.ok) {
       return {
         ok: true,
@@ -251,6 +284,7 @@ export async function placeStorefrontOrder(
     })
     .eq("id", payment.id);
 
+  keepStock = true;
   return {
     ok: true,
     error: null,
@@ -261,6 +295,11 @@ export async function placeStorefrontOrder(
     razorpayKeyId: gateway?.keyId ?? undefined,
     paymentMethod: "razorpay",
   };
+  } finally {
+    if (!keepStock) {
+      await restoreOrderStock(stockLines);
+    }
+  }
 }
 
 export async function completeRazorpayOrder(input: {

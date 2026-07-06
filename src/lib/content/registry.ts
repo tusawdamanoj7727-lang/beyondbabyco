@@ -47,8 +47,14 @@ export const CONTENT_PAGES: ContentPage[] = [
 
 const PAGE_MAP = new Map(CONTENT_PAGES.map((p) => [p.slug, p]));
 
+/** Legacy slug aliases */
+const SLUG_ALIASES: Record<string, string> = {
+  terms: "terms-of-service",
+};
+
 export function getContentPage(slug: string): ContentPage | undefined {
-  return PAGE_MAP.get(slug);
+  const resolved = SLUG_ALIASES[slug] ?? slug;
+  return PAGE_MAP.get(resolved);
 }
 
 export function getAllContentSlugs(): string[] {

@@ -2,14 +2,17 @@
 /**
  * Phase 10.5 — Real customer journey audit.
  * Run: node scripts/customer-journey-audit.mjs
- * Requires dev server at PLAYWRIGHT_BASE_URL (default http://localhost:3000)
+ * Requires dev server at PLAYWRIGHT_BASE_URL (default NEXT_PUBLIC_SITE_URL or production URL)
  */
 import { chromium, devices } from "@playwright/test";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const BASE = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const BASE =
+  process.env.PLAYWRIGHT_BASE_URL ??
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://beyondbabyco.in";
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), "../tmp/customer-journeys-10-5");
 const CMS_SLUGS = [
   "about", "our-story", "research", "contact", "faq", "privacy-policy", "terms",

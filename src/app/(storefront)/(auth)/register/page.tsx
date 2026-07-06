@@ -3,12 +3,14 @@ import { redirect } from "next/navigation";
 
 import RegisterForm from "./RegisterForm";
 import { getCurrentUser } from "@/lib/auth/session";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Create Account — BeyondBabyCo",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Create Account",
   description: "Create your BeyondBabyCo account to shop, track orders, and save favourites.",
-  robots: { index: false, follow: false },
-};
+  path: "/register",
+  noIndex: true,
+});
 
 export default async function RegisterPage({
   searchParams,

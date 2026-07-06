@@ -14,6 +14,7 @@ import {
 } from "./product-schema";
 import type { ProductStatus, TablesInsert } from "@/lib/supabase/database.types";
 import { revalidateProductStorefront } from "./storefront-revalidate";
+import { validateImageUpload } from "@/lib/media/upload-validation";
 
 const PRODUCTS_BUCKET = "products";
 
@@ -363,6 +364,10 @@ export async function uploadProductImage(
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, error: "No file provided." };
+  }
+  const typeError = validateImageUpload(file);
+  if (typeError) {
+    return { ok: false, error: typeError };
   }
 
   const supabase = await createSupabaseServerClient();

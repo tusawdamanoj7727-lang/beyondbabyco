@@ -1,36 +1,14 @@
-"use client";
-
 import { forwardRef, type ElementType, type HTMLAttributes, type ReactNode } from "react";
-import { motion } from "framer-motion";
 
-import { fadeUp, viewportConfig } from "../../lib/animations";
 import { focusRing, motionCard, surfaceGlass } from "@/lib/design/ui";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 type CardVariant = "default" | "elevated" | "outline" | "glass" | "feature";
 type CardPadding = "none" | "sm" | "md" | "lg";
 type CardRadius = "card" | "lg" | "3xl" | "4xl";
 type CardAs = "article" | "section" | "div" | "aside";
 
-const motionElements = {
-  article: motion.article,
-  section: motion.section,
-  div: motion.div,
-  aside: motion.aside,
-} as const;
-
-type MotionConflictingHandlers =
-  | "onDrag"
-  | "onDragStart"
-  | "onDragEnd"
-  | "onAnimationStart"
-  | "onAnimationEnd"
-  | "onAnimationIteration";
-
-export type CardProps = Omit<
-  HTMLAttributes<HTMLElement>,
-  MotionConflictingHandlers
-> & {
+export type CardProps = HTMLAttributes<HTMLElement> & {
   as?: CardAs;
   variant?: CardVariant;
   padding?: CardPadding;
@@ -79,11 +57,13 @@ const Card = forwardRef<HTMLElement, CardProps>(function Card(
   },
   ref,
 ) {
+  const Tag = as as ElementType;
   const classNames = cn(
     "relative",
     focusRing,
     motionCard,
     hover && "interactive-lift",
+    animated && "scroll-reveal-item",
     variantClasses[variant],
     paddingClasses[padding],
     variant !== "outline" && variant !== "glass" && variant !== "feature" && radiusClasses[radius],
@@ -91,29 +71,10 @@ const Card = forwardRef<HTMLElement, CardProps>(function Card(
     className,
   );
 
-  if (!animated) {
-    const StaticTag = as as ElementType;
-    return (
-      <StaticTag ref={ref as never} className={classNames} {...rest}>
-        {children}
-      </StaticTag>
-    );
-  }
-
-  const MotionComponent = motionElements[as];
-
   return (
-    <MotionComponent
-      ref={ref as never}
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="show"
-      viewport={viewportConfig}
-      className={classNames}
-      {...rest}
-    >
+    <Tag ref={ref as never} className={classNames} {...rest}>
       {children}
-    </MotionComponent>
+    </Tag>
   );
 });
 

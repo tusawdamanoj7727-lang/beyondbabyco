@@ -7,6 +7,12 @@ import { EDITORIAL_QUALITY_THRESHOLD, GENERATED_ROOT } from "./art-direction";
 import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
 import { resolveRealVisual } from "./real-assets";
+import {
+  BABY_WIPES_PRODUCT_IMAGE,
+  isLegacyOrMissingProductImage,
+  resolveCategoryProductImage,
+  resolveProductVisualGroup,
+} from "@/lib/catalog/product-category-images";
 import blurs from "./generated-blurs.json";
 import selectionsData from "./asset-selections.json";
 import reviewsData from "./asset-reviews.json";
@@ -132,6 +138,9 @@ export function genVisual({ category, slug }: VisualRef, format: "webp" | "avif"
 export function shouldUseGeneratedAsset(url: string | null | undefined): boolean {
   if (!url?.trim()) return true;
   const lower = url.toLowerCase();
+  if (lower.includes("/images/placeholders/")) return false;
+  if (lower.includes("/images/generated/products/baby-wipes/front.")) return false;
+  if (isLegacyOrMissingProductImage(url)) return true;
   return LEGACY_VISUAL_PATTERNS.some((p) => lower.includes(p));
 }
 
@@ -188,20 +197,32 @@ export function resolveProductVisual(input: {
   imageBlurDataUrl?: string | null;
   angle?: GeneratedAngle;
 }): { imageUrl: string; imageBlurDataUrl: string } {
-  const line = resolveProductLine(input.slug, input.categorySlug);
-  const angle = input.angle ?? "front";
-  const selected = resolveProductSelection(line, angle, { category: "products", slug: `${line}/${angle}` });
-  const generated = {
-    imageUrl: selected.url,
-    imageBlurDataUrl: selected.blur,
-  };
+  const group = resolveProductVisualGroup(input.categorySlug, input.slug);
 
-  if (shouldUseGeneratedAsset(input.imageUrl)) return generated;
+  if (group === "wipes") {
+    if (!isLegacyOrMissingProductImage(input.imageUrl)) {
+      return {
+        imageUrl: input.imageUrl!.trim(),
+        imageBlurDataUrl: input.imageBlurDataUrl?.trim() || STATIC_IMAGE_BLUR,
+      };
+    }
+    return {
+      imageUrl: BABY_WIPES_PRODUCT_IMAGE,
+      imageBlurDataUrl: input.imageBlurDataUrl?.trim() || STATIC_IMAGE_BLUR,
+    };
+  }
 
-  return {
-    imageUrl: input.imageUrl!.trim(),
-    imageBlurDataUrl: input.imageBlurDataUrl?.trim() || STATIC_IMAGE_BLUR,
-  };
+  if (!isLegacyOrMissingProductImage(input.imageUrl)) {
+    return {
+      imageUrl: input.imageUrl!.trim(),
+      imageBlurDataUrl: input.imageBlurDataUrl?.trim() || STATIC_IMAGE_BLUR,
+    };
+  }
+
+  return resolveCategoryProductImage({
+    categorySlug: input.categorySlug,
+    productSlug: input.slug,
+  });
 }
 
 const PDP_GALLERY_ANGLES: GeneratedAngle[] = [
@@ -220,7 +241,7 @@ export function resolveProductGalleryImages(
   categorySlug: string | null | undefined,
   dbImages: { id: string; url: string; alt: string | null; isPrimary: boolean; blurDataUrl?: string | null }[],
 ): { id: string; url: string; alt: string | null; isPrimary: boolean; blurDataUrl: string | null }[] {
-  const usable = dbImages.filter((img) => !shouldUseGeneratedAsset(img.url));
+  const usable = dbImages.filter((img) => !isLegacyOrMissingProductImage(img.url));
   if (usable.length > 0) {
     return usable.map((img) => ({
       ...img,
@@ -228,19 +249,18 @@ export function resolveProductGalleryImages(
     }));
   }
 
-  const line = resolveProductLine(slug, categorySlug);
+  const visual = resolveProductVisual({ slug, categorySlug });
   const productName = slug.replace(/-/g, " ");
 
-  return PDP_GALLERY_ANGLES.map((angle, i) => {
-    const visual = resolveProductSelection(line, angle, { category: "products", slug: `${line}/${angle}` });
-    return {
-      id: `gen-${line}-${angle}`,
-      url: visual.url,
-      alt: `${productName} — ${angle.replace(/-/g, " ")} | BeyondBabyCo`,
-      isPrimary: i === 0,
-      blurDataUrl: visual.blur,
-    };
-  });
+  return [
+    {
+      id: `category-${slug}`,
+      url: visual.imageUrl,
+      alt: `${productName} | BeyondBabyCo`,
+      isPrimary: true,
+      blurDataUrl: visual.imageBlurDataUrl,
+    },
+  ];
 }
 
 /** Category card slug → generated categories asset. */

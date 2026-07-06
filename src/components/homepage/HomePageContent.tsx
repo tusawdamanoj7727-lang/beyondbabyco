@@ -12,11 +12,13 @@ import TrustWidgets from "@/components/trust/TrustWidgets";
 import QualityStandardsGrid from "@/components/trust/QualityStandardsGrid";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontHomepage } from "@/lib/homepage/storefront";
+import { mergeTestimonials } from "@/lib/trust";
 
 /** Below-fold client sections — code-split to reduce main-thread work on LCP path. */
 const CommunityStrip = dynamic(() => import("@/components/reviews/CommunityStrip"));
 const MeetOurFriends = dynamic(() => import("@/components/sections/MeetOurFriends"));
 const DoctorAdvisorySection = dynamic(() => import("@/components/trust/DoctorAdvisorySection"));
+const EarlyAccessSection = dynamic(() => import("@/components/sections/EarlyAccessSection"));
 const TestimonialShowcase = dynamic(() => import("@/components/trust/TestimonialShowcase"));
 const NewsletterCTA = dynamic(() => import("@/components/sections/NewsletterCTA"));
 
@@ -29,6 +31,10 @@ export default function HomePageContent({
   featuredReview: EnrichedPublicReview | null;
   communityReviews: EnrichedPublicReview[];
 }) {
+  const cmsTestimonials = mergeTestimonials(data.testimonials, communityReviews);
+  const hasPublishedReviews = communityReviews.length > 0;
+  const hasTestimonials = cmsTestimonials.length > 0;
+
   return (
     <>
       {data.sections.hero.enabled ? <HeroSection hero={data.hero} /> : null}
@@ -54,11 +60,16 @@ export default function HomePageContent({
       ) : null}
       <DoctorAdvisorySection compact />
       {data.sections.testimonials.enabled ? (
-        <TestimonialShowcase
-          cmsItems={data.testimonials}
-          heading={data.testimonialsHeading.heading}
-          description={data.testimonialsHeading.description || undefined}
-        />
+        hasPublishedReviews || hasTestimonials ? (
+          <TestimonialShowcase
+            cmsItems={data.testimonials}
+            communityReviews={communityReviews}
+            heading={data.testimonialsHeading.heading}
+            description={data.testimonialsHeading.description || undefined}
+          />
+        ) : (
+          <EarlyAccessSection />
+        )
       ) : null}
       {data.sections.newsletter.enabled ? <NewsletterCTA config={data.newsletter} /> : null}
     </>

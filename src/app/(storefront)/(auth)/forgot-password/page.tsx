@@ -3,12 +3,14 @@ import { redirect } from "next/navigation";
 
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { getCurrentUser } from "@/lib/auth/session";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Forgot Password — BeyondBabyCo",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Forgot Password",
   description: "Reset your BeyondBabyCo account password.",
-  robots: { index: false, follow: false },
-};
+  path: "/forgot-password",
+  noIndex: true,
+});
 
 export default async function ForgotPasswordPage() {
   const user = await getCurrentUser();

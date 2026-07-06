@@ -29,6 +29,8 @@ export const MIGRATION_SENTINELS = [
   { file: "021_marketing_automation.sql", table: "marketing_campaigns", column: "id" },
   { file: "022_admin_bootstrap.sql", permissionCode: "marketing.view" },
   { file: "023_delhivery_integration.sql", table: "shipment_tracking", column: "id" },
+  { file: "024_storefront_coupons.sql", table: "coupons", column: "code" },
+  { file: "025_product_gst_rates.sql", table: "products", column: "gst_rate" },
 ];
 
 export const REPAIR_MIGRATION_RANGE = { from: 7, to: 21 };
