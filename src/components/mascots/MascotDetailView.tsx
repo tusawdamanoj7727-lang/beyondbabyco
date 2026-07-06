@@ -127,6 +127,7 @@ export default function MascotDetailView({
                     floating
                     duration={mascotFloatDuration(friend.mascotId)}
                     alt={`${friend.fullName} mascot`}
+                    className="relative z-10"
                   />
                   <div className="min-w-0 text-left">
                     <p className="font-heading text-lg font-bold text-green-900">{friend.fullName}</p>

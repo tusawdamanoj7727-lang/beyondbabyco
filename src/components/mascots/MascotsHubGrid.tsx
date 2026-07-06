@@ -50,6 +50,7 @@ export default function MascotsHubGrid() {
                   interactive
                   duration={mascotFloatDuration(mascot.mascotId)}
                   alt={`${mascot.fullName} mascot`}
+                  className="relative z-10"
                 />
 
                 <h2 className="mt-5 font-heading text-2xl font-bold text-green-900">{mascot.fullName}</h2>

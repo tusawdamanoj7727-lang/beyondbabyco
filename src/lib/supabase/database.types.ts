@@ -4391,6 +4391,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       settlements: {
         Row: {
           bank_reference: string | null
@@ -5486,6 +5504,10 @@ export type Database = {
       }
       owns_customer: { Args: { c: string }; Returns: boolean }
       decrement_order_lines: { Args: { p_lines: Json }; Returns: boolean }
+      check_and_reserve_stock: {
+        Args: { p_variant_id: string; p_qty: number }
+        Returns: boolean
+      }
       decrement_stock: {
         Args: { p_variant_id: string; p_quantity: number }
         Returns: boolean

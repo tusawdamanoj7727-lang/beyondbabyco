@@ -58,6 +58,7 @@ export function breadcrumbJsonLd(items: { name: string; url?: string }[]) {
 export function productJsonLd(product: {
   name: string;
   description: string | null;
+  shortDescription?: string | null;
   slug: string;
   imageUrl: string | null;
   price: number;
@@ -65,15 +66,20 @@ export function productJsonLd(product: {
   inStock: boolean;
   ratingAvg: number;
   ratingCount: number;
-  brandName: string | null;
+  brandName?: string | null;
 }) {
+  const description = product.description ?? product.shortDescription ?? undefined;
+
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description ?? undefined,
+    description,
     image: product.imageUrl ? [product.imageUrl] : undefined,
-    brand: product.brandName ? { "@type": "Brand", name: product.brandName } : undefined,
+    brand: {
+      "@type": "Brand",
+      name: product.brandName?.trim() || SITE_NAME,
+    },
     offers: {
       "@type": "Offer",
       url: absoluteUrl(`/products/${product.slug}`),

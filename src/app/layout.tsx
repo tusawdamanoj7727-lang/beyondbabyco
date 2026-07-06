@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const montserrat = Montserrat({
-  weight: ["600", "700", "800"],
+  weight: ["300", "500", "600", "700", "800", "900"],
   variable: "--font-montserrat",
   display: "swap",
   subsets: ["latin"],
@@ -63,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" className={cn("font-sans", geist.variable, montserrat.variable)}>
       <head>
         <ResourceHints />
       </head>

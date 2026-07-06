@@ -27,15 +27,16 @@ export function productBadge(row: {
   isNewArrival: boolean;
   isFeatured?: boolean;
 }): string | null {
-  if (row.status === "coming_soon") return "Launching 2026";
-  if (row.status === "active") return "Available Now";
+  if (row.status === "coming_soon") return "Coming Soon";
+  if (row.isBestSeller) return "Best Seller";
+  if (row.isNewArrival) return "New";
   return null;
 }
 
 /** Secondary trust badge shown on cards when applicable. */
 export function productSecondaryBadge(row: { status: string }): string | null {
-  if (row.status === "coming_soon") return "Research Complete";
-  return "Research Backed";
+  if (row.status === "coming_soon") return null;
+  return null;
 }
 
 export function toStorefrontPricing(row: {
@@ -127,7 +128,7 @@ export function mapRowToStorefrontProduct(
       isFeatured: row.is_featured,
     }),
     secondaryBadge: productSecondaryBadge({ status: row.status }),
-    gstRate: resolveProductGstRate(row.gst_rate, extras.categorySlug),
+    gstRate: resolveProductGstRate(row.gst_rate, extras.categorySlug, row.slug),
   };
 }
 

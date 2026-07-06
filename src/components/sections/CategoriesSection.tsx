@@ -17,6 +17,7 @@ import type { StorefrontCategoryItem } from "@/lib/homepage/storefront";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
+import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
 const CARD_DELAYS = [0.28, 0.34, 0.4, 0.46, 0.52, 0.58, 0.64, 0.7];
 
@@ -35,9 +36,15 @@ export default function CategoriesSection({
       as="section"
       id="categories"
       variant="fadeUp"
-      className="section-padding relative overflow-hidden"
+      className="section-padding relative overflow-visible"
     >
       <PremiumSectionBackdrop variant="cream" />
+      <HomepageMascotGuide
+        mascot="gigi-giraffe"
+        pose="peek"
+        size={160}
+        placementClassName="-top-10 right-8 xl:right-16"
+      />
 
       <div className="container relative z-10 w-full">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">

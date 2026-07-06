@@ -9,6 +9,7 @@ import { SCIENCE_SECTION } from "@/lib/brand/copy";
 import { editorialImageCrop } from "@/lib/design/ui";
 import { EDITORIAL_IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import type { ScienceConfig } from "@/lib/admin/homepage-schema";
+import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
 const FEATURE_ACCENTS = ["bg-green-200/80", "bg-terra-200/80", "bg-cream-300/80"];
 
@@ -32,7 +33,13 @@ export default function ScienceSection({ config }: { config?: ScienceConfig }) {
       : DEFAULT_FEATURES;
 
   return (
-    <HomeSection id="science" tone="white">
+    <HomeSection id="science" tone="white" className="overflow-visible">
+      <HomepageMascotGuide
+        mascot="eli-elephant"
+        pose="studying"
+        size={180}
+        placementClassName="-left-6 top-1/2 -translate-y-1/2 xl:-left-12"
+      />
       <div className="homepage-split-grid grid grid-cols-1 items-center lg:grid-cols-2">
         <ScrollReveal className="w-full">
           <div className="relative">

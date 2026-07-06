@@ -15,6 +15,9 @@ export function createSupabaseBrowserClient() {
   return createBrowserClient<Database>(env.supabaseUrl, env.supabaseAnonKey);
 }
 
+/** Alias used by account/login client components. */
+export const createClient = createSupabaseBrowserClient;
+
 /**
  * Shared singleton browser client. Safe to import from Client Components.
  */

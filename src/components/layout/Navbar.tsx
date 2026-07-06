@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Heart, Menu, ShoppingBag, X } from "lucide-react";
+import { Heart, Menu, ShoppingBag, UserCircle, X } from "lucide-react";
 
 import StaticSvgImage from "@/components/media/StaticSvgImage";
 
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
-import { useActiveSection } from "@/hooks/useActiveSection";
+import { useAuth } from "@/lib/auth/hooks";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
 import { isCustomerAuthPath } from "@/lib/routes";
@@ -18,33 +18,16 @@ import { cn } from "@/lib/utils";
 const TERRACOTTA = "#c4673a";
 const INSTAGRAM_URL = "https://instagram.com/beyondbabyco";
 
-const SECTION_IDS = ["products", "about", "research", "contact"] as const;
+const NAV_LINKS = [
+  { label: "Products", href: "/products" },
+  { label: "About", href: "/about" },
+  { label: "Research", href: "/research" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+] as const;
 
-const NAV_ITEMS: { label: string; href: string; sectionId?: string }[] = [
-  { label: "Products", href: "/products", sectionId: "products" },
-  { label: "About", href: "/about", sectionId: "about" },
-  { label: "Research", href: "/research", sectionId: "research" },
-  { label: "Blog", href: "/community" },
-  { label: "Contact", href: "/contact", sectionId: "contact" },
-];
-
-function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-}
-
-function isNavItemActive(
-  pathname: string,
-  href: string,
-  activeSection: string | null,
-  sectionId?: string,
-) {
-  if (pathname === href || (href !== "/" && pathname.startsWith(`${href}/`))) {
-    return true;
-  }
-  if (pathname === "/" && sectionId && activeSection === sectionId) {
-    return true;
-  }
-  return false;
+function isNavItemActive(pathname: string, href: string) {
+  return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
 function NavLink({
@@ -53,7 +36,7 @@ function NavLink({
   onNavigate,
   className,
 }: {
-  item: (typeof NAV_ITEMS)[number];
+  item: (typeof NAV_LINKS)[number];
   isActive: boolean;
   onNavigate?: () => void;
   className?: string;
@@ -62,13 +45,7 @@ function NavLink({
     <Link
       href={item.href}
       aria-current={isActive ? "page" : undefined}
-      onClick={(e) => {
-        if (typeof window !== "undefined" && window.location.pathname === "/" && item.sectionId) {
-          e.preventDefault();
-          scrollToSection(item.sectionId);
-        }
-        onNavigate?.();
-      }}
+      onClick={onNavigate}
       className={cn(
         "group relative text-sm font-medium transition-colors duration-200",
         isActive ? "text-[#2d5a27]" : "text-gray-700 hover:text-[#2d5a27]",
@@ -87,10 +64,27 @@ function NavLink({
   );
 }
 
+function BrandLogo({ className }: { className?: string }) {
+  return (
+    <StaticSvgImage
+      src="/images/brand/logo.svg"
+      alt="BeyondBabyCo"
+      width={208}
+      height={68}
+      loading="eager"
+      className={cn("h-[62px] w-auto object-contain", className)}
+    />
+  );
+}
+
 function SocialIcons({ onNavigate }: { onNavigate?: () => void }) {
   const hydrated = useCartHydrated();
   const itemCount = useCartStore((s) => s.itemCount());
   const count = hydrated ? itemCount : 0;
+  const { user } = useAuth();
+  const accountHref = user ? "/account" : "/login";
+  const accountLabel = user ? "My Account" : "Login";
+  const userInitial = user?.email?.[0]?.toUpperCase();
 
   return (
     <div className="flex items-center gap-3">
@@ -112,6 +106,28 @@ function SocialIcons({ onNavigate }: { onNavigate?: () => void }) {
         className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 transition-colors hover:text-[#2d5a27] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5a27]/30"
       >
         <Heart size={20} aria-hidden="true" />
+      </Link>
+
+      <Link
+        href={accountHref}
+        aria-label={accountLabel}
+        onClick={onNavigate}
+        className="group relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 transition-colors hover:text-[#2d5a27] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5a27]/30"
+      >
+        <UserCircle
+          size={22}
+          strokeWidth={1.5}
+          aria-hidden="true"
+          className={cn(user ? "text-[#2d5a27]" : "text-gray-600")}
+        />
+        {userInitial ? (
+          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#c4673a] text-[10px] font-bold text-white">
+            {userInitial}
+          </span>
+        ) : null}
+        <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+          {accountLabel}
+        </span>
       </Link>
 
       <Link
@@ -137,7 +153,6 @@ function SocialIcons({ onNavigate }: { onNavigate?: () => void }) {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const activeSection = useActiveSection(SECTION_IDS);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -155,21 +170,14 @@ export default function Navbar() {
       aria-label="Site navigation"
       className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 font-[family-name:var(--font-montserrat)] backdrop-blur supports-[backdrop-filter]:bg-white/80"
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {/* LEFT — Logo */}
         <Link
           href="/"
           className="inline-flex shrink-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2d5a27]/30"
           aria-label="BeyondBabyCo home"
         >
-          <StaticSvgImage
-            src="/images/brand/logo.svg"
-            alt="BeyondBabyCo"
-            width={130}
-            height={40}
-            loading="eager"
-            className="h-8 w-auto sm:h-10"
-          />
+          <BrandLogo />
         </Link>
 
         {/* CENTER — desktop nav */}
@@ -177,42 +185,13 @@ export default function Navbar() {
           aria-label="Main navigation"
           className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 lg:flex xl:gap-10"
         >
-          {NAV_ITEMS.map((item) => {
-            const active = isNavItemActive(
-              pathname ?? "",
-              item.href,
-              activeSection,
-              item.sectionId,
-            );
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                onClick={(e) => {
-                  if (window.location.pathname === "/" && item.sectionId) {
-                    e.preventDefault();
-                    scrollToSection(item.sectionId);
-                  }
-                }}
-                className={cn(
-                  "group relative pb-0.5 text-sm font-medium transition-colors duration-200",
-                  active ? "text-[#2d5a27]" : "text-gray-700 hover:text-[#2d5a27]",
-                )}
-              >
-                {item.label}
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute -bottom-0.5 left-0 h-0.5 rounded-full transition-all duration-300 ease-out",
-                    active
-                      ? "w-full bg-[#2d5a27]"
-                      : "w-0 bg-[#2d5a27] group-hover:w-full",
-                  )}
-                />
-              </Link>
-            );
-          })}
+          {NAV_LINKS.map((item) => (
+            <NavLink
+              key={item.href}
+              item={item}
+              isActive={isNavItemActive(pathname ?? "", item.href)}
+            />
+          ))}
         </div>
 
         {/* RIGHT — desktop icons */}
@@ -244,13 +223,7 @@ export default function Navbar() {
               >
                 <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
                   <Dialog.Title className="sr-only">Mobile navigation</Dialog.Title>
-                  <StaticSvgImage
-                    src="/images/brand/logo.svg"
-                    alt=""
-                    width={110}
-                    height={34}
-                    className="h-8 w-auto"
-                  />
+                  <BrandLogo />
                   <Dialog.Close asChild>
                     <button
                       type="button"
@@ -266,16 +239,11 @@ export default function Navbar() {
                   aria-label="Mobile navigation"
                   className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4"
                 >
-                  {NAV_ITEMS.map((item) => (
+                  {NAV_LINKS.map((item) => (
                     <NavLink
                       key={item.href}
                       item={item}
-                      isActive={isNavItemActive(
-                        pathname ?? "",
-                        item.href,
-                        activeSection,
-                        item.sectionId,
-                      )}
+                      isActive={isNavItemActive(pathname ?? "", item.href)}
                       onNavigate={closeDrawer}
                       className="rounded-xl px-4 py-3.5 text-base"
                     />

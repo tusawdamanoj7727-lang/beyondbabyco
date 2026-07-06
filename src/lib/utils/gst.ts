@@ -1,3 +1,5 @@
+import { gstFromInclusiveLine } from "@/lib/catalog/gst-rates";
+
 export const SELLER_STATE = "Rajasthan";
 
 export type GstLineItem = {
@@ -28,7 +30,7 @@ export function calculateGST(items: GstLineItem[], buyerState: string): GstBreak
 
   for (const item of items) {
     const itemTotal = item.price * item.quantity;
-    const gstAmount = Math.round((itemTotal * item.gstRate) / 100);
+    const gstAmount = gstFromInclusiveLine(itemTotal, item.gstRate);
     if (isIntrastate) {
       cgst += gstAmount / 2;
       sgst += gstAmount / 2;

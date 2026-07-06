@@ -108,9 +108,18 @@ describe("Cart calculations", () => {
     expect(useCartStore.getState().shippingCharge()).toBe(0);
   });
 
-  it("calculates GST correctly for baby products (12%)", () => {
+  it("extracts inclusive GST per item rate in cart store", () => {
+    useCartStore.setState({
+      items: [makeItem({ variantId: "v-1", price: 112, quantity: 1, gstRate: 12 })],
+    });
+
+    expect(useCartStore.getState().gstAmount()).toBe(12);
+    expect(useCartStore.getState().total()).toBe(112 + 49);
+  });
+
+  it("calculates GST correctly for baby products (12%, MRP inclusive)", () => {
     const breakdown = calculateGST(
-      [{ price: 100, quantity: 1, gstRate: 12 }],
+      [{ price: 112, quantity: 1, gstRate: 12 }],
       SELLER_STATE,
     );
 
@@ -123,7 +132,7 @@ describe("Cart calculations", () => {
 
   it("calculates IGST correctly for interstate order", () => {
     const breakdown = calculateGST(
-      [{ price: 100, quantity: 1, gstRate: 18 }],
+      [{ price: 118, quantity: 1, gstRate: 18 }],
       "Maharashtra",
     );
 
@@ -136,7 +145,7 @@ describe("Cart calculations", () => {
 
   it("calculates CGST+SGST for Rajasthan intrastate order", () => {
     const breakdown = calculateGST(
-      [{ price: 100, quantity: 1, gstRate: 18 }],
+      [{ price: 118, quantity: 1, gstRate: 18 }],
       SELLER_STATE,
     );
 
@@ -168,11 +177,11 @@ describe("Cart calculations", () => {
   });
 
   it("applies coupon discount before GST in checkout GST helper", () => {
-    const items = [{ price: 1000, quantity: 1, gstRate: 18 }];
-    const withDiscount = calculateGSTFromCart(items, SELLER_STATE, 100);
+    const items = [{ price: 1180, quantity: 1, gstRate: 18 }];
+    const withDiscount = calculateGSTFromCart(items, SELLER_STATE, 180);
 
-    expect(withDiscount.cgst).toBe(81);
-    expect(withDiscount.sgst).toBe(81);
-    expect(withDiscount.total).toBe(162);
+    expect(withDiscount.cgst).toBe(76.27);
+    expect(withDiscount.sgst).toBe(76.27);
+    expect(withDiscount.total).toBe(152.54);
   });
 });

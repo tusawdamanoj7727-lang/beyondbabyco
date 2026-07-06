@@ -33,7 +33,7 @@ export default function SectionMascot({
       duration={MASCOT_FLOAT_DURATIONS[mascot]}
       delay={delay}
       alt={decorative ? "" : undefined}
-      className={cn("drop-shadow-[0_12px_32px_rgba(29,69,45,0.15)]", className)}
+      className={cn("relative z-20 drop-shadow-[0_12px_32px_rgba(29,69,45,0.15)]", className)}
     />
   );
 }

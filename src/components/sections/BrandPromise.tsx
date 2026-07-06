@@ -11,6 +11,7 @@ import { BRAND_PROMISE_DEFAULTS } from "../../lib/data";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import type { BrandPromiseConfig } from "@/lib/admin/homepage-schema";
+import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
 const DEFAULT_CARDS = BRAND_PROMISE_DEFAULTS.map((card) => ({
   ...card,
@@ -34,7 +35,14 @@ export default function BrandPromise({ config }: { config?: BrandPromiseConfig }
   const backgroundUrl = config?.backgroundUrl?.trim();
 
   return (
-    <HomeSection id="about" tone="cream">
+    <HomeSection id="about" tone="cream" className="overflow-visible">
+      <HomepageMascotGuide
+        mascot="poppy-panda"
+        pose="hug"
+        size={170}
+        placementClassName="-right-4 bottom-8 xl:-right-10"
+        floating
+      />
       {backgroundUrl ? (
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] opacity-[0.22]">
           <Image

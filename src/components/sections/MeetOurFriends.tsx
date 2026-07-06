@@ -1,88 +1,61 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo, useState } from "react";
 
-import PremiumSectionBackdrop from "../ui/PremiumSectionBackdrop";
-import MotionSection from "../ui/MotionSection";
-import Reveal from "../ui/Reveal";
-import Card from "../ui/Card";
-import Badge from "../ui/Badge";
-import AccentBar from "../ui/AccentBar";
-import Button from "../ui/Button";
-import { Mascot, type MascotPose, type MascotType } from "../mascots";
+import { Mascot, type MascotType } from "../mascots";
 import { mascotFloatDuration, mascotLabel } from "../../lib/mascots";
 import { MASCOTS } from "@/lib/brand/copy";
 import { MASCOT_PROFILES } from "@/lib/data";
-import { mascotPagePath } from "@/lib/mascots/profiles";
+import {
+  getAllMascotProfiles,
+  mascotPagePath,
+  type MascotColor,
+} from "@/lib/mascots/profiles";
 import type { MascotsConfig } from "@/lib/admin/homepage-schema";
+import { cn } from "@/lib/utils";
 
-type Friend = {
+const MASCOT_DOT_COLORS: Record<MascotColor, string> = {
+  green: "#2d5a27",
+  terra: "#c4673a",
+  cream: "#c4a574",
+};
+
+type MascotCard = {
   mascot: MascotType;
-  pose: MascotPose;
   name: string;
-  role: string;
-  description: string;
-  cta: string;
+  personality: string;
   href: string;
-  delay: number;
+  color: MascotColor;
 };
 
-const LEGACY_MASCOT_COPY: Partial<Record<MascotType, { role: string; description: string }>> = {
-  "bella-bunny": { role: "Warm welcomes", description: "Reminds us that every product should feel as gentle as a first hello." },
-  "gigi-giraffe": { role: "Learning guide", description: "Helps families understand ingredients without the jargon." },
-  "poppy-panda": { role: "Calm routines", description: "Celebrates the quiet rituals — bath time, bedtime, and in-between." },
-  "eli-elephant": { role: "Research guide", description: "Turns formulation science into stories parents can trust." },
-  "penny-penguin": { role: "Product guide", description: "Introduces each formula with clarity and a little delight." },
-  "benny-bear": { role: "Everyday joy", description: "Marks the small milestones that make parenthood beautiful." },
-  "freddy-ferret": { role: "Everyday joy", description: "Marks the small milestones that make parenthood beautiful." },
-};
-
-const DEFAULT_FRIENDS: Friend[] = MASCOT_PROFILES.map((profile, index) => {
-  const firstName = profile.fullName.split(" ")[0] ?? profile.fullName;
-  const legacy = LEGACY_MASCOT_COPY[profile.mascotId];
-
-  return {
-    mascot: profile.mascotId,
-    pose: profile.hubPose,
-    name: profile.fullName,
-    role: legacy?.role ?? profile.personality,
-    description: legacy?.description ?? profile.tagline,
-    cta: `Meet ${firstName}`,
-    href: mascotPagePath(profile.slug),
-    delay: 0.34 + index * 0.08,
-  };
-});
-
-const MASCOT_ROLES: Partial<Record<MascotType, string>> = {
-  "bella-bunny": "Brand Ambassador",
-  "gigi-giraffe": "Learning Guide",
-  "poppy-panda": "Sleep Expert",
-  "eli-elephant": "Research Expert",
-  "penny-penguin": "Product Guide",
-  "benny-bear": "Fun Companion",
-  "freddy-ferret": "Fun Companion",
-};
-
-function resolveFriends(config?: MascotsConfig): Friend[] {
+function resolveMascotCards(config?: MascotsConfig): MascotCard[] {
   const cmsItems = config?.items?.filter((item) => item.visible !== false) ?? [];
-  if (cmsItems.length === 0) return DEFAULT_FRIENDS;
 
-  return cmsItems.map((item, index) => {
-    const fallback = DEFAULT_FRIENDS.find((f) => f.mascot === item.mascot);
-    const profile = MASCOT_PROFILES.find((p) => p.mascotId === item.mascot);
-    const name = mascotLabel(item.mascot);
-    const firstName = name.split(" ")[0] ?? name;
-    return {
-      mascot: item.mascot,
-      pose: item.pose || fallback?.pose || "welcome",
-      name,
-      role: MASCOT_ROLES[item.mascot] ?? fallback?.role ?? "Friend",
-      description: item.description?.trim() || fallback?.description || "",
-      cta: fallback?.cta ?? `Meet ${firstName}`,
-      href: profile ? mascotPagePath(profile.slug) : fallback?.href ?? "/mascots",
-      delay: 0.34 + index * 0.08,
-    };
-  });
+  if (cmsItems.length === 0) {
+    return getAllMascotProfiles().map((profile) => ({
+      mascot: profile.mascotId,
+      name: profile.fullName,
+      personality: profile.personality,
+      href: mascotPagePath(profile.slug),
+      color: profile.color,
+    }));
+  }
+
+  return cmsItems
+    .map((item) => {
+      const profile = MASCOT_PROFILES.find((p) => p.mascotId === item.mascot);
+      if (!profile) return null;
+
+      return {
+        mascot: item.mascot,
+        name: mascotLabel(item.mascot),
+        personality: item.description?.trim() || profile.personality,
+        href: mascotPagePath(profile.slug),
+        color: profile.color,
+      };
+    })
+    .filter((card): card is MascotCard => card !== null);
 }
 
 function renderHeading(text: string) {
@@ -98,90 +71,91 @@ function renderHeading(text: string) {
 }
 
 export default function MeetOurFriends({ config }: { config?: MascotsConfig }) {
-  const heading = config?.heading?.trim() || MASCOTS.heading;
-  const friends = resolveFriends(config);
+  const [hoveredMascot, setHoveredMascot] = useState<MascotType | null>(null);
+  const cards = useMemo(() => resolveMascotCards(config), [config]);
+
+  const eyebrow = MASCOTS.eyebrow;
+  const heading = config?.heading?.trim() || "Your Baby's Best Friends 🐾";
+  const intro =
+    "Each mascot represents a promise we make to your little one";
 
   return (
-    <MotionSection as="section" id="mascots" variant="fadeUp" className="section-padding relative overflow-hidden">
-      <PremiumSectionBackdrop variant="cream" />
-      <div className="container relative z-10 w-full">
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <Reveal as="div" variant="fadeUp" delay={0} className="section-eyebrow">
-            <Badge variant="default" size="md">
-              {MASCOTS.eyebrow}
-            </Badge>
-          </Reveal>
-
-          <Reveal as="div" variant="fadeUp" delay={0.1} className="w-full">
-            <h2 className="section-heading">{renderHeading(heading)}</h2>
-          </Reveal>
-
-          <Reveal as="div" variant="fadeUp" delay={0.18} className="section-intro">
-            <AccentBar width="lg" align="center" />
-          </Reveal>
-
-          <Reveal as="div" variant="fadeUp" delay={0.26} className="section-intro w-full">
-            <p className="section-subcopy prose-width mx-auto">
-              {MASCOTS.intro}
-            </p>
-          </Reveal>
+    <section
+      id="mascots"
+      className="relative overflow-hidden bg-gradient-to-b from-[#faf5f0] to-[#f0f7ee] py-20"
+    >
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="mb-16 text-center">
+          <span className="text-sm font-bold uppercase tracking-widest text-[#c4673a]">
+            {eyebrow}
+          </span>
+          <h2
+            className="mb-4 mt-3 text-4xl font-black text-[#2d5a27] sm:text-5xl font-[family-name:var(--font-montserrat)]"
+          >
+            {renderHeading(heading)}
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-gray-600 sm:text-xl">{intro}</p>
         </div>
 
-        <div className="section-grid-gap grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-          {friends.map((friend) => (
-            <Reveal
-              key={friend.mascot}
-              as="div"
-              variant="fadeUp"
-              delay={friend.delay}
-              className="w-full"
-            >
-              <Card
-                as="div"
-                variant="glass"
-                radius="4xl"
-                padding="lg"
-                hover
-                fullHeight
-                className="flex flex-col items-center text-center"
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
+          {cards.map((card) => {
+            const isHovered = hoveredMascot === card.mascot;
+
+            return (
+              <Link
+                key={card.mascot}
+                href={card.href}
+                className="group flex cursor-pointer flex-col items-center rounded-2xl text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c4673a] focus-visible:ring-offset-2"
+                onMouseEnter={() => setHoveredMascot(card.mascot)}
+                onMouseLeave={() => setHoveredMascot(null)}
+                onFocus={() => setHoveredMascot(card.mascot)}
+                onBlur={() => setHoveredMascot(null)}
               >
-                <Mascot
-                  mascot={friend.mascot}
-                  pose={friend.pose}
-                  size={220}
-                  animated
-                  floating
-                  interactive
-                  duration={mascotFloatDuration(friend.mascot)}
-                  alt={`${friend.name} mascot`}
+                <div
+                  className={cn(
+                    "relative mb-4 flex h-40 w-40 items-center justify-center transition-transform duration-300",
+                    "group-hover:scale-110 group-hover:-translate-y-2",
+                    isHovered && "-translate-y-2 scale-110",
+                  )}
+                >
+                  <Mascot
+                    mascot={card.mascot}
+                    pose={isHovered ? "wave" : "default"}
+                    size={160}
+                    animated={isHovered}
+                    floating={isHovered}
+                    interactive
+                    duration={mascotFloatDuration(card.mascot)}
+                    alt={`${card.name} mascot`}
+                    className="relative z-10"
+                  />
+                </div>
+
+                <h3 className="text-lg font-bold text-[#2d5a27]">{card.name}</h3>
+                <p className="mt-1 text-sm text-gray-500">{card.personality}</p>
+                <div
+                  className="mt-3 h-1 w-8 rounded-full transition-all duration-300 group-hover:w-12"
+                  style={{ backgroundColor: MASCOT_DOT_COLORS[card.color] }}
+                  aria-hidden="true"
                 />
+              </Link>
+            );
+          })}
+        </div>
 
-                <h3 className="mt-5 font-heading text-[clamp(1.5rem,2.5vw,1.875rem)] font-bold leading-tight text-green-800">
-                  {friend.name}
-                </h3>
-
-                <div className="mt-3">
-                  <Badge variant="default" size="md">
-                    {friend.role}
-                  </Badge>
-                </div>
-
-                <p className="mt-4 font-body text-base leading-relaxed text-green-700/90">
-                  {friend.description}
-                </p>
-
-                <div className="mt-auto w-full pt-6">
-                  <Link href={friend.href}>
-                    <Button variant="primary" fullWidth type="button">
-                      {friend.cta}
-                    </Button>
-                  </Link>
-                </div>
-              </Card>
-            </Reveal>
-          ))}
+        <div className="mt-16 text-center">
+          <p className="text-sm text-gray-500">
+            🐾 Each mascot was designed with love by our team. They accompany your baby through
+            every step of their skincare routine.
+          </p>
+          <Link
+            href="/mascots"
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-[#2d5a27] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a3a16]"
+          >
+            Meet the whole family →
+          </Link>
         </div>
       </div>
-    </MotionSection>
+    </section>
   );
 }

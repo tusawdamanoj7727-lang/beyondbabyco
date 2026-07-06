@@ -62,8 +62,17 @@ export default function MascotHeroImage({
       quality={IMAGE_QUALITY.mascot}
       draggable={false}
       onError={() => setIndex((i) => i + 1)}
-      className={cn("pointer-events-none select-none object-contain drop-shadow-[0_16px_40px_rgba(29,69,45,0.18)]", className)}
-      style={{ width: size, height: size }}
+      className={cn(
+        "pointer-events-none relative z-20 select-none object-contain drop-shadow-2xl",
+        className,
+      )}
+      style={{
+        width: size,
+        height: size,
+        background: "transparent",
+        mixBlendMode: "multiply",
+        filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))",
+      }}
     />
   );
 }

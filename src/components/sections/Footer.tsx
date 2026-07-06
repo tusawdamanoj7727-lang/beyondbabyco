@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState, type FormEvent } from "react";
 import { Globe, Leaf, ShieldCheck } from "lucide-react";
 
 import MotionSection from "../ui/MotionSection";
@@ -21,6 +22,7 @@ import {
   isWhatsAppConfigured,
 } from "@/lib/brand/contact";
 import { FOOTER as FOOTER_COPY } from "@/lib/brand/copy";
+import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import type { FooterConfig } from "@/lib/admin/homepage-schema";
 import { focusRing, trustIconSize } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
@@ -90,6 +92,112 @@ function FooterLink({ href, className, children }: { href: string; className: st
   );
 }
 
+function FooterEmailCapture() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  async function handleSubscribe(submittedEmail: string) {
+    const trimmed = submittedEmail.trim();
+    if (!trimmed) return;
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "footer" }),
+      });
+
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+        error?: string;
+      };
+
+      setStatus(data.success ? "success" : "error");
+      setMessage(data.message || data.error || NEWSLETTER_MESSAGES.error);
+
+      if (data.success) {
+        setEmail("");
+      }
+    } catch {
+      setStatus("error");
+      setMessage(NEWSLETTER_MESSAGES.error);
+    }
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    await handleSubscribe(email);
+  }
+
+  return (
+    <div className="relative overflow-visible bg-[#1a3a16] py-6">
+      <div
+        className="pointer-events-none absolute -bottom-1 left-2 z-20 hidden sm:block"
+        aria-hidden="true"
+      >
+        <Mascot
+          mascot="penny-penguin"
+          pose="wave"
+          size={110}
+          animated
+          floating
+          interactive
+          alt="Penny waving"
+          className="relative z-20"
+        />
+      </div>
+      <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:pl-28">
+        <div className="text-center sm:text-left">
+          <p className="font-semibold text-white">Get exclusive baby care tips + launch offers</p>
+          <p className="text-sm text-green-300">Join 2,000+ parents who trust BeyondBabyCo</p>
+        </div>
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row"
+          noValidate
+        >
+          <label htmlFor="footer-newsletter-email" className="sr-only">
+            Email address
+          </label>
+          <input
+            id="footer-newsletter-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            autoComplete="email"
+            disabled={status === "loading"}
+            className="flex-1 rounded-lg px-4 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#c4673a] sm:w-64"
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="whitespace-nowrap rounded-lg bg-[#c4673a] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#a8522e] disabled:opacity-60"
+          >
+            {status === "loading" ? "Subscribing…" : "Subscribe"}
+          </button>
+        </form>
+      </div>
+      {message ? (
+        <p
+          role={status === "error" ? "alert" : "status"}
+          className={cn(
+            "mx-auto mt-3 max-w-4xl px-4 text-center text-sm sm:text-left",
+            status === "success" ? "text-green-300" : "text-red-300",
+          )}
+        >
+          {message}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export default function Footer({ cms }: { cms?: FooterConfig }) {
   const companyInfo = cms?.companyInfo?.trim() || FOOTER_COPY.companyInfo;
   const email = cms?.email?.trim() || brandSupportEmail();
@@ -105,6 +213,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
 
   return (
     <footer id="contact" className="homepage-footer relative overflow-hidden">
+      <FooterEmailCapture />
       <MotionSection as="div" variant="fadeUp" className="homepage-footer-inner relative z-10">
         <div className="container w-full">
           <div className="grid grid-cols-1 items-start gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-10">
@@ -244,12 +353,9 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
+              <div className="mt-5">
                 <FooterLink href="/contact" className={linkBtn}>
                   Contact Us
-                </FooterLink>
-                <FooterLink href="/#newsletter" className={cn(linkClass, "inline-flex h-11 items-center font-semibold text-green-800")}>
-                  Join our newsletter →
                 </FooterLink>
               </div>
             </Reveal>
@@ -272,7 +378,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   animated
                   floating={false}
                   interactive
-                  className="homepage-footer-mascot"
+                  className="homepage-footer-mascot relative z-10"
                   duration={mascotFloatDuration(mascot)}
                   delay={index * 0.18}
                   alt={`${mascotLabel(mascot)} mascot`}

@@ -68,10 +68,11 @@ export const TICKER_ITEMS = [
 ] as const;
 
 export const TRUST_STATS = [
-  { value: "2021", label: "Research began" },
-  { value: "Tested", label: "Dermatologically" },
-  { value: "2026", label: "First launches" },
-  { value: "India", label: "Made with care 🇮🇳" },
+  { value: "2021", label: "Research Started" },
+  { value: "5+", label: "Years of R&D" },
+  { value: "100%", label: "Natural Ingredients" },
+  { value: "0", label: "Harmful Chemicals" },
+  { value: "2026", label: "First Launch" },
 ] as const;
 
 export const BRAND_PROMISE = {
@@ -235,13 +236,13 @@ export const FOOTER = {
 
 /** /products collection page hero — fixed copy (not CMS-driven). */
 export const PRODUCTS_PAGE = {
-  heroEyebrow: "Research-backed baby care",
-  heroTitle: "Shop Gentle Baby Care",
+  heroEyebrow: "Our Collection",
+  heroTitle: "Shop Baby Care",
   heroDescription:
-    "Dermatologically tested formulas, crafted with 5 years of research for your little one's everyday routine.",
-  metaTitle: "Shop Gentle Baby Care",
+    "Pure. Gentle. Tested. Everything your baby needs, nothing they don't.",
+  metaTitle: "Shop Baby Care",
   metaDescription:
-    "Dermatologically tested baby care formulas, crafted with 5 years of research for your little one's everyday routine.",
+    "Pure, gentle, dermatologically tested baby care — crafted with 5 years of research for your little one.",
 } as const;
 
 export const MICROCOPY = {
@@ -325,6 +326,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 1,
     name: "Pure & Gentle Water Baby Wipes",
     category: "Baby Wipes",
+    gstRate: 12,
     badge: "Available Now",
     description:
       "Soft, fragrance-conscious wipes for everyday changes — our first product to reach families.",
@@ -336,6 +338,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 2,
     name: "Gentle Baby Wash",
     category: "Bath & skin",
+    gstRate: 12,
     badge: "Coming 2026",
     description: "A soap-free cleanse developed through years of formulation work.",
     price: "Arriving 2026",
@@ -345,6 +348,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 3,
     name: "Shea Butter Baby Lotion",
     category: "Skin care",
+    gstRate: 12,
     badge: "Coming 2026",
     description: "Light, nourishing moisture with skin-loving ingredients.",
     price: "Arriving 2026",
@@ -354,6 +358,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 4,
     name: "Ayurvedic Baby Oil",
     category: "Massage & care",
+    gstRate: 18,
     badge: "Available Now",
     description: "A calming massage oil inspired by gentle Indian care traditions.",
     price: "From ₹499",
@@ -364,6 +369,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 5,
     name: "Talc-Free Baby Powder",
     category: "Daily care",
+    gstRate: 12,
     badge: "Coming 2026",
     description: "A light, talc-free powder for comfortable daily use.",
     price: "Arriving 2026",
@@ -373,6 +379,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 6,
     name: "2-in-1 Baby Shampoo",
     category: "Hair & bath",
+    gstRate: 12,
     badge: "Coming 2026",
     description: "One gentle formula for hair and body — development complete.",
     price: "Arriving 2026",
@@ -382,6 +389,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 7,
     name: "Premium Gift Box",
     category: "Gift sets",
+    gstRate: 12,
     badge: "Coming 2026",
     description: "Curated essentials for gifting — launching with the full collection.",
     price: "Arriving 2026",
@@ -391,6 +399,7 @@ export const FEATURED_PRODUCT_CARDS = [
     id: 8,
     name: "Newborn Essentials Kit",
     category: "Newborn",
+    gstRate: 12,
     badge: "Coming 2026",
     description: "Thoughtfully assembled newborn care — notify us to hear first.",
     price: "Arriving 2026",

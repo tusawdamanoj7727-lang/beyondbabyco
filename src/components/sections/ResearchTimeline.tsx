@@ -9,6 +9,7 @@ import { RESEARCH_TIMELINE } from "../../lib/data";
 import type { ResearchTimelineConfig, TimelineEntry } from "@/lib/admin/homepage-schema";
 import { resolveVisualUrl, TIMELINE_VISUALS } from "@/lib/brand/generated-assets";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
+import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
 export default function ResearchTimeline({ config }: { config?: ResearchTimelineConfig }) {
   const heading = config?.heading?.trim() || RESEARCH_SECTION.heading;
@@ -16,7 +17,13 @@ export default function ResearchTimeline({ config }: { config?: ResearchTimeline
     config?.entries && config.entries.length > 0 ? config.entries : RESEARCH_TIMELINE;
 
   return (
-    <HomeSection id="research" tone="white">
+    <HomeSection id="research" tone="white" className="overflow-visible">
+      <HomepageMascotGuide
+        mascot="eli-elephant"
+        pose="reading"
+        size={150}
+        placementClassName="-right-4 top-12 xl:-right-10"
+      />
       <HomeSectionHeader
         eyebrow={RESEARCH_SECTION.eyebrow}
         heading={heading}

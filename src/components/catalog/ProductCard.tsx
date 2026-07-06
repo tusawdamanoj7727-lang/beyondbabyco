@@ -31,13 +31,6 @@ type ProductCardProps = {
   imagePriority?: boolean;
 };
 
-function badgeVariant(badge: string | null): "success" | "comingSoon" | "info" | "default" {
-  if (badge === "Available Now") return "success";
-  if (badge === "Launching 2026" || badge === "Coming Soon") return "comingSoon";
-  if (badge === "Research Complete" || badge === "Research Backed") return "info";
-  return "default";
-}
-
 export default function ProductCard({
   product,
   onQuickView,
@@ -96,7 +89,8 @@ export default function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden",
+        "group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-transparent bg-white shadow-sm",
+        "transition-all duration-300 hover:-translate-y-1 hover:border-[#eaf3de] hover:shadow-xl",
         premiumCard,
         className,
       )}
@@ -123,24 +117,22 @@ export default function ProductCard({
           ) : null}
           <div aria-hidden="true" className={isHomepageStyle ? "product-pedestal-reflection" : "product-image-reflection"} />
 
-          <div className="absolute left-3 top-3 flex flex-col gap-1.5">
-            {product.badge ? (
-              <Badge variant={badgeVariant(product.badge)} size="sm">
-                {product.badge}
-              </Badge>
-            ) : null}
-            {product.secondaryBadge ? (
-              <Badge variant="info" size="sm" className="bg-white/90 backdrop-blur-sm">
-                {product.secondaryBadge}
-              </Badge>
+          <div className="absolute right-3 top-3 flex flex-col items-end gap-1.5">
+            {product.inStock ? (
+              <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+                In Stock
+              </span>
+            ) : (
+              <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-semibold text-orange-700">
+                Coming Soon
+              </span>
+            )}
+            {product.discountPercent && canPurchase ? (
+              <span className="rounded-full bg-terra-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+                -{product.discountPercent}%
+              </span>
             ) : null}
           </div>
-
-          {product.discountPercent && canPurchase ? (
-            <span className="absolute right-3 top-3 rounded-full bg-terra-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
-              -{product.discountPercent}%
-            </span>
-          ) : null}
 
           {enableCompare && compare?.enabled ? (
             <button

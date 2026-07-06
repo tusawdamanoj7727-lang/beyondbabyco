@@ -21,6 +21,7 @@ import { focusRing, homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontTestimonial } from "@/lib/homepage/storefront";
+import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
 const CATEGORY_LABELS: Record<TestimonialCategory, string> = {
   parent: "Parent Stories",
@@ -213,10 +214,17 @@ export default function TestimonialShowcase({
 
   return (
     <section
-      className="homepage-section section-padding scroll-reveal bg-white"
+      className="homepage-section section-padding scroll-reveal relative overflow-visible bg-white"
       aria-labelledby="testimonials-heading"
     >
-      <div className="container">
+      <HomepageMascotGuide
+        mascot="benny-bear"
+        pose="celebration"
+        size={160}
+        placementClassName="right-4 -top-12 xl:right-8 xl:-top-16"
+        bounce
+      />
+      <div className="container relative">
         <header className="homepage-section-header mx-auto max-w-3xl text-center">
           <Badge variant="default" size="md">
             Social Proof

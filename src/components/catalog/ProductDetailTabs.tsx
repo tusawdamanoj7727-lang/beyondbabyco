@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import ProductCard from "@/components/catalog/ProductCard";
 import ProductDetailTabNav, { type ProductDetailTab } from "@/components/catalog/ProductDetailTabNav";
+import RelatedProductCard from "@/components/catalog/RelatedProductCard";
 import RecentlyViewed from "@/components/catalog/RecentlyViewed";
 import { MICROCOPY } from "@/lib/brand/copy";
 import ProductQASection from "@/components/reviews/ProductQASection";
@@ -66,13 +66,7 @@ export default function ProductDetailTabs({
           </h2>
           <div className={cn("homepage-section-grid mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4", homepageGridGap)}>
             {related.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                hideHoverActions
-                hideWishlistButton
-                className="homepage-product-card"
-              />
+              <RelatedProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>

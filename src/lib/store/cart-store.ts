@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { gstFromInclusiveLine } from "@/lib/catalog/gst-rates";
+
 export interface CartItem {
   id: string;
   productId: string;
@@ -97,8 +99,8 @@ export const useCartStore = create<CartStore>()(
 
       gstAmount: () =>
         get().items.reduce((sum, i) => {
-          const itemTotal = i.price * i.quantity;
-          return sum + Math.round((itemTotal * i.gstRate) / 100);
+          const lineTotal = i.price * i.quantity;
+          return sum + gstFromInclusiveLine(lineTotal, i.gstRate);
         }, 0),
 
       shippingCharge: () => {
@@ -107,8 +109,8 @@ export const useCartStore = create<CartStore>()(
       },
 
       total: () => {
-        const { subtotal, discount, gstAmount, shippingCharge } = get();
-        return subtotal() - discount() + gstAmount() + shippingCharge();
+        const { subtotal, discount, shippingCharge } = get();
+        return subtotal() - discount() + shippingCharge();
       },
     }),
     {

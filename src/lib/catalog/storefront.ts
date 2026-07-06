@@ -510,6 +510,22 @@ async function enrichStorefrontProducts(
     [...imageMap.values()],
   );
 
+  const { data: variantRows } = await supabase
+    .from("product_variants")
+    .select("id, product_id")
+    .in("product_id", productIds)
+    .eq("is_active", true);
+
+  const variantsByProduct = new Map<string, string[]>();
+  for (const variant of variantRows ?? []) {
+    const list = variantsByProduct.get(variant.product_id) ?? [];
+    list.push(variant.id);
+    variantsByProduct.set(variant.product_id, list);
+  }
+
+  const allVariantIds = (variantRows ?? []).map((v) => v.id);
+  const variantStockMap = await getVariantAvailableStock(allVariantIds);
+
   return rows.map((row) => {
     const cat = row.category_id ? categoryDetailMap.get(row.category_id) : null;
     const brand = row.brand_id ? brandMap.get(row.brand_id) : null;
@@ -521,7 +537,16 @@ async function enrichStorefrontProducts(
       imageUrl,
       imageBlurDataUrl: imageUrl ? blurMap.get(imageUrl) ?? null : null,
     });
-    return mapRowToStorefrontProduct(row, {
+    const variantIds = variantsByProduct.get(row.id) ?? [];
+    const variantStocks = variantIds.map((id) => variantStockMap.get(id) ?? 0);
+    const stockQuantities = variantStocks.length > 0 ? variantStocks : [row.stock];
+    let inStock = productInStockFromVariants(row.status, stockQuantities);
+    if (!inStock && row.status === "active" && row.stock > 0) {
+      inStock = true;
+    }
+    const totalStock = stockQuantities.reduce((sum, qty) => sum + qty, 0) || row.stock;
+
+    const product = mapRowToStorefrontProduct(row, {
       categoryName: cat?.name ?? null,
       categorySlug,
       ageGroupName: cat?.ageGroupName ?? null,
@@ -532,6 +557,8 @@ async function enrichStorefrontProducts(
       imageUrl: resolved.imageUrl,
       imageBlurDataUrl: resolved.imageBlurDataUrl,
     });
+
+    return { ...product, inStock, stock: totalStock || product.stock };
   });
 }
 

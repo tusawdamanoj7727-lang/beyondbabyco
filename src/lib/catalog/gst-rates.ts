@@ -1,10 +1,27 @@
-/** GST % for baby care (HSN 3304 baby toiletries). */
+/** GST % for baby care (HSN 3401 / 3304 baby toiletries). */
 export const GST_RATE_BABY = 12;
 
-/** GST % for hair oils / ayurvedic massage oils (HSN 3305). */
+/** GST % for massage oils / cosmetics (HSN 3304 / 3305). */
 export const GST_RATE_OIL = 18;
 
 export const MRP_INCLUSIVE_TAX_LABEL = "MRP incl. of all taxes";
+
+/** Static GST % by product display name (homepage / fallback catalog). */
+export const PRODUCT_GST_BY_NAME: Record<string, number> = {
+  "Baby Wipes": GST_RATE_BABY,
+  "Baby Wash": GST_RATE_BABY,
+  "Baby Lotion": GST_RATE_BABY,
+  "Ayurvedic Massage Oil": GST_RATE_OIL,
+  "Ayurvedic Baby Oil": GST_RATE_OIL,
+  "Gift Sets": GST_RATE_BABY,
+  "Gift sets": GST_RATE_BABY,
+};
+
+/** GST % by product slug when DB gst_rate is unset. */
+export const PRODUCT_GST_RATES_BY_SLUG: Record<string, number> = {
+  "pure-gentle-water-baby-wipes": GST_RATE_BABY,
+  "ayurvedic-massage-oil": GST_RATE_OIL,
+};
 
 /** Category slug → GST % (used when DB gst_rate is unset). */
 export const CATEGORY_GST_RATES: Record<string, number> = {
@@ -32,8 +49,12 @@ export function gstRateForCategory(categorySlug: string | null | undefined): num
 export function resolveProductGstRate(
   gstRateFromDb: number | null | undefined,
   categorySlug?: string | null,
+  productSlug?: string | null,
 ): number {
   if (gstRateFromDb != null && gstRateFromDb > 0) return gstRateFromDb;
+  if (productSlug && PRODUCT_GST_RATES_BY_SLUG[productSlug] != null) {
+    return PRODUCT_GST_RATES_BY_SLUG[productSlug]!;
+  }
   return gstRateForCategory(categorySlug);
 }
 

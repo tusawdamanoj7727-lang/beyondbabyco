@@ -7,7 +7,6 @@ export default async function AnnouncementBar() {
 
   return (
     <TickerBar
-      items={data.announcement.items}
       backgroundColor={data.announcement.background}
       link={data.announcement.link}
     />

@@ -73,7 +73,7 @@ export function productToCartItem(
     brandId: product.brandId,
     stock: product.stock,
     inStock: product.inStock,
-    gstRate: resolveProductGstRate(product.gstRate, product.categorySlug),
+    gstRate: resolveProductGstRate(product.gstRate, product.categorySlug, product.slug),
   };
 }
 

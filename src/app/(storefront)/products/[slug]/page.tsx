@@ -12,7 +12,7 @@ import { computeReviewSummary } from "@/lib/reviews/helpers";
 import { getProductReviews } from "@/lib/reviews/queries";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
 import { buildProductMetadata } from "@/lib/seo/metadata";
-import { absoluteUrl } from "@/lib/seo/site";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -60,6 +60,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           productJsonLd({
             name: product.name,
             description: product.description,
+            shortDescription: product.shortDescription,
             slug: product.slug,
             imageUrl: product.imageUrl ? absoluteUrl(product.imageUrl) : null,
             price: product.effectivePrice,
@@ -67,7 +68,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             inStock: product.inStock,
             ratingAvg: reviews.length > 0 ? reviewSummary.averageRating || product.ratingAvg : 0,
             ratingCount: reviews.length > 0 ? reviewSummary.reviewCount || product.ratingCount : 0,
-            brandName: product.brandName,
+            brandName: product.brandName ?? SITE_NAME,
           }),
           ...(reviews.length > 0
             ? reviewJsonLd(

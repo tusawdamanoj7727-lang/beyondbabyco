@@ -4,20 +4,12 @@ import AddToCartButton from "@/components/catalog/AddToCartButton";
 import NotifyMeButton from "@/components/catalog/NotifyMeButton";
 import ProductCardImage from "@/components/catalog/ProductCardImage";
 import ProductWishlistToggle from "@/components/catalog/ProductWishlistToggle";
-import Badge from "@/components/ui/Badge";
 import { canPurchaseProduct } from "@/lib/catalog/availability";
 import { formatInr } from "@/lib/catalog/format";
 import { MrpInclusiveLabel } from "@/components/catalog/PricingTaxNote";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { premiumCard, textCardTitle } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
-
-function badgeVariant(badge: string | null): "success" | "comingSoon" | "info" | "default" {
-  if (badge === "Available Now") return "success";
-  if (badge === "Launching 2026" || badge === "Coming Soon") return "comingSoon";
-  if (badge === "Research Complete" || badge === "Research Backed") return "info";
-  return "default";
-}
 
 /** Server-rendered product card — visible without client JavaScript. */
 export default function ProductListingCard({
@@ -48,19 +40,18 @@ export default function ProductListingCard({
             className="h-full w-full"
           />
 
-          {product.badge ? (
-            <div className="absolute left-3 top-3">
-              <Badge variant={badgeVariant(product.badge)} size="sm">
-                {product.badge}
-              </Badge>
-            </div>
-          ) : null}
-
-          <ProductWishlistToggle
-            productId={product.id}
-            size="sm"
-            className="absolute right-3 top-3 z-10"
-          />
+          <div className="absolute right-3 top-3 z-10 flex flex-col items-end gap-1.5">
+            {product.inStock ? (
+              <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+                In Stock
+              </span>
+            ) : (
+              <span className="rounded-full bg-orange-100 px-2 py-1 text-xs font-semibold text-orange-700">
+                Coming Soon
+              </span>
+            )}
+            <ProductWishlistToggle productId={product.id} size="sm" />
+          </div>
         </div>
 
         <div className="flex flex-1 flex-col p-5 lg:p-6">

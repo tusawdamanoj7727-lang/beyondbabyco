@@ -10,10 +10,8 @@ export const metadata = buildPageMetadata({
 
 export default function CartPage() {
   return (
-    <div className="min-h-screen bg-[#faf5f0]/40">
-      <StorefrontErrorBoundary context="cart">
-        <CartPageClient />
-      </StorefrontErrorBoundary>
-    </div>
+    <StorefrontErrorBoundary context="cart">
+      <CartPageClient />
+    </StorefrontErrorBoundary>
   );
 }

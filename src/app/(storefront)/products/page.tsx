@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
-import CatalogHero from "@/components/catalog/CatalogHero";
+import ProductsPageHero from "@/components/catalog/ProductsPageHero";
 import CatalogSearchBar from "@/components/catalog/CatalogSearchBar";
 import CategoryChips from "@/components/catalog/CategoryChips";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
@@ -9,7 +9,7 @@ import { CatalogFiltersSidebar } from "@/components/catalog/CatalogFilters";
 import ProductsCatalogSection, { hasBrowseFilters } from "@/components/catalog/ProductsCatalogSection";
 import { ProductGridSkeleton } from "@/components/catalog/ProductCardSkeleton";
 import { parseCatalogParams } from "@/lib/catalog/params";
-import { getCatalogBanner, getCatalogFilterOptions } from "@/lib/catalog/storefront";
+import { getCatalogFilterOptions } from "@/lib/catalog/storefront";
 
 import { PRODUCTS_PAGE } from "@/lib/brand/copy";
 import { buildProductsMetadata } from "@/lib/seo/metadata";
@@ -30,11 +30,11 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   const showFeatured = !hasBrowseFilters(params);
   const filtered = hasBrowseFilters(params);
 
-  const [banner, filters] = await Promise.all([getCatalogBanner(), getCatalogFilterOptions()]);
+  const [filters] = await Promise.all([getCatalogFilterOptions()]);
 
   return (
     <>
-      <CatalogHero banner={banner} />
+      <ProductsPageHero />
       <CatalogBreadcrumb
         items={[
           { label: "Home", href: "/" },

@@ -63,28 +63,45 @@ export type OrderStockLine = {
   quantity: number;
 };
 
+export const OUT_OF_STOCK_MESSAGE = "Sorry, this item just went out of stock!";
+
+/** Atomically reserve stock for a single variant (uses DB row lock). */
+export async function checkAndReserveStock(
+  variantId: string,
+  quantity: number,
+): Promise<boolean> {
+  if (!variantId || quantity <= 0) return false;
+
+  const supabase = createSupabaseServiceClient();
+  const { data, error } = await supabase.rpc("check_and_reserve_stock", {
+    p_variant_id: variantId,
+    p_qty: quantity,
+  });
+
+  return !error && Boolean(data);
+}
+
 export async function decrementOrderStock(
   lines: OrderStockLine[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const supabase = createSupabaseServiceClient();
-  const payload = lines
-    .filter((l) => l.variantId && l.quantity > 0)
-    .map((l) => ({ variant_id: l.variantId, quantity: l.quantity }));
-
-  if (payload.length === 0) {
+  const validLines = lines.filter((l) => l.variantId && l.quantity > 0);
+  if (validLines.length === 0) {
     return { ok: false, error: "No valid line items for stock decrement." };
   }
 
-  const { data, error } = await supabase.rpc("decrement_order_lines", {
-    p_lines: payload,
-  });
+  const reserved: OrderStockLine[] = [];
 
-  if (error) {
-    return { ok: false, error: error.message };
+  for (const line of validLines) {
+    const ok = await checkAndReserveStock(line.variantId, line.quantity);
+    if (!ok) {
+      if (reserved.length > 0) {
+        await restoreOrderStock(reserved);
+      }
+      return { ok: false, error: OUT_OF_STOCK_MESSAGE };
+    }
+    reserved.push(line);
   }
-  if (!data) {
-    return { ok: false, error: "Item is out of stock" };
-  }
+
   return { ok: true };
 }
 

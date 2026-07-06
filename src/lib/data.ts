@@ -9,6 +9,7 @@ import {
   TRUST_STATS,
 } from "@/lib/brand/copy";
 import { categoryCardBlur, categoryCardUrl, resolveProductVisual } from "@/lib/brand/generated-assets";
+import { PRODUCT_GST_BY_NAME } from "@/lib/catalog/gst-rates";
 import {
   brandPromiseBlur,
   brandPromisePhoto,
@@ -20,6 +21,9 @@ import {
 } from "@/lib/homepage/visual-assets";
 
 export { HERO_DEFAULT_IMAGE, HERO_DEFAULT_BLUR };
+
+/** GST % by product family name (baby care 12%, oils/cosmetics 18%). */
+export const PRODUCT_GST_RATES = PRODUCT_GST_BY_NAME;
 
 export const TICKER_ITEMS: string[] = [...TICKER_COPY];
 export const TRENDING_SEARCHES: string[] = [...TRENDING_COPY];
@@ -61,6 +65,7 @@ export const FEATURED_PRODUCTS = FEATURED_PRODUCT_CARDS.map((p) => {
   const visual = resolveProductVisual({ slug: slugHint, angle: "front" });
   return {
     ...p,
+    gstRate: p.gstRate,
     imageUrl: visual.imageUrl,
     imageBlur: visual.imageBlurDataUrl,
   };

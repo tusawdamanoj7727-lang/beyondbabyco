@@ -31,7 +31,7 @@ export function buildCartItemInput(
     originalPrice,
     image: product.imageUrl ?? "",
     slug: product.slug,
-    gstRate: resolveProductGstRate(product.gstRate, product.categorySlug),
+    gstRate: resolveProductGstRate(product.gstRate, product.categorySlug, product.slug),
   };
 }
 
