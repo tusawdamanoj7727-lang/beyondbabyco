@@ -53,14 +53,18 @@ export const HERO = {
 } as const;
 
 export const TICKER_ITEMS = [
-  "Dermatologically Tested",
-  "Made in India",
+  "Dermatologically Tested ✓",
+  "Made in India 🇮🇳",
   "5 Years of R&D",
-  "Free Shipping on ₹999+",
+  "Free Shipping on Orders ₹999+",
   "Paraben Free",
-  "Hypoallergenic",
+  "Hypoallergenic Formula",
   "Cruelty Free",
   "Safe for Newborns",
+  "No Sulfates, No Parabens",
+  "Gentle on Sensitive Skin",
+  "Pediatrician Recommended",
+  "Natural Ingredients",
 ] as const;
 
 export const TRUST_STATS = [
