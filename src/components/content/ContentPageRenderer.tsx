@@ -241,6 +241,7 @@ function SectionTrustBadges({
                     width={56}
                     height={56}
                     loading="lazy"
+                    sizes="56px"
                     className="h-14 w-14 object-contain"
                   />
                 )

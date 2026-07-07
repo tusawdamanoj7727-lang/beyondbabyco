@@ -16,7 +16,7 @@ export const IMAGE_SIZES = {
   /** Full-width hero / above-the-fold photography */
   hero: "100vw",
   /** Lifestyle split hero, beyond-care panels */
-  lifestyleHero: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+  lifestyleHero: "(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw",
   /** Small lifestyle icon inside feature cards (48–64px display, 2× retina) */
   lifestyleThumbnail: "128px",
   /** Product cards in grids (homepage featured, /products, wishlist) */
@@ -26,9 +26,11 @@ export const IMAGE_SIZES = {
   /** Category tiles on homepage */
   categoryCard: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
   /** Decorative mascot clusters */
-  mascot: "(max-width: 640px) 40vw, 20vw",
+  mascot: "(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 15vw",
   /** Cart line item thumbnails */
   cartLineItem: "(max-width: 768px) 25vw, 80px",
+  /** Product detail page main gallery */
+  productDetail: "(max-width: 1024px) 100vw, 50vw",
   /** Navbar / footer logo */
   logo: "(max-width: 1024px) 110px, 140px",
 } as const;

@@ -6,8 +6,7 @@ import ProductCardImage from "@/components/catalog/ProductCardImage";
 import { canPurchaseProduct } from "@/lib/catalog/availability";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-
-const CARD_IMAGE_SIZES = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
+import { IMAGE_SIZES } from "@/lib/media/image-delivery";
 
 function isResearchBacked(product: StorefrontProduct): boolean {
   return (
@@ -64,7 +63,7 @@ export default function RelatedProductCard({ product }: { product: StorefrontPro
             blurDataUrl={product.imageBlurDataUrl}
             className="h-full w-full"
             imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
-            sizes={CARD_IMAGE_SIZES}
+            sizes={IMAGE_SIZES.productCard}
           />
 
           <div className="absolute right-3 top-3">

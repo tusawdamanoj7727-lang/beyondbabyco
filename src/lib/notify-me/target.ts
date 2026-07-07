@@ -29,7 +29,7 @@ export function notifyMeButtonLabel(
   mode: NotifyMeMode = "launch",
   status?: string,
 ): string {
-  if (mode === "restock") return "Notify when in stock";
-  if (status === "coming_soon") return "Notify Me When Available";
+  if (mode === "restock") return "Notify Me When Available";
+  if (status === "coming_soon") return "Notify for launch updates";
   return "Notify Me";
 }

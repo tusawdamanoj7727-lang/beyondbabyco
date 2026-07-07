@@ -6,9 +6,8 @@ import ProductCardImage from "@/components/catalog/ProductCardImage";
 import { formatInr } from "@/lib/catalog/format";
 import { IMAGES } from "@/lib/images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
-
-const CARD_IMAGE_SIZES = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
 function isResearchBacked(product: StorefrontProduct): boolean {
   return (
@@ -46,7 +45,7 @@ export function ProductCardLayout({
   return (
     <div
       className={cn(
-        "group overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#2d5a27]/20 hover:shadow-xl",
+        "group overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-2 hover:border-[#2d5a27]/20 hover:shadow-2xl",
         className,
       )}
     >
@@ -62,8 +61,8 @@ export function ProductCardLayout({
               blurDataUrl={product.imageBlurDataUrl}
               priority={priority}
               className="h-full w-full"
-              imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
-              sizes={CARD_IMAGE_SIZES}
+              imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-110"
+              sizes={IMAGE_SIZES.productCard}
             />
           ) : (
             <Image
@@ -71,8 +70,9 @@ export function ProductCardLayout({
               alt={product.name}
               fill
               priority={priority}
-              sizes={CARD_IMAGE_SIZES}
-              className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+              sizes={IMAGE_SIZES.productCard}
+              quality={IMAGE_QUALITY.product}
+              className="object-contain p-4 transition-transform duration-300 group-hover:scale-110"
             />
           )}
 

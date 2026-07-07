@@ -144,6 +144,7 @@ export default function CustomerUserMenu({ compact = false, onNavigate }: Custom
             alt=""
             width={36}
             height={36}
+            sizes="36px"
             className="h-9 w-9 shrink-0 rounded-full object-cover"
           />
         ) : (

@@ -9,7 +9,14 @@ import Reveal from "../ui/Reveal";
 import AccentBar from "../ui/AccentBar";
 import Logo from "@/components/brand/Logo";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
-import { formatSocialHandle, INSTAGRAM_ARIA_LABEL, INSTAGRAM_HANDLE, INSTAGRAM_URL, isInstagramSocialLink } from "@/lib/brand/social";
+import {
+  formatSocialHandle,
+  INSTAGRAM_ARIA_LABEL,
+  INSTAGRAM_HANDLE,
+  INSTAGRAM_URL,
+  isInstagramSocialLink,
+  isRawUrlLabel,
+} from "@/lib/brand/social";
 import { Mascot, type MascotPose, type MascotType } from "../mascots";
 import { ALL_MASCOTS, mascotFloatDuration, mascotLabel } from "../../lib/mascots";
 import {
@@ -327,13 +334,17 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={INSTAGRAM_ARIA_LABEL}
-                      className={cn(socialLinkClass, focusRing)}
+                      className={cn(
+                        "flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white",
+                        focusRing,
+                      )}
                     >
                       <InstagramIcon className="h-5 w-5 shrink-0" />
-                      <span>{INSTAGRAM_HANDLE}</span>
+                      {INSTAGRAM_HANDLE}
                     </a>
                     {socialLinks
                       .filter((link) => !isInstagramSocialLink(link.url, link.platform))
+                      .filter((link) => !isRawUrlLabel(formatSocialHandle(link.url, link.platform)))
                       .map((link) => {
                         const handle = formatSocialHandle(link.url, link.platform);
                         return (

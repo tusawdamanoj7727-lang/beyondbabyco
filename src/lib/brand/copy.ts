@@ -192,7 +192,7 @@ export const FEATURED_PRODUCTS = {
   intro:
     "Baby Wipes are available now. Seven more formulas have completed development and arrive through 2026 — each one ready when it meets our standards.",
   viewProduct: "View details",
-  notifyMe: "Notify me at launch",
+  notifyMe: "Notify for launch updates",
 } as const;
 
 export const CATEGORIES = {

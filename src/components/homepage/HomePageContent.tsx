@@ -2,12 +2,14 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import HeroSection from "@/components/sections/HeroSection";
+import HeroTrustBar from "@/components/sections/HeroTrustBar";
 import StatsBar from "@/components/sections/StatsBar";
 import BrandPromise from "@/components/sections/BrandPromise";
 import ScienceSection from "@/components/sections/ScienceSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import CategoriesSection from "@/components/sections/CategoriesSection";
 import SectionWaveDivider from "@/components/ui/SectionWaveDivider";
+import ScrollAnimationSection from "@/components/ui/ScrollAnimationSection";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontHomepage } from "@/lib/homepage/storefront";
 import { mergeTestimonials } from "@/lib/trust";
@@ -24,11 +26,10 @@ const TestimonialShowcase = dynamic(() => import("@/components/trust/Testimonial
 
 export default function HomePageContent({
   data,
-  featuredReview: _featuredReview,
   communityReviews,
 }: {
   data: StorefrontHomepage;
-  featuredReview: EnrichedPublicReview | null;
+  featuredReview?: EnrichedPublicReview | null;
   communityReviews: EnrichedPublicReview[];
 }) {
   const cmsTestimonials = mergeTestimonials(data.testimonials, communityReviews);
@@ -40,10 +41,13 @@ export default function HomePageContent({
     <>
       {/* 1. Hero */}
       {data.sections.hero.enabled ? <HeroSection hero={data.hero} /> : null}
+      <HeroTrustBar />
+      <SectionWaveDivider fill="#faf5f0" />
 
       {/* 2. Products — immediately after hero */}
       {data.sections.featured_products.enabled ? (
-        <section id="products" className="relative overflow-visible bg-[#faf5f0] py-16">
+        <ScrollAnimationSection>
+          <section id="products" className="relative overflow-visible bg-[#faf5f0] py-16">
           <div
             className="pointer-events-none absolute right-0 top-8 z-20 hidden select-none xl:block"
             aria-hidden="true"
@@ -80,64 +84,85 @@ export default function HomePageContent({
             products={data.featuredProducts}
           />
         </section>
+        </ScrollAnimationSection>
       ) : null}
 
       <SectionWaveDivider fill="#f0f7ee" />
 
       {/* 3. Mascots */}
       {data.sections.mascots.enabled ? (
-        <div className="relative overflow-visible">
-          <MeetOurFriends config={data.mascots} />
-        </div>
+        <ScrollAnimationSection>
+          <div className="relative overflow-visible">
+            <MeetOurFriends config={data.mascots} />
+          </div>
+        </ScrollAnimationSection>
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 4. Stats */}
-      <StatsBar />
+      <ScrollAnimationSection>
+        <StatsBar />
+      </ScrollAnimationSection>
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 5. Categories */}
-      <CategoriesSection
-        heading={data.featuredCategoriesHeading}
-        categories={data.categories}
-      />
+      <ScrollAnimationSection>
+        <CategoriesSection
+          heading={data.featuredCategoriesHeading}
+          categories={data.categories}
+        />
+      </ScrollAnimationSection>
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 6. Science */}
-      {data.sections.science.enabled ? <ScienceSection config={data.science} /> : null}
+      {data.sections.science.enabled ? (
+        <ScrollAnimationSection>
+          <ScienceSection config={data.science} />
+        </ScrollAnimationSection>
+      ) : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 7. Brand promise */}
       {data.sections.brand_promise.enabled ? (
-        <BrandPromise config={data.brandPromise} />
+        <ScrollAnimationSection>
+          <BrandPromise config={data.brandPromise} />
+        </ScrollAnimationSection>
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 8. Research timeline */}
       {data.sections.research_timeline.enabled ? (
-        <ResearchTimeline config={data.researchTimeline} />
+        <ScrollAnimationSection>
+          <ResearchTimeline config={data.researchTimeline} />
+        </ScrollAnimationSection>
       ) : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 9. Lifestyle */}
-      {data.sections.lifestyle.enabled ? <LifestyleSection config={data.lifestyle} /> : null}
+      {data.sections.lifestyle.enabled ? (
+        <ScrollAnimationSection>
+          <LifestyleSection config={data.lifestyle} />
+        </ScrollAnimationSection>
+      ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 10. Reviews */}
       {showReviews ? (
-        <TestimonialShowcase
-          cmsItems={data.testimonials}
-          communityReviews={communityReviews}
-          heading={data.testimonialsHeading.heading}
-          description={data.testimonialsHeading.description || undefined}
-        />
+        <ScrollAnimationSection>
+          <TestimonialShowcase
+            cmsItems={data.testimonials}
+            communityReviews={communityReviews}
+            heading={data.testimonialsHeading.heading}
+            description={data.testimonialsHeading.description || undefined}
+          />
+        </ScrollAnimationSection>
       ) : null}
 
       {/* 11. Footer — rendered in (storefront)/layout.tsx */}

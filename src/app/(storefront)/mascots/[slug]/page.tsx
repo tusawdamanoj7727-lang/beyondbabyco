@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import MascotDetailView from "@/components/mascots/MascotDetailView";
 import JsonLd from "@/components/seo/JsonLd";
-import {
-  getStorefrontProductsBySlugs,
-  listStorefrontProducts,
-} from "@/lib/catalog/storefront";
-import { getAllMascotProfiles, getMascotProfile } from "@/lib/mascots/profiles";
+import { fixedImageSizes, IMAGE_QUALITY } from "@/lib/media/image-delivery";
+import { getMascotContent, MASCOT_SLUGS, MASCOTS } from "@/lib/mascots/content";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
@@ -16,33 +14,28 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  return getAllMascotProfiles().map((m) => ({ slug: m.slug }));
+  return MASCOT_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const mascot = getMascotProfile(slug);
+  const mascot = getMascotContent(slug);
   if (!mascot) return {};
 
   return buildPageMetadata({
-    title: `Meet ${mascot.fullName}`,
+    title: `Meet ${mascot.name}`,
     description: mascot.tagline,
     path: `/mascots/${slug}`,
-    image: mascot.heroImage,
+    image: mascot.celebrationImg,
   });
 }
 
-export default async function MascotDetailPage({ params }: PageProps) {
+export default async function MascotPage({ params }: PageProps) {
   const { slug } = await params;
-  const mascot = getMascotProfile(slug);
-  if (!mascot) notFound();
+  const mascot = MASCOTS[slug];
+  if (!mascot) return notFound();
 
-  let products = await getStorefrontProductsBySlugs(mascot.associatedProducts);
-
-  if (products.length === 0) {
-    const catalog = await listStorefrontProducts({ category: mascot.categorySlug, page: 1 });
-    products = catalog.products.slice(0, 4);
-  }
+  const firstName = mascot.name.split(" ")[0];
 
   return (
     <>
@@ -51,11 +44,69 @@ export default async function MascotDetailPage({ params }: PageProps) {
           breadcrumbJsonLd([
             { name: "Home", url: "/" },
             { name: "Mascots", url: "/mascots" },
-            { name: mascot.fullName },
+            { name: mascot.name },
           ]),
         ]}
       />
-      <MascotDetailView mascot={mascot} products={products} />
+      <div className="min-h-screen bg-[#faf5f0]">
+        <div className="mx-auto max-w-4xl px-4 py-16">
+          <div className="mb-16 grid items-center gap-12 md:grid-cols-2">
+            <div className="text-center">
+              <Image
+                src={mascot.celebrationImg}
+                alt={mascot.name}
+                width={400}
+                height={400}
+                sizes={fixedImageSizes(400)}
+                quality={IMAGE_QUALITY.mascot}
+                className="mx-auto animate-float object-contain drop-shadow-2xl"
+                priority
+              />
+            </div>
+            <div>
+              <span className="text-sm font-bold uppercase tracking-widest text-[#c4673a]">
+                {mascot.personality}
+              </span>
+              <h1 className="mb-3 mt-2 text-5xl font-black text-[#2d5a27]">{mascot.name}</h1>
+              <p className="mb-6 text-xl italic text-gray-600">&ldquo;{mascot.tagline}&rdquo;</p>
+              <p className="mb-8 leading-relaxed text-gray-600">{mascot.story}</p>
+
+              {mascot.products.length > 0 ? (
+                <div className="mb-8">
+                  <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gray-400">
+                    {firstName}&apos;s picks
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {mascot.products.map((product) => (
+                      <span
+                        key={product}
+                        className="rounded-full px-4 py-1.5 text-sm font-medium text-[#2d5a27]"
+                        style={{ backgroundColor: `${mascot.color}40` }}
+                      >
+                        {product}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <Link
+                href="/products"
+                className="inline-block rounded-2xl bg-[#2d5a27] px-8 py-4 font-bold text-white transition-all hover:bg-[#234821]"
+              >
+                Shop {firstName}&apos;s Picks →
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="mb-6 text-sm text-gray-400">Meet the whole family</p>
+            <Link href="/mascots" className="font-semibold text-[#2d5a27] hover:underline">
+              View All Mascots →
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

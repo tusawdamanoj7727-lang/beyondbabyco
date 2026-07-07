@@ -11,7 +11,7 @@ import PricingTaxNote from "@/components/catalog/PricingTaxNote";
 import QuantitySelector from "@/components/catalog/QuantitySelector";
 import StarRating from "@/components/catalog/StarRating";
 import { useToast } from "@/components/ui/ToastProvider";
-import { canPurchaseVariant, shouldShowNotifyMe } from "@/lib/catalog/availability";
+import { canPurchaseVariant } from "@/lib/catalog/availability";
 import { buildProductNotifyTarget, notifyMeButtonLabel } from "@/lib/notify-me/target";
 import { useNotifyMe } from "@/lib/homepage/notify-me-context";
 import { formatInr } from "@/lib/catalog/format";
@@ -96,7 +96,6 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
     : product.inStock;
 
   const isComingSoon = product.status === "coming_soon";
-  const notifyMe = isComingSoon || shouldShowNotifyMe({ ...product, inStock: selectedInStock });
   const notifyTarget = buildProductNotifyTarget(product);
   const notifyLabel = notifyMeButtonLabel(notifyTarget.mode, product.status);
 
@@ -345,10 +344,8 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           {!isComingSoon ? (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-base font-black text-[#2d5a27]">{formatInr(displayPrice)}</p>
-              <p className="text-xs text-gray-500">
-                {selectedInStock ? "In stock · ready to ship" : "Notify when available"}
-              </p>
+              <p className="truncate text-sm font-semibold text-gray-900">{product.name}</p>
+              <p className="text-base font-black text-[#2d5a27]">{formatInr(displayPrice)}</p>
             </div>
           ) : null}
           <div className={cn("flex shrink-0 gap-2", isComingSoon && "w-full")}>
@@ -358,7 +355,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   type="button"
                   onClick={addToCart}
                   className={cn(
-                    "rounded-xl bg-[#2d5a27] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#234821]",
+                    "flex-1 rounded-xl bg-[#2d5a27] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#234821]",
                     focusRing,
                   )}
                 >
@@ -368,11 +365,11 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   type="button"
                   onClick={buyNow}
                   className={cn(
-                    "rounded-xl border-2 border-[#2d5a27] px-4 py-3 text-sm font-bold text-[#2d5a27] transition hover:bg-[#eaf3de]",
+                    "shrink-0 rounded-xl border-2 border-[#2d5a27] px-4 py-3 text-sm font-bold text-[#2d5a27] transition hover:bg-[#eaf3de]",
                     focusRing,
                   )}
                 >
-                  Buy Now
+                  Buy
                 </button>
               </>
             ) : (

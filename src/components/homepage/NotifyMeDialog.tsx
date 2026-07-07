@@ -1,1 +1,1 @@
-export { default } from "@/components/catalog/NotifyMeModal";
+export { default } from "@/components/notify/NotifyMeModal";

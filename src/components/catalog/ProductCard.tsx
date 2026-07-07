@@ -10,6 +10,7 @@ import { useQuickCompareOptional } from "@/components/catalog/QuickCompareContex
 import { MICROCOPY } from "@/lib/brand/copy";
 import { useToast } from "@/components/ui/ToastProvider";
 import { canPurchaseProduct } from "@/lib/catalog/availability";
+import { notifyMeButtonLabel } from "@/lib/notify-me/target";
 import { focusRing } from "@/lib/design/ui";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
@@ -48,7 +49,10 @@ function cardPurchaseAction(product: StorefrontProduct, compact = true) {
       product={product}
       size="sm"
       fullWidth={false}
-      label="Notify Me"
+      label={notifyMeButtonLabel(
+        product.status === "coming_soon" ? "launch" : "restock",
+        product.status,
+      )}
       className={cn(
         "h-auto rounded-lg border border-[#2d5a27] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#2d5a27] hover:bg-[#eaf3de]",
         compact && "shrink-0",

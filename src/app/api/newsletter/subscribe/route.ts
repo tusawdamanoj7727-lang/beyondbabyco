@@ -1,32 +1,30 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-const schema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  name: z.string().trim().optional(),
-  source: z.string().default("website"),
-});
-
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const parsed = schema.safeParse(body);
+    const body = (await req.json()) as { email?: string; name?: string; source?: string };
+    const email = String(body.email ?? "")
+      .trim()
+      .toLowerCase();
+    const source = String(body.source ?? "website");
+    const name = body.name?.trim() || null;
 
-    if (!parsed.success) {
-      const message = parsed.error.issues[0]?.message ?? "Please enter a valid email";
-      return NextResponse.json({ success: false, error: message }, { status: 400 });
+    if (!email.includes("@")) {
+      return NextResponse.json(
+        { success: false, error: "Please enter a valid email" },
+        { status: 400 },
+      );
     }
 
-    const { email, name, source } = parsed.data;
-    const supabase = await createSupabaseServerClient();
+    const supabase = await createClient();
 
     const { error } = await supabase.from("newsletter_subscribers").insert({
-      email: email.toLowerCase(),
-      name: name || null,
+      email,
+      name,
       source,
       is_active: true,
       subscribed_at: new Date().toISOString(),

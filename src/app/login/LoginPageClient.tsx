@@ -73,6 +73,7 @@ export default function LoginPageClient() {
               alt="BeyondBabyCo"
               width={150}
               height={48}
+              sizes="150px"
               className="mx-auto h-12 w-auto"
               priority
             />

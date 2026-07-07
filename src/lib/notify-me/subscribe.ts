@@ -52,6 +52,8 @@ export async function subscribeToNotifyMe(input: {
   const { error: waitlistError } = await supabase.from("waitlist").insert({
     email,
     product_category: category,
+    product_id: input.productId ?? null,
+    source: "website",
   });
 
   if (waitlistError && waitlistError.code !== "23505") {

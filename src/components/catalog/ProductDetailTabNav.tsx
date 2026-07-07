@@ -96,23 +96,23 @@ export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductD
   }, [visibleTabs.length, showMoreButton, mobileExpanded]);
 
   return (
-    <div className="pdp-tabs-nav relative">
+    <div className="pdp-tabs-nav relative sticky top-16 z-10 bg-white px-4">
       {showLeftFade ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-cream-50 via-cream-50/80 to-transparent md:w-10"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-white via-white/80 to-transparent md:w-10"
         />
       ) : null}
       {showRightFade ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-cream-50 via-cream-50/80 to-transparent md:w-10"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-white via-white/80 to-transparent md:w-10"
         />
       ) : null}
 
       <div
         ref={scrollRef}
-        className="scrollbar-hide flex gap-1 overflow-x-auto pb-1 -mb-px"
+        className="scrollbar-hide -mb-px flex gap-1 overflow-x-auto border-b border-gray-100"
       >
         <span ref={startSentinelRef} className="h-px w-px shrink-0" aria-hidden="true" />
 
@@ -126,8 +126,21 @@ export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductD
               id={`tab-${t}`}
               aria-selected={activeTab === t}
               aria-controls={`panel-${t}`}
-              onClick={() => onTabChange(t)}
-              className={cn("pdp-tab-trigger shrink-0 whitespace-nowrap", focusRing)}
+              onClick={() => {
+                onTabChange(t);
+                document.getElementById(`tab-${t}`)?.scrollIntoView({
+                  inline: "center",
+                  block: "nearest",
+                  behavior: "smooth",
+                });
+              }}
+              className={cn(
+                "flex-shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors",
+                activeTab === t
+                  ? "border-[#2d5a27] text-[#2d5a27]"
+                  : "border-transparent text-gray-500",
+                focusRing,
+              )}
             >
               {t}
             </button>
@@ -138,7 +151,7 @@ export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductD
               type="button"
               onClick={() => setMobileExpanded(true)}
               className={cn(
-                "pdp-tab-trigger shrink-0 whitespace-nowrap text-terra-600",
+                "flex-shrink-0 whitespace-nowrap border-b-2 border-transparent px-4 py-3 text-sm font-medium text-terra-600 transition-colors",
                 focusRing,
               )}
               aria-label="Show more product information tabs"

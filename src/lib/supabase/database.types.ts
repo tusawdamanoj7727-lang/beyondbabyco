@@ -5274,19 +5274,25 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          product_category: string
+          product_category: string | null
+          product_id: string | null
+          source: string | null
         }
         Insert: {
           created_at?: string
           email: string
           id?: string
-          product_category: string
+          product_category?: string | null
+          product_id?: string | null
+          source?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
-          product_category?: string
+          product_category?: string | null
+          product_id?: string | null
+          source?: string | null
         }
         Relationships: []
       }

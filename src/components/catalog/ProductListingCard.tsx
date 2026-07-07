@@ -2,6 +2,7 @@ import AddToCartButton from "@/components/catalog/AddToCartButton";
 import NotifyMeButton from "@/components/catalog/NotifyMeButton";
 import { ProductCardLayout } from "@/components/catalog/ProductCardLayout";
 import { canPurchaseProduct } from "@/lib/catalog/availability";
+import { notifyMeButtonLabel } from "@/lib/notify-me/target";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +25,10 @@ function cardPurchaseAction(product: StorefrontProduct) {
       product={product}
       size="sm"
       fullWidth={false}
-      label="Notify Me"
+      label={notifyMeButtonLabel(
+        product.status === "coming_soon" ? "launch" : "restock",
+        product.status,
+      )}
       className="h-auto shrink-0 rounded-lg border border-[#2d5a27] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#2d5a27] hover:bg-[#eaf3de]"
     />
   );

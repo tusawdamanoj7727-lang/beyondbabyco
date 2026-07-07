@@ -128,7 +128,7 @@ export function Navbar() {
             <Link
               href={user ? "/account" : "/login"}
               aria-label="My Account"
-              className="relative text-gray-600 transition-colors hover:text-[#2d5a27]"
+              className="relative flex h-11 w-11 items-center justify-center text-gray-600 transition-colors hover:text-[#2d5a27]"
             >
               <UserCircle
                 size={22}
@@ -137,18 +137,18 @@ export function Navbar() {
                 className={user ? "text-[#2d5a27]" : ""}
               />
               {user ? (
-                <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-[#2d5a27]" />
+                <span className="absolute right-1 top-1 h-3 w-3 rounded-full border-2 border-white bg-[#2d5a27]" />
               ) : null}
             </Link>
 
             <Link
               href="/cart"
               aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
-              className="relative text-gray-600 transition-colors hover:text-[#2d5a27]"
+              className="relative flex h-11 w-11 items-center justify-center text-gray-600 transition-colors hover:text-[#2d5a27]"
             >
               <ShoppingBag size={22} strokeWidth={1.5} aria-hidden="true" />
               {count > 0 ? (
-                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#c4673a] text-[10px] font-bold text-white">
+                <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#c4673a] text-[10px] font-bold text-white">
                   {count > 9 ? "9+" : count}
                 </span>
               ) : null}
@@ -157,7 +157,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="text-gray-600 md:hidden"
+              className="flex h-11 w-11 items-center justify-center text-gray-600 md:hidden"
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
             >
@@ -168,32 +168,63 @@ export function Navbar() {
       </div>
 
       {mobileOpen ? (
-        <div className="space-y-4 border-t border-gray-100 bg-white px-4 py-6 md:hidden">
+        <button
+          type="button"
+          aria-label="Close menu"
+          className="fixed inset-0 z-40 bg-black/30 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      ) : null}
+
+      <div
+        className={
+          "fixed inset-y-0 right-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-300 md:hidden " +
+          (mobileOpen ? "translate-x-0" : "translate-x-full")
+        }
+        aria-hidden={!mobileOpen}
+      >
+        <div className="flex h-16 items-center justify-between border-b border-gray-100 px-4">
+          <span className="text-sm font-semibold text-gray-900">Menu</span>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            className="flex h-11 w-11 items-center justify-center text-gray-600"
+            aria-label="Close menu"
+          >
+            <X size={24} aria-hidden="true" />
+          </button>
+        </div>
+        <nav className="space-y-1 px-4 py-4" aria-label="Mobile navigation">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="block py-2 text-base font-medium text-gray-700 hover:text-[#2d5a27]"
+              className="block rounded-lg px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2d5a27]"
             >
               {link.label}
             </Link>
           ))}
-          <div className="flex gap-6 border-t border-gray-100 pt-4">
+          <div className="mt-4 flex gap-4 border-t border-gray-100 pt-4">
             <a
               href="https://instagram.com/beyondbabyco"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-[#c4673a]"
+              onClick={() => setMobileOpen(false)}
+              className="px-3 py-3 text-gray-500 hover:text-[#c4673a]"
             >
               Instagram
             </a>
-            <Link href="/wishlist" className="text-gray-500 hover:text-[#2d5a27]">
+            <Link
+              href="/wishlist"
+              onClick={() => setMobileOpen(false)}
+              className="px-3 py-3 text-gray-500 hover:text-[#2d5a27]"
+            >
               Wishlist
             </Link>
           </div>
-        </div>
-      ) : null}
+        </nav>
+      </div>
     </nav>
   );
 }

@@ -1,26 +1,29 @@
+import Link from "next/link";
+
 const TRUST_ITEMS = [
-  { icon: "✓", label: "Dermatologically Tested" },
-  { icon: "✓", label: "Made in India" },
-  { icon: "✓", label: "5 Years R&D" },
-  { icon: "✓", label: "Paraben Free" },
-  { icon: "🚚", label: "Free Ship ₹999+" },
+  { icon: "✓", text: "Dermatologically Tested", href: "/research" },
+  { icon: "🇮🇳", text: "Made in India", href: "/about" },
+  { icon: "🌿", text: "100% Natural Ingredients", href: "/research" },
+  { icon: "🚚", text: "Free Shipping ₹999+", href: "/shipping-policy" },
+  { icon: "🔬", text: "5 Years R&D", href: "/research" },
 ] as const;
 
 export default function HeroTrustBar() {
   return (
-    <div className="border-b border-[#eaf3de] bg-white">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-3 px-4 py-4">
-        {TRUST_ITEMS.map((item) => (
-          <span
-            key={item.label}
-            className="flex items-center gap-2 text-sm font-medium text-gray-600"
-          >
-            <span className="text-[#2d5a27]" aria-hidden="true">
-              {item.icon}
-            </span>
-            {item.label}
-          </span>
-        ))}
+    <div className="border-b border-gray-100 bg-white py-3">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+          {TRUST_ITEMS.map((item) => (
+            <Link
+              key={item.text}
+              href={item.href}
+              className="flex items-center gap-1.5 text-xs font-medium text-gray-600 transition-colors hover:text-[#2d5a27] md:text-sm"
+            >
+              <span>{item.icon}</span>
+              {item.text}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

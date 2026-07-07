@@ -95,7 +95,7 @@ export const interactiveSurface =
 
 /** Product / marketing image zoom on card hover — 220ms, max 2% scale */
 export const imageHoverZoom =
-  "motion-safe:transition-transform motion-safe:duration-[var(--duration-card)] motion-safe:ease-[var(--ease-out)] group-hover:scale-[1.02]";
+  "motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-[var(--ease-out)] group-hover:scale-110";
 
 /** Standard homepage CTA height — 52px */
 export const ctaHeight =

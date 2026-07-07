@@ -31,8 +31,10 @@ const sizeMap = {
   },
   /** Footer on dark green */
   footer: {
-    className: "h-16 w-auto sm:h-[4.375rem]",
-    sizes: "70px",
+    className: "h-10 w-auto",
+    width: 120,
+    height: 40,
+    sizes: "120px",
   },
   /** Full-page loading states */
   loading: {
@@ -50,7 +52,9 @@ export default function Logo({
 }: LogoProps) {
   const resolvedVariant = variant ?? "default";
   const dims = sizeMap[size];
-  const { width, height } = brandLogoDimensions(resolvedVariant);
+  const intrinsic = brandLogoDimensions(resolvedVariant);
+  const width = "width" in dims ? dims.width : intrinsic.width;
+  const height = "height" in dims ? dims.height : intrinsic.height;
   const src = brandLogoPath(resolvedVariant);
 
   const image = (

@@ -263,8 +263,13 @@
 
   --animate-ticker: ticker 40s linear infinite;
   --animate-float: float 3s ease-in-out infinite;
-  --animate-float-slow: float-slow 4s ease-in-out infinite;
+  --animate-float-slow: float-slow 4.5s ease-in-out infinite;
   --animate-float-fast: float-fast 2.5s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.5s ease-out forwards;
+  --animate-fade-in: fade-in 0.4s ease-out forwards;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-scale-in: scale-in 0.3s ease-out forwards;
+  --animate-wiggle: wiggle 0.5s ease-in-out;
 
   /* Premium header stack (announcement + navbar) — fixed offset for zero CLS */
   --header-announcement: 2.75rem;
@@ -321,7 +326,7 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-10px);
   }
 }
 
@@ -331,7 +336,48 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
   }
 }
 
@@ -484,7 +530,7 @@
 @keyframes scaleInReveal {
   from {
     opacity: 0;
-    transform: scale(0.94);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -567,7 +613,19 @@
 }
 
 .animate-scale-in {
-  animation: scaleInReveal var(--duration-page) var(--ease-out) forwards;
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
 }
 
 .animate-dropdown-in {
@@ -600,7 +658,7 @@
 }
 
 .animate-float-slow {
-  animation: float-slow 4s ease-in-out infinite;
+  animation: float-slow 4.5s ease-in-out infinite;
 }
 
 .animate-float-fast {
@@ -647,6 +705,9 @@
   .animate-slide-in-left,
   .animate-slide-in-right,
   .animate-scale-in,
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-wiggle,
   .animate-dropdown-in,
   .animate-toast-in,
   .animate-modal-scale-in,
@@ -1303,10 +1364,10 @@ body {
 
 @keyframes shimmer {
   0% {
-    background-position: 200% 0;
+    background-position: -200% 0;
   }
   100% {
-    background-position: -200% 0;
+    background-position: 200% 0;
   }
 }
 
@@ -2169,8 +2230,8 @@ body {
 .pdp-qty-control {
   display: inline-flex;
   align-items: stretch;
-  height: 3.25rem;
-  min-height: 3.25rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
   border-radius: 9999px;
   border: 1px solid color-mix(in srgb, var(--cream-300) 90%, transparent);
   background: white;
@@ -2182,8 +2243,10 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.25rem;
-  min-width: 3.25rem;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
   color: var(--green-800);
   transition: background-color var(--duration-button) var(--ease-out);
 }

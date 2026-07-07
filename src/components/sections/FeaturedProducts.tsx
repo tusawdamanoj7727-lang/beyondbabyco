@@ -67,7 +67,7 @@ export default function FeaturedProducts({
               padding="none"
               hover
               fullHeight
-              className="homepage-product-card group flex h-full flex-col overflow-hidden"
+              className="homepage-product-card group flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
             >
               <div className="product-pedestal-stage product-image-stage relative w-full overflow-hidden">
                 <BrandSceneImage

@@ -63,7 +63,7 @@ export default function ProductGallery({
               priority={isLcpSlide}
               fetchPriority={isLcpSlide ? "high" : undefined}
               loading={isLcpSlide ? undefined : "lazy"}
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes={IMAGE_SIZES.productDetail}
               quality={IMAGE_QUALITY.product}
               placeholder="blur"
               blurDataURL={resolveImageBlur(current.blurDataUrl)}

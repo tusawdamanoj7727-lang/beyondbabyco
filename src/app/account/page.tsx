@@ -125,6 +125,7 @@ export default function AccountPage() {
                 alt="No orders yet"
                 width={160}
                 height={160}
+                sizes="160px"
                 className="mx-auto mb-4 object-contain opacity-80"
               />
               <p className="font-medium text-gray-500">No orders yet</p>

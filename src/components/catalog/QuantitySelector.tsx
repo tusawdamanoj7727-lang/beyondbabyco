@@ -43,10 +43,9 @@ export default function QuantitySelector({
     focusRing,
     "disabled:cursor-not-allowed disabled:opacity-40",
     variant === "pill"
-      ? "h-full min-w-[3.25rem] w-[3.25rem] hover:bg-cream-50 disabled:hover:bg-transparent"
+      ? "h-11 w-11 min-h-[44px] min-w-[44px] hover:bg-cream-50 disabled:hover:bg-transparent"
       : cn(
-          "rounded-xl border border-green-200 bg-white hover:bg-green-50",
-          size === "sm" ? "h-9 w-9 min-h-[44px] min-w-[44px]" : "h-11 w-11",
+          "h-11 w-11 flex items-center justify-center rounded-xl border border-green-200 bg-white hover:bg-green-50",
         ),
   );
 

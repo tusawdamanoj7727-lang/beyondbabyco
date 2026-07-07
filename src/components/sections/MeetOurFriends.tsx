@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { MASCOTS } from "@/lib/brand/copy";
 import type { MascotsConfig } from "@/lib/admin/homepage-schema";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 
 const HOMEPAGE_MASCOTS = [
   {
@@ -66,13 +67,13 @@ function MascotCard({ mascot, delay }: { mascot: MascotCardData; delay: number }
   return (
     <Link
       href={`/mascots/${mascot.slug}`}
-      className="group flex cursor-pointer flex-col items-center text-center"
+      className="group flex min-h-[11rem] cursor-pointer flex-col items-center text-center sm:min-h-[12rem] md:min-h-0"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div
         className={
-          "relative mb-3 h-36 w-36 transition-all duration-300 " +
+          "relative mb-3 h-24 w-24 transition-all duration-300 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 " +
           (hovered ? "scale-110 -translate-y-2" : "")
         }
         style={{ animationDelay: `${delay}s` }}
@@ -81,7 +82,8 @@ function MascotCard({ mascot, delay }: { mascot: MascotCardData; delay: number }
           src={hovered ? mascot.hoverImg : mascot.img}
           alt={mascot.name}
           fill
-          sizes="(max-width: 640px) 35vw, 20vw"
+          sizes={IMAGE_SIZES.mascot}
+          quality={IMAGE_QUALITY.mascot}
           className="relative z-30 object-contain drop-shadow-2xl"
           style={{ background: "transparent" }}
         />
@@ -112,7 +114,7 @@ export default function MeetOurFriends({ config }: { config?: MascotsConfig }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-8 lg:grid-cols-6">
           {HOMEPAGE_MASCOTS.map((mascot, index) => (
             <MascotCard key={mascot.slug} mascot={mascot} delay={index * 0.15} />
           ))}

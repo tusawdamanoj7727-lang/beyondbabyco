@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-import NotifyMeModal from "@/components/catalog/NotifyMeModal";
+import NotifyMeModal from "@/components/notify/NotifyMeModal";
 import {
   buildCategoryNotifyTarget,
   type NotifyMeTarget,

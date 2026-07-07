@@ -15,10 +15,16 @@ export default function SectionWaveDivider({
   return (
     <div
       aria-hidden="true"
-      className={cn("w-full overflow-hidden leading-none", flip && "rotate-180", className)}
+      className={cn("-mb-1 w-full overflow-hidden leading-none", flip && "rotate-180", className)}
     >
-      <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="h-12 w-full" style={{ fill }}>
-        <path d="M0,30 C300,60 900,0 1200,30 L1200,60 L0,60 Z" />
+      <svg
+        viewBox="0 0 1440 40"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        className="h-8 w-full"
+        style={{ fill }}
+      >
+        <path d="M0,20 C360,40 1080,0 1440,20 L1440,40 L0,40 Z" />
       </svg>
     </div>
   );

@@ -34,6 +34,7 @@ export default function CartEmptyState({ className }: CartEmptyStateProps) {
             alt="Bella Bunny"
             width={160}
             height={160}
+            sizes="160px"
             className="object-contain"
             priority
             onError={() => setUseFallback(true)}

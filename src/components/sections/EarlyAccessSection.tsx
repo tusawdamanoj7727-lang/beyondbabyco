@@ -1,34 +1,62 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useState, type FormEvent } from "react";
 
 import AccentBar from "@/components/ui/AccentBar";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
-import { useToast } from "@/components/ui/ToastProvider";
-import {
-  earlyAccessSubscribeAction,
-  type NewsletterSubscribeState,
-} from "@/lib/auth/newsletter-actions";
+import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import { ctaHeight, formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
-const initialState: NewsletterSubscribeState = { error: null, success: null };
-
 export default function EarlyAccessSection() {
-  const toast = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction, isPending] = useActionState(earlyAccessSubscribeAction, initialState);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    if (state.success) {
-      toast.success(state.success);
-      formRef.current?.reset();
-    } else if (state.error) {
-      toast.error(state.error);
+  async function handleSubscribe() {
+    const trimmed = email.trim();
+    if (!trimmed) return;
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, source: "homepage_early_access" }),
+      });
+
+      const data = (await res.json()) as {
+        success?: boolean;
+        message?: string;
+        error?: string;
+      };
+
+      if (data.success) {
+        setStatus("success");
+        setMessage(
+          data.message?.includes("already")
+            ? "You're already on the early access list — we'll email your launch offer soon."
+            : "You're on the early access list! Watch for your 20% off code at launch.",
+        );
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage(data.error || data.message || NEWSLETTER_MESSAGES.error);
+      }
+    } catch {
+      setStatus("error");
+      setMessage(NEWSLETTER_MESSAGES.error);
     }
-  }, [state.success, state.error, toast]);
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    await handleSubscribe();
+  }
 
   return (
     <section
@@ -56,8 +84,7 @@ export default function EarlyAccessSection() {
 
           <Reveal as="div" variant="fadeUp" delay={0.16} className="mt-10">
             <form
-              ref={formRef}
-              action={formAction}
+              onSubmit={(e) => void handleSubmit(e)}
               className="mx-auto flex w-full max-w-md flex-col gap-3 sm:flex-row sm:items-stretch"
               noValidate
             >
@@ -68,12 +95,18 @@ export default function EarlyAccessSection() {
                 id="early-access-email"
                 type="email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
                 required
-                disabled={isPending}
-                aria-invalid={state.error ? true : undefined}
+                disabled={status === "loading"}
+                aria-invalid={status === "error" ? true : undefined}
                 aria-describedby={
-                  state.error ? "early-access-error" : state.success ? "early-access-success" : "early-access-note"
+                  status === "error"
+                    ? "early-access-error"
+                    : status === "success"
+                      ? "early-access-success"
+                      : "early-access-note"
                 }
                 className={cn(formControl, "flex-1 rounded-full px-5 shadow-[var(--shadow-premium)]")}
               />
@@ -81,21 +114,22 @@ export default function EarlyAccessSection() {
                 variant="primary"
                 type="submit"
                 size="lg"
-                disabled={isPending}
+                loading={status === "loading"}
+                disabled={status === "loading"}
                 className={cn("w-full shrink-0 sm:w-auto sm:min-w-[11.5rem]", ctaHeight)}
               >
-                {isPending ? "Joining…" : "Get Early Access"}
+                Get Early Access
               </Button>
             </form>
 
-            {state.error ? (
-              <p id="early-access-error" role="alert" className="mt-3 text-sm text-terra-600">
-                {state.error}
+            {status === "error" && message ? (
+              <p id="early-access-error" role="alert" className="mt-3 text-sm text-red-600">
+                {message}
               </p>
             ) : null}
-            {state.success ? (
-              <p id="early-access-success" role="status" className="mt-3 text-sm text-green-700">
-                {state.success}
+            {status === "success" && message ? (
+              <p id="early-access-success" role="status" className="mt-3 text-sm font-medium text-green-700">
+                {message}
               </p>
             ) : (
               <p id="early-access-note" className="mt-4 font-body text-xs text-green-700/70">
