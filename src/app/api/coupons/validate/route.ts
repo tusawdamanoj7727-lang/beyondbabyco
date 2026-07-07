@@ -45,6 +45,8 @@ export async function POST(req: Request) {
     return NextResponse.json({
       valid: true,
       code: result.code,
+      type: result.discountType,
+      value: result.discountValue,
       discountType: result.discountType,
       discountValue: result.discountValue,
       savings: result.savings,

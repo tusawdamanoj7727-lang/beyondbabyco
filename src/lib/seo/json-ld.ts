@@ -1,12 +1,12 @@
 import { BRAND_LOGO_PATH } from "@/lib/brand/logo";
-import { absoluteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "./site";
+import { absoluteUrl, getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "./site";
 
 export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
-    url: SITE_URL,
+    url: getSiteUrl(),
     logo: absoluteUrl(BRAND_LOGO_PATH),
     description: SITE_DESCRIPTION,
     sameAs: ["https://instagram.com/beyondbabyco"],
@@ -30,12 +30,12 @@ export function websiteJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
-    url: SITE_URL,
+    url: getSiteUrl(),
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+        urlTemplate: `${getSiteUrl()}/search?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
@@ -128,7 +128,7 @@ export function articleJsonLd(article: {
     url: absoluteUrl(article.path),
     datePublished: article.datePublished ?? "2026-01-01",
     dateModified: article.dateModified ?? "2026-07-01",
-    author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+    author: { "@type": "Organization", name: SITE_NAME, url: getSiteUrl() },
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,

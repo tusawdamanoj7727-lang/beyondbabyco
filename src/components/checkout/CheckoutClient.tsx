@@ -13,7 +13,7 @@ import { MICROCOPY } from "@/lib/brand/copy";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/ToastProvider";
 import type { CheckoutInitialData } from "@/lib/checkout/actions";
-import { lookupPincodeAction, placeCheckoutOrderAction, verifyRazorpayCheckoutAction } from "@/lib/checkout/actions";
+import { lookupPincodeAction, placeCheckoutOrderAction } from "@/lib/checkout/actions";
 import { INDIAN_STATES, type AddressFormValues } from "@/lib/checkout/schema";
 import type { CustomerAddressRow } from "@/lib/checkout/address-actions";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
@@ -84,6 +84,21 @@ function loadRazorpayScript(): Promise<void> {
     script.onerror = () => reject(new Error("Could not load payment SDK"));
     document.body.appendChild(script);
   });
+}
+
+async function verifyRazorpayPayment(input: {
+  orderId: string;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}): Promise<{ ok: boolean; error?: string; awb?: string | null }> {
+  const res = await fetch("/api/verify-payment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  return (await res.json()) as { ok: boolean; error?: string; awb?: string | null };
 }
 
 export default function CheckoutClient({ initial }: { initial: CheckoutInitialData }) {
@@ -315,11 +330,11 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             razorpay_payment_id: string;
             razorpay_signature: string;
           }) => {
-            const verified = await verifyRazorpayCheckoutAction({
+            const verified = await verifyRazorpayPayment({
               orderId,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
             });
             if (!verified.ok) {
               capturePaymentError(new Error(verified.error ?? "Payment verification failed"), {
@@ -343,6 +358,11 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
               router.push(`/checkout/failure?orderId=${orderId}&reason=cancelled`);
             },
           },
+        });
+        rzp.on("payment.failed", (response: unknown) => {
+          capturePaymentError(response, { orderId, cartTotal: totals.total });
+          toast.error("Payment failed. Please try again.");
+          placingRef.current = false;
         });
         rzp.open();
         setReviewOpen(false);

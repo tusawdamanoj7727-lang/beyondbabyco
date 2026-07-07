@@ -43,19 +43,19 @@ function TrustBadgeIcon({ slug, label }: { slug: string; label: string }) {
 }
 
 export default function HeroSection({ hero }: { hero: ResolvedHeroContent }) {
-  const primaryHref = hero.primaryCtaUrl ?? "#products";
-  const secondaryHref = hero.secondaryCtaUrl ?? "#research";
+  const primaryHref = hero.primaryCtaUrl ?? "/products";
+  const secondaryHref = hero.secondaryCtaUrl ?? "/research";
 
   return (
     <section
       id="home"
-      className="homepage-hero relative flex min-h-[72dvh] items-center overflow-hidden sm:min-h-[82dvh] lg:min-h-[84dvh]"
+      className="homepage-hero relative flex min-h-[72dvh] items-center overflow-visible sm:min-h-[82dvh] lg:min-h-[84dvh]"
     >
       <HeroBackground />
 
       <div className="container relative z-10 w-full py-6 sm:py-8 lg:py-10">
         <div className="homepage-split-grid grid grid-cols-1 items-center lg:grid-cols-2 xl:gap-20">
-          <div className="hero-copy hero-copy-block flex w-full max-w-[34rem] flex-col items-start">
+          <div className="hero-copy hero-copy-block relative z-10 flex w-full max-w-[34rem] flex-col items-start">
             <Badge variant="default" size="md">
               {hero.eyebrow}
             </Badge>
@@ -78,24 +78,12 @@ export default function HeroSection({ hero }: { hero: ResolvedHeroContent }) {
             <p className="text-body prose-measure text-green-800/88">{hero.subtitle}</p>
 
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-4">
-              {hero.primaryCtaUrl ? (
-                <Link href={primaryHref} className={heroCtaPrimary}>
-                  {hero.primaryCta}
-                </Link>
-              ) : (
-                <a href={primaryHref} className={heroCtaPrimary}>
-                  {hero.primaryCta}
-                </a>
-              )}
-              {hero.secondaryCtaUrl ? (
-                <Link href={secondaryHref} className={heroCtaSecondary}>
-                  {hero.secondaryCta}
-                </Link>
-              ) : (
-                <a href={secondaryHref} className={heroCtaSecondary}>
-                  {hero.secondaryCta}
-                </a>
-              )}
+              <Link href={primaryHref} className={heroCtaPrimary}>
+                {hero.primaryCta}
+              </Link>
+              <Link href={secondaryHref} className={heroCtaSecondary}>
+                {hero.secondaryCta}
+              </Link>
             </div>
 
             <div className="hero-trust-row flex flex-wrap items-center gap-2.5">
@@ -105,7 +93,7 @@ export default function HeroSection({ hero }: { hero: ResolvedHeroContent }) {
             </div>
           </div>
 
-          <div className="relative w-full lg:justify-self-end">
+          <div className="relative z-10 w-full overflow-visible lg:justify-self-end">
             <HeroVisual heroImageUrl={hero.imageUrl} heroImageAlt={hero.imageAlt} />
           </div>
         </div>

@@ -1,63 +1,82 @@
 /**
- * Homepage photography — Phase 11.4 editorial assets from /images/generated/.
+ * Homepage photography — Unsplash editorial assets from src/lib/images.ts.
  */
 
-import {
-  categoryCardBlur,
-  categoryCardUrl,
-  EDITORIAL,
-  genVisual,
-  testimonialPortrait,
-  timelineVisual,
-} from "@/lib/brand/generated-assets";
+import { IMAGES } from "@/lib/images";
+import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
-export const HERO_DEFAULT_IMAGE = EDITORIAL.hero.url;
-export const HERO_DEFAULT_BLUR = EDITORIAL.hero.blur;
+export const HERO_DEFAULT_IMAGE = IMAGES.hero.mother_baby;
+export const HERO_DEFAULT_BLUR = STATIC_IMAGE_BLUR;
 
-export const categoryCard = (slug: string) => categoryCardUrl(slug);
+export const categoryCard = (slug: string) => {
+  const key = slug.toLowerCase();
+  if (key.includes("wipes") || key.includes("wash") || key.includes("bath")) return IMAGES.categories.bath_body;
+  if (key.includes("lotion") || key.includes("powder") || key.includes("skin")) return IMAGES.categories.skin_care;
+  if (key.includes("oil") || key.includes("massage")) return IMAGES.categories.massage;
+  if (key.includes("gift") || key.includes("newborn")) return IMAGES.categories.gift_sets;
+  if (key.includes("shampoo") || key.includes("hair")) return IMAGES.categories.hair_care;
+  return IMAGES.categories.wellness;
+};
 
-export const sciencePhoto = () => EDITORIAL.science.url;
-export const sciencePhotoBlur = () => EDITORIAL.science.blur;
+export const sciencePhoto = () => IMAGES.research.lab;
+export const sciencePhotoBlur = () => STATIC_IMAGE_BLUR;
 
 export const lifestylePhoto = (n: number) => {
-  if (n === 15) return EDITORIAL.lifestyleHero.url;
-  const cardIndex = n === 3 ? 0 : n === 8 ? 1 : n === 11 ? 2 : 0;
-  return EDITORIAL.lifestyleCards[cardIndex]?.url ?? EDITORIAL.lifestyleHero.url;
+  if (n === 15) return IMAGES.lifestyle.bath_routine;
+  if (n === 3) return IMAGES.lifestyle.bath_routine;
+  if (n === 8) return IMAGES.lifestyle.massage_time;
+  if (n === 11) return IMAGES.lifestyle.play_time;
+  return IMAGES.lifestyle.sleep_time;
 };
 
-export const lifestylePhotoBlur = (n: number) => {
-  if (n === 15) return EDITORIAL.lifestyleHero.blur;
-  const cardIndex = n === 3 ? 0 : n === 8 ? 1 : n === 11 ? 2 : 0;
-  return EDITORIAL.lifestyleCards[cardIndex]?.blur ?? EDITORIAL.lifestyleHero.blur;
-};
+export const lifestylePhotoBlur = () => STATIC_IMAGE_BLUR;
 
-export const researchPhoto = (n: number) => timelineVisual(n - 1).url;
+export const researchPhoto = (n: number) => {
+  const images = [
+    IMAGES.research.lab,
+    IMAGES.research.ingredients,
+    IMAGES.research.testing,
+    IMAGES.research.certificate,
+    IMAGES.research.botanicals,
+  ];
+  return images[(n - 1) % images.length] ?? IMAGES.research.lab;
+};
 
 export const brandPromisePhoto = (n: number) => {
-  const idx = n === 1 ? 0 : n === 4 ? 1 : n === 7 ? 2 : 0;
-  return EDITORIAL.brandPromise[idx]?.url ?? EDITORIAL.brandPromise[0].url;
+  if (n === 1) return IMAGES.lifestyle.sleep_time;
+  if (n === 4) return IMAGES.lifestyle.feeding_time;
+  if (n === 7) return IMAGES.lifestyle.outdoor;
+  return IMAGES.lifestyle.bath_routine;
 };
 
-export const brandPromiseBlur = (n: number) => {
-  const idx = n === 1 ? 0 : n === 4 ? 1 : n === 7 ? 2 : 0;
-  return EDITORIAL.brandPromise[idx]?.blur ?? EDITORIAL.brandPromise[0].blur;
+export const brandPromiseBlur = (_n?: number) => STATIC_IMAGE_BLUR;
+
+export const testimonialPortraitUrl = (n: number) => {
+  const portraits = [
+    IMAGES.lifestyle.massage_time,
+    IMAGES.lifestyle.play_time,
+    IMAGES.lifestyle.feeding_time,
+    IMAGES.lifestyle.sleep_time,
+    IMAGES.research.testing,
+    IMAGES.lifestyle.outdoor,
+  ];
+  return portraits[(n - 1) % portraits.length] ?? IMAGES.lifestyle.bath_routine;
 };
 
-export const testimonialPortraitUrl = (n: number) => testimonialPortrait(n - 1).url;
-export const testimonialPortraitBlur = (n: number) => testimonialPortrait(n - 1).blur;
+export const testimonialPortraitBlur = (_n?: number) => STATIC_IMAGE_BLUR;
 
 export const newsletterPhoto = {
-  main: EDITORIAL.newsletter.url,
-  baby: EDITORIAL.newsletterAlt.url,
-  mainBlur: EDITORIAL.newsletter.blur,
-  babyBlur: EDITORIAL.newsletterAlt.blur,
+  main: IMAGES.lifestyle.feeding_time,
+  baby: IMAGES.lifestyle.sleep_time,
+  mainBlur: STATIC_IMAGE_BLUR,
+  babyBlur: STATIC_IMAGE_BLUR,
 } as const;
 
 export const beyondCarePhotos = {
-  men: EDITORIAL.beyondCareMen.url,
-  women: EDITORIAL.beyondCareWomen.url,
-  menBlur: EDITORIAL.beyondCareMen.blur,
-  womenBlur: EDITORIAL.beyondCareWomen.blur,
+  men: IMAGES.research.botanicals,
+  women: IMAGES.lifestyle.massage_time,
+  menBlur: STATIC_IMAGE_BLUR,
+  womenBlur: STATIC_IMAGE_BLUR,
 } as const;
 
-export { categoryCardBlur, genVisual, timelineVisual };
+export const categoryCardBlur = () => STATIC_IMAGE_BLUR;

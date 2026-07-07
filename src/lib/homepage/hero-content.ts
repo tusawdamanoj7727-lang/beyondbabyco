@@ -113,11 +113,11 @@ export function resolveHeroContent(
   const imageUrl = cmsImage || HERO_DEFAULT_IMAGE;
 
   const primaryCtaUrl =
-    published && cmsSlide?.ctaUrl?.trim() ? cmsSlide.ctaUrl.trim() : null;
+    published && cmsSlide?.ctaUrl?.trim() ? cmsSlide.ctaUrl.trim() : "/products";
   const secondaryCtaUrl =
     published && cmsSlide?.secondaryCtaUrl?.trim()
       ? cmsSlide.secondaryCtaUrl.trim()
-      : null;
+      : "/research";
 
   return {
     eyebrow,

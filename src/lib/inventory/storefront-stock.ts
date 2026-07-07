@@ -1,5 +1,6 @@
 import "server-only";
 
+import { isLaunchProductSlug, LAUNCH_PRODUCT_MIN_STOCK } from "@/lib/catalog/availability";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 
 export type VariantStockRow = {
@@ -56,6 +57,32 @@ export function productInStockFromVariants(
     if (qty > 0) return true;
   }
   return false;
+}
+
+/** Unified in-stock + sellable quantity for list/detail views. */
+export function resolveStorefrontAvailability(input: {
+  slug: string;
+  status: string;
+  productStock: number;
+  variantStocks: number[];
+}): { inStock: boolean; totalStock: number } {
+  const variantStocks =
+    input.variantStocks.length > 0 ? input.variantStocks : [input.productStock];
+  const variantTotal = variantStocks.reduce((sum, qty) => sum + qty, 0);
+  let totalStock = variantTotal > 0 ? variantTotal : input.productStock;
+  let inStock = productInStockFromVariants(input.status, variantStocks);
+
+  if (!inStock && input.status === "active" && input.productStock > 0) {
+    inStock = true;
+    totalStock = Math.max(totalStock, input.productStock);
+  }
+
+  if (isLaunchProductSlug(input.slug) && input.status === "active") {
+    inStock = true;
+    totalStock = Math.max(totalStock, LAUNCH_PRODUCT_MIN_STOCK);
+  }
+
+  return { inStock, totalStock };
 }
 
 export type OrderStockLine = {
@@ -125,7 +152,7 @@ export async function getProductVariantStock(productId: string): Promise<{
   const supabase = createSupabaseServiceClient();
   const { data: product } = await supabase
     .from("products")
-    .select("status")
+    .select("status, slug, stock")
     .eq("id", productId)
     .maybeSingle();
 
@@ -141,13 +168,30 @@ export async function getProductVariantStock(productId: string): Promise<{
     variantId: id,
     available: stockMap.get(id) ?? 0,
   }));
-  const totalAvailable = variants.reduce((sum, v) => sum + v.available, 0);
   const status = product?.status ?? "draft";
+  const availability = resolveStorefrontAvailability({
+    slug: product?.slug ?? "",
+    status,
+    productStock: product?.stock ?? 0,
+    variantStocks: variants.map((v) => v.available),
+  });
+
+  if (availability.inStock && availability.totalStock > 0) {
+    const perVariant = Math.max(
+      1,
+      Math.floor(availability.totalStock / Math.max(variants.length, 1)),
+    );
+    for (const variant of variants) {
+      if (variant.available <= 0) variant.available = perVariant;
+    }
+  }
+
+  const totalAvailable = variants.reduce((sum, v) => sum + v.available, 0);
 
   return {
     variants,
     totalAvailable,
-    inStock: productInStockFromVariants(status, variants.map((v) => v.available)),
+    inStock: availability.inStock,
     status,
   };
 }

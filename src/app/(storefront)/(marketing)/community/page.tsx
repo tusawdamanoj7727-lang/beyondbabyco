@@ -16,10 +16,23 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default async function CommunityPage() {
-  const [featuredDb, catalog] = await Promise.all([
-    getFeaturedReviews(6),
-    listStorefrontProducts({ sort: "best_selling", page: 1 }),
-  ]);
+  let featuredDb: Awaited<ReturnType<typeof getFeaturedReviews>> = [];
+  let catalog: Awaited<ReturnType<typeof listStorefrontProducts>> = {
+    products: [],
+    total: 0,
+    page: 1,
+    perPage: 12,
+    pageCount: 1,
+  };
+
+  try {
+    [featuredDb, catalog] = await Promise.all([
+      getFeaturedReviews(6),
+      listStorefrontProducts({ sort: "best_selling", page: 1 }),
+    ]);
+  } catch {
+    // Keep the community page available even if live catalog/review queries fail.
+  }
 
   const featuredReviews = featuredDb.map((r) => ({ ...r, hasVideo: false }));
 

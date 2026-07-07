@@ -1,13 +1,12 @@
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 import HeroSection from "@/components/sections/HeroSection";
-import HeroTrustBar from "@/components/sections/HeroTrustBar";
 import StatsBar from "@/components/sections/StatsBar";
 import BrandPromise from "@/components/sections/BrandPromise";
 import ScienceSection from "@/components/sections/ScienceSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import CategoriesSection from "@/components/sections/CategoriesSection";
-import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 import SectionWaveDivider from "@/components/ui/SectionWaveDivider";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontHomepage } from "@/lib/homepage/storefront";
@@ -16,7 +15,12 @@ import { mergeTestimonials } from "@/lib/trust";
 /** Below-fold client sections — code-split to reduce main-thread work on LCP path. */
 const MeetOurFriends = dynamic(() => import("@/components/sections/MeetOurFriends"));
 const ResearchTimeline = dynamic(() => import("@/components/sections/ResearchTimeline"));
+const LifestyleSection = dynamic(() => import("@/components/sections/LifestyleSection"));
 const TestimonialShowcase = dynamic(() => import("@/components/trust/TestimonialShowcase"));
+
+// <NewsletterSection /> — removed (duplicate; footer captures email)
+// <EarlyAccessSection /> — removed (duplicate)
+// <ExpertGuidanceSection /> — optional, not on homepage
 
 export default function HomePageContent({
   data,
@@ -34,33 +38,41 @@ export default function HomePageContent({
 
   return (
     <>
-      {data.sections.hero.enabled ? (
-        <>
-          <HeroSection hero={data.hero} />
-          <HeroTrustBar />
-          <SectionWaveDivider fill="#faf5f0" />
-        </>
-      ) : null}
+      {/* 1. Hero */}
+      {data.sections.hero.enabled ? <HeroSection hero={data.hero} /> : null}
 
+      {/* 2. Products — immediately after hero */}
       {data.sections.featured_products.enabled ? (
         <section id="products" className="relative overflow-visible bg-[#faf5f0] py-16">
-          <HomepageMascotGuide
-            mascot="bella-bunny"
-            pose="hold-product"
-            size={200}
-            placementClassName="-right-4 bottom-0 xl:-right-8"
-          />
-          <div className="mb-12 text-center">
-            <span className="text-sm font-semibold uppercase tracking-widest text-[#c4673a]">
-              Our Products
+          <div
+            className="pointer-events-none absolute right-0 top-8 z-20 hidden select-none xl:block"
+            aria-hidden="true"
+          >
+            <Image
+              src="/icons/bella-bunny/hold-product.webp"
+              alt=""
+              width={160}
+              height={160}
+              sizes="160px"
+              className="animate-float object-contain drop-shadow-2xl"
+              style={{
+                background: "transparent",
+                filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.12))",
+              }}
+            />
+          </div>
+          <div className="mb-12 px-4 text-center">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#c4673a]">
+              Pure &amp; Gentle
             </span>
             <h2
-              className="mb-4 mt-2 text-4xl font-black text-[#2d5a27] font-[family-name:var(--font-montserrat)]"
+              className="mb-3 mt-2 text-4xl font-black text-[#2d5a27] md:text-5xl"
+              style={{ fontFamily: "Montserrat" }}
             >
-              Crafted For Your Little One
+              Our Products
             </h2>
-            <p className="mx-auto max-w-xl text-lg text-gray-600">
-              5 years of research. Every drop tested. Every ingredient chosen with love.
+            <p className="mx-auto max-w-lg text-lg text-gray-500">
+              5 years of research. Every ingredient chosen for your baby.
             </p>
           </div>
           <FeaturedProducts
@@ -72,6 +84,7 @@ export default function HomePageContent({
 
       <SectionWaveDivider fill="#f0f7ee" />
 
+      {/* 3. Mascots */}
       {data.sections.mascots.enabled ? (
         <div className="relative overflow-visible">
           <MeetOurFriends config={data.mascots} />
@@ -79,9 +92,13 @@ export default function HomePageContent({
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
+
+      {/* 4. Stats */}
       <StatsBar />
+
       <SectionWaveDivider fill="#ffffff" />
 
+      {/* 5. Categories */}
       <CategoriesSection
         heading={data.featuredCategoriesHeading}
         categories={data.categories}
@@ -89,22 +106,31 @@ export default function HomePageContent({
 
       <SectionWaveDivider fill="#faf5f0" />
 
+      {/* 6. Science */}
       {data.sections.science.enabled ? <ScienceSection config={data.science} /> : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
+      {/* 7. Brand promise */}
       {data.sections.brand_promise.enabled ? (
         <BrandPromise config={data.brandPromise} />
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
+      {/* 8. Research timeline */}
       {data.sections.research_timeline.enabled ? (
         <ResearchTimeline config={data.researchTimeline} />
       ) : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
+      {/* 9. Lifestyle */}
+      {data.sections.lifestyle.enabled ? <LifestyleSection config={data.lifestyle} /> : null}
+
+      <SectionWaveDivider fill="#faf5f0" />
+
+      {/* 10. Reviews */}
       {showReviews ? (
         <TestimonialShowcase
           cmsItems={data.testimonials}
@@ -113,6 +139,8 @@ export default function HomePageContent({
           description={data.testimonialsHeading.description || undefined}
         />
       ) : null}
+
+      {/* 11. Footer — rendered in (storefront)/layout.tsx */}
     </>
   );
 }

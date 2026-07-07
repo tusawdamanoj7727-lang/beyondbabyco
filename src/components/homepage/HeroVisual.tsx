@@ -1,51 +1,47 @@
 import Image from "next/image";
 
-import { HERO_DEFAULT_BLUR, HERO_DEFAULT_IMAGE } from "@/lib/homepage/visual-assets";
+import { IMAGES } from "@/lib/images";
+import { HERO_DEFAULT_BLUR } from "@/lib/homepage/visual-assets";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
-import { IMAGE_QUALITY, IMAGE_SIZES, fixedImageSizes, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, resolveImageBlur } from "@/lib/media/image-delivery";
 import { resolveMascotAssetSrc } from "@/lib/mascots";
 import type { MascotPose, MascotType } from "@/components/mascots/Mascot";
 import { cn } from "@/lib/utils";
+
+const MASCOT_IMAGE_STYLE = {
+  background: "transparent",
+  filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.12))",
+} as const;
 
 const HERO_MASCOTS: {
   id: MascotType;
   pose: MascotPose;
   position: string;
-  delay: string;
-  floatDelay: string;
-  size: number;
+  animationClass: string;
+  animationDelay: string;
 }[] = [
   {
     id: "bella-bunny",
-    pose: "wave" as const,
+    pose: "wave",
     position: "hero-mascot--tl",
-    delay: "",
-    floatDelay: "0s",
-    size: 106,
+    animationClass: "animate-float",
+    animationDelay: "0s",
   },
   {
     id: "gigi-giraffe",
-    pose: "welcome" as const,
-    position: "hero-mascot--tr hero-mascot--delay-1",
-    delay: "hero-mascot--delay-1",
-    floatDelay: "0.5s",
-    size: 118,
+    pose: "welcome",
+    position: "hero-mascot--tr",
+    animationClass: "animate-float-slow",
+    animationDelay: "0.5s",
   },
   {
     id: "poppy-panda",
-    pose: "hug" as const,
-    position: "hero-mascot--br hero-mascot--delay-2",
-    delay: "hero-mascot--delay-2",
-    floatDelay: "1s",
-    size: 101,
+    pose: "hug",
+    position: "hero-mascot--br",
+    animationClass: "animate-float-fast",
+    animationDelay: "1s",
   },
 ] as const;
-
-const mascotImageStyle = {
-  background: "transparent",
-  mixBlendMode: "multiply" as const,
-  filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))",
-};
 
 type HeroVisualProps = {
   heroImageUrl?: string | null;
@@ -55,49 +51,50 @@ type HeroVisualProps = {
 /** Editorial hero focal with mascot accents layered above the image. */
 export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualProps) {
   const resolved = resolveVisualUrl(heroImageUrl, { category: "hero", slug: "gentle-care-hero" });
-  const resolvedUrl = resolved.url || HERO_DEFAULT_IMAGE;
+  const resolvedUrl = resolved.url || IMAGES.hero.mother_baby;
   const heroBlur = resolveImageBlur(heroImageUrl ? resolved.blur : HERO_DEFAULT_BLUR);
 
   return (
-    <div className="hero-visual-stage hero-editorial relative mx-auto w-full max-w-[32rem] lg:max-w-[34rem]">
+    <div className="hero-visual-stage relative z-10 mx-auto w-full max-w-[32rem] overflow-visible lg:max-w-[34rem]">
       <div className="premium-image-frame hero-editorial-frame relative z-0 aspect-[4/5] w-full overflow-hidden bg-white">
         <Image
           src={resolvedUrl}
           alt={heroImageAlt}
           fill
           priority={true}
-          sizes={IMAGE_SIZES.hero}
+          sizes="(max-width: 768px) 100vw, 50vw"
           quality={IMAGE_QUALITY.hero}
           placeholder="blur"
           blurDataURL={heroBlur}
-          className="hero-editorial-image absolute inset-0 z-0 object-cover object-[center_22%]"
+          className="absolute inset-0 z-0 object-cover object-[center_22%]"
         />
       </div>
 
       <div aria-hidden="true" className="hero-editorial-reflection relative z-0" />
       <div aria-hidden="true" className="hero-editorial-pedestal relative z-0" />
 
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-30 select-none"
-      >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-30 select-none">
         {HERO_MASCOTS.map((mascot) => (
           <div
             key={mascot.id}
-            className={cn("hero-mascot absolute z-30 animate-float", mascot.position, mascot.delay)}
-            style={{ animationDelay: mascot.floatDelay }}
+            className={cn(
+              "hero-mascot absolute z-30 pointer-events-none select-none",
+              mascot.position,
+              mascot.animationClass,
+            )}
+            style={{ animationDelay: mascot.animationDelay }}
           >
             <Image
               src={resolveMascotAssetSrc(mascot.id, mascot.pose)}
               alt=""
-              width={mascot.size}
-              height={mascot.size}
+              width={200}
+              height={200}
               loading="lazy"
               draggable={false}
-              sizes={fixedImageSizes(mascot.size)}
+              sizes="(max-width: 768px) 100px, 200px"
               quality={IMAGE_QUALITY.mascot}
-              className="relative z-20 object-contain drop-shadow-2xl"
-              style={mascotImageStyle}
+              className="relative z-30 object-contain drop-shadow-2xl"
+              style={MASCOT_IMAGE_STYLE}
             />
           </div>
         ))}

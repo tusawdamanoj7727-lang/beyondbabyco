@@ -35,7 +35,8 @@ export function productBadge(row: {
 
 /** Secondary trust badge shown on cards when applicable. */
 export function productSecondaryBadge(row: { status: string }): string | null {
-  if (row.status === "coming_soon") return null;
+  if (row.status === "coming_soon") return "Research Complete";
+  if (row.status === "active") return "Research Backed";
   return null;
 }
 

@@ -22,6 +22,9 @@ export interface AppliedCoupon {
   discountType: "percent" | "flat";
   discountValue: number;
   savings: number;
+  /** Compatibility aliases for simpler coupon payloads. */
+  type?: "percent" | "flat";
+  value?: number;
 }
 
 interface CartStore {
@@ -30,6 +33,7 @@ interface CartStore {
   addItem: (item: Omit<CartItem, "quantity">) => void;
   removeItem: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
+  updateQty: (variantId: string, quantity: number) => void;
   clearCart: () => void;
   applyCoupon: (coupon: AppliedCoupon) => void;
   removeCoupon: () => void;
@@ -39,8 +43,18 @@ interface CartStore {
   subtotal: () => number;
   discount: () => number;
   gstAmount: () => number;
+  gst: () => number;
   shippingCharge: () => number;
+  shipping: () => number;
   total: () => number;
+}
+
+function couponType(coupon: AppliedCoupon): "percent" | "flat" {
+  return coupon.discountType ?? coupon.type ?? "flat";
+}
+
+function couponValue(coupon: AppliedCoupon): number {
+  return coupon.discountValue ?? coupon.value ?? 0;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -77,9 +91,20 @@ export const useCartStore = create<CartStore>()(
                 ),
         })),
 
+      updateQty: (variantId, qty) => get().updateQuantity(variantId, qty),
+
       clearCart: () => set({ items: [], coupon: null }),
 
-      applyCoupon: (coupon) => set({ coupon }),
+      applyCoupon: (coupon) =>
+        set({
+          coupon: {
+            ...coupon,
+            discountType: couponType(coupon),
+            discountValue: couponValue(coupon),
+            type: couponType(coupon),
+            value: couponValue(coupon),
+          },
+        }),
 
       removeCoupon: () => set({ coupon: null }),
 
@@ -92,9 +117,9 @@ export const useCartStore = create<CartStore>()(
       discount: () => {
         const { coupon } = get();
         if (!coupon) return 0;
-        return coupon.discountType === "percent"
-          ? Math.round((get().subtotal() * coupon.discountValue) / 100)
-          : coupon.discountValue;
+        return couponType(coupon) === "percent"
+          ? Math.round((get().subtotal() * couponValue(coupon)) / 100)
+          : couponValue(coupon);
       },
 
       gstAmount: () =>
@@ -103,10 +128,14 @@ export const useCartStore = create<CartStore>()(
           return sum + gstFromInclusiveLine(lineTotal, i.gstRate);
         }, 0),
 
+      gst: () => get().gstAmount(),
+
       shippingCharge: () => {
         const sub = get().subtotal() - get().discount();
         return sub >= 999 ? 0 : 49;
       },
+
+      shipping: () => get().shippingCharge(),
 
       total: () => {
         const { subtotal, discount, shippingCharge } = get();

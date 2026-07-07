@@ -8,8 +8,8 @@ import {
   TRENDING_SEARCHES as TRENDING_COPY,
   TRUST_STATS,
 } from "@/lib/brand/copy";
-import { categoryCardBlur, categoryCardUrl, resolveProductVisual } from "@/lib/brand/generated-assets";
 import { PRODUCT_GST_BY_NAME } from "@/lib/catalog/gst-rates";
+import { CATEGORY_IMAGES_BY_TITLE, IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";
 import {
   brandPromiseBlur,
   brandPromisePhoto,
@@ -17,8 +17,8 @@ import {
   HERO_DEFAULT_IMAGE,
   testimonialPortraitBlur,
   testimonialPortraitUrl,
-  timelineVisual,
 } from "@/lib/homepage/visual-assets";
+import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
 export { HERO_DEFAULT_IMAGE, HERO_DEFAULT_BLUR };
 
@@ -35,66 +35,53 @@ export const TESTIMONIALS = TESTIMONIAL_COPY.items.map((t, i) => ({
   avatarBlur: testimonialPortraitBlur(i + 1),
 }));
 
-export const RESEARCH_TIMELINE = RESEARCH_COPY.entries.map((entry, i) => {
-  const visual = timelineVisual(i);
-  return {
-    ...entry,
-    imageUrl: visual.url,
-    imageBlur: visual.blur,
-  };
-});
+const RESEARCH_IMAGES = [
+  IMAGES.research.lab,
+  IMAGES.research.ingredients,
+  IMAGES.research.testing,
+  IMAGES.research.certificate,
+  IMAGES.research.botanicals,
+  IMAGES.research.lab,
+] as const;
 
-export const FEATURED_PRODUCTS = FEATURED_PRODUCT_CARDS.map((p) => {
-  const categoryKey = p.category.toLowerCase();
-  const slugHint = categoryKey.includes("wipes")
-    ? "baby-wipes"
-    : categoryKey.includes("wash")
-      ? "baby-wash"
-      : categoryKey.includes("lotion")
-        ? "baby-lotion"
-        : categoryKey.includes("oil")
-          ? "baby-oil"
-          : categoryKey.includes("powder")
-            ? "baby-powder"
-            : categoryKey.includes("gift")
-              ? "gift-box"
-              : categoryKey.includes("newborn")
-                ? "newborn-kit"
-                : "baby-wash";
+export const RESEARCH_TIMELINE = RESEARCH_COPY.entries.map((entry, i) => ({
+  ...entry,
+  imageUrl: RESEARCH_IMAGES[i % RESEARCH_IMAGES.length],
+  imageBlur: STATIC_IMAGE_BLUR,
+}));
 
-  const visual = resolveProductVisual({ slug: slugHint, angle: "front" });
-  return {
-    ...p,
-    gstRate: p.gstRate,
-    imageUrl: visual.imageUrl,
-    imageBlur: visual.imageBlurDataUrl,
-  };
-});
+function featuredProductImage(card: (typeof FEATURED_PRODUCT_CARDS)[number]): string {
+  if ("slug" in card && card.slug && PRODUCT_IMAGES_BY_SLUG[card.slug]) {
+    return PRODUCT_IMAGES_BY_SLUG[card.slug]!;
+  }
 
-const CATEGORY_IMAGES: Record<string, { icon: string; blur: string; color: string }> = {
-  "Baby Wipes": { icon: categoryCardUrl("baby-wipes"), blur: categoryCardBlur("baby-wipes"), color: "green" },
-  "Baby Wash": { icon: categoryCardUrl("baby-wash"), blur: categoryCardBlur("baby-wash"), color: "terra" },
-  "Baby Lotion": { icon: categoryCardUrl("baby-lotion"), blur: categoryCardBlur("baby-lotion"), color: "cream" },
-  "Baby Oil": { icon: categoryCardUrl("baby-oil"), blur: categoryCardBlur("baby-oil"), color: "green" },
-  "Baby Powder": { icon: categoryCardUrl("baby-powder"), blur: categoryCardBlur("baby-powder"), color: "terra" },
-  "Gift Sets": { icon: categoryCardUrl("gift-sets"), blur: categoryCardBlur("gift-sets"), color: "cream" },
-  "Newborn Essentials": { icon: categoryCardUrl("newborn"), blur: categoryCardBlur("newborn"), color: "green" },
-  "Bath Time": { icon: categoryCardUrl("baby-wash"), blur: categoryCardBlur("baby-wash"), color: "terra" },
-};
+  const categoryKey = card.category.toLowerCase();
+  if (categoryKey.includes("wipes")) return IMAGES.products.baby_wipes;
+  if (categoryKey.includes("wash")) return IMAGES.products.baby_wash;
+  if (categoryKey.includes("lotion")) return IMAGES.products.baby_lotion;
+  if (categoryKey.includes("oil") || categoryKey.includes("massage")) return IMAGES.products.massage_oil;
+  if (categoryKey.includes("powder")) return IMAGES.products.baby_cream;
+  if (categoryKey.includes("gift")) return IMAGES.products.gift_set;
+  if (categoryKey.includes("newborn")) return IMAGES.products.gift_set;
+  return IMAGES.products.placeholder;
+}
+
+export const FEATURED_PRODUCTS = FEATURED_PRODUCT_CARDS.map((p) => ({
+  ...p,
+  gstRate: p.gstRate,
+  imageUrl: featuredProductImage(p),
+  imageBlur: STATIC_IMAGE_BLUR,
+}));
 
 export const CATEGORY_ITEMS = CATEGORY_COPY.map((cat) => {
-  const meta = CATEGORY_IMAGES[cat.title] ?? {
-    icon: categoryCardUrl(cat.title),
-    blur: categoryCardUrl(cat.title),
-    color: "green",
-  };
+  const imageUrl = CATEGORY_IMAGES_BY_TITLE[cat.title] ?? IMAGES.categories.skin_care;
   return {
     title: cat.title,
     count: cat.count,
-    icon: meta.icon,
-    imageUrl: meta.icon,
-    imageBlur: meta.blur,
-    color: meta.color,
+    icon: imageUrl,
+    imageUrl,
+    imageBlur: STATIC_IMAGE_BLUR,
+    color: "green",
   };
 });
 

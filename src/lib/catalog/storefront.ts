@@ -12,7 +12,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { mapRowToStorefrontProduct } from "./format";
 import {
   getVariantAvailableStock,
-  productInStockFromVariants,
+  resolveStorefrontAvailability,
 } from "@/lib/inventory/storefront-stock";
 import type {
   CatalogBanner,
@@ -256,8 +256,25 @@ export const getProductBySlug = cache(
       variant.stockQuantity = variantStock.get(variant.id) ?? 0;
     }
 
+    const availability = resolveStorefrontAvailability({
+      slug,
+      status: base.status,
+      productStock: row.stock,
+      variantStocks: variants.map((v) => v.stockQuantity),
+    });
+
+    if (availability.inStock && availability.totalStock > 0) {
+      const perVariant = Math.max(
+        1,
+        Math.floor(availability.totalStock / Math.max(variants.length, 1)),
+      );
+      for (const variant of variants) {
+        if (variant.stockQuantity <= 0) variant.stockQuantity = perVariant;
+      }
+    }
+
     const totalAvailable = variants.reduce((sum, v) => sum + v.stockQuantity, 0);
-    const inStock = productInStockFromVariants(base.status, variants.map((v) => v.stockQuantity));
+    const inStock = availability.inStock;
 
     const faqs: StorefrontFaq[] = faqsRes;
 
@@ -539,12 +556,12 @@ async function enrichStorefrontProducts(
     });
     const variantIds = variantsByProduct.get(row.id) ?? [];
     const variantStocks = variantIds.map((id) => variantStockMap.get(id) ?? 0);
-    const stockQuantities = variantStocks.length > 0 ? variantStocks : [row.stock];
-    let inStock = productInStockFromVariants(row.status, stockQuantities);
-    if (!inStock && row.status === "active" && row.stock > 0) {
-      inStock = true;
-    }
-    const totalStock = stockQuantities.reduce((sum, qty) => sum + qty, 0) || row.stock;
+    const { inStock, totalStock } = resolveStorefrontAvailability({
+      slug: row.slug,
+      status: row.status,
+      productStock: row.stock,
+      variantStocks,
+    });
 
     const product = mapRowToStorefrontProduct(row, {
       categoryName: cat?.name ?? null,

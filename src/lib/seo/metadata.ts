@@ -9,9 +9,11 @@ import {
 } from "@/lib/brand/logo";
 import { resolveCategoryOgPath, resolveOgImagePath, resolveProductOgPath } from "@/lib/brand/real-assets";
 import { dynamicOgImageUrl } from "@/lib/seo/og-images";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TWITTER, absoluteUrl, getSiteUrl, PUBLIC_SITE_URL } from "./site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TWITTER, absoluteUrl, getSiteUrl } from "./site";
 
-export const METADATA_BASE = new URL(PUBLIC_SITE_URL);
+function metadataBase(): URL {
+  return new URL(getSiteUrl());
+}
 
 type PageMetaInput = {
   title: string;
@@ -56,7 +58,7 @@ export function buildPageMetadata(input: PageMetaInput): Metadata {
   const { url: image, width: imageWidth, height: imageHeight } = resolveOgImage(input);
 
   return {
-    metadataBase: METADATA_BASE,
+    metadataBase: metadataBase(),
     title,
     description,
     alternates: input.path ? { canonical: url } : undefined,

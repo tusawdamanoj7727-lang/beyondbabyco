@@ -108,9 +108,8 @@ function resolveProductSelection(line: string, angle: GeneratedAngle, fallback: 
 export const LEGACY_VISUAL_PATTERNS = [
   "product-botanical",
   "/images/brand/",
-  "placeholder",
-  "unsplash",
-  "placehold",
+  "/images/placeholders/",
+  "placehold.co",
   "/images/homepage/phase-8-2/",
   "/images/hero/phase-8-1/",
   "/images/generated/homepage/phase-8-2/",

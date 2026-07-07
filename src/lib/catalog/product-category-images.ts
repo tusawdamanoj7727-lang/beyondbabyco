@@ -1,21 +1,21 @@
 /**
- * Category-based product imagery — distinct placeholders per care line.
- * Wipes use the approved generated hero only; all other categories use placeholders.
+ * Category-based product imagery — Unsplash editorial photos + approved wipes hero.
  */
 
+import { IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";
 import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
 /** Approved wipes hero — only real product photo in catalog placeholders. */
-export const BABY_WIPES_PRODUCT_IMAGE = "/images/generated/products/baby-wipes/front.webp";
+export const BABY_WIPES_PRODUCT_IMAGE = IMAGES.products.baby_wipes;
 
 export type ProductVisualGroup = "wipes" | "wash" | "lotion" | "oil" | "gift" | "mother-care";
 
 export const CATEGORY_PLACEHOLDER_IMAGES: Record<Exclude<ProductVisualGroup, "wipes">, string> = {
-  wash: "/images/placeholders/products/baby-wash.svg",
-  lotion: "/images/placeholders/products/baby-lotion.svg",
-  oil: "/images/placeholders/products/baby-oil.svg",
-  gift: "/images/placeholders/products/gift-sets.svg",
-  "mother-care": "/images/placeholders/products/mother-care.svg",
+  wash: IMAGES.products.baby_wash,
+  lotion: IMAGES.products.baby_lotion,
+  oil: IMAGES.products.massage_oil,
+  gift: IMAGES.products.gift_set,
+  "mother-care": IMAGES.products.baby_cream,
 };
 
 const CATEGORY_SLUG_TO_GROUP: Record<string, ProductVisualGroup> = {
@@ -81,6 +81,12 @@ export function resolveCategoryProductImage(input: {
   categorySlug?: string | null;
   productSlug?: string;
 }): { imageUrl: string; imageBlurDataUrl: string } {
+  const slug = (input.productSlug ?? "").toLowerCase();
+  const slugImage = slug ? PRODUCT_IMAGES_BY_SLUG[slug] : undefined;
+  if (slugImage) {
+    return { imageUrl: slugImage, imageBlurDataUrl: STATIC_IMAGE_BLUR };
+  }
+
   const group = resolveProductVisualGroup(input.categorySlug, input.productSlug);
   return {
     imageUrl: categoryPlaceholderImage(group),
@@ -93,9 +99,8 @@ export function isLegacyOrMissingProductImage(url: string | null | undefined): b
   const lower = url.toLowerCase();
   return (
     lower.includes("product-botanical") ||
-    lower.includes("placeholder") ||
-    lower.includes("placehold") ||
-    lower.includes("unsplash") ||
+    lower.includes("/images/placeholders/") ||
+    lower.includes("placehold.co") ||
     lower.includes("/images/products/phase-")
   );
 }

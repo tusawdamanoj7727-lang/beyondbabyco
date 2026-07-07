@@ -5,33 +5,43 @@ import HomeSectionHeader from "@/components/homepage/HomeSectionHeader";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import Card from "../ui/Card";
 import BrandSceneImage from "@/components/brand/BrandSceneImage";
-import { lifestylePhoto } from "@/lib/homepage/visual-assets";
+import { IMAGES } from "@/lib/images";
 import { LIFESTYLE_SECTION } from "@/lib/brand/copy";
 
 import type { LifestyleConfig } from "@/lib/admin/homepage-schema";
 import { editorialImageCrop } from "@/lib/design/ui";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
 const FEATURE_ACCENTS = ["bg-green-100/90", "bg-terra-100/90", "bg-cream-200/90"];
 
-const DEFAULT_FEATURES = LIFESTYLE_SECTION.features.map((feature, index) => ({
+const LIFESTYLE_IMAGES = [
+  { src: IMAGES.lifestyle.bath_routine, title: "Bath Time", desc: "Gentle cleansing ritual" },
+  { src: IMAGES.lifestyle.massage_time, title: "Massage Time", desc: "Bonding through touch" },
+  { src: IMAGES.lifestyle.sleep_time, title: "Sleep Time", desc: "Soft routines for rest" },
+  { src: IMAGES.lifestyle.play_time, title: "Play Time", desc: "Safe for active days" },
+  { src: IMAGES.lifestyle.feeding_time, title: "After Bath", desc: "Lock in moisture" },
+  { src: IMAGES.lifestyle.outdoor, title: "Outdoor", desc: "Protection on the go" },
+] as const;
+
+const DEFAULT_FEATURES = LIFESTYLE_IMAGES.map((item, index) => ({
   icon: "",
-  ...feature,
-  accent: FEATURE_ACCENTS[index] ?? "bg-green-100/90",
-  imageUrl: lifestylePhoto(index === 0 ? 3 : index === 1 ? 8 : 11),
+  title: item.title,
+  description: item.desc,
+  accent: FEATURE_ACCENTS[index % FEATURE_ACCENTS.length] ?? "bg-green-100/90",
+  imageUrl: item.src,
 }));
 
 export default function LifestyleSection({ config }: { config?: LifestyleConfig }) {
   const heading = config?.heading?.trim() || LIFESTYLE_SECTION.heading;
   const description = config?.description?.trim() || LIFESTYLE_SECTION.description;
-  const imageUrl = config?.imageUrl?.trim() || lifestylePhoto(15);
+  const imageUrl = config?.imageUrl?.trim() || IMAGES.lifestyle.bath_routine;
 
   const features =
     config?.cards && config.cards.length > 0
       ? config.cards.map((card, index) => ({
           icon: "",
-          imageUrl: card.imageUrl?.trim() || lifestylePhoto(index + 3),
+          imageUrl: card.imageUrl?.trim() || LIFESTYLE_IMAGES[index % LIFESTYLE_IMAGES.length]?.src,
           title: card.title,
           description: card.description,
           accent: FEATURE_ACCENTS[index % FEATURE_ACCENTS.length] ?? "bg-green-100/90",
@@ -65,7 +75,7 @@ export default function LifestyleSection({ config }: { config?: LifestyleConfig 
                       sizes={IMAGE_SIZES.lifestyleThumbnail}
                       quality={IMAGE_QUALITY.editorial}
                       placeholder="blur"
-                      blurDataURL={resolveImageBlur(blurForGeneratedUrl(feature.imageUrl))}
+                      blurDataURL={resolveImageBlur(STATIC_IMAGE_BLUR)}
                       className="h-full w-full object-cover object-[center_25%]"
                     />
                   ) : null}

@@ -312,7 +312,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
             floating={false}
           />
 
-          <div className="hidden flex-col gap-3 md:flex">{purchaseButtons}</div>
+          <div className="relative mt-6 hidden flex-col gap-3 md:flex">{purchaseButtons}</div>
 
           <button
             type="button"
@@ -341,7 +341,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         </p>
       </div>
 
-      <div className="pdp-sticky-bar md:hidden">
+      <div className="pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-3 shadow-lg md:hidden">
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           {!isComingSoon ? (
             <div className="min-w-0 flex-1">

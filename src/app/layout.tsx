@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import { Montserrat, Geist } from "next/font/google";
 
 import JsonLd from "@/components/seo/JsonLd";
+import StorefrontFooter from "@/components/homepage/StorefrontFooter";
+import HideOnAdmin from "@/components/layout/HideOnAdmin";
+import AnnouncementBar from "@/components/homepage/AnnouncementBar";
+import { Navbar } from "@/components/layout/Navbar";
 import ResourceHints from "@/components/seo/ResourceHints";
 import AnalyticsRoot from "@/components/analytics/AnalyticsRoot";
 import { AppToaster } from "@/components/ui/AppToaster";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
+import { getSiteUrl } from "@/lib/seo/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { BRAND } from "@/lib/brand/copy";
@@ -34,7 +39,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in"),
+  metadataBase: new URL(getSiteUrl()),
   ...buildPageMetadata({
     title: BRAND.siteTitle,
     path: "/",
@@ -71,7 +76,16 @@ export default function RootLayout({
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <AnalyticsRoot />
         <AppToaster />
+        <HideOnAdmin>
+          <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
+            <AnnouncementBar />
+            <Navbar />
+          </div>
+        </HideOnAdmin>
         {children}
+        <HideOnAdmin>
+          <StorefrontFooter />
+        </HideOnAdmin>
         <WhatsAppButton />
       </body>
     </html>

@@ -23,11 +23,11 @@ import {
   type CategoryNode,
   type PublicProduct,
 } from "@/lib/catalog/queries";
+import { TICKER_ITEMS } from "@/lib/brand/copy";
 import {
   CATEGORY_ITEMS,
   FEATURED_PRODUCTS,
   TESTIMONIALS,
-  TICKER_ITEMS,
   TRUST_STATS,
 } from "@/lib/data";
 
@@ -248,13 +248,10 @@ function resolveTestimonials(cms: Homepage, published: boolean): StorefrontTesti
 
 function resolveAnnouncement(cms: Homepage, published: boolean) {
   const cfg = sectionConfig(cms, "announcement", DEFAULTS.announcement, published);
-  const items = cfg.text.trim()
-    ? cfg.text.split(/\n|•/).map((s) => s.trim()).filter(Boolean)
-    : TICKER_ITEMS;
 
   return {
     enabled: sectionEnabled(cms, "announcement", published),
-    items,
+    items: [...TICKER_ITEMS],
     background: cfg.background || undefined,
     link: cfg.link || undefined,
   };
@@ -311,7 +308,7 @@ const STATIC_FALLBACK: StorefrontHomepage = {
   published: false,
   seo: DEFAULTS.seo,
   footer: DEFAULTS.footer,
-  announcement: { enabled: true, items: TICKER_ITEMS },
+  announcement: { enabled: true, items: [...TICKER_ITEMS] },
   sections: {
     announcement: { enabled: true },
     hero: { enabled: true },

@@ -16,6 +16,7 @@ import { focusRing } from "@/lib/design/ui";
 import type { StorefrontCategoryItem } from "@/lib/homepage/storefront";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 import { cn } from "@/lib/utils";
 import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
@@ -94,7 +95,9 @@ export default function CategoriesSection({
                     quality={IMAGE_QUALITY.editorial}
                     placeholder="blur"
                     blurDataURL={resolveImageBlur(
-                      blurForGeneratedUrl(imageSrc),
+                      imageSrc.includes("/images/generated/")
+                        ? blurForGeneratedUrl(imageSrc)
+                        : STATIC_IMAGE_BLUR,
                     )}
                     className="object-cover object-[center_20%] transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.04]"
                   />

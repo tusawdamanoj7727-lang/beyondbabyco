@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: false,
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
     ],
   },
 
@@ -54,7 +55,15 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/terms", destination: "/terms-of-service", permanent: true },
+      { source: "/return-policy", destination: "/refund-policy", permanent: true },
+      { source: "/cookies", destination: "/privacy-policy", permanent: true },
       { source: "/blog", destination: "/community", permanent: false },
+      { source: "/our-story", destination: "/about", permanent: false },
+      { source: "/why-beyondbabyco", destination: "/about", permanent: false },
+      { source: "/certifications", destination: "/research", permanent: false },
+      { source: "/safety-standards", destination: "/research", permanent: false },
+      { source: "/ingredients", destination: "/research", permanent: false },
+      { source: "/manufacturing", destination: "/about", permanent: false },
     ];
   },
 };

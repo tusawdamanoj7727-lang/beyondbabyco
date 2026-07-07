@@ -2,7 +2,7 @@
 const DEFAULT_BRAND_EMAIL = "care@beyondbabyco.com";
 
 /** Digits only, with country code — e.g. 919876543210 */
-const DEFAULT_WHATSAPP_NUMBER = "91XXXXXXXXXX";
+const DEFAULT_WHATSAPP_NUMBER = "917296887936";
 
 const DEFAULT_WHATSAPP_MESSAGE = "Hi! I have a question about BeyondBabyCo products 👶";
 

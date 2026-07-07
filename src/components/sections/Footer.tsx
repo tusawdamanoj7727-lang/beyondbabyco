@@ -8,9 +8,8 @@ import MotionSection from "../ui/MotionSection";
 import Reveal from "../ui/Reveal";
 import AccentBar from "../ui/AccentBar";
 import Logo from "@/components/brand/Logo";
-import InstagramLink from "@/components/ui/InstagramLink";
 import { InstagramIcon } from "@/components/ui/InstagramIcon";
-import { formatSocialHandle, INSTAGRAM_ARIA_LABEL, isInstagramSocialLink } from "@/lib/brand/social";
+import { formatSocialHandle, INSTAGRAM_ARIA_LABEL, INSTAGRAM_HANDLE, INSTAGRAM_URL, isInstagramSocialLink } from "@/lib/brand/social";
 import { Mascot, type MascotPose, type MascotType } from "../mascots";
 import { ALL_MASCOTS, mascotFloatDuration, mascotLabel } from "../../lib/mascots";
 import {
@@ -47,7 +46,6 @@ const LEGAL_LINKS: { label: string; href: string }[] = [
   { label: "Terms of Service", href: "/terms-of-service" },
   { label: "Shipping Policy", href: "/shipping-policy" },
   { label: "Refund Policy", href: "/refund-policy" },
-  { label: "Return Policy", href: "/return-policy" },
 ];
 
 const FOOTER_TRUST = [
@@ -324,27 +322,32 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                 <div>
                   <p className="mb-2.5 font-semibold text-green-900">Follow Us</p>
                   <div className="flex flex-col gap-2">
-                    {socialLinks.length > 0 ? (
-                      socialLinks.map((link) => {
+                    <a
+                      href={INSTAGRAM_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={INSTAGRAM_ARIA_LABEL}
+                      className={cn(socialLinkClass, focusRing)}
+                    >
+                      <InstagramIcon className="h-5 w-5 shrink-0" />
+                      <span>{INSTAGRAM_HANDLE}</span>
+                    </a>
+                    {socialLinks
+                      .filter((link) => !isInstagramSocialLink(link.url, link.platform))
+                      .map((link) => {
                         const handle = formatSocialHandle(link.url, link.platform);
-                        const instagram = isInstagramSocialLink(link.url, link.platform);
                         return (
                           <a
                             key={`${link.platform}-${link.url}`}
-                            href={link.url}
+                            href={link.url.startsWith("http") ? link.url : `https://${link.url}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={cn(socialLinkClass, focusRing)}
-                            aria-label={instagram ? INSTAGRAM_ARIA_LABEL : `${handle} on social media`}
                           >
-                            {instagram ? <InstagramIcon className="h-5 w-5 shrink-0" /> : null}
                             <span>{handle}</span>
                           </a>
                         );
-                      })
-                    ) : (
-                      <InstagramLink variant="with-handle" className={cn(socialLinkClass, focusRing)} />
-                    )}
+                      })}
                   </div>
                 </div>
                 <div>
@@ -374,11 +377,11 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   key={mascot}
                   mascot={mascot}
                   pose={FOOTER_MASCOT_POSES[mascot]}
-                  size={index % 2 === 0 ? 96 : 88}
+                  size={64}
                   animated
                   floating={false}
                   interactive
-                  className="homepage-footer-mascot relative z-10"
+                  className="homepage-footer-mascot relative z-30"
                   duration={mascotFloatDuration(mascot)}
                   delay={index * 0.18}
                   alt={`${mascotLabel(mascot)} mascot`}

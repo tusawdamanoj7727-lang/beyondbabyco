@@ -30,7 +30,7 @@ export default function HomepageMascotGuide({
   return (
     <div
       className={cn(
-        "pointer-events-none absolute z-20 hidden select-none lg:block",
+        "pointer-events-none absolute z-30 hidden select-none lg:block",
         placementClassName,
         bounce && "animate-bounce",
       )}
@@ -46,7 +46,7 @@ export default function HomepageMascotGuide({
         interactive
         duration={mascotFloatDuration(mascot)}
         alt={`${shortName} guide`}
-        className={cn("relative z-20", className)}
+        className={cn("relative z-30", className)}
       />
     </div>
   );

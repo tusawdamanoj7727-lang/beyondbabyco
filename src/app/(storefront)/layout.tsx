@@ -1,13 +1,9 @@
-import SiteHeader from "@/components/layout/SiteHeader";
-import AnnouncementBar from "@/components/homepage/AnnouncementBar";
-import StorefrontFooter from "@/components/homepage/StorefrontFooter";
-import Navbar from "@/components/layout/Navbar";
 import StorefrontProviders from "@/components/layout/StorefrontProviders";
 import { getServerSession } from "@/lib/auth/session";
 import { getWishlistProductIds } from "@/lib/storefront/wishlist-actions";
 
 /**
- * Storefront-only chrome — cart, wishlist, navbar, and footer are not loaded on /admin routes.
+ * Storefront-only chrome — cart, wishlist, and footer (navbar lives in root layout).
  */
 export default async function StorefrontLayout({
   children,
@@ -27,13 +23,9 @@ export default async function StorefrontLayout({
       >
         Skip to main content
       </a>
-      <SiteHeader announcement={<AnnouncementBar />}>
-        <Navbar />
-      </SiteHeader>
       <main id="main-content" className="site-main-offset">
         {children}
       </main>
-      <StorefrontFooter />
     </StorefrontProviders>
   );
 }

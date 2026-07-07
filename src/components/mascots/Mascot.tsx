@@ -101,10 +101,7 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
       width: size,
       height: size,
       background: "transparent",
-      mixBlendMode: "multiply",
-      ...(floating
-        ? { filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }
-        : undefined),
+      filter: floating ? "drop-shadow(0 15px 30px rgba(0,0,0,0.12))" : undefined,
     };
 
     const image = (
@@ -122,8 +119,7 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
         draggable={false}
         onError={handleError}
         className={cn(
-          "pointer-events-none select-none object-contain",
-          floating ? "relative z-20 drop-shadow-2xl" : "relative z-10 drop-shadow-xl",
+          "pointer-events-none relative z-30 select-none object-contain drop-shadow-2xl",
           interactive && !floating && "drop-shadow-[0_10px_28px_rgba(29,69,45,0.16)] filter",
           !animated && className,
         )}
@@ -140,7 +136,7 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
         ref={ref as React.Ref<HTMLDivElement>}
         className={cn(
           "relative inline-block transform-gpu will-change-transform",
-          floating ? "z-20" : "z-10",
+          floating ? "z-30" : "z-10",
           floating && "mascot-float",
           interactive && "mascot-interactive cursor-default",
           className,

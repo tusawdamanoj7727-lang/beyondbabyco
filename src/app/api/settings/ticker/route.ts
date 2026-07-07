@@ -2,17 +2,12 @@ import { NextResponse } from "next/server";
 
 import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
-import { TICKER_ITEMS } from "@/lib/data";
+import { TICKER_ITEMS } from "@/lib/brand/copy";
+import { resolveTickerItems } from "@/lib/brand/ticker-items";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
-
-function parseTickerItems(value: unknown): string[] {
-  if (!Array.isArray(value)) return [...TICKER_ITEMS];
-  const items = value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
-  return items.length > 0 ? items : [...TICKER_ITEMS];
-}
 
 export async function GET() {
   const supabase = await createClient();
@@ -26,7 +21,7 @@ export async function GET() {
     return NextResponse.json({ items: [...TICKER_ITEMS] });
   }
 
-  return NextResponse.json({ items: parseTickerItems(data?.value) });
+  return NextResponse.json({ items: resolveTickerItems(data?.value) });
 }
 
 export async function POST(req: Request) {
@@ -37,7 +32,7 @@ export async function POST(req: Request) {
   }
 
   const body = (await req.json()) as { items?: unknown };
-  const items = parseTickerItems(body.items);
+  const items = resolveTickerItems(body.items);
 
   const supabase = await createClient();
   const { error } = await supabase.from("site_settings").upsert(

@@ -6,6 +6,8 @@ export const LAUNCH_PRODUCT_SLUGS = new Set([
   "ayurvedic-massage-oil",
 ]);
 
+export const LAUNCH_PRODUCT_MIN_STOCK = 500;
+
 export function isLaunchProductSlug(slug: string): boolean {
   return LAUNCH_PRODUCT_SLUGS.has(slug);
 }

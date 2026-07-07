@@ -11,8 +11,7 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
 import { computeReviewSummary } from "@/lib/reviews/helpers";
 import { getProductReviews } from "@/lib/reviews/queries";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
-import { buildProductMetadata } from "@/lib/seo/metadata";
-import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
+import { absoluteUrl, getSiteUrl, SITE_NAME } from "@/lib/seo/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -23,14 +22,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
+  const baseUrl = getSiteUrl().replace(/\/$/, "");
+  const canonical = `${baseUrl}/products/${slug}`;
+  const title = `${product.seoTitle ?? product.name} — BeyondBabyCo`;
+  const description = (
+    product.seoDescription ??
+    product.shortDescription ??
+    product.description ??
+    ""
+  ).slice(0, 155);
+  const ogImage = product.imageUrl
+    ? absoluteUrl(product.imageUrl)
+    : absoluteUrl("/images/og/og-products.jpg");
+
   return {
-    ...buildProductMetadata({
-      title: product.seoTitle ?? product.name,
-      description: product.seoDescription ?? product.shortDescription ?? undefined,
-      path: `/products/${slug}`,
-      image: product.imageUrl ?? undefined,
-      productSlug: slug,
-    }),
+    metadataBase: new URL(baseUrl),
+    title,
+    description,
+    alternates: { canonical },
+    robots: { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      url: canonical,
+      title,
+      description,
+      siteName: SITE_NAME,
+      locale: "en_IN",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: product.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
   };
 }
 
