@@ -130,7 +130,7 @@ export function renderEmailLayout(input: LayoutInput): string {
               </p>
               <p style="margin:0 0 12px;">${contact.supportHours}</p>
               <p style="margin:0 0 16px;">
-                <a href="${social.instagram}" target="_blank" rel="noopener noreferrer" style="color:${colors.terra600};text-decoration:none;font-weight:600;">Follow @beyondbabyco</a>
+                <a href="${social.instagram}" target="_blank" rel="noopener noreferrer" style="color:${colors.terra600};text-decoration:none;font-weight:600;">Follow @beyoundbabyco</a>
               </p>
             </td>
           </tr>

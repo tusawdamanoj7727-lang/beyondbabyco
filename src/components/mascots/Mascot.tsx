@@ -3,11 +3,7 @@
 import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import Image from "next/image";
 
-import {
-  fixedImageSizes,
-  IMAGE_QUALITY,
-  IMAGE_SIZES,
-} from "@/lib/media/image-delivery";
+import { mascotImageQuality, mascotImageSizes } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 import {
   mascotFloatDuration,
@@ -114,8 +110,8 @@ const Mascot = forwardRef<HTMLDivElement | HTMLImageElement, MascotProps>(
         height={size}
         priority={priority}
         loading={priority ? undefined : "lazy"}
-        sizes={size <= 160 ? fixedImageSizes(size) : IMAGE_SIZES.mascot}
-        quality={IMAGE_QUALITY.mascot}
+        sizes={mascotImageSizes(size)}
+        quality={mascotImageQuality(size)}
         draggable={false}
         onError={handleError}
         className={cn(

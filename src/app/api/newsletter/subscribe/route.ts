@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -10,14 +11,11 @@ export async function POST(req: Request) {
     const email = String(body.email ?? "")
       .trim()
       .toLowerCase();
-    const source = String(body.source ?? "website");
+    const source = String(body.source ?? "website").trim() || "website";
     const name = body.name?.trim() || null;
 
     if (!email.includes("@")) {
-      return NextResponse.json(
-        { success: false, error: "Please enter a valid email" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: NEWSLETTER_MESSAGES.invalid }, { status: 400 });
     }
 
     const supabase = await createClient();
@@ -33,17 +31,19 @@ export async function POST(req: Request) {
     if (error?.code === "23505") {
       return NextResponse.json({
         success: true,
-        message: "You're already subscribed!",
+        message: NEWSLETTER_MESSAGES.duplicate,
       });
     }
 
-    if (error) throw error;
+    if (error) {
+      return NextResponse.json({ error: NEWSLETTER_MESSAGES.error }, { status: 500 });
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Welcome to the BeyondBabyCo family!",
+      message: NEWSLETTER_MESSAGES.success,
     });
   } catch {
-    return NextResponse.json({ success: false, error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json({ error: NEWSLETTER_MESSAGES.error }, { status: 500 });
   }
 }

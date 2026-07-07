@@ -1,21 +1,19 @@
 import type { MetadataRoute } from "next";
 
-import { getSiteUrl } from "@/lib/seo/site";
-
-const BASE = getSiteUrl().replace(/\/$/, "");
+const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in").replace(/\/+$/, "");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${BASE}/products`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
-    { url: `${BASE}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE}/research`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE}/privacy-policy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE}/terms-of-service`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE}/shipping-policy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
-    { url: `${BASE}/refund-policy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+  const pages: MetadataRoute.Sitemap = [
+    { url: BASE, changeFrequency: "daily", priority: 1.0, lastModified: new Date() },
+    { url: `${BASE}/products`, changeFrequency: "daily", priority: 0.9, lastModified: new Date() },
+    { url: `${BASE}/about`, changeFrequency: "monthly", priority: 0.7, lastModified: new Date() },
+    { url: `${BASE}/research`, changeFrequency: "monthly", priority: 0.7, lastModified: new Date() },
+    { url: `${BASE}/contact`, changeFrequency: "monthly", priority: 0.6, lastModified: new Date() },
+    { url: `${BASE}/faq`, changeFrequency: "monthly", priority: 0.5, lastModified: new Date() },
+    { url: `${BASE}/privacy-policy`, changeFrequency: "yearly", priority: 0.3, lastModified: new Date() },
+    { url: `${BASE}/terms-of-service`, changeFrequency: "yearly", priority: 0.3, lastModified: new Date() },
+    { url: `${BASE}/shipping-policy`, changeFrequency: "monthly", priority: 0.4, lastModified: new Date() },
+    { url: `${BASE}/refund-policy`, changeFrequency: "monthly", priority: 0.4, lastModified: new Date() },
   ];
 
   try {
@@ -27,15 +25,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .in("status", ["active", "coming_soon"])
       .is("deleted_at", null);
 
-    const productPages: MetadataRoute.Sitemap = (products ?? []).map((p) => ({
-      url: `${BASE}/products/${p.slug}`,
-      lastModified: new Date(p.updated_at ?? Date.now()),
-      changeFrequency: "weekly",
+    const productUrls: MetadataRoute.Sitemap = (products ?? []).map((pr) => ({
+      url: `${BASE}/products/${pr.slug}`,
+      lastModified: new Date(pr.updated_at),
+      changeFrequency: "weekly" as const,
       priority: 0.8,
     }));
 
-    return [...staticPages, ...productPages];
+    return [...pages, ...productUrls];
   } catch {
-    return staticPages;
+    return pages;
   }
 }

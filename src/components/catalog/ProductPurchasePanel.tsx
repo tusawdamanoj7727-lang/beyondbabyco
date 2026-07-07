@@ -154,12 +154,12 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
     product.badge ?? (isComingSoon ? "Coming Soon" : selectedInStock ? "In Stock" : null);
 
   const purchaseButtons = selectedInStock ? (
-    <>
+    <div className="flex flex-col gap-3">
       <button
         type="button"
         onClick={addToCart}
         className={cn(
-          "w-full rounded-2xl bg-[#2d5a27] py-4 text-lg font-bold text-white transition-all hover:bg-[#234821] active:scale-95",
+          "w-full rounded-2xl bg-[#2d5a27] py-4 text-base font-bold text-white transition-all hover:bg-[#234821] active:scale-95",
           focusRing,
         )}
       >
@@ -169,27 +169,29 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         type="button"
         onClick={buyNow}
         className={cn(
-          "w-full rounded-2xl border-2 border-[#2d5a27] py-4 text-lg font-bold text-[#2d5a27] transition-all hover:bg-[#eaf3de]",
+          "w-full rounded-2xl border-2 border-[#2d5a27] py-4 text-base font-bold text-[#2d5a27] transition-all hover:bg-[#eaf3de]",
           focusRing,
         )}
       >
         Buy Now ⚡
       </button>
-    </>
+      <p className="text-center text-xs text-gray-400">
+        Free delivery on orders ₹999+ · 7-day returns
+      </p>
+    </div>
   ) : (
-    <>
+    <div className="flex flex-col gap-3">
       <button
         type="button"
         onClick={handleNotifyMe}
         className={cn(
-          "w-full rounded-2xl border-2 border-[#c4673a] py-4 text-lg font-bold text-[#c4673a] transition-all hover:bg-[#fdf0eb]",
+          "w-full rounded-2xl border-2 border-[#c4673a] py-4 text-base font-bold text-[#c4673a] transition-all hover:bg-[#fdf0eb]",
           focusRing,
         )}
       >
         🔔 Notify Me When Available
       </button>
-      <p className="text-center text-sm text-gray-500">We&apos;ll email you the moment it&apos;s back!</p>
-    </>
+    </div>
   );
 
   return (
@@ -311,7 +313,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
             floating={false}
           />
 
-          <div className="relative mt-6 hidden flex-col gap-3 md:flex">{purchaseButtons}</div>
+          <div className="relative mt-6 flex flex-col gap-3">{purchaseButtons}</div>
 
           <button
             type="button"
@@ -322,7 +324,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
             className={cn(
               wishlistButton(wishlisted),
               ctaHeight,
-              "mt-3 w-[3.25rem] shrink-0 rounded-3xl transition-transform duration-[var(--duration-button)] motion-safe:hover:scale-[1.03] md:mt-4",
+              "mt-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-3xl transition-transform duration-[var(--duration-button)] motion-safe:hover:scale-[1.03] md:mt-4",
               focusRing,
             )}
           >

@@ -18,7 +18,7 @@ type NotifyMeModalProps = {
   onClose: () => void;
 };
 
-type FormStatus = "idle" | "loading" | "done";
+type FormStatus = "idle" | "loading" | "success" | "error";
 
 function isValidEmail(value: string): boolean {
   return value.trim().includes("@");
@@ -53,7 +53,7 @@ export default function NotifyMeModal({
   }, [open, productCategory, productId, mode]);
 
   useEffect(() => {
-    if (status !== "done") return;
+    if (status !== "success") return;
     const timer = window.setTimeout(onClose, 3200);
     return () => window.clearTimeout(timer);
   }, [status, onClose]);
@@ -67,7 +67,7 @@ export default function NotifyMeModal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  if (!open && status !== "done") return null;
+  if (!open && status !== "success") return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -97,7 +97,7 @@ export default function NotifyMeModal({
 
       if (!response.ok && response.status !== 409) {
         setError(data.message ?? NOTIFY_ME_MESSAGES.error);
-        setStatus("idle");
+        setStatus("error");
         return;
       }
 
@@ -107,10 +107,10 @@ export default function NotifyMeModal({
             ? NOTIFY_ME_MESSAGES.restockSuccess(productName ?? productCategory)
             : NOTIFY_ME_MESSAGES.success(productCategory)),
       );
-      setStatus("done");
+      setStatus("success");
     } catch {
       setError(NOTIFY_ME_MESSAGES.error);
-      setStatus("idle");
+      setStatus("error");
     }
   }
 
@@ -118,7 +118,7 @@ export default function NotifyMeModal({
     <div
       className={cn(
         "fixed inset-0 z-[120] flex items-center justify-center p-4",
-        !open && status === "done" ? "pointer-events-none" : "",
+        !open && status === "success" ? "pointer-events-none" : "",
       )}
       role="presentation"
     >
@@ -145,14 +145,14 @@ export default function NotifyMeModal({
           onClick={onClose}
           aria-label="Close"
           className={cn(
-            "absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-green-700/60 transition-colors hover:bg-green-50 hover:text-green-900",
+            "absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-green-700/60 transition-colors hover:bg-green-50 hover:text-green-900",
             focusRing,
           )}
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>
 
-        {status === "done" && successMessage ? (
+        {status === "success" && successMessage ? (
           <div className="flex flex-col items-center py-4 text-center">
             <div className="animate-modal-scale-in grid h-16 w-16 place-items-center rounded-full bg-green-100">
               <Check className="h-8 w-8 text-green-600" strokeWidth={2.5} aria-hidden="true" />

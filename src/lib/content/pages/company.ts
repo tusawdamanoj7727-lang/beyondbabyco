@@ -389,7 +389,7 @@ export const pressPage: ContentPage = {
         `Email: ${brandSupportEmail()}`,
         "Subject line: Press Enquiry — [Your Publication]",
         "We aim to respond to all media requests within two business days.",
-        "Follow us on Instagram @beyondbabyco for brand updates and launch announcements.",
+        "Follow us on Instagram @beyoundbabyco for brand updates and launch announcements.",
       ],
     },
     {

@@ -10,7 +10,7 @@ import RatingStars from "@/components/reviews/RatingStars";
 import Button from "@/components/ui/Button";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { ctaHeight, focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -74,7 +74,15 @@ function CompareColumn({ product }: { product: StorefrontProduct }) {
     <article className="flex flex-col overflow-hidden rounded-2xl border border-cream-200 bg-white shadow-[var(--shadow-soft)]">
       <div className="relative aspect-square bg-cream-50">
         {product.imageUrl ? (
-          <Image src={product.imageUrl} alt={product.name} fill className="object-cover object-center" sizes={IMAGE_SIZES.productCard} quality={IMAGE_QUALITY.product} />
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            width={IMAGE_DIMENSIONS.productCard.width}
+            height={IMAGE_DIMENSIONS.productCard.height}
+            className="h-full w-full object-cover object-center"
+            sizes={IMAGE_SIZES.productCard}
+            quality={IMAGE_QUALITY.product}
+          />
         ) : (
           <ProductImageFallback productSlug={product.slug} categorySlug={product.categorySlug} />
         )}

@@ -1,23 +1,24 @@
-import { ProductGridSkeleton } from "@/components/catalog/ProductCardSkeleton";
-
 export default function ProductsLoading() {
   return (
-    <div className="container pb-24 lg:pb-20">
-      <div className="py-8 lg:py-10">
-        <div className="skeleton-shimmer mb-6 h-12 w-full max-w-xl animate-pulse rounded-full bg-gray-200/80" />
-      </div>
-      <div className="flex gap-12 xl:gap-16">
-        <aside className="hidden w-72 shrink-0 lg:block">
-          <div className="skeleton-shimmer h-[28rem] animate-pulse rounded-[var(--radius-card)] bg-gray-200/70" />
-        </aside>
-        <div className="min-w-0 flex-1">
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="skeleton-shimmer h-5 w-28 animate-pulse rounded-full bg-gray-200/80" />
-            <div className="skeleton-shimmer h-[3.25rem] w-44 animate-pulse rounded-full bg-gray-200/80" />
-          </div>
-          <ProductGridSkeleton count={8} />
+    <main>
+      <section className="bg-[#faf5f0] px-4 py-14">
+        <div className="mx-auto max-w-6xl text-center">
+          <div className="skeleton-shimmer mx-auto mb-3 h-4 w-32 animate-pulse rounded-full bg-gray-200/80" />
+          <div className="skeleton-shimmer mx-auto mb-4 h-12 w-72 max-w-full animate-pulse rounded-2xl bg-gray-200/80" />
+          <div className="skeleton-shimmer mx-auto h-5 w-96 max-w-full animate-pulse rounded-full bg-gray-200/70" />
         </div>
-      </div>
-    </div>
+      </section>
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div className="skeleton-shimmer mb-8 h-7 w-40 animate-pulse rounded-full bg-gray-200/80" />
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={i}
+              className="skeleton-shimmer aspect-[3/4] animate-pulse rounded-2xl bg-gray-200/70"
+            />
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }

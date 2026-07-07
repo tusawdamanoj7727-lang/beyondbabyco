@@ -42,7 +42,7 @@ export const EMAIL_BRAND = {
     supportHours: "Monday–Saturday, 10 AM – 6 PM IST",
   },
   social: {
-    instagram: "https://instagram.com/beyondbabyco",
+    instagram: "https://www.instagram.com/beyoundbabyco",
   },
   legal: {
     privacyUrl: absoluteUrl("/privacy-policy"),

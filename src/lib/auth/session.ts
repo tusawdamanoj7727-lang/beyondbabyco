@@ -4,7 +4,7 @@ import type { User } from "@supabase/supabase-js";
 
 import { isSupabaseConfigured } from "../env";
 import { createSupabaseServerClient } from "../supabase/server";
-import { isRole, type Role } from "./roles";
+import { isRole, resolveEffectiveRole, type Role } from "./roles";
 import { isPermission, type Permission } from "./permissions";
 
 export interface Profile {
@@ -88,15 +88,23 @@ export async function getCurrentProfile(): Promise<Profile | null> {
   };
 }
 
-/** The signed-in user's role name, resolved via a SECURITY DEFINER RPC. */
+/** The signed-in user's role name, resolved via RPC with metadata fallback. */
 export async function getCurrentRole(): Promise<Role | null> {
   if (!isSupabaseConfigured()) return null;
 
   const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data, error } = await supabase.rpc("current_user_role");
 
-  if (error || !isRole(data)) return null;
-  return data;
+  if (error) return roleFromSessionUser(user);
+  return resolveEffectiveRole(data, user);
+}
+
+function roleFromSessionUser(user: User | null): Role | null {
+  if (!user) return null;
+  return resolveEffectiveRole(null, user);
 }
 
 /** The signed-in user's flattened permission codes. */

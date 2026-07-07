@@ -19,8 +19,13 @@ export const PRODUCT_GST_BY_NAME: Record<string, number> = {
 
 /** GST % by product slug when DB gst_rate is unset. */
 export const PRODUCT_GST_RATES_BY_SLUG: Record<string, number> = {
-  "pure-gentle-water-baby-wipes": GST_RATE_BABY,
-  "ayurvedic-massage-oil": GST_RATE_OIL,
+  "baby-hair-oil-100ml": GST_RATE_OIL,
+  "baby-massage-oil-100ml": GST_RATE_OIL,
+  "baby-body-wash-200ml": GST_RATE_BABY,
+  "baby-lotion-200ml": GST_RATE_BABY,
+  "baby-diaper-rash-cream-50gm": GST_RATE_BABY,
+  "baby-shampoo-200ml": GST_RATE_BABY,
+  "tummy-rollon-40ml": GST_RATE_BABY,
 };
 
 /** Category slug → GST % (used when DB gst_rate is unset). */
@@ -39,6 +44,7 @@ export const CATEGORY_GST_RATES: Record<string, number> = {
   "mother-care": GST_RATE_BABY,
   "baby-oil": GST_RATE_OIL,
   "massage-oil": GST_RATE_OIL,
+  wellness: GST_RATE_BABY,
 };
 
 export function gstRateForCategory(categorySlug: string | null | undefined): number {

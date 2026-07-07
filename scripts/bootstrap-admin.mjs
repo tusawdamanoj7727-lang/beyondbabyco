@@ -158,6 +158,17 @@ export async function bootstrapAdmin(options = {}) {
     ok("Admin already exists");
   }
 
+  const { error: metaError } = await admin.auth.admin.updateUserById(user.id, {
+    user_metadata: {
+      ...(user.user_metadata ?? {}),
+      full_name: ADMIN_NAME,
+      role: "super_admin",
+      is_admin: true,
+    },
+  });
+  if (metaError) throw new Error(`updateUser metadata: ${metaError.message}`);
+  log("Admin user metadata synced");
+
   const { error: profileError } = await admin.from("profiles").upsert(
     {
       id: user.id,

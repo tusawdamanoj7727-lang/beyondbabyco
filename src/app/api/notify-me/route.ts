@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     const message = isRestock
       ? `You're on the list! We'll email you when ${displayName} is back in stock.`
       : productCategory
-        ? `You're on the list! We'll email you when ${productCategory} launches.`
+        ? "We will notify you! 🎉"
         : "We'll notify you when it's available!";
 
     return NextResponse.json({ success: true, message });

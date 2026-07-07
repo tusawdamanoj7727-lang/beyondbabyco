@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import HeroSection from "@/components/sections/HeroSection";
-import HeroTrustBar from "@/components/sections/HeroTrustBar";
 import StatsBar from "@/components/sections/StatsBar";
 import BrandPromise from "@/components/sections/BrandPromise";
 import ScienceSection from "@/components/sections/ScienceSection";
@@ -41,7 +40,6 @@ export default function HomePageContent({
     <>
       {/* 1. Hero */}
       {data.sections.hero.enabled ? <HeroSection hero={data.hero} /> : null}
-      <HeroTrustBar />
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 2. Products — immediately after hero */}
@@ -165,7 +163,7 @@ export default function HomePageContent({
         </ScrollAnimationSection>
       ) : null}
 
-      {/* 11. Footer — rendered in (storefront)/layout.tsx */}
+      {/* Footer — rendered in root layout via StorefrontFooter */}
     </>
   );
 }

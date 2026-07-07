@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { supabase } from "../supabase/client";
 import { useAuthContext } from "./auth-context";
-import { isRole, type Role } from "./roles";
+import { resolveEffectiveRole, type Role } from "./roles";
 import { isPermission, type Permission } from "./permissions";
 
 export interface UseAuthResult {
@@ -57,7 +57,7 @@ export function useRole(): UseRoleResult {
       supabase.rpc("current_user_permissions"),
     ]).then(([roleRes, permsRes]) => {
       if (!active) return;
-      setRole(isRole(roleRes.data) ? roleRes.data : null);
+      setRole(resolveEffectiveRole(roleRes.data, session.user));
       setPermissions(
         Array.isArray(permsRes.data) ? permsRes.data.filter(isPermission) : [],
       );

@@ -72,20 +72,19 @@ export default function CartPageClient() {
         code?: string;
         discountType?: "percent" | "flat";
         discountValue?: number;
+        type?: "percent" | "flat";
+        value?: number;
         savings?: number;
       };
 
-      if (
-        data.valid &&
-        data.code &&
-        data.discountType &&
-        data.discountValue != null &&
-        data.savings != null
-      ) {
+      const discountType = data.discountType ?? data.type;
+      const discountValue = data.discountValue ?? data.value;
+
+      if (data.valid && data.code && discountType && discountValue != null && data.savings != null) {
         applyCoupon({
           code: data.code,
-          discountType: data.discountType,
-          discountValue: data.discountValue,
+          discountType,
+          discountValue,
           savings: data.savings,
         });
         setCouponMsg({
@@ -167,8 +166,8 @@ export default function CartPageClient() {
                   >
                     {item.name}
                   </Link>
-                  {item.variantName ? (
-                    <p className="mt-1 text-sm text-gray-500">{item.variantName}</p>
+                  {(item.unit || item.variantName) ? (
+                    <p className="mt-1 text-sm text-gray-500">{item.unit || item.variantName}</p>
                   ) : null}
 
                   <div className="mt-3 flex items-center justify-between">
@@ -177,7 +176,7 @@ export default function CartPageClient() {
                         type="button"
                         aria-label="Decrease quantity"
                         onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                        className="px-3 py-2 transition-colors hover:bg-gray-50"
+                        className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-gray-50"
                       >
                         <Minus size={14} />
                       </button>
@@ -189,7 +188,7 @@ export default function CartPageClient() {
                         aria-label="Increase quantity"
                         disabled={item.quantity >= 10}
                         onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                        className="px-3 py-2 transition-colors hover:bg-gray-50 disabled:opacity-40"
+                        className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-gray-50 disabled:opacity-40"
                       >
                         <Plus size={14} />
                       </button>
@@ -203,7 +202,7 @@ export default function CartPageClient() {
                         type="button"
                         aria-label={`Remove ${item.name}`}
                         onClick={() => removeItem(item.variantId)}
-                        className="text-gray-400 transition-colors hover:text-red-500"
+                        className="flex h-11 w-11 items-center justify-center text-gray-400 transition-colors hover:text-red-500"
                       >
                         <Trash2 size={16} />
                       </button>

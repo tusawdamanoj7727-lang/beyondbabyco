@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import type { MascotContent } from "@/lib/mascots/content";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 
 type MascotHubCardProps = {
   slug: string;
@@ -13,8 +13,13 @@ type MascotHubCardProps = {
   delay: number;
 };
 
+function waveImageFromDefault(image: string): string {
+  return image.replace(/\/default\.webp$/, "/wave.webp");
+}
+
 export default function MascotHubCard({ slug, mascot, delay }: MascotHubCardProps) {
   const [hovered, setHovered] = useState(false);
+  const waveImg = waveImageFromDefault(mascot.image);
 
   return (
     <Link
@@ -24,16 +29,21 @@ export default function MascotHubCard({ slug, mascot, delay }: MascotHubCardProp
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className="relative mb-4 h-40 w-40 transition-transform duration-300 group-hover:scale-110"
+        className={
+          "relative mb-4 h-40 min-h-40 w-40 min-w-40 transition-all duration-300 " +
+          (hovered ? "scale-110 -translate-y-2" : "")
+        }
         style={{ animationDelay: `${delay}s` }}
       >
         <Image
-          src={hovered ? mascot.celebrationImg : mascot.image}
+          src={hovered ? waveImg : mascot.image}
           alt={mascot.name}
-          fill
-          sizes={IMAGE_SIZES.mascot}
+          width={IMAGE_DIMENSIONS.mascotGrid.width}
+          height={IMAGE_DIMENSIONS.mascotGrid.height}
+          sizes={IMAGE_SIZES.mascotGrid}
           quality={IMAGE_QUALITY.mascot}
-          className="animate-float object-contain drop-shadow-2xl"
+          className="relative z-30 h-full w-full object-contain drop-shadow-2xl"
+          style={{ background: "transparent" }}
         />
       </div>
 

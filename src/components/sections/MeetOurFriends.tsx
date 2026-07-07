@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { MASCOTS } from "@/lib/brand/copy";
 import type { MascotsConfig } from "@/lib/admin/homepage-schema";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 
 const HOMEPAGE_MASCOTS = [
   {
@@ -15,7 +15,7 @@ const HOMEPAGE_MASCOTS = [
     role: "Comfort & Care",
     color: "#FFB6C1",
     img: "/icons/bella-bunny/default.webp",
-    hoverImg: "/icons/bella-bunny/wave.webp",
+    waveImg: "/icons/bella-bunny/wave.webp",
   },
   {
     slug: "eli",
@@ -23,7 +23,7 @@ const HOMEPAGE_MASCOTS = [
     role: "Safety & Research",
     color: "#87CEEB",
     img: "/icons/eli-elephant/default.webp",
-    hoverImg: "/icons/eli-elephant/studying.webp",
+    waveImg: "/icons/eli-elephant/wave.webp",
   },
   {
     slug: "gigi",
@@ -31,7 +31,7 @@ const HOMEPAGE_MASCOTS = [
     role: "Learning & Growth",
     color: "#FFD700",
     img: "/icons/gigi-giraffe/default.webp",
-    hoverImg: "/icons/gigi-giraffe/reading.webp",
+    waveImg: "/icons/gigi-giraffe/wave.webp",
   },
   {
     slug: "poppy",
@@ -39,7 +39,7 @@ const HOMEPAGE_MASCOTS = [
     role: "Gentleness & Calm",
     color: "#98FB98",
     img: "/icons/poppy-panda/default.webp",
-    hoverImg: "/icons/poppy-panda/sleeping.webp",
+    waveImg: "/icons/poppy-panda/wave.webp",
   },
   {
     slug: "penny",
@@ -47,7 +47,7 @@ const HOMEPAGE_MASCOTS = [
     role: "Product Discovery",
     color: "#DDA0DD",
     img: "/icons/penny-penguin/default.webp",
-    hoverImg: "/icons/penny-penguin/hold-product.webp",
+    waveImg: "/icons/penny-penguin/wave.webp",
   },
   {
     slug: "benny",
@@ -55,7 +55,7 @@ const HOMEPAGE_MASCOTS = [
     role: "Everyday Joy",
     color: "#F4A460",
     img: "/icons/benny-bear/default.webp",
-    hoverImg: "/icons/benny-bear/celebration.webp",
+    waveImg: "/icons/benny-bear/wave.webp",
   },
 ] as const;
 
@@ -73,18 +73,19 @@ function MascotCard({ mascot, delay }: { mascot: MascotCardData; delay: number }
     >
       <div
         className={
-          "relative mb-3 h-24 w-24 transition-all duration-300 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 " +
+          "relative mb-3 h-40 min-h-40 w-40 min-w-40 transition-all duration-300 " +
           (hovered ? "scale-110 -translate-y-2" : "")
         }
         style={{ animationDelay: `${delay}s` }}
       >
         <Image
-          src={hovered ? mascot.hoverImg : mascot.img}
+          src={hovered ? mascot.waveImg : mascot.img}
           alt={mascot.name}
-          fill
-          sizes={IMAGE_SIZES.mascot}
+          width={IMAGE_DIMENSIONS.mascotGrid.width}
+          height={IMAGE_DIMENSIONS.mascotGrid.height}
+          sizes={IMAGE_SIZES.mascotGrid}
           quality={IMAGE_QUALITY.mascot}
-          className="relative z-30 object-contain drop-shadow-2xl"
+          className="relative z-30 h-full w-full object-contain drop-shadow-2xl"
           style={{ background: "transparent" }}
         />
       </div>

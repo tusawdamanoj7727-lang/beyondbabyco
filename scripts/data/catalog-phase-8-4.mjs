@@ -2,8 +2,13 @@
 
 /** Storefront launch SKUs — all others seed as coming_soon with zero stock. */
 export const LAUNCH_PRODUCT_SLUGS = new Set([
-  "pure-gentle-water-baby-wipes",
-  "ayurvedic-massage-oil",
+  "baby-hair-oil-100ml",
+  "baby-massage-oil-100ml",
+  "baby-body-wash-200ml",
+  "baby-lotion-200ml",
+  "baby-diaper-rash-cream-50gm",
+  "baby-shampoo-200ml",
+  "tummy-rollon-40ml",
 ]);
 
 export const BRAND = {

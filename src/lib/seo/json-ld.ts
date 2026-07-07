@@ -9,7 +9,7 @@ export function organizationJsonLd() {
     url: getSiteUrl(),
     logo: absoluteUrl(BRAND_LOGO_PATH),
     description: SITE_DESCRIPTION,
-    sameAs: ["https://instagram.com/beyondbabyco"],
+    sameAs: ["https://www.instagram.com/beyoundbabyco"],
     foundingDate: "2021",
     areaServed: "IN",
     knowsAbout: [
@@ -88,6 +88,10 @@ export function productJsonLd(product: {
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Organization",
+        name: SITE_NAME,
+      },
     },
     aggregateRating:
       product.ratingCount > 0

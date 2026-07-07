@@ -267,6 +267,7 @@ export async function customerOAuthAction(
     options: {
       redirectTo: oauthRedirectUrl(next, authBaseUrl),
       skipBrowserRedirect: true,
+      queryParams: { access_type: "offline", prompt: "consent" },
     },
   });
 

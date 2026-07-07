@@ -3,7 +3,7 @@ import Image from "next/image";
 import { IMAGES } from "@/lib/images";
 import { HERO_DEFAULT_BLUR } from "@/lib/homepage/visual-assets";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
-import { IMAGE_QUALITY, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { resolveMascotAssetSrc } from "@/lib/mascots";
 import type { MascotPose, MascotType } from "@/components/mascots/Mascot";
 import { cn } from "@/lib/utils";
@@ -17,28 +17,24 @@ const HERO_MASCOTS: {
   id: MascotType;
   pose: MascotPose;
   position: string;
-  animationClass: string;
   animationDelay: string;
 }[] = [
   {
     id: "bella-bunny",
     pose: "wave",
     position: "hero-mascot--tl",
-    animationClass: "animate-float",
     animationDelay: "0s",
   },
   {
     id: "gigi-giraffe",
     pose: "welcome",
     position: "hero-mascot--tr",
-    animationClass: "animate-float-slow",
     animationDelay: "0.5s",
   },
   {
     id: "poppy-panda",
     pose: "hug",
     position: "hero-mascot--br",
-    animationClass: "animate-float-fast",
     animationDelay: "1s",
   },
 ] as const;
@@ -77,24 +73,19 @@ export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualPro
         {HERO_MASCOTS.map((mascot) => (
           <div
             key={mascot.id}
-            className={cn(
-              "hero-mascot absolute z-30 pointer-events-none select-none",
-              mascot.position,
-              mascot.animationClass,
-            )}
-            style={{ animationDelay: mascot.animationDelay }}
+            className={cn("hero-mascot absolute z-30 pointer-events-none select-none", mascot.position)}
           >
             <Image
               src={resolveMascotAssetSrc(mascot.id, mascot.pose)}
               alt=""
-              width={200}
-              height={200}
+              width={IMAGE_DIMENSIONS.mascotHero.width}
+              height={IMAGE_DIMENSIONS.mascotHero.height}
               loading="lazy"
               draggable={false}
-              sizes="(max-width: 768px) 100px, 200px"
+              sizes={IMAGE_SIZES.mascotHero}
               quality={IMAGE_QUALITY.mascot}
-              className="relative z-30 object-contain drop-shadow-2xl"
-              style={MASCOT_IMAGE_STYLE}
+              className="object-contain drop-shadow-2xl animate-float"
+              style={{ ...MASCOT_IMAGE_STYLE, animationDelay: mascot.animationDelay }}
             />
           </div>
         ))}

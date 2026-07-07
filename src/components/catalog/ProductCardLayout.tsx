@@ -6,7 +6,7 @@ import ProductCardImage from "@/components/catalog/ProductCardImage";
 import { formatInr } from "@/lib/catalog/format";
 import { IMAGES } from "@/lib/images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 
 function isResearchBacked(product: StorefrontProduct): boolean {
@@ -68,11 +68,12 @@ export function ProductCardLayout({
             <Image
               src={product.imageUrl || IMAGES.products.placeholder}
               alt={product.name}
-              fill
+              width={IMAGE_DIMENSIONS.productCard.width}
+              height={IMAGE_DIMENSIONS.productCard.height}
               priority={priority}
               sizes={IMAGE_SIZES.productCard}
               quality={IMAGE_QUALITY.product}
-              className="object-contain p-4 transition-transform duration-300 group-hover:scale-110"
+              className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-110"
             />
           )}
 

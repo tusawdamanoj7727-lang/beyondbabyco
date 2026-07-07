@@ -8,10 +8,11 @@ import ProductPurchasePanel from "@/components/catalog/ProductPurchasePanel";
 import ProductViewTracker from "@/components/catalog/ProductViewTracker";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
+import { productUnit } from "@/lib/catalog/product-images";
 import { computeReviewSummary } from "@/lib/reviews/helpers";
 import { getProductReviews } from "@/lib/reviews/queries";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
-import { absoluteUrl, getSiteUrl, SITE_NAME } from "@/lib/seo/site";
+import { absoluteUrl, getCanonicalSiteUrl, SITE_NAME } from "@/lib/seo/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -20,11 +21,16 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) notFound();
+  if (!product) {
+    return { title: "Product Not Found — BeyondBabyCo" };
+  }
 
-  const baseUrl = getSiteUrl().replace(/\/$/, "");
+  const baseUrl = getCanonicalSiteUrl();
   const canonical = `${baseUrl}/products/${slug}`;
-  const title = `${product.seoTitle ?? product.name} — BeyondBabyCo`;
+  const unit = productUnit(slug);
+  const title = unit
+    ? `${product.name} ${unit} — BeyondBabyCo`
+    : `${product.seoTitle ?? product.name} — BeyondBabyCo`;
   const description = (
     product.seoDescription ??
     product.shortDescription ??
@@ -44,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       type: "website",
       url: canonical,
-      title,
+      title: `${product.name} — BeyondBabyCo`,
       description,
       siteName: SITE_NAME,
       locale: "en_IN",

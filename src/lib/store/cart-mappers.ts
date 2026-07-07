@@ -1,4 +1,5 @@
 import { resolveProductGstRate } from "@/lib/catalog/gst-rates";
+import { productUnit } from "@/lib/catalog/product-images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import type { AppliedCoupon as StoreCoupon, CartItem as StoreCartItem } from "@/lib/store/cart-store";
 import type { AppliedCoupon as LegacyCoupon, CartItem as LegacyCartItem, CartProductInput } from "@/lib/storefront/cart-types";
@@ -20,13 +21,15 @@ export function buildCartItemInput(
   const variantKey = legacyVariantKey(options?.variantId ?? null);
   const price = product.effectivePrice ?? product.price;
   const originalPrice = product.compareAtPrice ?? price;
+  const unit = options?.variantName?.trim() || productUnit(product.slug);
 
   return {
     id: `${product.id}:${variantKey}`,
     productId: product.id,
     variantId: variantKey,
     name: product.name,
-    variantName: options?.variantName ?? "",
+    unit,
+    variantName: unit,
     price,
     originalPrice,
     image: product.imageUrl ?? "",
@@ -41,6 +44,7 @@ export function legacyItemToStore(item: LegacyCartItem): StoreCartItem {
     productId: item.productId,
     variantId: legacyVariantKey(item.variantId),
     name: item.name,
+    unit: item.variantName ?? "",
     variantName: item.variantName ?? "",
     price: item.price,
     originalPrice: item.compareAtPrice ?? item.price,
@@ -61,7 +65,7 @@ export function storeItemToLegacy(item: StoreCartItem): LegacyCartItem {
     slug: item.slug,
     price: item.price,
     compareAtPrice: item.originalPrice > item.price ? item.originalPrice : null,
-    variantName: item.variantName || null,
+    variantName: item.variantName || item.unit || null,
     imageUrl: item.image || null,
     categoryId: null,
     brandId: null,

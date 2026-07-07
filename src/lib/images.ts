@@ -60,6 +60,13 @@ export const IMAGES = {
 
 /** Product slug → hero image (Unsplash or approved real asset). */
 export const PRODUCT_IMAGES_BY_SLUG: Record<string, string> = {
+  "baby-hair-oil-100ml": IMAGES.products.massage_oil,
+  "baby-massage-oil-100ml": IMAGES.products.massage_oil,
+  "baby-body-wash-200ml": IMAGES.products.baby_wash,
+  "baby-lotion-200ml": IMAGES.products.baby_lotion,
+  "baby-diaper-rash-cream-50gm": IMAGES.products.baby_lotion,
+  "baby-shampoo-200ml": IMAGES.products.baby_wash,
+  "tummy-rollon-40ml": IMAGES.products.massage_oil,
   "pure-gentle-water-baby-wipes": IMAGES.products.baby_wipes,
   "ayurvedic-massage-oil": IMAGES.products.massage_oil,
   "shea-butter-baby-lotion": IMAGES.products.baby_lotion,

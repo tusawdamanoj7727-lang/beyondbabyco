@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 
 export default function CatalogBundleRecommendations({
   products,
@@ -36,11 +36,12 @@ export default function CatalogBundleRecommendations({
                   <Image
                     src={product.imageUrl}
                     alt={product.name}
-                    fill
+                    width={IMAGE_DIMENSIONS.productCard.width}
+                    height={IMAGE_DIMENSIONS.productCard.height}
                     loading="lazy"
                     sizes={IMAGE_SIZES.productCard}
                     quality={IMAGE_QUALITY.product}
-                    className="object-cover object-center transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.02]"
+                    className="h-full w-full object-cover object-center transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] group-hover:scale-[1.02]"
                   />
                 ) : null}
               </div>

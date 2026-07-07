@@ -147,7 +147,7 @@ export default function ProductCard({
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
           className={cn(
-            "absolute left-3 top-[calc(100%-4.5rem)] z-10 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-[#2d5a27] sm:top-[13.5rem]",
+            "absolute left-3 top-[calc(100%-4.5rem)] z-10 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-[#2d5a27] sm:top-[13.5rem]",
             focusRing,
           )}
         >

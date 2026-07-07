@@ -8,6 +8,9 @@ export interface CartItem {
   productId: string;
   variantId: string;
   name: string;
+  /** Size / volume label (e.g. "100 ml"). */
+  unit: string;
+  /** @deprecated Prefer `unit` — kept for persisted carts. */
   variantName: string;
   price: number;
   originalPrice: number;
@@ -55,6 +58,24 @@ function couponType(coupon: AppliedCoupon): "percent" | "flat" {
 
 function couponValue(coupon: AppliedCoupon): number {
   return coupon.discountValue ?? coupon.value ?? 0;
+}
+
+const LEGACY_CART_STORAGE_KEY = "beyondbabyco-cart";
+
+function migrateLegacyCartStorage(): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (localStorage.getItem("bbc-cart")) return;
+    const legacy = localStorage.getItem(LEGACY_CART_STORAGE_KEY);
+    if (!legacy) return;
+    localStorage.setItem("bbc-cart", legacy);
+  } catch {
+    // Ignore quota / private mode errors.
+  }
+}
+
+if (typeof window !== "undefined") {
+  migrateLegacyCartStorage();
 }
 
 export const useCartStore = create<CartStore>()(
@@ -143,8 +164,18 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: "beyondbabyco-cart",
+      name: "bbc-cart",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (!state?.items?.length) return;
+        const normalized = state.items.map((item) => {
+          const unit = item.unit || item.variantName || "";
+          return { ...item, unit, variantName: item.variantName || unit };
+        });
+        if (normalized.some((item, i) => item.unit !== state.items[i]?.unit)) {
+          useCartStore.setState({ items: normalized });
+        }
+      },
     },
   ),
 );

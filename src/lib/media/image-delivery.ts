@@ -6,6 +6,15 @@ export const IMAGE_QUALITY = {
   editorial: 85,
   product: 85,
   mascot: 90,
+  mascotFooter: 75,
+} as const;
+
+/** Intrinsic dimensions for Next.js Image (caps optimizer srcset width). */
+export const IMAGE_DIMENSIONS = {
+  productCard: { width: 400, height: 400 },
+  mascotHero: { width: 200, height: 200 },
+  mascotGrid: { width: 300, height: 300 },
+  mascotFooter: { width: 64, height: 64 },
 } as const;
 
 /** @deprecated Use IMAGE_QUALITY.editorial */
@@ -25,8 +34,12 @@ export const IMAGE_SIZES = {
   featuredProduct: "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
   /** Category tiles on homepage */
   categoryCard: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
-  /** Decorative mascot clusters */
-  mascot: "(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 15vw",
+  /** Decorative mascot clusters — homepage grid */
+  mascotGrid: "(max-width: 640px) 35vw, 20vw",
+  /** Hero floating mascots */
+  mascotHero: "(max-width: 768px) 100px, 180px",
+  /** Footer mascot row */
+  mascotFooter: "64px",
   /** Cart line item thumbnails */
   cartLineItem: "(max-width: 768px) 25vw, 80px",
   /** Product detail page main gallery */
@@ -34,6 +47,20 @@ export const IMAGE_SIZES = {
   /** Navbar / footer logo */
   logo: "(max-width: 1024px) 110px, 140px",
 } as const;
+
+/** Pick responsive `sizes` for mascot Image by display width. */
+export function mascotImageSizes(displayPx: number): string {
+  if (displayPx <= 80) return IMAGE_SIZES.mascotFooter;
+  if (displayPx <= 220) return IMAGE_SIZES.mascotHero;
+  return IMAGE_SIZES.mascotGrid;
+}
+
+/** Mascot JPEG/WebP quality by display size. */
+export function mascotImageQuality(displayPx: number): number {
+  return displayPx <= IMAGE_DIMENSIONS.mascotFooter.width
+    ? IMAGE_QUALITY.mascotFooter
+    : IMAGE_QUALITY.mascot;
+}
 
 /** `sizes` for fixed-pixel mascot or icon assets (2× retina). */
 export function fixedImageSizes(displayPx: number): string {

@@ -127,7 +127,7 @@ export default function WishlistClient({
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
         {products.map((product) => (
           <div key={product.id} className="relative flex flex-col">
             <div className="relative">
@@ -138,7 +138,7 @@ export default function WishlistClient({
                 aria-label={`Remove ${product.name} from wishlist`}
                 onClick={() => remove(product.id)}
                 className={cn(
-                  "absolute right-3 top-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full border border-cream-200 bg-white/95 text-green-800 shadow-sm backdrop-blur-sm transition hover:bg-terra-50 hover:text-terra-600",
+                  "absolute right-3 top-3 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream-200 bg-white/95 text-green-800 shadow-sm backdrop-blur-sm transition hover:bg-terra-50 hover:text-terra-600",
                   focusRing,
                 )}
               >

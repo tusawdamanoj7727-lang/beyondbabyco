@@ -26,7 +26,7 @@ const STATUS_BADGE_VARIANT: Record<string, BadgeVariant> = {
   "Coming Soon": "comingSoon",
 };
 
-const LAUNCH_PRODUCT_COUNT = 8;
+const LAUNCH_PRODUCT_COUNT = 7;
 
 export default function FeaturedProducts({
   heading,
@@ -57,7 +57,7 @@ export default function FeaturedProducts({
         intro={FEATURED_COPY.intro}
       />
 
-      <div className={cn("homepage-section-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4", homepageGridGap)}>
+      <div className={cn("homepage-section-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4", homepageGridGap)}>
         {items.map((product, index) => (
           <ScrollReveal key={product.id} delayMs={index * 50} className="h-full">
             <Card

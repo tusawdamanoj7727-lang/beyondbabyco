@@ -2,6 +2,26 @@ import { getAppUrl } from "@/lib/app-url";
 
 export const PRODUCTION_SITE_URL = "https://beyondbabyco.in";
 
+function isLocalDevUrl(url: string): boolean {
+  try {
+    const { hostname } = new URL(url.startsWith("http") ? url : `https://${url}`);
+    return hostname === "localhost" || hostname === "127.0.0.1";
+  } catch {
+    return false;
+  }
+}
+
+/** SEO canonical origin — never localhost (use for product metadata, sitemap, JSON-LD). */
+export function getCanonicalSiteUrl(): string {
+  const configured =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configured && !isLocalDevUrl(configured)) {
+    return configured.replace(/\/+$/, "");
+  }
+  return PRODUCTION_SITE_URL;
+}
+
 /** Canonical public site URL for metadata, OG tags, sitemap, and JSON-LD. */
 export function getSiteUrl(): string {
   return getAppUrl();

@@ -1,57 +1,25 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { type FormEvent } from "react";
 
 import AccentBar from "@/components/ui/AccentBar";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
-import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
+import { useNewsletterSubscribe } from "@/lib/newsletter/use-newsletter-subscribe";
 import { ctaHeight, formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 export default function EarlyAccessSection() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
-
-  async function handleSubscribe() {
-    const trimmed = email.trim();
-    if (!trimmed) return;
-
-    setStatus("loading");
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/newsletter/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed, source: "homepage_early_access" }),
-      });
-
-      const data = (await res.json()) as {
-        success?: boolean;
-        message?: string;
-        error?: string;
-      };
-
-      if (data.success) {
-        setStatus("success");
-        setMessage(
-          data.message?.includes("already")
-            ? "You're already on the early access list — we'll email your launch offer soon."
-            : "You're on the early access list! Watch for your 20% off code at launch.",
-        );
-        setEmail("");
-      } else {
-        setStatus("error");
-        setMessage(data.error || data.message || NEWSLETTER_MESSAGES.error);
-      }
-    } catch {
-      setStatus("error");
-      setMessage(NEWSLETTER_MESSAGES.error);
-    }
-  }
+  const { email, setEmail, status, msg, handleSubscribe } = useNewsletterSubscribe(
+    "homepage_early_access",
+    {
+      mapSuccessMessage: (data) =>
+        data.message?.includes("Already")
+          ? "You're already on the early access list — we'll email your launch offer soon."
+          : "You're on the early access list! Watch for your 20% off code at launch.",
+    },
+  );
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -122,14 +90,14 @@ export default function EarlyAccessSection() {
               </Button>
             </form>
 
-            {status === "error" && message ? (
+            {status === "error" && msg ? (
               <p id="early-access-error" role="alert" className="mt-3 text-sm text-red-600">
-                {message}
+                {msg}
               </p>
             ) : null}
-            {status === "success" && message ? (
+            {status === "success" && msg ? (
               <p id="early-access-success" role="status" className="mt-3 text-sm font-medium text-green-700">
-                {message}
+                {msg}
               </p>
             ) : (
               <p id="early-access-note" className="mt-4 font-body text-xs text-green-700/70">

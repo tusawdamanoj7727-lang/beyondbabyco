@@ -36,6 +36,22 @@ export async function requireStaffApi(permission?: Permission): Promise<
   return { ok: true };
 }
 
+/** Admin-only API guard — returns 403 JSON for non-admin staff. */
+export async function requireAdminApi(): Promise<
+  | { ok: true }
+  | { ok: false; response: NextResponse }
+> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, response: jsonError("Unauthorized", 401) };
+
+  const role = await getCurrentRole();
+  if (role !== ROLES.ADMIN) {
+    return { ok: false, response: jsonError("Forbidden", 403) };
+  }
+
+  return { ok: true };
+}
+
 export async function requireAuthenticatedApi(): Promise<
   | { ok: true; userId: string }
   | { ok: false; response: NextResponse }

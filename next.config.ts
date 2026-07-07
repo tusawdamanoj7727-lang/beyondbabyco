@@ -21,8 +21,8 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [48, 64, 96, 128, 256, 384, 640],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [48, 64, 96, 128, 256, 384, 400, 640],
     minimumCacheTTL: 60 * 60 * 24,
     dangerouslyAllowSVG: false,
     remotePatterns: [
@@ -57,15 +57,17 @@ const nextConfig: NextConfig = {
       { source: "/terms", destination: "/terms-of-service", permanent: true },
       { source: "/return-policy", destination: "/refund-policy", permanent: true },
       { source: "/cookies", destination: "/privacy-policy", permanent: true },
-      { source: "/community", destination: "/about", permanent: false },
       { source: "/trust-center", destination: "/about", permanent: false },
-      { source: "/blog", destination: "/about", permanent: false },
       { source: "/our-story", destination: "/about", permanent: false },
       { source: "/why-beyondbabyco", destination: "/about", permanent: false },
-      { source: "/certifications", destination: "/research", permanent: false },
-      { source: "/safety-standards", destination: "/research", permanent: false },
       { source: "/ingredients", destination: "/research", permanent: false },
       { source: "/manufacturing", destination: "/about", permanent: false },
+      { source: "/certifications", destination: "/research", permanent: false },
+      { source: "/safety-standards", destination: "/research", permanent: false },
+      { source: "/careers", destination: "/about", permanent: false },
+      { source: "/press", destination: "/about", permanent: false },
+      { source: "/community", destination: "/about", permanent: false },
+      { source: "/blog", destination: "/about", permanent: false },
     ];
   },
 };

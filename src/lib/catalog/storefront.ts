@@ -9,7 +9,10 @@ import { resolveProductGalleryImages, resolveProductVisual } from "@/lib/brand/g
 import { getHero } from "@/lib/homepage/queries";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+import { LAUNCH_PRODUCT_SLUGS } from "./availability";
 import { mapRowToStorefrontProduct } from "./format";
+import { resolveSevenProductImage } from "./product-images";
+import { getSevenProductContent } from "./seven-product-content";
 import {
   getVariantAvailableStock,
   resolveStorefrontAvailability,
@@ -278,6 +281,29 @@ export const getProductBySlug = cache(
 
     const faqs: StorefrontFaq[] = faqsRes;
 
+    const fallbackContent = getSevenProductContent(slug);
+    const mergedBenefits: StorefrontBenefit[] =
+      benefits.length > 0
+        ? benefits
+        : (fallbackContent?.benefits.map((b, index) => ({
+            id: `seven-benefit-${slug}-${index}`,
+            name: b.name,
+            icon: b.icon,
+            description: b.description,
+          })) ?? []);
+    const mergedFaqs: StorefrontFaq[] =
+      faqs.length > 0
+        ? faqs
+        : (fallbackContent?.faqs.map((f, index) => ({
+            id: `seven-faq-${slug}-${index}`,
+            question: f.question,
+            answer: f.answer,
+          })) ?? []);
+    const mergedDescription =
+      fallbackContent?.directions && (!row.description || row.description.length < 120)
+        ? `${row.description ?? base.shortDescription ?? ""}\n\n${fallbackContent.directions}`.trim()
+        : row.description;
+
     const imageRows = imagesRes.data ?? [];
     const blurMap = await fetchBlurMapByUrls(
       supabase,
@@ -310,15 +336,15 @@ export const getProductBySlug = cache(
       inStock,
       imageUrl: cardVisual.imageUrl,
       imageBlurDataUrl: cardVisual.imageBlurDataUrl,
-      description: row.description,
+      description: mergedDescription,
       sku: row.sku,
       seoTitle: row.seo_title,
       seoDescription: row.seo_description,
       images: resolvedGallery,
       ingredients,
-      benefits,
+      benefits: mergedBenefits,
       variants,
-      faqs,
+      faqs: mergedFaqs,
     };
   },
 );
@@ -629,6 +655,31 @@ export async function getStorefrontProductsByIds(ids: string[]): Promise<Storefr
   const byId = new Map(enriched.map((p) => [p.id, p]));
   return ids.map((id) => byId.get(id)).filter((p): p is StorefrontProduct => !!p);
 }
+
+/** Fixed-order catalog of the 7 active launch products. */
+export const listSevenStorefrontProducts = cache(async (): Promise<StorefrontProduct[]> => {
+  const supabase = await createSupabaseServerClient();
+  const slugs = [...LAUNCH_PRODUCT_SLUGS];
+
+  const { data, error } = await supabase
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .eq("status", "active")
+    .is("deleted_at", null)
+    .in("slug", slugs);
+
+  if (error) throw new Error(error.message);
+
+  const bySlug = new Map((data ?? []).map((row) => [row.slug, row]));
+  const ordered = slugs.map((slug) => bySlug.get(slug)).filter((row): row is NonNullable<typeof row> => !!row);
+
+  const enriched = await enrichStorefrontProducts(ordered);
+
+  return enriched.map((product) => ({
+    ...product,
+    imageUrl: resolveSevenProductImage(product.slug, product.imageUrl),
+  }));
+});
 
 async function fetchPublishedFaqs(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,

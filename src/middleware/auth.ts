@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { appUrlMatchesOrigin } from "@/lib/app-url";
 import { isSupabaseConfigured, env } from "@/lib/env";
-import { isRole, isStaffRole } from "@/lib/auth/roles";
+import { isStaffRole, resolveEffectiveRole } from "@/lib/auth/roles";
 import type { Database } from "@/lib/supabase/types";
 
 /** Admin routes that must remain reachable without a session. */
@@ -106,7 +106,7 @@ export async function updateSessionAndGuard(
 
   if (user && pathname === "/admin/login") {
     const { data: roleName } = await supabase.rpc("current_user_role");
-    const role = isRole(roleName) ? roleName : null;
+    const role = resolveEffectiveRole(roleName, user);
 
     // Only skip login for staff — prevents redirect loop for non-staff sessions.
     if (isStaffRole(role)) {

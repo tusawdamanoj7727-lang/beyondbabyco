@@ -7,18 +7,41 @@ import type { User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 
 import StaticSvgImage from "@/components/media/StaticSvgImage";
+import { INSTAGRAM_URL } from "@/lib/brand/social";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
 import { isCustomerAuthPath } from "@/lib/routes";
+import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { label: "Products", href: "/products" },
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
-  { label: "Blog", href: "/community" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ] as const;
+
+const ICON_LINK =
+  "relative flex h-11 w-11 shrink-0 items-center justify-center text-gray-600 transition-colors";
+
+function InstagramIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
 
 export function Navbar() {
   const pathname = usePathname();
@@ -60,10 +83,10 @@ export function Navbar() {
   return (
     <nav
       aria-label="Site navigation"
-      className={
-        "sticky top-0 z-50 transition-all duration-300 " +
-        (scrolled ? "bg-white shadow-sm" : "bg-white/95 backdrop-blur-md")
-      }
+      className={cn(
+        "site-navbar w-full transition-all duration-300",
+        scrolled ? "bg-white shadow-sm" : "bg-white/95 backdrop-blur-md",
+      )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between md:h-20">
@@ -78,10 +101,7 @@ export function Navbar() {
             />
           </Link>
 
-          <div
-            aria-label="Main navigation"
-            className="hidden items-center gap-8 md:flex"
-          >
+          <div aria-label="Main navigation" className="hidden items-center gap-8 md:flex">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -94,47 +114,31 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
             <a
-              href="https://instagram.com/beyondbabyco"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="hidden text-gray-600 transition-colors hover:text-[#c4673a] md:flex"
+              className={cn(ICON_LINK, "hover:text-[#c4673a]")}
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
+              <InstagramIcon />
             </a>
 
-            <Link
-              href="/wishlist"
-              aria-label="Wishlist"
-              className="hidden text-gray-600 transition-colors hover:text-[#c4673a] md:flex"
-            >
+            <Link href="/wishlist" aria-label="Wishlist" className={cn(ICON_LINK, "hover:text-[#c4673a]")}>
               <Heart size={20} strokeWidth={1.5} aria-hidden="true" />
             </Link>
 
             <Link
-              href={user ? "/account" : "/login"}
+              href="/account"
               aria-label="My Account"
-              className="relative flex h-11 w-11 items-center justify-center text-gray-600 transition-colors hover:text-[#2d5a27]"
+              className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
             >
               <UserCircle
                 size={22}
                 strokeWidth={1.5}
                 aria-hidden="true"
-                className={user ? "text-[#2d5a27]" : ""}
+                className={user ? "text-[#2d5a27]" : undefined}
               />
               {user ? (
                 <span className="absolute right-1 top-1 h-3 w-3 rounded-full border-2 border-white bg-[#2d5a27]" />
@@ -144,7 +148,7 @@ export function Navbar() {
             <Link
               href="/cart"
               aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
-              className="relative flex h-11 w-11 items-center justify-center text-gray-600 transition-colors hover:text-[#2d5a27]"
+              className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
             >
               <ShoppingBag size={22} strokeWidth={1.5} aria-hidden="true" />
               {count > 0 ? (
@@ -157,7 +161,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="flex h-11 w-11 items-center justify-center text-gray-600 md:hidden"
+              className={cn(ICON_LINK, "md:hidden")}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
             >
@@ -177,10 +181,10 @@ export function Navbar() {
       ) : null}
 
       <div
-        className={
-          "fixed inset-y-0 right-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-300 md:hidden " +
-          (mobileOpen ? "translate-x-0" : "translate-x-full")
-        }
+        className={cn(
+          "fixed inset-y-0 right-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-300 md:hidden",
+          mobileOpen ? "translate-x-0" : "translate-x-full",
+        )}
         aria-hidden={!mobileOpen}
       >
         <div className="flex h-16 items-center justify-between border-b border-gray-100 px-4">
@@ -188,7 +192,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
-            className="flex h-11 w-11 items-center justify-center text-gray-600"
+            className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
             aria-label="Close menu"
           >
             <X size={24} aria-hidden="true" />
@@ -205,22 +209,40 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="mt-4 flex gap-4 border-t border-gray-100 pt-4">
+          <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-4">
             <a
-              href="https://instagram.com/beyondbabyco"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-3 text-gray-500 hover:text-[#c4673a]"
+              aria-label="Instagram"
+              className={cn(ICON_LINK, "hover:text-[#c4673a]")}
             >
-              Instagram
+              <InstagramIcon />
             </a>
             <Link
               href="/wishlist"
               onClick={() => setMobileOpen(false)}
-              className="px-3 py-3 text-gray-500 hover:text-[#2d5a27]"
+              aria-label="Wishlist"
+              className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
             >
-              Wishlist
+              <Heart size={20} strokeWidth={1.5} aria-hidden="true" />
+            </Link>
+            <Link
+              href="/account"
+              onClick={() => setMobileOpen(false)}
+              aria-label="My Account"
+              className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
+            >
+              <UserCircle size={22} strokeWidth={1.5} aria-hidden="true" />
+            </Link>
+            <Link
+              href="/cart"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Cart"
+              className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
+            >
+              <ShoppingBag size={22} strokeWidth={1.5} aria-hidden="true" />
             </Link>
           </div>
         </nav>

@@ -1,18 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type FormEvent } from "react";
+import { type FormEvent } from "react";
 
 import Reveal from "../ui/Reveal";
 import AccentBar from "../ui/AccentBar";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import type { NewsletterConfig } from "@/lib/admin/homepage-schema";
-import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import { NEWSLETTER } from "@/lib/brand/copy";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
 import { ctaHeight, formControl } from "@/lib/design/ui";
 import { newsletterPhoto } from "@/lib/homepage/visual-assets";
+import { useNewsletterSubscribe } from "@/lib/newsletter/use-newsletter-subscribe";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 
@@ -29,9 +29,8 @@ function renderHeading(text: string) {
 }
 
 export default function NewsletterCTA({ config }: { config?: NewsletterConfig }) {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
+  const { email, setEmail, status, msg, handleSubscribe } =
+    useNewsletterSubscribe("homepage_newsletter");
 
   const heading = config?.heading?.trim() || NEWSLETTER.heading;
   const description = config?.description?.trim() || NEWSLETTER.description;
@@ -39,37 +38,6 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
   const artworkRaw =
     config?.imageUrl?.trim() || config?.artworkUrl?.trim() || newsletterPhoto.main;
   const artwork = resolveVisualUrl(artworkRaw, { category: "newsletter", slug: "care-tips" });
-
-  async function handleSubscribe() {
-    if (!email.trim()) return;
-
-    setStatus("loading");
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/newsletter/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source: "homepage_newsletter" }),
-      });
-
-      const data = (await res.json()) as {
-        success?: boolean;
-        message?: string;
-        error?: string;
-      };
-
-      setStatus(data.success ? "success" : "error");
-      setMessage(data.message || data.error || NEWSLETTER_MESSAGES.error);
-
-      if (data.success) {
-        setEmail("");
-      }
-    } catch {
-      setStatus("error");
-      setMessage(NEWSLETTER_MESSAGES.error);
-    }
-  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -120,10 +88,6 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    if (status !== "idle") {
-                      setStatus("idle");
-                      setMessage("");
-                    }
                   }}
                   placeholder={NEWSLETTER.placeholder}
                   required
@@ -149,19 +113,14 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
                   {buttonText}
                 </Button>
               </form>
-              {status === "loading" ? (
-                <p className="mt-3 text-sm text-green-800/70" aria-live="polite">
-                  Subscribing…
-                </p>
-              ) : null}
-              {status === "error" && message ? (
+              {status === "error" && msg ? (
                 <p id="newsletter-error" role="alert" className="mt-3 text-sm text-red-600">
-                  {message}
+                  {msg}
                 </p>
               ) : null}
-              {status === "success" && message ? (
+              {status === "success" && msg ? (
                 <p id="newsletter-success" role="status" className="mt-3 text-sm font-medium text-green-700">
-                  {message}
+                  {msg}
                 </p>
               ) : null}
             </Reveal>

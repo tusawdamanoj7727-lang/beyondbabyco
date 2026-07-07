@@ -263,7 +263,7 @@
 
   --animate-ticker: ticker 40s linear infinite;
   --animate-float: float 3s ease-in-out infinite;
-  --animate-float-slow: float-slow 4.5s ease-in-out infinite;
+  --animate-float-slow: float-slow 4s ease-in-out infinite;
   --animate-float-fast: float-fast 2.5s ease-in-out infinite;
   --animate-fade-up: fade-up 0.5s ease-out forwards;
   --animate-fade-in: fade-in 0.4s ease-out forwards;
@@ -343,7 +343,7 @@
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -658,7 +658,7 @@
 }
 
 .animate-float-slow {
-  animation: float-slow 4.5s ease-in-out infinite;
+  animation: float-slow 4s ease-in-out infinite;
 }
 
 .animate-float-fast {
@@ -1877,6 +1877,10 @@ body {
   .hero-visual-stage {
     overflow: visible;
   }
+
+  .hero-mascot {
+    z-index: 40;
+  }
 }
 
 .quality-icon-box {
@@ -2299,6 +2303,15 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Minimum 44×44px touch targets for icon controls (WCAG / mobile UX). */
+.touch-target {
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .pdp-tab-trigger {
@@ -2757,19 +2770,19 @@ body {
 
 .collection-product-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(1.5rem, 2.5vw, 2rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .collection-product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
   .collection-product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

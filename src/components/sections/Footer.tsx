@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
-import { Globe, Leaf, ShieldCheck } from "lucide-react";
+import { type FormEvent } from "react";
+import { Globe, Leaf, Loader2, ShieldCheck } from "lucide-react";
 
 import MotionSection from "../ui/MotionSection";
 import Reveal from "../ui/Reveal";
@@ -28,7 +28,7 @@ import {
   isWhatsAppConfigured,
 } from "@/lib/brand/contact";
 import { FOOTER as FOOTER_COPY } from "@/lib/brand/copy";
-import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
+import { useNewsletterSubscribe } from "@/lib/newsletter/use-newsletter-subscribe";
 import type { FooterConfig } from "@/lib/admin/homepage-schema";
 import { focusRing, trustIconSize } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
@@ -41,11 +41,16 @@ const QUICK_LINKS: { label: string; href: string }[] = [
   { label: "FAQ", href: "/faq" },
 ];
 
-const COMPANY_LINKS: { label: string; href: string }[] = [
-  { label: "Trust Center", href: "/trust-center" },
+type FooterNavItem =
+  | { label: string; href: string }
+  | { label: string; comingSoon: true };
+
+const COMPANY_LINKS: FooterNavItem[] = [
+  { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
-  { label: "Our Story", href: "/our-story" },
-  { label: "Blog", href: "/community" },
+  { label: "Blog", href: "/blog" },
+  { label: "Careers", comingSoon: true },
+  { label: "Press", comingSoon: true },
 ];
 
 const LEGAL_LINKS: { label: string; href: string }[] = [
@@ -97,42 +102,24 @@ function FooterLink({ href, className, children }: { href: string; className: st
   );
 }
 
-function FooterEmailCapture() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
-
-  async function handleSubscribe(submittedEmail: string) {
-    const trimmed = submittedEmail.trim();
-    if (!trimmed) return;
-
-    setStatus("loading");
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/newsletter/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed, source: "footer" }),
-      });
-
-      const data = (await res.json()) as {
-        success?: boolean;
-        message?: string;
-        error?: string;
-      };
-
-      setStatus(data.success ? "success" : "error");
-      setMessage(data.message || data.error || NEWSLETTER_MESSAGES.error);
-
-      if (data.success) {
-        setEmail("");
-      }
-    } catch {
-      setStatus("error");
-      setMessage(NEWSLETTER_MESSAGES.error);
-    }
+function FooterNavItemRow({ item, className }: { item: FooterNavItem; className: string }) {
+  if ("comingSoon" in item && item.comingSoon) {
+    return (
+      <span className="font-body text-sm text-green-700/55">
+        {item.label}{" "}
+        <span className="text-xs font-medium uppercase tracking-wide text-green-700/45">Coming Soon</span>
+      </span>
+    );
   }
+  return (
+    <FooterLink href={"href" in item ? item.href : "/"} className={className}>
+      {item.label}
+    </FooterLink>
+  );
+}
+
+function FooterEmailCapture() {
+  const { email, setEmail, status, msg, handleSubscribe } = useNewsletterSubscribe("footer");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -182,13 +169,20 @@ function FooterEmailCapture() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="whitespace-nowrap rounded-lg bg-[#c4673a] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#a8522e] disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#c4673a] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#a8522e] disabled:opacity-60"
           >
-            {status === "loading" ? "Subscribing…" : "Subscribe"}
+            {status === "loading" ? (
+              <>
+                <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+                Subscribing…
+              </>
+            ) : (
+              "Subscribe"
+            )}
           </button>
         </form>
       </div>
-      {message ? (
+      {msg ? (
         <p
           role={status === "error" ? "alert" : "status"}
           className={cn(
@@ -196,7 +190,7 @@ function FooterEmailCapture() {
             status === "success" ? "text-green-300" : "text-red-300",
           )}
         >
-          {message}
+          {msg}
         </p>
       ) : null}
     </div>
@@ -214,7 +208,13 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
   const address = cms?.address?.trim() || "Udaipur, Rajasthan, India";
   const copyright =
     cms?.copyright?.trim() || "© 2026 BeyondBabyCo. All Rights Reserved.";
-  const socialLinks = cms?.social?.filter((s) => s.url.trim()) ?? [];
+  const socialLinks = (cms?.social ?? []).filter(
+    (s) =>
+      s.url.trim() &&
+      !isInstagramSocialLink(s.url, s.platform) &&
+      !isRawUrlLabel(formatSocialHandle(s.url, s.platform)) &&
+      !isRawUrlLabel(s.platform),
+  );
 
   return (
     <footer id="contact" className="homepage-footer relative overflow-hidden">
@@ -272,9 +272,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
               <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {COMPANY_LINKS.map((item) => (
                   <li key={item.label}>
-                    <FooterLink href={item.href} className={linkClass}>
-                      {item.label}
-                    </FooterLink>
+                    <FooterNavItemRow item={item} className={linkClass} />
                   </li>
                 ))}
               </ul>
@@ -334,31 +332,25 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={INSTAGRAM_ARIA_LABEL}
-                      className={cn(
-                        "flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white",
-                        focusRing,
-                      )}
+                      className={cn(socialLinkClass, focusRing)}
                     >
                       <InstagramIcon className="h-5 w-5 shrink-0" />
                       {INSTAGRAM_HANDLE}
                     </a>
-                    {socialLinks
-                      .filter((link) => !isInstagramSocialLink(link.url, link.platform))
-                      .filter((link) => !isRawUrlLabel(formatSocialHandle(link.url, link.platform)))
-                      .map((link) => {
-                        const handle = formatSocialHandle(link.url, link.platform);
-                        return (
-                          <a
-                            key={`${link.platform}-${link.url}`}
-                            href={link.url.startsWith("http") ? link.url : `https://${link.url}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={cn(socialLinkClass, focusRing)}
-                          >
-                            <span>{handle}</span>
-                          </a>
-                        );
-                      })}
+                    {socialLinks.map((link) => {
+                      const handle = formatSocialHandle(link.url, link.platform);
+                      return (
+                        <a
+                          key={`${link.platform}-${link.url}`}
+                          href={link.url.startsWith("http") ? link.url : `https://${link.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(socialLinkClass, focusRing)}
+                        >
+                          <span>{handle}</span>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>

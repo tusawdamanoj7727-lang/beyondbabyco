@@ -1,13 +1,11 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 import { TICKER_ITEMS } from "@/lib/brand/copy";
 import { resolveTickerItems } from "@/lib/brand/ticker-items";
 import { announcementBar } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
-
-const DEFAULT_ITEMS = [...TICKER_ITEMS];
 
 function TickerSet({ items, ariaHidden = false }: { items: string[]; ariaHidden?: boolean }) {
   return (
@@ -35,20 +33,7 @@ export default function TickerBar({
   backgroundColor?: string;
   link?: string;
 }) {
-  const [items, setItems] = useState<string[]>(
-    resolveTickerItems(initialItems?.length ? initialItems : DEFAULT_ITEMS),
-  );
-
-  useEffect(() => {
-    fetch("/api/settings/ticker")
-      .then((r) => r.json())
-      .then((d: { items?: string[] }) => {
-        setItems(resolveTickerItems(d.items));
-      })
-      .catch(() => {
-        // Keep initial / default items on failure.
-      });
-  }, []);
+  const items = resolveTickerItems(initialItems?.length ? initialItems : [...TICKER_ITEMS]);
 
   const content = (
     <div

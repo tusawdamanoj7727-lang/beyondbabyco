@@ -1,6 +1,6 @@
 /** Canonical BeyondBabyCo social profiles */
-export const INSTAGRAM_URL = "https://instagram.com/beyondbabyco";
-export const INSTAGRAM_HANDLE = "@beyondbabyco";
+export const INSTAGRAM_URL = "https://www.instagram.com/beyoundbabyco";
+export const INSTAGRAM_HANDLE = "@beyoundbabyco";
 export const FOREST_GREEN = "#2d5a27";
 
 export function isInstagramSocialLink(url: string, platform = ""): boolean {
