@@ -1,14 +1,14 @@
-import { TICKER_ITEMS } from "@/lib/brand/copy";
 import { getStorefrontHomepage } from "@/lib/homepage/storefront";
 import TickerBar from "@/components/sections/TickerBar";
 
-/** Storefront announcement ticker — always shown on every page using brand copy. */
+/** Storefront announcement ticker — shared on every page via root layout. */
 export default async function AnnouncementBar() {
   const data = await getStorefrontHomepage();
+  if (!data.announcement.enabled) return null;
 
   return (
     <TickerBar
-      items={[...TICKER_ITEMS]}
+      items={data.announcement.items}
       backgroundColor={data.announcement.background}
       link={data.announcement.link}
     />

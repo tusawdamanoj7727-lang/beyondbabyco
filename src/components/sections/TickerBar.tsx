@@ -1,13 +1,10 @@
-"use client";
-
 import { Fragment } from "react";
 
-import { TICKER_ITEMS } from "@/lib/brand/copy";
-import { resolveTickerItems } from "@/lib/brand/ticker-items";
+import { getAnnouncementTickerItems } from "@/lib/brand/announcement-ticker";
 import { announcementBar } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
-function TickerSet({ items, ariaHidden = false }: { items: string[]; ariaHidden?: boolean }) {
+function TickerSet({ items, ariaHidden = false }: { items: readonly string[]; ariaHidden?: boolean }) {
   return (
     <div aria-hidden={ariaHidden || undefined} className="flex shrink-0 items-center">
       {items.map((label, index) => (
@@ -29,11 +26,11 @@ export default function TickerBar({
   backgroundColor,
   link,
 }: {
-  items?: string[];
+  items?: readonly string[];
   backgroundColor?: string;
   link?: string;
 }) {
-  const items = resolveTickerItems(initialItems?.length ? initialItems : [...TICKER_ITEMS]);
+  const items = getAnnouncementTickerItems(initialItems?.length ? initialItems : undefined);
 
   const content = (
     <div

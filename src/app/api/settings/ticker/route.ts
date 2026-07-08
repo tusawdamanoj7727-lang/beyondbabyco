@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 
 import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
-import { TICKER_ITEMS } from "@/lib/brand/copy";
-import { resolveTickerItems } from "@/lib/brand/ticker-items";
+import { ANNOUNCEMENT_TICKER_ITEMS, getAnnouncementTickerItems } from "@/lib/brand/announcement-ticker";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 
@@ -18,10 +17,10 @@ export async function GET() {
     .maybeSingle();
 
   if (error) {
-    return NextResponse.json({ items: [...TICKER_ITEMS] });
+    return NextResponse.json({ items: [...ANNOUNCEMENT_TICKER_ITEMS] });
   }
 
-  return NextResponse.json({ items: resolveTickerItems(data?.value) });
+  return NextResponse.json({ items: getAnnouncementTickerItems(data?.value) });
 }
 
 export async function POST(req: Request) {
@@ -32,7 +31,7 @@ export async function POST(req: Request) {
   }
 
   const body = (await req.json()) as { items?: unknown };
-  const items = resolveTickerItems(body.items);
+  const items = getAnnouncementTickerItems(body.items);
 
   const supabase = await createClient();
   const { error } = await supabase.from("site_settings").upsert(
