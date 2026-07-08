@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+
 import Image from "next/image";
 
 import HeroSection from "@/components/sections/HeroSection";
@@ -7,7 +8,7 @@ import BrandPromise from "@/components/sections/BrandPromise";
 import ScienceSection from "@/components/sections/ScienceSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import SectionWaveDivider from "@/components/ui/SectionWaveDivider";
-import ScrollAnimationSection from "@/components/ui/ScrollAnimationSection";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontHomepage } from "@/lib/homepage/storefront";
 import { fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
@@ -44,7 +45,7 @@ export default function HomePageContent({
 
       {/* 2. Products — immediately after hero */}
       {data.sections.featured_products.enabled ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <section id="products" className="relative overflow-visible bg-[#faf5f0] py-16">
           <div
             className="pointer-events-none absolute right-0 top-8 z-20 hidden select-none xl:block"
@@ -84,75 +85,75 @@ export default function HomePageContent({
             products={data.featuredProducts}
           />
         </section>
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       <SectionWaveDivider fill="#f0f7ee" />
 
       {/* 3. Mascots */}
       {data.sections.mascots.enabled ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <div className="relative overflow-visible">
             <MeetOurFriends config={data.mascots} />
           </div>
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 4. Stats */}
-      <ScrollAnimationSection>
+      <ScrollReveal>
         <StatsBar />
-      </ScrollAnimationSection>
+      </ScrollReveal>
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 5. Science */}
       {data.sections.science.enabled ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <ScienceSection config={data.science} />
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 7. Brand promise */}
       {data.sections.brand_promise.enabled ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <BrandPromise config={data.brandPromise} />
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 8. Research timeline */}
       {data.sections.research_timeline.enabled ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <ResearchTimeline config={data.researchTimeline} />
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 9. Lifestyle */}
       {data.sections.lifestyle.enabled ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <LifestyleSection config={data.lifestyle} />
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 10. Reviews */}
       {showReviews ? (
-        <ScrollAnimationSection>
+        <ScrollReveal>
           <TestimonialShowcase
             cmsItems={data.testimonials}
             communityReviews={communityReviews}
             heading={data.testimonialsHeading.heading}
             description={data.testimonialsHeading.description || undefined}
           />
-        </ScrollAnimationSection>
+        </ScrollReveal>
       ) : null}
 
       {/* Footer — rendered in root layout via StorefrontFooter */}

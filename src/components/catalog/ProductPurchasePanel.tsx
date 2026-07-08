@@ -110,32 +110,52 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   const displaySku = activeVariant?.sku ?? product.sku;
 
   function addToCart() {
-    if (!selectedInStock) return;
+    if (!selectedInStock || pending) return;
 
-    const input = buildCartItemInput(
-      {
-        ...product,
-        price: displayPrice,
-        effectivePrice: displayPrice,
-        compareAtPrice: displayCompare ?? displayPrice,
-      },
-      {
-        variantId,
-        variantName: activeVariant?.name ?? null,
-      },
-    );
-    addStoreItem(input);
-    if (qty > 1) {
-      updateStoreQuantity(legacyVariantKey(variantId), Math.min(qty, maxQty));
-    }
-    cartUi?.openMiniCart();
-    toast.success("Added to cart!");
+    startTransition(() => {
+      const input = buildCartItemInput(
+        {
+          ...product,
+          price: displayPrice,
+          effectivePrice: displayPrice,
+          compareAtPrice: displayCompare ?? displayPrice,
+        },
+        {
+          variantId,
+          variantName: activeVariant?.name ?? null,
+        },
+      );
+      addStoreItem(input);
+      if (qty > 1) {
+        updateStoreQuantity(legacyVariantKey(variantId), Math.min(qty, maxQty));
+      }
+      cartUi?.openMiniCart();
+      toast.success("Added to cart!");
+    });
   }
 
   function buyNow() {
-    if (!selectedInStock) return;
-    addToCart();
-    window.location.href = "/cart";
+    if (!selectedInStock || pending) return;
+
+    startTransition(() => {
+      const input = buildCartItemInput(
+        {
+          ...product,
+          price: displayPrice,
+          effectivePrice: displayPrice,
+          compareAtPrice: displayCompare ?? displayPrice,
+        },
+        {
+          variantId,
+          variantName: activeVariant?.name ?? null,
+        },
+      );
+      addStoreItem(input);
+      if (qty > 1) {
+        updateStoreQuantity(legacyVariantKey(variantId), Math.min(qty, maxQty));
+      }
+      window.location.href = "/cart";
+    });
   }
 
   function handleNotifyMe() {
@@ -157,16 +177,19 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
     <div className="flex flex-col gap-3">
       <button
         type="button"
+        disabled={pending}
+        aria-busy={pending}
         onClick={addToCart}
         className={cn(
-          "w-full rounded-2xl bg-[#2d5a27] py-4 text-base font-bold text-white transition-all hover:bg-[#234821] active:scale-95",
+          "w-full rounded-2xl bg-[#2d5a27] py-4 text-base font-bold text-white transition-all hover:bg-[#234821] active:scale-95 disabled:cursor-wait disabled:opacity-80",
           focusRing,
         )}
       >
-        Add to Cart 🛒
+        {pending ? "Adding…" : "Add to Cart 🛒"}
       </button>
       <button
         type="button"
+        disabled={pending}
         onClick={buyNow}
         className={cn(
           "w-full rounded-2xl border-2 border-[#2d5a27] py-4 text-base font-bold text-[#2d5a27] transition-all hover:bg-[#eaf3de]",

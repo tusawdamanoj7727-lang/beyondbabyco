@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { getImageProps } from "next/image";
 
 import HomePageContent from "@/components/homepage/HomePageContent";
 import JsonLd from "@/components/seo/JsonLd";
+import { resolveVisualUrl } from "@/lib/brand/generated-assets";
 import { getStorefrontHomepage } from "@/lib/homepage/storefront";
+import { HERO_DEFAULT_BLUR } from "@/lib/homepage/visual-assets";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGES } from "@/lib/images";
 import { computeReviewSummary } from "@/lib/reviews/helpers";
 import { getFeaturedReviews } from "@/lib/reviews/queries";
 import { mergeTestimonials } from "@/lib/trust";
@@ -26,7 +31,24 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const data = await getStorefrontHomepage();
   const featuredDb = await getFeaturedReviews(10);
-  const heroLcpImage = data.hero.imageUrl.trim() || null;
+  const heroLcpImage = (() => {
+    const resolved = resolveVisualUrl(data.hero.imageUrl, {
+      category: "hero",
+      slug: "gentle-care-hero",
+    });
+    return resolved.url || IMAGES.hero.mother_baby;
+  })();
+
+  const heroPreload = getImageProps({
+    src: heroLcpImage,
+    alt: data.hero.imageAlt,
+    fill: true,
+    priority: true,
+    sizes: IMAGE_SIZES.hero,
+    quality: IMAGE_QUALITY.hero,
+    placeholder: "blur",
+    blurDataURL: data.hero.imageUrl?.trim() ? resolveVisualUrl(data.hero.imageUrl, { category: "hero", slug: "gentle-care-hero" }).blur : HERO_DEFAULT_BLUR,
+  });
 
   const communityReviews =
     featuredDb.length > 0
@@ -62,9 +84,14 @@ export default async function Home() {
 
   return (
     <>
-      {heroLcpImage ? (
-        <link rel="preload" as="image" href={heroLcpImage} fetchPriority="high" />
-      ) : null}
+      <link
+        rel="preload"
+        as="image"
+        href={heroPreload.props.src}
+        imageSrcSet={heroPreload.props.srcSet}
+        imageSizes={heroPreload.props.sizes}
+        fetchPriority="high"
+      />
       <JsonLd
         data={[
           ...(reviewSchema ?? []),

@@ -1,6 +1,7 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
+import { useTransition } from "react";
 
 import { useToast } from "@/components/ui/ToastProvider";
 import { canPurchaseProduct } from "@/lib/catalog/availability";
@@ -33,22 +34,27 @@ export default function AddToCartButton({
   const addItem = useCartStore((s) => s.addItem);
   const cartUi = useCartUiOptional();
   const toast = useToast();
+  const [pending, startTransition] = useTransition();
 
   if (!canPurchaseProduct(product)) return null;
 
   return (
     <button
       type="button"
+      disabled={pending}
+      aria-busy={pending}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        addItem(buildCartItemInput(product));
-        cartUi?.openMiniCart();
-        toast.success("Added to cart!");
-        onAction?.();
+        startTransition(() => {
+          addItem(buildCartItemInput(product));
+          cartUi?.openMiniCart();
+          toast.success("Added to cart!");
+          onAction?.();
+        });
       }}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full bg-[#2d5a27] font-semibold text-white transition hover:bg-[#234a20]",
+        "inline-flex items-center justify-center gap-2 rounded-full bg-[#2d5a27] font-semibold text-white transition hover:bg-[#234a20] disabled:cursor-wait disabled:opacity-80",
         size === "sm" ? "h-11 px-4 text-sm" : "h-11 px-5 text-sm",
         fullWidth && "w-full",
         focusRing,
@@ -56,7 +62,7 @@ export default function AddToCartButton({
       )}
     >
       {showIcon ? <ShoppingBag className="h-4 w-4" aria-hidden="true" /> : null}
-      {label}
+      {pending ? "Adding…" : label}
     </button>
   );
 }

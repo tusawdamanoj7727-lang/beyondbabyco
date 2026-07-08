@@ -374,13 +374,7 @@ export const CONTENT_EDITORIAL = {
   scientist: resolveSelectedVisual("CONTENT_EDITORIAL.scientist", { category: "science", slug: "scientist-portrait" }),
 } as const;
 
-export function blurForGeneratedUrl(url: string | null | undefined): string {
-  if (!url?.includes(GENERATED_ROOT)) return STATIC_IMAGE_BLUR;
-  const path = url
-    .replace(`${GENERATED_ROOT}/`, "")
-    .replace(/\.(webp|avif|png)$/i, "");
-  return BLUR_MAP[path] ?? STATIC_IMAGE_BLUR;
-}
+export { blurForGeneratedUrl } from "./generated-blur";
 
 /** Trust center editorial photography — auto-selected when FLUX score >= 90. */
 export const TRUST_EDITORIAL = {

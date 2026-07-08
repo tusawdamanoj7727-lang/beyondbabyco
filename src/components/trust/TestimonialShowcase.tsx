@@ -15,7 +15,7 @@ import {
   type TrustTestimonial,
   type TestimonialCategory,
 } from "@/lib/trust";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
 import { focusRing, homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";

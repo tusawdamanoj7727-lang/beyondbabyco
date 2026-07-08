@@ -9,12 +9,26 @@ import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import type { NewsletterConfig } from "@/lib/admin/homepage-schema";
 import { NEWSLETTER } from "@/lib/brand/copy";
-import { resolveVisualUrl } from "@/lib/brand/generated-assets";
+import { GENERATED_ROOT } from "@/lib/brand/art-direction";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
+import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 import { ctaHeight, formControl } from "@/lib/design/ui";
-import { newsletterPhoto } from "@/lib/homepage/visual-assets";
 import { useNewsletterSubscribe } from "@/lib/newsletter/use-newsletter-subscribe";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
+
+const DEFAULT_NEWSLETTER_ART = "/images/generated/lifestyle/newsletter/care-tips.webp";
+
+function resolveNewsletterArtwork(raw: string) {
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed.includes(GENERATED_ROOT)) {
+    return {
+      url: DEFAULT_NEWSLETTER_ART,
+      blur: blurForGeneratedUrl(DEFAULT_NEWSLETTER_ART),
+    };
+  }
+  return { url: trimmed, blur: STATIC_IMAGE_BLUR };
+}
 
 function renderHeading(text: string) {
   if (text.includes("\n")) {
@@ -36,8 +50,8 @@ export default function NewsletterCTA({ config }: { config?: NewsletterConfig })
   const description = config?.description?.trim() || NEWSLETTER.description;
   const buttonText = config?.buttonText?.trim() || NEWSLETTER.button;
   const artworkRaw =
-    config?.imageUrl?.trim() || config?.artworkUrl?.trim() || newsletterPhoto.main;
-  const artwork = resolveVisualUrl(artworkRaw, { category: "newsletter", slug: "care-tips" });
+    config?.imageUrl?.trim() || config?.artworkUrl?.trim() || DEFAULT_NEWSLETTER_ART;
+  const artwork = resolveNewsletterArtwork(artworkRaw);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

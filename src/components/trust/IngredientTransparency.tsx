@@ -11,7 +11,7 @@ import Card from "@/components/ui/Card";
 import Reveal from "@/components/ui/Reveal";
 import MotionSection from "@/components/ui/MotionSection";
 import { CORE_INGREDIENTS, type IngredientProfile } from "@/lib/trust";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
 
 function IngredientCard({ ingredient }: { ingredient: IngredientProfile }) {

@@ -46,21 +46,40 @@ export function Navbar() {
   const count = hydrated ? itemCount : 0;
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
+    let subscription: { unsubscribe: () => void } | undefined;
+    let idleHandle: number | undefined;
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    const runAuth = () => {
+      const supabase = createClient();
+      supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
+
+      const {
+        data: { subscription: sub },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
+      subscription = sub;
+    };
+
+    if (typeof requestIdleCallback !== "undefined") {
+      idleHandle = requestIdleCallback(runAuth, { timeout: 2000 });
+    } else {
+      timeoutHandle = setTimeout(runAuth, 0);
+    }
 
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
+      if (idleHandle !== undefined && typeof cancelIdleCallback !== "undefined") {
+        cancelIdleCallback(idleHandle);
+      }
+      if (timeoutHandle !== undefined) {
+        clearTimeout(timeoutHandle);
+      }
       window.removeEventListener("scroll", onScroll);
     };
   }, []);

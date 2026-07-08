@@ -9,7 +9,7 @@ import Badge from "../ui/Badge";
 import AccentBar from "../ui/AccentBar";
 import { TESTIMONIALS as TESTIMONIALS_COPY } from "@/lib/brand/copy";
 import { TESTIMONIALS } from "../../lib/data";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
 import type { TestimonialsConfig } from "@/lib/admin/homepage-schema";
 import type { StorefrontTestimonial } from "@/lib/homepage/storefront";
