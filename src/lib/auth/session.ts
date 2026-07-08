@@ -4,7 +4,7 @@ import type { User } from "@supabase/supabase-js";
 
 import { isSupabaseConfigured } from "../env";
 import { createSupabaseServerClient } from "../supabase/server";
-import { isRole, resolveEffectiveRole, type Role } from "./roles";
+import { resolveEffectiveRole, type Role } from "./roles";
 import { isPermission, type Permission } from "./permissions";
 
 export interface Profile {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { jsonOk } from "@/lib/api/route-helpers";
 import { handleAdminApiError, requireAdminUserApi } from "@/lib/api/admin-user-api";
-import { buildAdminUserRow } from "@/lib/admin/user-management";
+import { buildAdminUserRow } from "@/lib/admin/user-management-server";
 
 export const dynamic = "force-dynamic";
 

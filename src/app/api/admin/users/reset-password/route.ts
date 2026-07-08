@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { jsonOk } from "@/lib/api/route-helpers";
 import { handleAdminApiError, requireAdminUserApi } from "@/lib/api/admin-user-api";
-import { generateTemporaryPassword } from "@/lib/admin/user-management";
+import { generateTemporaryPassword } from "@/lib/admin/user-management-server";
 
 export const dynamic = "force-dynamic";
 
