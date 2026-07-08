@@ -100,6 +100,6 @@ export const DELIVERY_EMAIL_TEMPLATES: EmailTemplate[] = [
     preheader: "A pickup has been scheduled for your return.",
     heading: "Return Pickup Scheduled",
     bodyHtml: `${p("Hi {{customer_name}},")}${p("A return pickup for order {{order_number}} has been scheduled.")}${p("<strong>Pickup date:</strong> {{estimated_delivery}}")}${p("Please keep the return package ready with original packaging.")}`,
-    cta: { label: "Return Policy", href: "{{site_url}}/return-policy" },
+    cta: { label: "Return Policy", href: "{{site_url}}/refund-policy" },
   }),
 ];

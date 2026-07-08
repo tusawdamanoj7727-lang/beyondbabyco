@@ -293,38 +293,6 @@ export function AnnouncementEditor({ section }: { section: HomepageAdminData["se
   );
 }
 
-export function FeaturedCategoriesEditor({
-  section,
-  categories,
-}: {
-  section: HomepageAdminData["sections"]["featured_categories"];
-  categories: SelectOption[];
-}) {
-  return (
-    <SectionFrame
-      sectionKey="featured_categories"
-      title="Featured Categories"
-      description="Curate which categories appear on the homepage."
-      initialEnabled={section.isEnabled}
-      initialConfig={section.config}
-    >
-      {(c, set) => (
-        <>
-          <TextField label="Heading" value={c.heading} onChange={(v) => set({ heading: v })} />
-          <NumberField label="Limit" value={c.limit} min={1} max={24} onChange={(v) => set({ limit: v })} />
-          <OrderedSelect
-            label="Categories"
-            description="Drag-free ordering with the arrows. Order here is the display order."
-            options={categories}
-            selected={c.categoryIds}
-            onChange={(categoryIds) => set({ categoryIds })}
-          />
-        </>
-      )}
-    </SectionFrame>
-  );
-}
-
 export function FeaturedProductsEditor({
   section,
   products,

@@ -9,7 +9,7 @@ import { IMAGES } from "@/lib/images";
 import { SCIENCE_SECTION } from "@/lib/brand/copy";
 
 import { editorialImageCrop } from "@/lib/design/ui";
-import { EDITORIAL_IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, fixedImageSizes, mascotImageQuality, resolveImageBlur } from "@/lib/media/image-delivery";
 import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 import type { ScienceConfig } from "@/lib/admin/homepage-schema";
 
@@ -51,9 +51,11 @@ export default function ScienceSection({ config }: { config?: ScienceConfig }) {
         <Image
           src="/icons/eli-elephant/studying.webp"
           alt=""
-          width={140}
-          height={140}
-          sizes="140px"
+          width={IMAGE_DIMENSIONS.decorativeMascot.width}
+          height={IMAGE_DIMENSIONS.decorativeMascot.height}
+          loading="lazy"
+          sizes={fixedImageSizes(140)}
+          quality={mascotImageQuality(140)}
           className="animate-float-slow object-contain drop-shadow-xl"
           style={{
             background: "transparent",
@@ -76,7 +78,7 @@ export default function ScienceSection({ config }: { config?: ScienceConfig }) {
                 imageUrl={imageUrl}
                 alt="Research-backed baby care"
                 sizes={IMAGE_SIZES.lifestyleHero}
-                quality={EDITORIAL_IMAGE_QUALITY}
+                quality={IMAGE_QUALITY.editorial}
                 imageClassName={editorialImageCrop}
               />
             </Card>
@@ -114,11 +116,11 @@ export default function ScienceSection({ config }: { config?: ScienceConfig }) {
                       <Image
                         src={feature.imageUrl}
                         alt=""
-                        width={112}
-                        height={112}
+                        width={IMAGE_DIMENSIONS.featureIcon.width}
+                        height={IMAGE_DIMENSIONS.featureIcon.height}
                         loading="lazy"
-                        sizes="56px"
-                        quality={EDITORIAL_IMAGE_QUALITY}
+                        sizes={fixedImageSizes(56)}
+                        quality={IMAGE_QUALITY.thumbnail}
                         placeholder="blur"
                         blurDataURL={resolveImageBlur(STATIC_IMAGE_BLUR)}
                         className="h-full w-full object-cover"

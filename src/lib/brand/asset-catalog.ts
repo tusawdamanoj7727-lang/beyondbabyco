@@ -28,8 +28,6 @@ export const PRODUCT_LINES = [
   { slug: "baby-powder", name: "Baby Powder", category: "baby-powder" as const },
   { slug: "gift-box", name: "Gift Box", category: "gift" as const },
   { slug: "newborn-kit", name: "Newborn Kit", category: "gift" as const },
-  { slug: "men-care", name: "Men Care", category: "men-care" as const },
-  { slug: "women-care", name: "Women Care", category: "women-care" as const },
 ] as const;
 
 const PRODUCT_ANGLES: ProductAngle[] = [
@@ -150,8 +148,6 @@ const CATEGORIES = catalogEntries("categories", "category", [
   { slug: "baby-oil", subject: "baby oil category massage nourishment" },
   { slug: "baby-powder", subject: "baby powder category talc-free comfort" },
   { slug: "gift-sets", subject: "gift sets category premium ribbon cream paper" },
-  { slug: "men-care", subject: "men care category future line editorial placeholder" },
-  { slug: "women-care", subject: "women care category future line editorial placeholder" },
 ]);
 
 const TRUST = catalogEntries("trust", "trust", [
@@ -219,16 +215,6 @@ const REVIEWS = catalogEntries("reviews", "trust", [
   { slug: "five-star-moment", subject: "authentic parent satisfaction quiet joy nursery", w: 1280, h: 960 },
 ]);
 
-const MEN_CARE = catalogEntries("men-care", "product", [
-  { slug: "line-hero", subject: "men care future line hero packaging editorial", w: 1280, h: 960 },
-  { slug: "grooming-routine", subject: "father grooming routine premium bathroom", w: 1280, h: 960 },
-]);
-
-const WOMEN_CARE = catalogEntries("women-care", "product", [
-  { slug: "line-hero", subject: "women care future line hero packaging editorial", w: 1280, h: 960 },
-  { slug: "self-care-routine", subject: "mother self-care moment calm premium home", w: 1280, h: 960 },
-]);
-
 const GIFT = catalogEntries("gift", "lifestyle", [
   { slug: "gift-box-hero", subject: "premium gift box ribbon cream paper composition", w: 1280, h: 960 },
   { slug: "newborn-kit-flatlay", subject: "newborn essentials kit flat lay wood table", w: 1280, h: 960 },
@@ -254,8 +240,6 @@ export const ASSET_CATALOG: AssetEntry[] = [
   ...CAMPAIGNS,
   ...COMMUNITY,
   ...REVIEWS,
-  ...MEN_CARE,
-  ...WOMEN_CARE,
   ...GIFT,
 ];
 

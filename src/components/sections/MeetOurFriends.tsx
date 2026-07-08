@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { MASCOTS } from "@/lib/brand/copy";
 import type { MascotsConfig } from "@/lib/admin/homepage-schema";
-import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
 
 const HOMEPAGE_MASCOTS = [
   {
@@ -83,8 +83,9 @@ function MascotCard({ mascot, delay }: { mascot: MascotCardData; delay: number }
           alt={mascot.name}
           width={IMAGE_DIMENSIONS.mascotGrid.width}
           height={IMAGE_DIMENSIONS.mascotGrid.height}
-          sizes={IMAGE_SIZES.mascotGrid}
-          quality={IMAGE_QUALITY.mascot}
+          loading="lazy"
+          sizes={fixedImageSizes(160)}
+          quality={mascotImageQuality(160)}
           className="relative z-30 h-full w-full object-contain drop-shadow-2xl"
           style={{ background: "transparent" }}
         />

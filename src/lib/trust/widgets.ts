@@ -33,7 +33,7 @@ export const TRUST_WIDGETS: TrustWidget[] = [
     label: "Easy Returns",
     description: "7-day return window on eligible items",
     icon: "rotate-ccw",
-    href: "/return-policy",
+    href: "/refund-policy",
   },
   {
     id: "quality",

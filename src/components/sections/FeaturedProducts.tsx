@@ -19,6 +19,7 @@ type BadgeVariant = "default" | "success" | "warning" | "info" | "comingSoon";
 const STATUS_BADGE_VARIANT: Record<string, BadgeVariant> = {
   "Available now": "success",
   "Available Now": "success",
+  "In Stock": "success",
   "Best Seller": "success",
   Featured: "success",
   New: "info",
@@ -26,7 +27,7 @@ const STATUS_BADGE_VARIANT: Record<string, BadgeVariant> = {
   "Coming Soon": "comingSoon",
 };
 
-const LAUNCH_PRODUCT_COUNT = 7;
+const LAUNCH_PRODUCT_COUNT = 8;
 
 export default function FeaturedProducts({
   heading,
@@ -74,7 +75,6 @@ export default function FeaturedProducts({
                   variant="product"
                   imageUrl={product.imageUrl}
                   alt={product.name}
-                  priority={index < 2}
                   sizes={IMAGE_SIZES.productCard}
                   quality={IMAGE_QUALITY.product}
                   imageClassName={cn("product-pedestal-image", editorialImageCrop, imageHoverZoom)}

@@ -106,8 +106,6 @@ export const ASSET_CATEGORIES = [
   "campaigns",
   "community",
   "reviews",
-  "men-care",
-  "women-care",
   "gift",
 ] as const;
 

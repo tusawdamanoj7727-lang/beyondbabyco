@@ -8,9 +8,9 @@ import { ROLE_LABELS } from "@/lib/auth/roles";
 import { useRole } from "@/lib/auth/hooks";
 
 export default function UserMenu() {
-  const { user, role: initialRole } = useAdmin();
-  const { role: liveRole, loading } = useRole();
-  const role = loading ? initialRole : liveRole;
+  const { user, role: serverRole } = useAdmin();
+  const { role: clientRole, loading } = useRole();
+  const role = clientRole ?? serverRole;
 
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -31,7 +31,7 @@ export default function UserMenu() {
   }, []);
 
   const displayName = user.fullName || user.email || "Staff member";
-  const roleLabel = role ? ROLE_LABELS[role] : "Staff";
+  const roleLabel = role ? ROLE_LABELS[role] : loading ? "Loading…" : "Unknown role";
 
   return (
     <div ref={ref} className="relative">

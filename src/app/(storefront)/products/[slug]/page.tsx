@@ -11,8 +11,9 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
 import { productUnit } from "@/lib/catalog/product-images";
 import { computeReviewSummary } from "@/lib/reviews/helpers";
 import { getProductReviews } from "@/lib/reviews/queries";
+import { buildProductMetadata } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
-import { absoluteUrl, getCanonicalSiteUrl, SITE_NAME } from "@/lib/seo/site";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -25,44 +26,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: "Product Not Found — BeyondBabyCo" };
   }
 
-  const baseUrl = getCanonicalSiteUrl();
-  const canonical = `${baseUrl}/products/${slug}`;
   const unit = productUnit(slug);
   const title = unit
-    ? `${product.name} ${unit} — BeyondBabyCo`
-    : `${product.seoTitle ?? product.name} — BeyondBabyCo`;
+    ? `${product.name} ${unit}`
+    : (product.seoTitle ?? product.name);
   const description = (
     product.seoDescription ??
     product.shortDescription ??
     product.description ??
     ""
   ).slice(0, 155);
-  const ogImage = product.imageUrl
-    ? absoluteUrl(product.imageUrl)
-    : absoluteUrl("/images/og/og-products.jpg");
 
-  return {
-    metadataBase: new URL(baseUrl),
+  return buildProductMetadata({
     title,
     description,
-    alternates: { canonical },
-    robots: { index: true, follow: true },
-    openGraph: {
-      type: "website",
-      url: canonical,
-      title: `${product.name} — BeyondBabyCo`,
-      description,
-      siteName: SITE_NAME,
-      locale: "en_IN",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: product.name }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [ogImage],
-    },
-  };
+    path: `/products/${slug}`,
+    productSlug: slug,
+    image: product.imageUrl ?? undefined,
+  });
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {

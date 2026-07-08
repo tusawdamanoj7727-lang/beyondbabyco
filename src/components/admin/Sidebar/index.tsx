@@ -6,10 +6,8 @@ import { usePathname } from "next/navigation";
 import Icon from "../Icon";
 import Mascot from "@/components/mascots/Mascot";
 import { NAV_SECTIONS, canSeeNavItem, type NavItem } from "../nav";
-import { useAdmin } from "../context";
+import { useAdminNavAuth } from "@/lib/auth/use-admin-nav-auth";
 import { cn } from "@/lib/utils";
-import { useRole } from "@/lib/auth/hooks";
-import { roleHasPermission } from "@/lib/auth/permissions";
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/admin") return pathname === "/admin";
@@ -24,16 +22,9 @@ export default function Sidebar({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname() ?? "/admin";
-  const { role: initialRole } = useAdmin();
-  const { role: liveRole, hasPermission, loading } = useRole();
+  const { role, hasPermission } = useAdminNavAuth();
 
-  const role = loading ? initialRole : liveRole;
-  const can = (item: NavItem) =>
-    canSeeNavItem(
-      item,
-      role,
-      loading ? (p) => roleHasPermission(role, p) : hasPermission,
-    );
+  const can = (item: NavItem) => canSeeNavItem(item, role, hasPermission);
 
   return (
     <div className="flex h-full flex-col bg-white">

@@ -80,7 +80,11 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
     { data: publishSetting },
     ops,
   ] = await Promise.all([
-    supabase.from("products").select("id", { count: "exact", head: true }).is("deleted_at", null),
+    supabase
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "active")
+      .is("deleted_at", null),
     supabase.from("orders").select("id", { count: "exact", head: true }),
     supabase.from("customers").select("id", { count: "exact", head: true }).is("deleted_at", null),
     supabase

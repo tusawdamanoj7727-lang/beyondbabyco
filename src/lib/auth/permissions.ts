@@ -67,6 +67,7 @@ export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     PERMISSIONS.FINANCE_MANAGE,
     PERMISSIONS.FINANCE_EXPORT,
     PERMISSIONS.ACCOUNTING_MANAGE,
+    PERMISSIONS.SETTINGS_MANAGE,
   ],
   [ROLES.SUPPORT]: [
     PERMISSIONS.ORDERS_VIEW,
@@ -83,6 +84,35 @@ export function roleHasPermission(role: Role | null | undefined, permission: Per
   if (!role) return false;
   if (role === ROLES.ADMIN) return true;
   return ROLE_PERMISSIONS[role].includes(permission);
+}
+
+/** Default permissions for a role when the DB returns none (e.g. profile role_id unset). */
+export function permissionsForRole(role: Role | null | undefined): Permission[] {
+  if (!role) return [];
+  if (role === ROLES.ADMIN) return [...ALL_PERMISSIONS];
+  return [...ROLE_PERMISSIONS[role]];
+}
+
+/** Merge DB permissions with the static role fallback. */
+export function effectivePermissions(
+  role: Role | null | undefined,
+  dbPermissions: readonly Permission[],
+): Permission[] {
+  if (role === ROLES.ADMIN) return [...ALL_PERMISSIONS];
+  if (dbPermissions.length > 0) return [...dbPermissions];
+  return permissionsForRole(role);
+}
+
+/** Permission check with DB list + static role fallback (admin always passes). */
+export function hasEffectivePermission(
+  role: Role | null | undefined,
+  permissions: readonly Permission[],
+  permission: Permission,
+): boolean {
+  if (!role) return false;
+  if (role === ROLES.ADMIN) return true;
+  if (permissions.includes(permission)) return true;
+  return roleHasPermission(role, permission);
 }
 
 /** Type guard: is the given value a known permission code? */

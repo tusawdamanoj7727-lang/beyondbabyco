@@ -5,7 +5,6 @@ import { cache } from "react";
 import {
   DEFAULTS,
   type BrandPromiseConfig,
-  type FeaturedCategoriesConfig,
   type FooterConfig,
   type LifestyleConfig,
   type MascotsConfig,
@@ -16,20 +15,10 @@ import {
   type SeoConfig,
   type TestimonialsConfig,
 } from "@/lib/admin/homepage-schema";
-import {
-  getCategoriesByIds,
-  getFeaturedCategories,
-  getProductsByIds,
-  type CategoryNode,
-  type PublicProduct,
-} from "@/lib/catalog/queries";
+import { listSevenStorefrontProducts } from "@/lib/catalog/storefront";
+import type { StorefrontProduct } from "@/lib/catalog/types";
 import { getAnnouncementTickerItems } from "@/lib/brand/announcement-ticker";
-import {
-  CATEGORY_ITEMS,
-  FEATURED_PRODUCTS,
-  TESTIMONIALS,
-  TRUST_STATS,
-} from "@/lib/data";
+import { FEATURED_PRODUCTS, TESTIMONIALS, TRUST_STATS } from "@/lib/data";
 
 import { getHomepage, type Homepage, type HomepageSection } from "./queries";
 import { resolveHeroContent, type ResolvedHeroContent } from "./hero-content";
@@ -43,14 +32,6 @@ export type StorefrontFeaturedProduct = {
   description: string;
   price: string;
   imageUrl?: string | null;
-};
-
-export type StorefrontCategoryItem = {
-  title: string;
-  count: string;
-  icon: string;
-  color: string;
-  imageUrl?: string;
 };
 
 export type StorefrontTestimonial = {
@@ -81,8 +62,6 @@ export type StorefrontHomepage = {
   testimonialsHeading: TestimonialsConfig;
   newsletter: NewsletterConfig;
   featuredProducts: StorefrontFeaturedProduct[];
-  categories: StorefrontCategoryItem[];
-  featuredCategoriesHeading?: string;
   featuredProductsHeading?: string;
   testimonials: StorefrontTestimonial[];
 };
@@ -113,28 +92,21 @@ function sectionConfig<T extends object>(
   return mergeConfig(fallback, row?.config);
 }
 
-function formatProductPrice(product: PublicProduct): string {
+function launchProductBadge(product: StorefrontProduct): string {
   if (product.status === "coming_soon") return "Coming Soon";
-  const amount = product.salePrice ?? product.price;
-  return `₹${Math.round(amount).toLocaleString("en-IN")}`;
+  if (product.inStock) return "In Stock";
+  return "Out of Stock";
 }
 
-function productBadge(product: PublicProduct): string {
-  if (product.status === "coming_soon") return "Coming Soon";
-  if (product.isBestSeller) return "Best Seller";
-  if (product.isNewArrival) return "New";
-  return "Featured";
-}
-
-function mapProduct(product: PublicProduct): StorefrontFeaturedProduct {
+function mapLaunchProduct(product: StorefrontProduct): StorefrontFeaturedProduct {
   return {
     id: product.id,
     slug: product.slug,
     name: product.name,
     category: product.categoryName ?? "Baby Care",
-    badge: productBadge(product),
+    badge: launchProductBadge(product),
     description: product.shortDescription ?? "",
-    price: formatProductPrice(product),
+    price: `₹${Math.round(product.effectivePrice).toLocaleString("en-IN")}`,
     imageUrl: product.imageUrl,
   };
 }
@@ -152,82 +124,15 @@ function mapStaticProducts(): StorefrontFeaturedProduct[] {
   }));
 }
 
-function mapCategory(node: CategoryNode, index: number): StorefrontCategoryItem {
-  const colors = ["green", "terra", "cream", "green"] as const;
-  return {
-    title: node.name,
-    count: node.description?.trim() || "Explore collection",
-    icon: node.icon?.trim() || "✨",
-    color: colors[index % colors.length] ?? "green",
-  };
-}
-
-function mapStaticCategories(): StorefrontCategoryItem[] {
-  return CATEGORY_ITEMS.map((c) => ({
-    title: c.title,
-    count: c.count,
-    icon: c.icon,
-    color: c.color,
-    imageUrl: "imageUrl" in c ? c.imageUrl : undefined,
-  }));
-}
-
-function mapCategoryAssets(
-  assets: FeaturedCategoriesConfig["categoryAssets"],
-): StorefrontCategoryItem[] {
-  if (!assets?.length) return mapStaticCategories();
-  return assets.map((c, index) => {
-    const colors = ["green", "terra", "cream", "green"] as const;
-    return {
-      title: c.title,
-      count: c.count?.trim() || "Explore collection",
-      icon: c.iconUrl?.trim() || "✨",
-      color: c.color ?? colors[index % colors.length] ?? "green",
-    };
-  });
-}
-
-async function resolveProducts(
-  cms: Homepage,
-  published: boolean,
-): Promise<StorefrontFeaturedProduct[]> {
-  const cfg = sectionConfig(cms, "featured_products", DEFAULTS.featured_products, published);
-  const launchCatalog = mapStaticProducts().slice(0, 8);
-
-  if (published && cfg.productIds.length > 0) {
-    try {
-      const rows = await getProductsByIds(cfg.productIds.slice(0, 8));
-      if (rows.length > 0) return rows.map(mapProduct);
-    } catch {
-      /* fall through to launch catalog */
-    }
-  }
-
-  return launchCatalog;
-}
-
-async function resolveCategories(
-  cms: Homepage,
-  published: boolean,
-): Promise<StorefrontCategoryItem[]> {
-  const cfg = sectionConfig(cms, "featured_categories", DEFAULTS.featured_categories, published);
-  if (cfg.categoryAssets?.length) {
-    return mapCategoryAssets(cfg.categoryAssets);
-  }
-
-  if (!published) return mapStaticCategories();
-
+async function resolveProducts(): Promise<StorefrontFeaturedProduct[]> {
   try {
-    if (cfg.categoryIds.length > 0) {
-      const rows = await getCategoriesByIds(cfg.categoryIds.slice(0, cfg.limit));
-      if (rows.length > 0) return rows.map(mapCategory);
-    }
-    const featured = await getFeaturedCategories(cfg.limit);
-    if (featured.length > 0) return featured.map(mapCategory);
+    const launch = await listSevenStorefrontProducts();
+    if (launch.length > 0) return launch.map(mapLaunchProduct);
   } catch {
-    /* fall through */
+    /* fall through to static launch cards */
   }
-  return mapStaticCategories();
+
+  return mapStaticProducts().slice(0, 8);
 }
 
 function resolveTestimonials(cms: Homepage, published: boolean): StorefrontTestimonial[] {
@@ -271,7 +176,6 @@ function buildFromCms(cms: Homepage): StorefrontHomepage {
     sections: {
       announcement: { enabled: sectionEnabled(cms, "announcement", published) },
       hero: { enabled: sectionEnabled(cms, "hero", published) },
-      featured_categories: { enabled: false },
       featured_products: { enabled: sectionEnabled(cms, "featured_products", published) },
       brand_promise: { enabled: sectionEnabled(cms, "brand_promise", published) },
       science: { enabled: sectionEnabled(cms, "science", published) },
@@ -289,12 +193,6 @@ function buildFromCms(cms: Homepage): StorefrontHomepage {
     researchTimeline: sectionConfig(cms, "research_timeline", DEFAULTS.research_timeline, published),
     testimonialsHeading: sectionConfig(cms, "testimonials", DEFAULTS.testimonials, published),
     newsletter: sectionConfig(cms, "newsletter", DEFAULTS.newsletter, published),
-    featuredCategoriesHeading: sectionConfig(
-      cms,
-      "featured_categories",
-      DEFAULTS.featured_categories,
-      published,
-    ).heading,
     featuredProductsHeading: sectionConfig(
       cms,
       "featured_products",
@@ -302,7 +200,6 @@ function buildFromCms(cms: Homepage): StorefrontHomepage {
       published,
     ).heading,
     featuredProducts: mapStaticProducts(),
-    categories: mapStaticCategories(),
     testimonials: resolveTestimonials(cms, published),
   };
 }
@@ -320,7 +217,6 @@ const STATIC_FALLBACK: StorefrontHomepage = {
   sections: {
     announcement: { enabled: true },
     hero: { enabled: true },
-    featured_categories: { enabled: false },
     featured_products: { enabled: true },
     brand_promise: { enabled: true },
     science: { enabled: true },
@@ -339,7 +235,6 @@ const STATIC_FALLBACK: StorefrontHomepage = {
   testimonialsHeading: DEFAULTS.testimonials,
   newsletter: DEFAULTS.newsletter,
   featuredProducts: mapStaticProducts(),
-  categories: mapStaticCategories(),
   testimonials: TESTIMONIALS,
 };
 
@@ -348,11 +243,8 @@ export const getStorefrontHomepage = cache(async (): Promise<StorefrontHomepage>
   try {
     const cms = await getHomepage();
     const base = buildFromCms(cms);
-    const [featuredProducts, categories] = await Promise.all([
-      resolveProducts(cms, base.published),
-      resolveCategories(cms, base.published),
-    ]);
-    return { ...base, featuredProducts, categories };
+    const featuredProducts = await resolveProducts();
+    return { ...base, featuredProducts };
   } catch {
     return STATIC_FALLBACK;
   }

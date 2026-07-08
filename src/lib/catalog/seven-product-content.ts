@@ -7,6 +7,19 @@ type SevenProductContent = {
 };
 
 export const SEVEN_PRODUCT_CONTENT: Record<string, SevenProductContent> = {
+  "baby-wipes": {
+    directions:
+      "Open the lid and pull one wipe gently. Use for diaper changes, face, and hands. Reseal the pack after each use to keep wipes fresh.",
+    benefits: [
+      { icon: "💧", name: "99% Purified Water", description: "Gentle cleansing without harsh solvents or heavy fragrance." },
+      { icon: "🛡️", name: "Hypoallergenic", description: "Formulated to minimize allergy risk on delicate baby skin." },
+      { icon: "✓", name: "Paraben Free", description: "No parabens — suitable for sensitive skin from day one." },
+    ],
+    faqs: [
+      { question: "Are these safe for newborns?", answer: "Yes — dermatologically tested and suitable from birth when used as directed." },
+      { question: "Can I use them on the face?", answer: "Yes — they are gentle enough for face, hands, and diaper area." },
+    ],
+  },
   "baby-hair-oil-100ml": {
     directions:
       "Warm 2–3 drops between your palms. Gently massage into scalp and hair using soft circular motions. Use 2–3 times per week or as needed. Avoid contact with eyes.",

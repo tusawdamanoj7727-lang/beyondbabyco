@@ -19,6 +19,7 @@ export const PRODUCT_GST_BY_NAME: Record<string, number> = {
 
 /** GST % by product slug when DB gst_rate is unset. */
 export const PRODUCT_GST_RATES_BY_SLUG: Record<string, number> = {
+  "baby-wipes": GST_RATE_BABY,
   "baby-hair-oil-100ml": GST_RATE_OIL,
   "baby-massage-oil-100ml": GST_RATE_OIL,
   "baby-body-wash-200ml": GST_RATE_BABY,

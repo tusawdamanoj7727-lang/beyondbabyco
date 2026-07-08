@@ -12,7 +12,7 @@ export const contactPage: ContentPage = {
   relatedLinks: [
     { label: "FAQ", href: "/faq" },
     { label: "Shipping Policy", href: "/shipping-policy" },
-    { label: "Return Policy", href: "/return-policy" },
+    { label: "Return Policy", href: "/refund-policy" },
   ],
   sections: [
     {
@@ -82,7 +82,7 @@ export const faqPage: ContentPage = {
   relatedLinks: [
     { label: "Contact", href: "/contact" },
     { label: "Shipping Policy", href: "/shipping-policy" },
-    { label: "Return Policy", href: "/return-policy" },
+    { label: "Return Policy", href: "/refund-policy" },
     { label: "Ingredients", href: "/ingredients" },
   ],
   sections: [

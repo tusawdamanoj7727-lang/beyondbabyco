@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import { Mascot } from "@/components/mascots";
 import type { MascotType } from "@/components/mascots";
-import { IMAGE_QUALITY, mascotImageSizes } from "@/lib/media/image-delivery";
+import { mascotImageQuality, mascotImageSizes } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 
 function buildHeroFallbacks(heroImage: string, mascotId: MascotType): string[] {
@@ -59,7 +59,7 @@ export default function MascotHeroImage({
       height={size}
       priority={priority}
       sizes={mascotImageSizes(size)}
-      quality={IMAGE_QUALITY.mascot}
+      quality={mascotImageQuality(size)}
       draggable={false}
       onError={() => setIndex((i) => i + 1)}
       className={cn(

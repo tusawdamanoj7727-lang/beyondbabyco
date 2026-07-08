@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import type { MascotContent } from "@/lib/mascots/content";
-import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
 
 type MascotHubCardProps = {
   slug: string;
@@ -40,8 +40,9 @@ export default function MascotHubCard({ slug, mascot, delay }: MascotHubCardProp
           alt={mascot.name}
           width={IMAGE_DIMENSIONS.mascotGrid.width}
           height={IMAGE_DIMENSIONS.mascotGrid.height}
-          sizes={IMAGE_SIZES.mascotGrid}
-          quality={IMAGE_QUALITY.mascot}
+          loading="lazy"
+          sizes={fixedImageSizes(160)}
+          quality={mascotImageQuality(160)}
           className="relative z-30 h-full w-full object-contain drop-shadow-2xl"
           style={{ background: "transparent" }}
         />

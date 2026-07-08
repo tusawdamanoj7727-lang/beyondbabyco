@@ -3,7 +3,7 @@ import Image from "next/image";
 import { IMAGES } from "@/lib/images";
 import { HERO_DEFAULT_BLUR } from "@/lib/homepage/visual-assets";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
-import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, mascotImageQuality, resolveImageBlur } from "@/lib/media/image-delivery";
 import { resolveMascotAssetSrc } from "@/lib/mascots";
 import type { MascotPose, MascotType } from "@/components/mascots/Mascot";
 import { cn } from "@/lib/utils";
@@ -58,7 +58,7 @@ export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualPro
           alt={heroImageAlt}
           fill
           priority={true}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes={IMAGE_SIZES.hero}
           quality={IMAGE_QUALITY.hero}
           placeholder="blur"
           blurDataURL={heroBlur}
@@ -83,7 +83,7 @@ export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualPro
               loading="lazy"
               draggable={false}
               sizes={IMAGE_SIZES.mascotHero}
-              quality={IMAGE_QUALITY.mascot}
+              quality={mascotImageQuality(IMAGE_DIMENSIONS.mascotHero.width)}
               className="object-contain drop-shadow-2xl animate-float"
               style={{ ...MASCOT_IMAGE_STYLE, animationDelay: mascot.animationDelay }}
             />

@@ -207,7 +207,7 @@ export const shippingPolicyPage: ContentPage = {
     "BeyondBabyCo shipping information — delivery areas, timelines, tracking, and shipping charges across India.",
   eyebrow: "Legal",
   relatedLinks: [
-    { label: "Return Policy", href: "/return-policy" },
+    { label: "Return Policy", href: "/refund-policy" },
     { label: "Refund Policy", href: "/refund-policy" },
     { label: "FAQ", href: "/faq" },
   ],
@@ -293,7 +293,7 @@ export const refundPolicyPage: ContentPage = {
     "BeyondBabyCo refund policy — eligibility, processing times, and how refunds are issued for online orders in India.",
   eyebrow: "Legal",
   relatedLinks: [
-    { label: "Return Policy", href: "/return-policy" },
+    { label: "Return Policy", href: "/refund-policy" },
     { label: "Shipping Policy", href: "/shipping-policy" },
     { label: "Contact", href: "/contact" },
   ],

@@ -6,6 +6,8 @@ import Link from "next/link";
 import AddToCartButton from "@/components/catalog/AddToCartButton";
 import { productUnit } from "@/lib/catalog/product-images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
+import { IMAGES } from "@/lib/images";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 
 type ProductCardProps = {
@@ -20,9 +22,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
   const compareAt = product.compareAtPrice ?? product.price;
   const price = product.effectivePrice;
   const savings = compareAt > price ? Math.round(compareAt - price) : 0;
-  const imageSrc =
-    product.imageUrl ??
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&q=85";
+  const imageSrc = product.imageUrl ?? IMAGES.products.placeholder;
 
   return (
     <Link href={`/products/${product.slug}`} className={cn("block h-full", className)}>
@@ -32,9 +32,10 @@ export function ProductCard({ product, className, priority = false }: ProductCar
             src={imageSrc}
             alt={product.name}
             fill
-            sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
+            sizes={IMAGE_SIZES.productCard}
             className="object-contain p-5 transition-transform duration-300 group-hover:scale-105"
-            quality={85}
+            quality={IMAGE_QUALITY.product}
+            loading={priority ? undefined : "lazy"}
             priority={priority}
           />
           {product.inStock ? (

@@ -193,13 +193,6 @@ export const FEATURED_PRODUCTS = {
   notifyMe: "Notify for launch updates",
 } as const;
 
-export const CATEGORIES = {
-  eyebrow: "Shop by care",
-  heading: "Care for every stage",
-  intro:
-    "From the first days through toddlerhood — explore what is available now and what is coming next.",
-} as const;
-
 export const TESTIMONIALS = {
   eyebrow: "From families",
   heading: "Voices from\nour community",
@@ -321,6 +314,17 @@ export const TRENDING_SEARCHES = [
 /** Static featured product cards (homepage fallback) */
 export const FEATURED_PRODUCT_CARDS = [
   {
+    id: 0,
+    name: "Baby Wipes",
+    category: "Baby Wipes",
+    gstRate: 12,
+    badge: "Available Now",
+    description: "Ultra-soft, paraben-free wipes with 99% purified water. Hypoallergenic and dermatologically tested.",
+    price: "₹299",
+    slug: "baby-wipes",
+    comingSoon: false,
+  },
+  {
     id: 1,
     name: "Baby Hair Oil",
     category: "Hair Care",
@@ -397,15 +401,4 @@ export const FEATURED_PRODUCT_CARDS = [
     slug: "tummy-rollon-40ml",
     comingSoon: false,
   },
-] as const;
-
-export const CATEGORY_ITEMS = [
-  { title: "Baby Wipes", count: "Available now" },
-  { title: "Baby Wash", count: "Arriving 2026" },
-  { title: "Baby Lotion", count: "Arriving 2026" },
-  { title: "Baby Oil", count: "Arriving 2026" },
-  { title: "Baby Powder", count: "Arriving 2026" },
-  { title: "Gift Sets", count: "Arriving 2026" },
-  { title: "Newborn Essentials", count: "Arriving 2026" },
-  { title: "Bath Time", count: "Development complete" },
 ] as const;

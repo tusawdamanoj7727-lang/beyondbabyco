@@ -79,33 +79,6 @@ export async function getCategoriesTree(): Promise<CategoryNode[]> {
   return roots;
 }
 
-/** Published categories flagged as featured (homepage / nav highlights). */
-export async function getFeaturedCategories(limit = 12): Promise<CategoryNode[]> {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("id,name,slug,description,image_url,icon_url,banner_url,is_featured,position")
-    .eq("status", "active")
-    .eq("is_featured", true)
-    .is("deleted_at", null)
-    .order("position", { ascending: true })
-    .limit(limit);
-
-  if (error) throw new Error(error.message);
-  return (data ?? []).map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-    image: c.image_url,
-    icon: c.icon_url,
-    banner: c.banner_url,
-    isFeatured: c.is_featured,
-    position: c.position,
-    children: [],
-  }));
-}
-
 /** All published brands, ordered for display. */
 export async function getBrands(): Promise<PublicBrand[]> {
   const supabase = await createSupabaseServerClient();
@@ -174,38 +147,6 @@ export async function getFeaturedProducts(limit = 8): Promise<PublicProduct[]> {
     data ?? [],
     (data ?? []).map((r) => r.id),
   );
-}
-
-/** Published categories by id (homepage CMS order preserved). */
-export async function getCategoriesByIds(ids: string[]): Promise<CategoryNode[]> {
-  if (ids.length === 0) return [];
-
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("id,name,slug,description,image_url,icon_url,banner_url,is_featured,position")
-    .in("id", ids)
-    .eq("status", "active")
-    .is("deleted_at", null);
-
-  if (error) throw new Error(error.message);
-
-  const byId = new Map<string, CategoryNode>();
-  for (const c of data ?? []) {
-    byId.set(c.id, {
-      id: c.id,
-      name: c.name,
-      slug: c.slug,
-      description: c.description,
-      image: c.image_url,
-      icon: c.icon_url,
-      banner: c.banner_url,
-      isFeatured: c.is_featured,
-      position: c.position,
-      children: [],
-    });
-  }
-  return ids.map((id) => byId.get(id)).filter((c): c is CategoryNode => c !== undefined);
 }
 
 export interface PublicProduct {

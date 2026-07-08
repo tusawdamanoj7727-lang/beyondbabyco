@@ -110,6 +110,7 @@ export const LEGACY_VISUAL_PATTERNS = [
   "/images/brand/",
   "/images/placeholders/",
   "placehold.co",
+  "images.unsplash.com",
   "/images/homepage/phase-8-2/",
   "/images/hero/phase-8-1/",
   "/images/generated/homepage/phase-8-2/",
@@ -166,8 +167,6 @@ export function resolveProductLine(slug: string, categorySlug?: string | null): 
   if (s.includes("oil") || s.includes("massage") || cat.includes("baby-oil") || cat.includes("massage")) return "baby-oil";
   if (s.includes("gift") || s.includes("hamper") || cat.includes("gift")) return "gift-box";
   if (s.includes("newborn") || s.includes("essentials-kit") || s.includes("discovery")) return "newborn-kit";
-  if (s.includes("men-care") || cat.includes("men")) return "men-care";
-  if (s.includes("women-care") || cat.includes("women")) return "women-care";
   if (s.includes("wash") || s.includes("soap") || cat.includes("baby-wash") || cat.includes("baby-soap")) return "baby-wash";
   if (s.includes("cream") || s.includes("rash") || cat.includes("baby-cream")) return "baby-lotion";
 
@@ -273,8 +272,6 @@ export function categoryGeneratedSlug(titleOrSlug: string): VisualRef {
   if (key.includes("powder")) return { category: "categories", slug: "baby-powder" };
   if (key.includes("gift")) return { category: "categories", slug: "gift-sets" };
   if (key.includes("newborn")) return { category: "gift", slug: "newborn-kit-flatlay" };
-  if (key.includes("men")) return { category: "categories", slug: "men-care" };
-  if (key.includes("women")) return { category: "categories", slug: "women-care" };
   return { category: "categories", slug: "baby-wipes" };
 }
 
@@ -351,8 +348,6 @@ export const EDITORIAL = {
   ],
   newsletter: resolveSelectedVisual("EDITORIAL.newsletter", { category: "newsletter", slug: "care-tips" }),
   newsletterAlt: resolveSelectedVisual("EDITORIAL.newsletterAlt", { category: "lifestyle", slug: "baby-sleeping" }),
-  beyondCareMen: resolveSelectedVisual("EDITORIAL.beyondCareMen", { category: "men-care", slug: "grooming-routine" }),
-  beyondCareWomen: resolveSelectedVisual("EDITORIAL.beyondCareWomen", { category: "women-care", slug: "self-care-routine" }),
   trustBackdrop: resolveSelectedVisual("EDITORIAL.trustBackdrop", { category: "reviews", slug: "testimonial-backdrop" }),
   meetFriendsBg: resolveSelectedVisual("EDITORIAL.meetFriendsBg", { category: "backgrounds", slug: "nursery" }),
 } as const;

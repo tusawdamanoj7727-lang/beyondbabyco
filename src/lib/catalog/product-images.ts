@@ -1,22 +1,19 @@
-/** Unsplash hero images for the 7-product launch catalog. */
+import { IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";
+
+/** Hero images for the launch storefront catalog (self-hosted). */
 export const SEVEN_PRODUCT_UNSPLASH: Record<string, string> = {
-  "baby-hair-oil-100ml":
-    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=85",
-  "baby-massage-oil-100ml":
-    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&q=85",
-  "baby-body-wash-200ml":
-    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=85",
-  "baby-lotion-200ml":
-    "https://images.unsplash.com/photo-1556228578-626d52e9793d?w=600&q=85",
-  "baby-diaper-rash-cream-50gm":
-    "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85",
-  "baby-shampoo-200ml":
-    "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=600&q=85",
-  "tummy-rollon-40ml":
-    "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&q=85",
+  "baby-wipes": IMAGES.products.baby_wipes,
+  "baby-hair-oil-100ml": PRODUCT_IMAGES_BY_SLUG["baby-hair-oil-100ml"]!,
+  "baby-massage-oil-100ml": PRODUCT_IMAGES_BY_SLUG["baby-massage-oil-100ml"]!,
+  "baby-body-wash-200ml": PRODUCT_IMAGES_BY_SLUG["baby-body-wash-200ml"]!,
+  "baby-lotion-200ml": PRODUCT_IMAGES_BY_SLUG["baby-lotion-200ml"]!,
+  "baby-diaper-rash-cream-50gm": PRODUCT_IMAGES_BY_SLUG["baby-diaper-rash-cream-50gm"]!,
+  "baby-shampoo-200ml": PRODUCT_IMAGES_BY_SLUG["baby-shampoo-200ml"]!,
+  "tummy-rollon-40ml": PRODUCT_IMAGES_BY_SLUG["tummy-rollon-40ml"]!,
 };
 
 export const PRODUCT_UNITS_BY_SLUG: Record<string, string> = {
+  "baby-wipes": "72 wipes",
   "baby-hair-oil-100ml": "100 ml",
   "baby-massage-oil-100ml": "100 ml",
   "baby-body-wash-200ml": "200 ml",
@@ -26,8 +23,7 @@ export const PRODUCT_UNITS_BY_SLUG: Record<string, string> = {
   "tummy-rollon-40ml": "40 ml",
 };
 
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&q=85";
+const FALLBACK_IMAGE = IMAGES.products.placeholder;
 
 export function resolveSevenProductImage(slug: string, dbUrl?: string | null): string {
   return dbUrl?.trim() || SEVEN_PRODUCT_UNSPLASH[slug] || FALLBACK_IMAGE;

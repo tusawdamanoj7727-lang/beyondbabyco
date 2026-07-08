@@ -5,7 +5,6 @@ import {
   DEFAULTS,
   type AnnouncementConfig,
   type BrandPromiseConfig,
-  type FeaturedCategoriesConfig,
   type FeaturedProductsConfig,
   type FooterConfig,
   type GeneralConfig,
@@ -67,7 +66,6 @@ export interface HomepageAdminData {
   sections: {
     announcement: SectionState<AnnouncementConfig>;
     hero: SectionState<Record<string, never>>;
-    featured_categories: SectionState<FeaturedCategoriesConfig>;
     featured_products: SectionState<FeaturedProductsConfig>;
     brand_promise: SectionState<BrandPromiseConfig>;
     science: SectionState<ScienceConfig>;
@@ -80,7 +78,6 @@ export interface HomepageAdminData {
   heroSlides: HeroSlide[];
   testimonials: TestimonialRow[];
   options: {
-    categories: SelectOption[];
     products: SelectOption[];
   };
 }
@@ -93,7 +90,7 @@ function merge<T extends object>(fallback: T, value: unknown): T {
 export async function getHomepageAdminData(): Promise<HomepageAdminData> {
   const supabase = await createSupabaseServerClient();
 
-  const [settingsRes, sectionsRes, heroRes, testimonialRes, catRes, prodRes] = await Promise.all([
+  const [settingsRes, sectionsRes, heroRes, testimonialRes, prodRes] = await Promise.all([
     supabase.from("homepage_settings").select("key, value"),
     supabase.from("homepage_sections").select("key, is_enabled, config, position"),
     supabase
@@ -104,11 +101,6 @@ export async function getHomepageAdminData(): Promise<HomepageAdminData> {
       .from("testimonials")
       .select("*")
       .order("position", { ascending: true }),
-    supabase
-      .from("categories")
-      .select("id, name")
-      .is("deleted_at", null)
-      .order("name", { ascending: true }),
     supabase
       .from("products")
       .select("id, name")
@@ -142,7 +134,6 @@ export async function getHomepageAdminData(): Promise<HomepageAdminData> {
     sections: {
       announcement: section("announcement", DEFAULTS.announcement),
       hero: section("hero", {} as Record<string, never>),
-      featured_categories: section("featured_categories", DEFAULTS.featured_categories),
       featured_products: section("featured_products", DEFAULTS.featured_products),
       brand_promise: section("brand_promise", DEFAULTS.brand_promise),
       science: section("science", DEFAULTS.science),
@@ -178,7 +169,6 @@ export async function getHomepageAdminData(): Promise<HomepageAdminData> {
       position: r.position,
     })),
     options: {
-      categories: catRes.data ?? [],
       products: prodRes.data ?? [],
     },
   };

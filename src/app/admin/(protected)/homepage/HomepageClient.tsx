@@ -12,7 +12,6 @@ import { useSaver } from "./parts";
 import {
   AnnouncementEditor,
   BrandPromiseEditor,
-  FeaturedCategoriesEditor,
   FeaturedProductsEditor,
   FooterEditor,
   GeneralEditor,
@@ -34,7 +33,6 @@ const SECTION_ICONS: Partial<Record<CmsNavKey, IconName>> = {
   general: "settings",
   hero: "homepage",
   announcement: "bell",
-  featured_categories: "categories",
   featured_products: "products",
   brand_promise: "sparkles",
   science: "activity",
@@ -135,8 +133,6 @@ function Editor({ active, data }: { active: CmsNavKey; data: HomepageAdminData }
       return <HeroEditor section={data.sections.hero} slides={data.heroSlides} />;
     case "announcement":
       return <AnnouncementEditor section={data.sections.announcement} />;
-    case "featured_categories":
-      return <FeaturedCategoriesEditor section={data.sections.featured_categories} categories={data.options.categories} />;
     case "featured_products":
       return <FeaturedProductsEditor section={data.sections.featured_products} products={data.options.products} />;
     case "brand_promise":

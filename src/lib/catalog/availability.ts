@@ -2,6 +2,7 @@ import type { StorefrontProduct } from "@/lib/catalog/types";
 
 /** Products currently available for purchase on the storefront. */
 export const LAUNCH_PRODUCT_SLUGS = new Set([
+  "baby-wipes",
   "baby-hair-oil-100ml",
   "baby-massage-oil-100ml",
   "baby-body-wash-200ml",

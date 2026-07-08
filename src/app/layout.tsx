@@ -11,7 +11,7 @@ import AnalyticsRoot from "@/components/analytics/AnalyticsRoot";
 import { AppToaster } from "@/components/ui/AppToaster";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
-import { getSiteUrl } from "@/lib/seo/site";
+import { getCanonicalSiteUrl } from "@/lib/seo/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { BRAND } from "@/lib/brand/copy";
@@ -39,7 +39,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getSiteUrl()),
+  metadataBase: new URL(getCanonicalSiteUrl()),
   ...buildPageMetadata({
     title: BRAND.siteTitle,
     path: "/",

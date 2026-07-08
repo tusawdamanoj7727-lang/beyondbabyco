@@ -1,4 +1,3 @@
-import CatalogBeyondCare from "@/components/catalog/CatalogBeyondCare";
 import CatalogBundleRecommendations from "@/components/catalog/CatalogBundleRecommendations";
 import FeaturedCollections from "@/components/catalog/FeaturedCollections";
 import ProductGridPagination from "@/components/catalog/ProductGridPagination";
@@ -40,7 +39,6 @@ export default async function ProductsCatalogSection({
         <>
           <FeaturedCollections products={featured} />
           <CatalogBundleRecommendations products={featured} />
-          <CatalogBeyondCare />
         </>
       ) : null}
 

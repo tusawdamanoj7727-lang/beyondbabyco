@@ -7,20 +7,13 @@ import type { User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 
 import StaticSvgImage from "@/components/media/StaticSvgImage";
+import { HEADER_ACCOUNT_HREF, PRIMARY_NAV_LINKS } from "@/lib/brand/navigation";
 import { INSTAGRAM_URL } from "@/lib/brand/social";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
 import { isCustomerAuthPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-
-const NAV_LINKS = [
-  { label: "Products", href: "/products" },
-  { label: "About", href: "/about" },
-  { label: "Research", href: "/research" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-] as const;
 
 const ICON_LINK =
   "relative flex h-11 w-11 shrink-0 items-center justify-center text-gray-600 transition-colors";
@@ -89,8 +82,8 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between md:h-20">
-          <Link href="/" className="shrink-0" aria-label="BeyondBabyCo home">
+        <div className="site-navbar-grid h-16 md:h-20">
+          <Link href="/" className="site-navbar-logo shrink-0" aria-label="BeyondBabyCo home">
             <StaticSvgImage
               src="/images/brand/logo.svg"
               alt="BeyondBabyCo"
@@ -101,8 +94,11 @@ export function Navbar() {
             />
           </Link>
 
-          <div aria-label="Main navigation" className="hidden items-center gap-8 md:flex">
-            {NAV_LINKS.map((link) => (
+          <div
+            aria-label="Main navigation"
+            className="site-navbar-nav hidden shrink-0 items-center gap-6 lg:flex xl:gap-8"
+          >
+            {PRIMARY_NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -114,7 +110,7 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+          <div className="site-navbar-actions flex items-center justify-end gap-1 sm:gap-2 md:gap-3">
             <a
               href={INSTAGRAM_URL}
               target="_blank"
@@ -130,7 +126,7 @@ export function Navbar() {
             </Link>
 
             <Link
-              href="/account"
+              href={HEADER_ACCOUNT_HREF}
               aria-label="My Account"
               className={cn(ICON_LINK, "hover:text-[#2d5a27]")}
             >
@@ -161,7 +157,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={cn(ICON_LINK, "md:hidden")}
+              className={cn(ICON_LINK, "lg:hidden")}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
             >
@@ -175,14 +171,14 @@ export function Navbar() {
         <button
           type="button"
           aria-label="Close menu"
-          className="fixed inset-0 z-40 bg-black/30 md:hidden"
+          className="fixed inset-0 z-40 bg-black/30 lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       ) : null}
 
       <div
         className={cn(
-          "fixed inset-y-0 right-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-300 md:hidden",
+          "fixed inset-y-0 right-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-300 lg:hidden",
           mobileOpen ? "translate-x-0" : "translate-x-full",
         )}
         aria-hidden={!mobileOpen}
@@ -199,7 +195,7 @@ export function Navbar() {
           </button>
         </div>
         <nav className="space-y-1 px-4 py-4" aria-label="Mobile navigation">
-          {NAV_LINKS.map((link) => (
+          {PRIMARY_NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -229,7 +225,7 @@ export function Navbar() {
               <Heart size={20} strokeWidth={1.5} aria-hidden="true" />
             </Link>
             <Link
-              href="/account"
+              href={HEADER_ACCOUNT_HREF}
               onClick={() => setMobileOpen(false)}
               aria-label="My Account"
               className={cn(ICON_LINK, "hover:text-[#2d5a27]")}

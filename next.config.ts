@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
+import bundleAnalyzer from "@next/bundle-analyzer";
+
 import { getNextConfigSecurityHeaders } from "./src/lib/security/headers";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 /** Keep in sync with src/lib/media/image-delivery.ts CDN_CACHE_POLICY */
 const CACHE = {
@@ -43,6 +49,10 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/images/:path*",
+        headers: [{ key: "Cache-Control", value: CACHE.immutableStatic }],
+      },
+      {
+        source: "/icons/:path*",
         headers: [{ key: "Cache-Control", value: CACHE.immutableStatic }],
       },
       {
@@ -91,4 +101,4 @@ function wrapWithSentry(config: NextConfig): NextConfig {
   }
 }
 
-export default wrapWithSentry(nextConfig);
+export default withBundleAnalyzer(wrapWithSentry(nextConfig));

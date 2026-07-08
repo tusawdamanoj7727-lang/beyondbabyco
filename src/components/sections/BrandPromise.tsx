@@ -9,7 +9,7 @@ import { homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 import { BRAND_PROMISE_DEFAULTS } from "../../lib/data";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
-import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import type { BrandPromiseConfig } from "@/lib/admin/homepage-schema";
 import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 
@@ -50,7 +50,7 @@ export default function BrandPromise({ config }: { config?: BrandPromiseConfig }
             alt=""
             fill
             loading="lazy"
-            sizes="100vw"
+            sizes={IMAGE_SIZES.sectionBackground}
             quality={IMAGE_QUALITY.editorial}
             placeholder="blur"
             blurDataURL={resolveImageBlur(blurForGeneratedUrl(backgroundUrl))}
@@ -85,11 +85,11 @@ export default function BrandPromise({ config }: { config?: BrandPromiseConfig }
                   <Image
                     src={card.imageUrl}
                     alt=""
-                    width={400}
-                    height={400}
+                    width={IMAGE_DIMENSIONS.brandPromiseIcon.width}
+                    height={IMAGE_DIMENSIONS.brandPromiseIcon.height}
                     loading="lazy"
-                    sizes={IMAGE_SIZES.lifestyleThumbnail}
-                    quality={IMAGE_QUALITY.editorial}
+                    sizes={IMAGE_SIZES.brandPromiseIcon}
+                    quality={IMAGE_QUALITY.thumbnail}
                     placeholder="blur"
                     blurDataURL={resolveImageBlur(blurForGeneratedUrl(card.imageUrl ?? ""))}
                     className="h-full w-full object-cover"

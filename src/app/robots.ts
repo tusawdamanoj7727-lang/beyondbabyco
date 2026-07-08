@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
 
+import { getCanonicalSiteUrl } from "@/lib/seo/site";
+
 export default function robots(): MetadataRoute.Robots {
-  const BASE = (process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in").replace(/\/+$/, "");
+  const base = getCanonicalSiteUrl();
 
   return {
     rules: [{ userAgent: "*", allow: "/", disallow: ["/api/", "/admin/", "/account/"] }],
-    sitemap: `${BASE}/sitemap.xml`,
+    sitemap: `${base}/sitemap.xml`,
   };
 }

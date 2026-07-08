@@ -13,7 +13,6 @@ export type CmsNavKey =
   | "general"
   | "hero"
   | "announcement"
-  | "featured_categories"
   | "featured_products"
   | "brand_promise"
   | "science"
@@ -36,7 +35,6 @@ export const CMS_NAV: CmsNavItem[] = [
   { key: "general", label: "General", source: "settings" },
   { key: "hero", label: "Hero", source: "composite" },
   { key: "announcement", label: "Announcement Bar", source: "section" },
-  { key: "featured_categories", label: "Featured Categories", source: "section" },
   { key: "featured_products", label: "Featured Products", source: "section" },
   { key: "brand_promise", label: "Brand Promise", source: "section" },
   { key: "science", label: "Science Section", source: "section" },
@@ -53,7 +51,6 @@ export const CMS_NAV: CmsNavItem[] = [
 export type SectionKey =
   | "announcement"
   | "hero"
-  | "featured_categories"
   | "featured_products"
   | "brand_promise"
   | "science"
@@ -104,21 +101,6 @@ export interface AnnouncementConfig {
   text: string;
   link: string;
   background: string;
-}
-
-export interface FeaturedCategoriesConfig {
-  heading: string;
-  limit: number;
-  categoryIds: string[];
-  /** Asset overrides when categories are not yet in the catalog DB. */
-  categoryAssets?: Array<{
-    slug: string;
-    title: string;
-    count?: string;
-    iconUrl?: string;
-    imageUrl?: string;
-    color?: string;
-  }>;
 }
 
 export interface FeaturedProductsConfig {
@@ -209,7 +191,6 @@ export const DEFAULTS = {
   seo: { title: "", description: "", keywords: "", canonical: "", schema: "" } as SeoConfig,
   footer: { companyInfo: "", email: "", phone: "", address: "", social: [], copyright: "" } as FooterConfig,
   announcement: { text: "", link: "", background: "#0f5132" } as AnnouncementConfig,
-  featured_categories: { heading: "Shop by Category", limit: 6, categoryIds: [] } as FeaturedCategoriesConfig,
   featured_products: { heading: "Featured Collection", limit: 8, productIds: [] } as FeaturedProductsConfig,
   brand_promise: { heading: "Our Promise", description: "", cards: [] } as BrandPromiseConfig,
   science: {

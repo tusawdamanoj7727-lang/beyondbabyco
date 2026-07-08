@@ -2,6 +2,7 @@
 
 /** Storefront launch SKUs — all others seed as coming_soon with zero stock. */
 export const LAUNCH_PRODUCT_SLUGS = new Set([
+  "baby-wipes",
   "baby-hair-oil-100ml",
   "baby-massage-oil-100ml",
   "baby-body-wash-200ml",

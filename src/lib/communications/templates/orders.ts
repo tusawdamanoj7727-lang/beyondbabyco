@@ -152,7 +152,7 @@ export const ORDER_EMAIL_TEMPLATES: EmailTemplate[] = [
     preheader: "Your return request has been approved.",
     heading: "Return Approved",
     bodyHtml: `${p("Hi {{customer_name}},")}${p("Your return request for order {{order_number}} has been approved.")}${p("Please follow the return instructions sent separately. Once we receive the item, your refund will be processed.")}`,
-    cta: { label: "Return Policy", href: "{{site_url}}/return-policy" },
+    cta: { label: "Return Policy", href: "{{site_url}}/refund-policy" },
   }),
   tpl({
     id: "return-completed",

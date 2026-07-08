@@ -6,11 +6,11 @@ import StatsBar from "@/components/sections/StatsBar";
 import BrandPromise from "@/components/sections/BrandPromise";
 import ScienceSection from "@/components/sections/ScienceSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
-import CategoriesSection from "@/components/sections/CategoriesSection";
 import SectionWaveDivider from "@/components/ui/SectionWaveDivider";
 import ScrollAnimationSection from "@/components/ui/ScrollAnimationSection";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontHomepage } from "@/lib/homepage/storefront";
+import { fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
 import { mergeTestimonials } from "@/lib/trust";
 
 /** Below-fold client sections — code-split to reduce main-thread work on LCP path. */
@@ -55,7 +55,9 @@ export default function HomePageContent({
               alt=""
               width={160}
               height={160}
-              sizes="160px"
+              loading="lazy"
+              sizes={fixedImageSizes(160)}
+              quality={mascotImageQuality(160)}
               className="animate-float object-contain drop-shadow-2xl"
               style={{
                 background: "transparent",
@@ -105,17 +107,7 @@ export default function HomePageContent({
 
       <SectionWaveDivider fill="#ffffff" />
 
-      {/* 5. Categories */}
-      <ScrollAnimationSection>
-        <CategoriesSection
-          heading={data.featuredCategoriesHeading}
-          categories={data.categories}
-        />
-      </ScrollAnimationSection>
-
-      <SectionWaveDivider fill="#faf5f0" />
-
-      {/* 6. Science */}
+      {/* 5. Science */}
       {data.sections.science.enabled ? (
         <ScrollAnimationSection>
           <ScienceSection config={data.science} />

@@ -10,7 +10,7 @@ import { LIFESTYLE_SECTION } from "@/lib/brand/copy";
 
 import type { LifestyleConfig } from "@/lib/admin/homepage-schema";
 import { editorialImageCrop } from "@/lib/design/ui";
-import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
 const FEATURE_ACCENTS = ["bg-green-100/90", "bg-terra-100/90", "bg-cream-200/90"];
@@ -69,11 +69,11 @@ export default function LifestyleSection({ config }: { config?: LifestyleConfig 
                     <Image
                       src={feature.imageUrl}
                       alt=""
-                      width={400}
-                      height={400}
+                      width={IMAGE_DIMENSIONS.sectionThumbnail.width}
+                      height={IMAGE_DIMENSIONS.sectionThumbnail.height}
                       loading="lazy"
                       sizes={IMAGE_SIZES.lifestyleThumbnail}
-                      quality={IMAGE_QUALITY.editorial}
+                      quality={IMAGE_QUALITY.thumbnail}
                       placeholder="blur"
                       blurDataURL={resolveImageBlur(STATIC_IMAGE_BLUR)}
                       className="h-full w-full object-cover object-[center_25%]"

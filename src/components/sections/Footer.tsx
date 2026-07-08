@@ -28,37 +28,16 @@ import {
   isWhatsAppConfigured,
 } from "@/lib/brand/contact";
 import { FOOTER as FOOTER_COPY } from "@/lib/brand/copy";
+import {
+  FOOTER_COMPANY_LINKS,
+  FOOTER_LEGAL_LINKS,
+  FOOTER_QUICK_LINKS,
+  type FooterNavItem,
+} from "@/lib/brand/navigation";
 import { useNewsletterSubscribe } from "@/lib/newsletter/use-newsletter-subscribe";
 import type { FooterConfig } from "@/lib/admin/homepage-schema";
 import { focusRing, trustIconSize } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
-
-const QUICK_LINKS: { label: string; href: string }[] = [
-  { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-  { label: "FAQ", href: "/faq" },
-];
-
-type FooterNavItem =
-  | { label: string; href: string }
-  | { label: string; comingSoon: true };
-
-const COMPANY_LINKS: FooterNavItem[] = [
-  { label: "About", href: "/about" },
-  { label: "Research", href: "/research" },
-  { label: "Blog", href: "/blog" },
-  { label: "Careers", comingSoon: true },
-  { label: "Press", comingSoon: true },
-];
-
-const LEGAL_LINKS: { label: string; href: string }[] = [
-  { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Service", href: "/terms-of-service" },
-  { label: "Shipping Policy", href: "/shipping-policy" },
-  { label: "Refund Policy", href: "/refund-policy" },
-];
 
 const FOOTER_TRUST = [
   { icon: ShieldCheck, label: "Dermatologically tested" },
@@ -257,7 +236,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
             <Reveal as="div" variant="fadeUp" delay={0.1} className="w-full lg:col-span-2">
               <h3 className="footer-column-title">Quick Links</h3>
               <ul className="mt-5 flex flex-col gap-3">
-                {QUICK_LINKS.map((item) => (
+                {FOOTER_QUICK_LINKS.map((item) => (
                   <li key={item.label}>
                     <FooterLink href={item.href} className={linkClass}>
                       {item.label}
@@ -270,7 +249,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
             <Reveal as="div" variant="fadeUp" delay={0.2} className="w-full lg:col-span-3">
               <h3 className="footer-column-title">Company</h3>
               <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {COMPANY_LINKS.map((item) => (
+                {FOOTER_COMPANY_LINKS.map((item) => (
                   <li key={item.label}>
                     <FooterNavItemRow item={item} className={linkClass} />
                   </li>
@@ -281,7 +260,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
             <Reveal as="div" variant="fadeUp" delay={0.25} className="w-full lg:col-span-3">
               <h3 className="footer-column-title">Legal & Support</h3>
               <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {LEGAL_LINKS.map((item) => (
+                {FOOTER_LEGAL_LINKS.map((item) => (
                   <li key={item.label}>
                     <FooterLink href={item.href} className={linkClass}>
                       {item.label}

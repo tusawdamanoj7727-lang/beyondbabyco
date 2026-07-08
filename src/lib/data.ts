@@ -1,6 +1,5 @@
 import {
   BRAND_PROMISE,
-  CATEGORY_ITEMS as CATEGORY_COPY,
   FEATURED_PRODUCT_CARDS,
   RESEARCH_TIMELINE as RESEARCH_COPY,
   TESTIMONIALS as TESTIMONIAL_COPY,
@@ -9,7 +8,7 @@ import {
   TRUST_STATS,
 } from "@/lib/brand/copy";
 import { PRODUCT_GST_BY_NAME } from "@/lib/catalog/gst-rates";
-import { CATEGORY_IMAGES_BY_TITLE, IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";
+import { IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";
 import {
   brandPromiseBlur,
   brandPromisePhoto,
@@ -72,18 +71,6 @@ export const FEATURED_PRODUCTS = FEATURED_PRODUCT_CARDS.map((p) => ({
   imageUrl: featuredProductImage(p),
   imageBlur: STATIC_IMAGE_BLUR,
 }));
-
-export const CATEGORY_ITEMS = CATEGORY_COPY.map((cat) => {
-  const imageUrl = CATEGORY_IMAGES_BY_TITLE[cat.title] ?? IMAGES.categories.skin_care;
-  return {
-    title: cat.title,
-    count: cat.count,
-    icon: imageUrl,
-    imageUrl,
-    imageBlur: STATIC_IMAGE_BLUR,
-    color: "green",
-  };
-});
 
 export const BRAND_PROMISE_DEFAULTS = BRAND_PROMISE.cards.map((card, index) => ({
   ...card,

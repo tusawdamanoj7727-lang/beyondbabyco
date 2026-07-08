@@ -1,5 +1,4 @@
 import { ProductCard } from "@/components/products/ProductCard";
-import ProductsComingSoonSection from "@/components/products/ProductsComingSoonSection";
 import BundleSection from "@/components/sections/BundleSection";
 import { listSevenStorefrontProducts } from "@/lib/catalog/storefront";
 import { buildProductsMetadata } from "@/lib/seo/metadata";
@@ -41,7 +40,7 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ── SECTION 2: 7 Products Grid ── */}
+      {/* ── SECTION 2: Products Grid ── */}
       <section className="mx-auto max-w-6xl px-4 py-12">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">
@@ -73,9 +72,6 @@ export default async function ProductsPage() {
         </div>
         <BundleSection products={products} />
       </section>
-
-      {/* ── SECTION 4: Launching Soon (LAST, before footer) ── */}
-      <ProductsComingSoonSection />
     </main>
   );
 }

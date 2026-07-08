@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 
 import Icon from "../Icon";
 import { ALL_NAV_ITEMS, canSeeNavItem, type NavItem } from "../nav";
-import { useAdmin } from "../context";
-import { useRole } from "@/lib/auth/hooks";
-import { roleHasPermission } from "@/lib/auth/permissions";
+import { useAdminNavAuth } from "@/lib/auth/use-admin-nav-auth";
 import { searchAdminEntities, type AdminSearchResult } from "@/lib/admin/admin-search-actions";
 import { cn } from "@/lib/utils";
 
@@ -35,9 +33,7 @@ export default function SearchBar() {
   const [entityLoading, setEntityLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { role: initialRole } = useAdmin();
-  const { role: liveRole, hasPermission, loading } = useRole();
-  const role = loading ? initialRole : liveRole;
+  const { role, hasPermission } = useAdminNavAuth();
 
   useEffect(() => {
     setIsMac(/mac|iphone|ipad/i.test(navigator.platform));
@@ -66,15 +62,8 @@ export default function SearchBar() {
   }, [open]);
 
   const visibleItems = useMemo(
-    () =>
-      ALL_NAV_ITEMS.filter((item) =>
-        canSeeNavItem(
-          item,
-          role,
-          loading ? (p) => roleHasPermission(role, p) : hasPermission,
-        ),
-      ),
-    [role, loading, hasPermission],
+    () => ALL_NAV_ITEMS.filter((item) => canSeeNavItem(item, role, hasPermission)),
+    [role, hasPermission],
   );
 
   const navResults = useMemo(() => {
