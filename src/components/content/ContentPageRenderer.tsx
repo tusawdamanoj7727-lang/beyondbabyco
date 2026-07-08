@@ -22,7 +22,7 @@ import QualityStandardsGrid from "@/components/trust/QualityStandardsGrid";
 import ResearchProcessSection from "@/components/trust/ResearchProcessSection";
 import SustainabilitySection from "@/components/trust/SustainabilitySection";
 import TrustWidgets from "@/components/trust/TrustWidgets";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
 import type { ContentPage, ContentSection } from "@/lib/content/types";
 

@@ -1,5 +1,10 @@
+import dynamic from "next/dynamic";
+
 import { getStorefrontHomepage } from "@/lib/homepage/storefront";
-import Footer from "@/components/sections/Footer";
+
+const Footer = dynamic(() => import("@/components/sections/Footer"), {
+  loading: () => <footer className="min-h-[24rem] bg-cream-50" aria-hidden="true" />,
+});
 
 export default async function StorefrontFooter() {
   const data = await getStorefrontHomepage();

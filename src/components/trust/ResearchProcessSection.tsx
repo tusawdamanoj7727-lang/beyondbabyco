@@ -4,7 +4,7 @@ import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import AccentBar from "@/components/ui/AccentBar";
 import { TrustIcon } from "@/components/trust/TrustIcons";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
 import { RESEARCH_PROCESS_STEPS } from "@/lib/trust";
 

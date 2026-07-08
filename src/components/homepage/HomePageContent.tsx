@@ -14,7 +14,7 @@ import type { StorefrontHomepage } from "@/lib/homepage/storefront";
 import { fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
 import { mergeTestimonials } from "@/lib/trust";
 
-/** Below-fold client sections — code-split to reduce main-thread work on LCP path. */
+/** Below-fold sections — lazy-loaded to keep them off the initial homepage bundle. */
 const MeetOurFriends = dynamic(() => import("@/components/sections/MeetOurFriends"));
 const ResearchTimeline = dynamic(() => import("@/components/sections/ResearchTimeline"));
 const LifestyleSection = dynamic(() => import("@/components/sections/LifestyleSection"));

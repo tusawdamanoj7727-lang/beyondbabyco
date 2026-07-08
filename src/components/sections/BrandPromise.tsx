@@ -8,7 +8,7 @@ import { BRAND_PROMISE } from "@/lib/brand/copy";
 import { homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 import { BRAND_PROMISE_DEFAULTS } from "../../lib/data";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import type { BrandPromiseConfig } from "@/lib/admin/homepage-schema";
 import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";

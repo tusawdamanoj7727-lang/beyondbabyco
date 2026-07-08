@@ -12,7 +12,7 @@ function TickerSet({ items, ariaHidden = false }: { items: readonly string[]; ar
           <span className="whitespace-nowrap font-body text-[13px] font-medium tracking-wide text-cream-50/95 sm:text-sm">
             {label}
           </span>
-          <span aria-hidden="true" className="mx-4 shrink-0 text-sm font-light text-cream-50/40 sm:mx-5">
+          <span aria-hidden="true" className="mx-4 shrink-0 text-sm font-normal text-cream-50/40 sm:mx-5">
             •
           </span>
         </Fragment>

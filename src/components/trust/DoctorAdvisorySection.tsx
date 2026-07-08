@@ -3,7 +3,7 @@ import Image from "next/image";
 import Badge from "@/components/ui/Badge";
 import AccentBar from "@/components/ui/AccentBar";
 import { TrustIcon } from "@/components/trust/TrustIcons";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { resolveImageBlur } from "@/lib/media/image-delivery";
 import { DOCTOR_ADVISORY_BLOCKS, DOCTOR_ADVISORY_DISCLAIMER, DOCTOR_ADVISORY_IMAGE } from "@/lib/trust";
 

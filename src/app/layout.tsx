@@ -30,11 +30,11 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const montserrat = Montserrat({
-  weight: ["300", "500", "600", "700", "800", "900"],
+  weight: ["500", "600", "700", "800", "900"],
   variable: "--font-montserrat",
   display: "swap",
   subsets: ["latin"],
-  adjustFontFallback: false,
+  adjustFontFallback: true,
   preload: true,
 });
 

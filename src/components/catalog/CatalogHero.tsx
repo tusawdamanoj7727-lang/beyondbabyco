@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { EDITORIAL } from "@/lib/brand/generated-assets";
 import type { CatalogBanner } from "@/lib/catalog/types";
-import { blurForGeneratedUrl } from "@/lib/brand/generated-assets";
+import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
 import { IMAGE_QUALITY, resolveImageBlur } from "@/lib/media/image-delivery";
 
 export default function CatalogHero({ banner }: { banner: CatalogBanner }) {

@@ -69,10 +69,11 @@ export function Navbar() {
     }
 
     const onScroll = () => setScrolled(window.scrollY > 20);
-    onScroll();
+    const raf = requestAnimationFrame(onScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
+      cancelAnimationFrame(raf);
       subscription?.unsubscribe();
       if (idleHandle !== undefined && typeof cancelIdleCallback !== "undefined") {
         cancelIdleCallback(idleHandle);
