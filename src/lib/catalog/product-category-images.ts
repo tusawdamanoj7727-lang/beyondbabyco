@@ -101,6 +101,7 @@ export function isLegacyOrMissingProductImage(url: string | null | undefined): b
     lower.includes("product-botanical") ||
     lower.includes("/images/placeholders/") ||
     lower.includes("placehold.co") ||
-    lower.includes("/images/products/phase-")
+    lower.includes("/images/products/phase-") ||
+    lower.includes("images.unsplash.com")
   );
 }

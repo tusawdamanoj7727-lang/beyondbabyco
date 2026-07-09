@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getImageProps } from "next/image";
 
-import HomePageContent from "@/components/homepage/HomePageContent";
 import HomePageWithReviews from "@/components/homepage/HomePageWithReviews";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
 import { getStorefrontHomepage } from "@/lib/homepage/storefront";
@@ -59,9 +57,7 @@ export default async function Home() {
         fetchPriority="high"
       />
       <div className="homepage-main">
-        <Suspense fallback={<HomePageContent data={data} communityReviews={[]} />}>
-          <HomePageWithReviews data={data} />
-        </Suspense>
+        <HomePageWithReviews data={data} />
       </div>
     </>
   );

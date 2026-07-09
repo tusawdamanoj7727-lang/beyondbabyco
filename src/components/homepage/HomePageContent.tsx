@@ -8,7 +8,6 @@ import BrandPromise from "@/components/sections/BrandPromise";
 import ScienceSection from "@/components/sections/ScienceSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import SectionWaveDivider from "@/components/ui/SectionWaveDivider";
-import ScrollReveal from "@/components/ui/ScrollReveal";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontHomepage } from "@/lib/homepage/storefront";
 import { fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
@@ -45,8 +44,7 @@ export default function HomePageContent({
 
       {/* 2. Products — immediately after hero */}
       {data.sections.featured_products.enabled ? (
-        <ScrollReveal>
-          <section id="products" className="relative overflow-visible bg-[#faf5f0] py-16">
+        <div className="relative overflow-visible">
           <div
             className="pointer-events-none absolute right-0 top-8 z-20 hidden select-none xl:block"
             aria-hidden="true"
@@ -66,94 +64,56 @@ export default function HomePageContent({
               }}
             />
           </div>
-          <div className="mb-12 px-4 text-center">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#c4673a]">
-              Pure &amp; Gentle
-            </span>
-            <h2
-              className="mb-3 mt-2 text-4xl font-black text-[#2d5a27] md:text-5xl"
-              style={{ fontFamily: "Montserrat" }}
-            >
-              Our Products
-            </h2>
-            <p className="mx-auto max-w-lg text-lg text-gray-500">
-              5 years of research. Every ingredient chosen for your baby.
-            </p>
-          </div>
-          <FeaturedProducts
-            heading={data.featuredProductsHeading}
-            products={data.featuredProducts}
-          />
-        </section>
-        </ScrollReveal>
+          <FeaturedProducts heading={data.featuredProductsHeading} products={data.featuredProducts} />
+        </div>
       ) : null}
 
       <SectionWaveDivider fill="#f0f7ee" />
 
       {/* 3. Mascots */}
       {data.sections.mascots.enabled ? (
-        <ScrollReveal>
-          <div className="relative overflow-visible">
-            <MeetOurFriends config={data.mascots} />
-          </div>
-        </ScrollReveal>
+        <div className="relative overflow-visible">
+          <MeetOurFriends config={data.mascots} />
+        </div>
       ) : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 4. Stats */}
-      <ScrollReveal>
-        <StatsBar />
-      </ScrollReveal>
+      <StatsBar />
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 5. Science */}
-      {data.sections.science.enabled ? (
-        <ScrollReveal>
-          <ScienceSection config={data.science} />
-        </ScrollReveal>
-      ) : null}
+      {data.sections.science.enabled ? <ScienceSection config={data.science} /> : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 7. Brand promise */}
-      {data.sections.brand_promise.enabled ? (
-        <ScrollReveal>
-          <BrandPromise config={data.brandPromise} />
-        </ScrollReveal>
-      ) : null}
+      {data.sections.brand_promise.enabled ? <BrandPromise config={data.brandPromise} /> : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 8. Research timeline */}
       {data.sections.research_timeline.enabled ? (
-        <ScrollReveal>
-          <ResearchTimeline config={data.researchTimeline} />
-        </ScrollReveal>
+        <ResearchTimeline config={data.researchTimeline} />
       ) : null}
 
       <SectionWaveDivider fill="#ffffff" />
 
       {/* 9. Lifestyle */}
-      {data.sections.lifestyle.enabled ? (
-        <ScrollReveal>
-          <LifestyleSection config={data.lifestyle} />
-        </ScrollReveal>
-      ) : null}
+      {data.sections.lifestyle.enabled ? <LifestyleSection config={data.lifestyle} /> : null}
 
       <SectionWaveDivider fill="#faf5f0" />
 
       {/* 10. Reviews */}
       {showReviews ? (
-        <ScrollReveal>
-          <TestimonialShowcase
-            cmsItems={data.testimonials}
-            communityReviews={communityReviews}
-            heading={data.testimonialsHeading.heading}
-            description={data.testimonialsHeading.description || undefined}
-          />
-        </ScrollReveal>
+        <TestimonialShowcase
+          cmsItems={data.testimonials}
+          communityReviews={communityReviews}
+          heading={data.testimonialsHeading.heading}
+          description={data.testimonialsHeading.description || undefined}
+        />
       ) : null}
 
       {/* Footer — rendered in root layout via StorefrontFooter */}

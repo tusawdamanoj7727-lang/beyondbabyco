@@ -10,7 +10,7 @@ type ScrollRevealProps = {
   as?: "div" | "section" | "article";
 };
 
-/** CSS view-timeline reveal — no Framer Motion, no hydration cost. */
+/** CSS reveal target — animated once via ScrollRevealObserver (IntersectionObserver). */
 export default function ScrollReveal({
   children,
   className,

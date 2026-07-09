@@ -1,3 +1,4 @@
+import { isLegacyOrMissingProductImage } from "@/lib/catalog/product-category-images";
 import { IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";
 
 /** Hero images for the launch storefront catalog (self-hosted). */
@@ -26,7 +27,12 @@ export const PRODUCT_UNITS_BY_SLUG: Record<string, string> = {
 const FALLBACK_IMAGE = IMAGES.products.placeholder;
 
 export function resolveSevenProductImage(slug: string, dbUrl?: string | null): string {
-  return dbUrl?.trim() || SEVEN_PRODUCT_UNSPLASH[slug] || FALLBACK_IMAGE;
+  const mapped = SEVEN_PRODUCT_UNSPLASH[slug];
+  if (slug === "baby-wipes") {
+    const db = dbUrl?.trim();
+    if (db && !isLegacyOrMissingProductImage(db)) return db;
+  }
+  return mapped ?? FALLBACK_IMAGE;
 }
 
 export function productUnit(slug: string): string {

@@ -59,16 +59,29 @@ export const IMAGES = {
   },
 } as const;
 
+/** Tracked SVG placeholders — safe for production until generated webps are deployed. */
+const PRODUCT_SVG = "/images/placeholders/products";
+
+export const LAUNCH_PRODUCT_PLACEHOLDER_IMAGES: Record<string, string> = {
+  "baby-hair-oil-100ml": `${PRODUCT_SVG}/baby-oil.svg`,
+  "baby-massage-oil-100ml": `${PRODUCT_SVG}/baby-oil.svg`,
+  "baby-body-wash-200ml": `${PRODUCT_SVG}/baby-wash.svg`,
+  "baby-lotion-200ml": `${PRODUCT_SVG}/baby-lotion.svg`,
+  "baby-diaper-rash-cream-50gm": `${PRODUCT_SVG}/baby-lotion.svg`,
+  "baby-shampoo-200ml": `${PRODUCT_SVG}/baby-wash.svg`,
+  "tummy-rollon-40ml": `${PRODUCT_SVG}/baby-oil.svg`,
+};
+
 /** Product slug → hero image (self-hosted generated assets). */
 export const PRODUCT_IMAGES_BY_SLUG: Record<string, string> = {
   "baby-wipes": IMAGES.products.baby_wipes,
-  "baby-hair-oil-100ml": IMAGES.products.massage_oil,
-  "baby-massage-oil-100ml": IMAGES.products.massage_oil,
-  "baby-body-wash-200ml": IMAGES.products.baby_wash,
-  "baby-lotion-200ml": IMAGES.products.baby_lotion,
-  "baby-diaper-rash-cream-50gm": IMAGES.products.baby_lotion,
-  "baby-shampoo-200ml": IMAGES.products.baby_wash,
-  "tummy-rollon-40ml": IMAGES.products.massage_oil,
+  "baby-hair-oil-100ml": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["baby-hair-oil-100ml"]!,
+  "baby-massage-oil-100ml": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["baby-massage-oil-100ml"]!,
+  "baby-body-wash-200ml": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["baby-body-wash-200ml"]!,
+  "baby-lotion-200ml": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["baby-lotion-200ml"]!,
+  "baby-diaper-rash-cream-50gm": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["baby-diaper-rash-cream-50gm"]!,
+  "baby-shampoo-200ml": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["baby-shampoo-200ml"]!,
+  "tummy-rollon-40ml": LAUNCH_PRODUCT_PLACEHOLDER_IMAGES["tummy-rollon-40ml"]!,
   "pure-gentle-water-baby-wipes": IMAGES.products.baby_wipes,
   "ayurvedic-massage-oil": IMAGES.products.massage_oil,
   "shea-butter-baby-lotion": IMAGES.products.baby_lotion,

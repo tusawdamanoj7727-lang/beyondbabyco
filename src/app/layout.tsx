@@ -9,6 +9,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import ResourceHints from "@/components/seo/ResourceHints";
 import AnalyticsRoot from "@/components/analytics/AnalyticsRoot";
 import { AppToaster } from "@/components/ui/AppToaster";
+import ScrollRevealObserver from "@/components/ui/ScrollRevealObserver";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
 import { getCanonicalSiteUrl } from "@/lib/seo/site";
@@ -75,6 +76,7 @@ export default function RootLayout({
       <body className="overflow-x-hidden font-body antialiased bg-background text-foreground">
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <AnalyticsRoot />
+        <ScrollRevealObserver />
         <AppToaster />
         <HideOnAdmin>
           <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">

@@ -463,34 +463,42 @@
   }
 }
 
-.scroll-reveal {
-  animation: revealOnScroll var(--duration-reveal) var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 25%;
-}
-
+.scroll-reveal,
 .scroll-reveal-item {
-  animation: revealOnScroll var(--duration-reveal) var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 20%;
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
 }
 
 .scroll-reveal-slide-left {
-  animation: slideInLeft var(--duration-reveal) var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 20%;
+  opacity: 0;
+  transform: translate3d(24px, 0, 0);
 }
 
 .scroll-reveal-slide-right {
-  animation: slideInRight var(--duration-reveal) var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 20%;
+  opacity: 0;
+  transform: translate3d(-24px, 0, 0);
 }
 
 .scroll-reveal-scale-in {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.scroll-reveal.is-revealed,
+.scroll-reveal-item.is-revealed {
+  animation: revealOnScroll var(--duration-reveal) var(--ease-out) both;
+}
+
+.scroll-reveal-slide-left.is-revealed {
+  animation: slideInLeft var(--duration-reveal) var(--ease-out) both;
+}
+
+.scroll-reveal-slide-right.is-revealed {
+  animation: slideInRight var(--duration-reveal) var(--ease-out) both;
+}
+
+.scroll-reveal-scale-in.is-revealed {
   animation: scaleInReveal var(--duration-page) var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 20%;
 }
 
 /* Mount animations (admin panels, toasts, dropdowns — no scroll timeline) */
@@ -677,9 +685,10 @@
 
 .accent-bar-animated {
   transform: scaleX(0);
+}
+
+.accent-bar-animated.is-revealed {
   animation: accentBarGrow var(--duration-reveal) var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 30%;
 }
 
 .accent-bar-animated[data-align="center"] {
@@ -719,6 +728,10 @@
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .homepage-section {
+    content-visibility: visible;
   }
 }
 
@@ -1067,8 +1080,23 @@
   color: var(--cream-50);
 }
 
+.site-header {
+  contain: layout style;
+  isolation: isolate;
+}
+
 .site-navbar {
   min-height: var(--header-nav);
+}
+
+.whatsapp-fab {
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+.homepage-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
 }
 
 .site-navbar-scrolled {

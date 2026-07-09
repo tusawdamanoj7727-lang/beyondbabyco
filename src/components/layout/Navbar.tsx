@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Heart, Menu, ShoppingBag, UserCircle, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 
@@ -41,6 +41,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const scrolledRef = useRef(false);
   const hydrated = useCartHydrated();
   const itemCount = useCartStore((s) => s.itemCount());
   const count = hydrated ? itemCount : 0;
@@ -68,12 +69,25 @@ export function Navbar() {
       timeoutHandle = setTimeout(runAuth, 0);
     }
 
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    const raf = requestAnimationFrame(onScroll);
+    let ticking = false;
+    const syncScrolled = () => {
+      const next = window.scrollY > 20;
+      if (next === scrolledRef.current) return;
+      scrolledRef.current = next;
+      setScrolled(next);
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        syncScrolled();
+      });
+    };
+    syncScrolled();
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      cancelAnimationFrame(raf);
       subscription?.unsubscribe();
       if (idleHandle !== undefined && typeof cancelIdleCallback !== "undefined") {
         cancelIdleCallback(idleHandle);
@@ -97,8 +111,8 @@ export function Navbar() {
     <nav
       aria-label="Site navigation"
       className={cn(
-        "site-navbar w-full transition-all duration-300",
-        scrolled ? "bg-white shadow-sm" : "bg-white/95 backdrop-blur-md",
+        "site-navbar w-full bg-white transition-shadow duration-300",
+        scrolled && "shadow-sm",
       )}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

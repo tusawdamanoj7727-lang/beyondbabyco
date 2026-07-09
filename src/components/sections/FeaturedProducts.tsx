@@ -3,7 +3,6 @@ import Link from "next/link";
 import HomeSection from "@/components/homepage/HomeSection";
 import HomeSectionHeader from "@/components/homepage/HomeSectionHeader";
 import NotifyMeButton from "@/components/homepage/NotifyMeButton";
-import ScrollReveal from "@/components/ui/ScrollReveal";
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 import BrandSceneImage from "@/components/brand/BrandSceneImage";
@@ -60,7 +59,11 @@ export default function FeaturedProducts({
 
       <div className={cn("homepage-section-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4", homepageGridGap)}>
         {items.map((product, index) => (
-          <ScrollReveal key={product.id} delayMs={index * 50} className="h-full">
+          <div
+            key={product.id}
+            className="scroll-reveal-item h-full"
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
             <Card
               as="div"
               variant="elevated"
@@ -127,7 +130,7 @@ export default function FeaturedProducts({
                 </div>
               </div>
             </Card>
-          </ScrollReveal>
+          </div>
         ))}
       </div>
     </HomeSection>

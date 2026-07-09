@@ -43,8 +43,11 @@ export default function BrandSceneImage({
 }: BrandSceneImageProps) {
   const fallbackRef = SCENE_FALLBACKS[variant] ?? SCENE_FALLBACKS.lifestyle;
   const fallback = sceneFallbackUrl(variant);
-  const useGenerated = shouldUseGeneratedAsset(imageUrl);
-  const visual = useGenerated ? resolveVisualUrl(imageUrl, fallbackRef) : { url: imageUrl!.trim(), blur: fallback.blur };
+  const hasResolvedProductImage = variant === "product" && Boolean(imageUrl?.trim());
+  const useGenerated = hasResolvedProductImage ? false : shouldUseGeneratedAsset(imageUrl);
+  const visual = useGenerated
+    ? resolveVisualUrl(imageUrl, fallbackRef)
+    : { url: imageUrl!.trim(), blur: fallback.blur };
 
   return (
     <div className={cn("relative h-full w-full overflow-hidden bg-cream-50", className)}>
