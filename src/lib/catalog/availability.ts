@@ -30,7 +30,6 @@ export function canPurchaseVariant(
   variantStockQuantity?: number,
 ): boolean {
   if (product.status !== "active") return false;
-  if (isLaunchProductSlug(product.slug)) return true;
   if (variantStockQuantity != null) return variantStockQuantity > 0;
   return product.inStock;
 }

@@ -12,6 +12,7 @@ import {
 import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase/client";
+import { resetClientCart } from "@/lib/storefront/cart-reset";
 
 export interface AuthContextValue {
   user: User | null;
@@ -77,6 +78,7 @@ export function AuthProvider({
   }, [initialSession]);
 
   const signOut = useCallback(() => {
+    resetClientCart();
     setSession(null);
     window.location.replace("/");
     void supabase.auth.signOut();

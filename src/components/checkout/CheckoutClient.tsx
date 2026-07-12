@@ -111,6 +111,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   const toast = useToast();
   const { items, appliedCoupon, clear } = useCart();
   const [pending, startTransition] = useTransition();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const placingRef = useRef(false);
   const idempotencyKey = useMemo(() => crypto.randomUUID(), []);
 
@@ -243,7 +244,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   }
 
   function placeOrder() {
-    if (placingRef.current) return;
+    if (placingRef.current || isPlacingOrder) return;
     const err = validateForm();
     if (err) {
       toast.error(err);
@@ -251,7 +252,9 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     }
 
     placingRef.current = true;
+    setIsPlacingOrder(true);
     startTransition(async () => {
+      let openedRazorpay = false;
       try {
         const result = await placeCheckoutOrderAction({
           idempotencyKey,
@@ -286,7 +289,6 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             cartTotal: totals.total,
           });
           notifyCheckoutError(toast, result.error ?? "Could not place order");
-          placingRef.current = false;
           return;
         }
 
@@ -314,7 +316,6 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             cartTotal: totals.total,
           });
           toast.error("Payment could not be initialized.");
-          placingRef.current = false;
           return;
         }
 
@@ -323,7 +324,6 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         } catch (scriptError) {
           capturePaymentError(scriptError, { orderId, cartTotal: totals.total });
           toast.error("Could not load payment SDK. Please try again.");
-          placingRef.current = false;
           return;
         }
 
@@ -370,6 +370,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           modal: {
             ondismiss: () => {
               placingRef.current = false;
+              setIsPlacingOrder(false);
               router.push(`/checkout/failure?orderId=${orderId}&reason=cancelled`);
             },
           },
@@ -379,13 +380,19 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           void notifyPaymentFailedAction(orderId);
           toast.error("Payment failed. Please try again.");
           placingRef.current = false;
+          setIsPlacingOrder(false);
         });
         rzp.open();
         setReviewOpen(false);
+        openedRazorpay = true;
       } catch (error) {
         capturePaymentError(error, { cartTotal: totals.total });
         toast.error("Something went wrong");
-        placingRef.current = false;
+      } finally {
+        if (!openedRazorpay) {
+          placingRef.current = false;
+          setIsPlacingOrder(false);
+        }
       }
     });
   }
@@ -564,8 +571,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             </div>
 
             <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-              <Button variant="primary" fullWidth type="button" disabled={pending} onClick={placeOrder}>
-                {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Place Order"}
+              <Button variant="primary" fullWidth type="button" disabled={isPlacingOrder} onClick={placeOrder}>
+                {isPlacingOrder ? <Loader2 className="h-4 w-4 animate-spin" /> : "Place Order"}
               </Button>
               <Dialog.Close asChild>
                 <Button variant="secondary" fullWidth type="button">

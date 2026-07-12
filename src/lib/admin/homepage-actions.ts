@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { revalidateStorefrontPages } from "@/lib/admin/storefront-revalidate";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
@@ -21,7 +22,7 @@ async function guard() {
 
 function revalidate() {
   revalidatePath("/admin/homepage");
-  revalidatePath("/");
+  revalidateStorefrontPages();
 }
 
 // ----------------------------- Settings -----------------------------

@@ -84,14 +84,16 @@ export default async function RootLayout({
           <AnalyticsRoot />
           <ScrollRevealObserver />
           <AppToaster />
-          <HideOnAdmin>
-            <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
-              <AnnouncementBar />
-              <Navbar />
-            </div>
-            <FloatingLogo />
-          </HideOnAdmin>
-          {children}
+        <HideOnAdmin>
+          <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
+            <AnnouncementBar />
+            <Navbar />
+          </div>
+        </HideOnAdmin>
+        {children}
+        <HideOnAdmin>
+          <FloatingLogo />
+        </HideOnAdmin>
           <HideOnAdmin>
             <StorefrontFooter />
           </HideOnAdmin>

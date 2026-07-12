@@ -266,16 +266,6 @@ export const getProductBySlug = cache(
       variantStocks: variants.map((v) => v.stockQuantity),
     });
 
-    if (availability.inStock && availability.totalStock > 0) {
-      const perVariant = Math.max(
-        1,
-        Math.floor(availability.totalStock / Math.max(variants.length, 1)),
-      );
-      for (const variant of variants) {
-        if (variant.stockQuantity <= 0) variant.stockQuantity = perVariant;
-      }
-    }
-
     const totalAvailable = variants.reduce((sum, v) => sum + v.stockQuantity, 0);
     const inStock = availability.inStock;
 

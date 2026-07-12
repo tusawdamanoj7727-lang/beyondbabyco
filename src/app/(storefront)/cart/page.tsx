@@ -8,6 +8,8 @@ export const metadata = buildPageMetadata({
   noIndex: true,
 });
 
+export const dynamic = "force-dynamic";
+
 export default function CartPage() {
   return (
     <StorefrontErrorBoundary context="cart">

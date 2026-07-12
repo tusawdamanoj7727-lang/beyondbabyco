@@ -9,7 +9,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   cartLineKey,
   clampCartQuantity,
-  mergeCartItems,
+  mergeGuestCartIntoServer,
   productToCartItem,
   type CartItem,
 } from "@/lib/storefront/cart-types";
@@ -147,11 +147,15 @@ export async function syncServerCartItems(items: CartItem[]): Promise<CartAction
 }
 
 export async function mergeGuestCartOnLogin(localItems: CartItem[]): Promise<CartActionResult> {
-  const customerId = await resolveCustomerId();
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "Not signed in." };
+
+  const customerId = await getCustomerIdForUser(user.id);
   if (!customerId) return { ok: false, error: "Not signed in." };
 
+  // Only merge explicit guest-session items; authenticated carts are loaded server-side.
   const remoteItems = await getServerCartItems();
-  const merged = mergeCartItems(localItems, remoteItems);
+  const merged = mergeGuestCartIntoServer(localItems, remoteItems);
   const result = await syncServerCartItems(merged);
   if (!result.ok) return result;
   return { ok: true, error: null, items: merged };

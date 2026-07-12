@@ -16,10 +16,10 @@ export default function FloatingLogo() {
         <StaticSvgImage
           src="/images/brand/logo.svg"
           alt=""
-          width={44}
-          height={44}
+          width={36}
+          height={36}
           loading="eager"
-          className="floating-logo__img"
+          className="floating-logo__img mx-auto"
         />
       </span>
     </Link>

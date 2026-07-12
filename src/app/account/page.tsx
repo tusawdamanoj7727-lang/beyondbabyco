@@ -12,6 +12,7 @@ import {
   type DashboardOrderRow,
 } from "@/lib/account/dashboard";
 import { createClient } from "@/lib/supabase/client";
+import { resetClientCart } from "@/lib/storefront/cart-reset";
 import type { OrderStatus } from "@/lib/supabase/database.types";
 
 const NAV_ITEMS = [
@@ -74,6 +75,7 @@ export default function AccountPage() {
 
   const signOut = () => {
     const supabase = createClient();
+    resetClientCart();
     setUser(null);
     window.location.replace("/");
     void supabase.auth.signOut();

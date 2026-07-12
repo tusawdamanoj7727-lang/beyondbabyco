@@ -240,7 +240,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
           </Reveal>
 
           {/* ── 4-column nav grid ── */}
-          <div className="footer-columns-grid mt-12 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:mt-14 lg:grid-cols-4 lg:gap-x-8">
+          <div className="footer-columns-grid">
             <FooterColumn title="Quick Links" delay={0.1}>
               <ul className="footer-link-list">
                 {FOOTER_QUICK_LINKS.map((item) => (

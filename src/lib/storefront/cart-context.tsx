@@ -25,6 +25,11 @@ import {
   mergeGuestCartOnLogin,
   syncServerCartItems,
 } from "@/lib/storefront/cart-actions";
+import {
+  clearGuestCartSession,
+  hasGuestCartSession,
+  resetClientCart,
+} from "@/lib/storefront/cart-reset";
 import { readSavedStorage, writeSavedStorage } from "@/lib/storefront/cart-storage";
 import {
   cartItemCount,
@@ -89,15 +94,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const syncToServer = useCallback(
-    (next: CartItem[]) => {
+    (_next: CartItem[]) => {
       if (!isLoggedIn) return;
       if (syncTimer.current) clearTimeout(syncTimer.current);
       syncTimer.current = setTimeout(() => {
-        void syncServerCartItems(next);
+        void syncServerCartItems(currentLegacyItems());
       }, 600);
     },
     [isLoggedIn],
   );
+
+  const cancelServerSync = useCallback(() => {
+    if (syncTimer.current) {
+      clearTimeout(syncTimer.current);
+      syncTimer.current = null;
+    }
+  }, []);
 
   const setAppliedCoupon = useCallback((coupon: AppliedCoupon | null) => {
     if (coupon) useCartStore.getState().applyCoupon(legacyCouponToStore(coupon));
@@ -106,43 +118,50 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const setLoggedIn = useCallback(
     (loggedIn: boolean, userId?: string | null) => {
-      setIsLoggedIn(loggedIn);
-
       if (!loggedIn) {
-        if (mergedUserIdRef.current !== null) {
-          mergedUserIdRef.current = null;
-        }
+        cancelServerSync();
+        resetClientCart();
+        setSavedItems([]);
+        mergedUserIdRef.current = null;
+        setIsLoggedIn(false);
         return;
       }
 
+      setIsLoggedIn(true);
       const uid = userId?.trim() || null;
-      if (!uid || !hydrated || mergedUserIdRef.current === uid) return;
+      if (!uid || !hydrated) return;
+      if (mergedUserIdRef.current === uid) return;
 
+      const previousUid = mergedUserIdRef.current;
       mergedUserIdRef.current = uid;
-      const local = currentLegacyItems();
-      void mergeGuestCartOnLogin(local).then((result) => {
-        if (result.ok && result.items) {
-          useCartStore.getState().replaceItems(legacyItemsToStore(result.items));
-          syncToServer(result.items);
+
+      const accountSwap = previousUid !== null && previousUid !== uid;
+      const guestLocal = accountSwap ? [] : currentLegacyItems();
+      const shouldMergeGuest =
+        !accountSwap && hasGuestCartSession() && guestLocal.length > 0;
+
+      cancelServerSync();
+
+      void (async () => {
+        if (shouldMergeGuest) {
+          const result = await mergeGuestCartOnLogin(guestLocal);
+          clearGuestCartSession();
+          if (result.ok && result.items) {
+            useCartStore.getState().replaceItems(legacyItemsToStore(result.items));
+            return;
+          }
         }
-      });
+
+        resetClientCart();
+        const serverItems = await getServerCartItems();
+        useCartStore.getState().replaceItems(legacyItemsToStore(serverItems));
+      })();
     },
-    [hydrated, syncToServer],
+    [cancelServerSync, hydrated],
   );
 
-  useEffect(() => {
-    if (!isLoggedIn || !hydrated) return;
-
-    const syncFromServer = () => {
-      if (document.visibilityState !== "visible") return;
-      void getServerCartItems().then((items) => {
-        useCartStore.getState().replaceItems(legacyItemsToStore(items));
-      });
-    };
-
-    document.addEventListener("visibilitychange", syncFromServer, { passive: true });
-    return () => document.removeEventListener("visibilitychange", syncFromServer);
-  }, [isLoggedIn, hydrated]);
+  // Removed visibilitychange sync — it raced with debounced syncToServer and re-applied
+  // server state on every tab focus, causing quantity drift after failed merge fixes.
 
   const addItem = useCallback(
     (
