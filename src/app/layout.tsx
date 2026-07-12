@@ -3,6 +3,7 @@ import { Montserrat, Geist } from "next/font/google";
 
 import JsonLd from "@/components/seo/JsonLd";
 import StorefrontFooter from "@/components/homepage/StorefrontFooter";
+import AppProviders from "@/components/layout/AppProviders";
 import HideOnAdmin from "@/components/layout/HideOnAdmin";
 import FloatingLogo from "@/components/layout/FloatingLogo";
 import AnnouncementBar from "@/components/homepage/AnnouncementBar";
@@ -16,6 +17,7 @@ import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
 import { getCanonicalSiteUrl } from "@/lib/seo/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { getServerSession } from "@/lib/auth/session";
 import { BRAND } from "@/lib/brand/copy";
 import {
   BRAND_APPLE_TOUCH_ICON,
@@ -64,33 +66,37 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialSession = await getServerSession();
+
   return (
     <html lang="en" className={cn("font-sans", geist.variable, montserrat.variable)}>
       <head>
         <ResourceHints />
       </head>
       <body className="overflow-x-hidden font-body antialiased bg-background text-foreground">
-        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
-        <AnalyticsRoot />
-        <ScrollRevealObserver />
-        <AppToaster />
-        <HideOnAdmin>
-          <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
-            <AnnouncementBar />
-            <Navbar />
-          </div>
-          <FloatingLogo />
-        </HideOnAdmin>
-        {children}
-        <HideOnAdmin>
-          <StorefrontFooter />
-        </HideOnAdmin>
-        <WhatsAppButton />
+        <AppProviders initialSession={initialSession}>
+          <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
+          <AnalyticsRoot />
+          <ScrollRevealObserver />
+          <AppToaster />
+          <HideOnAdmin>
+            <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
+              <AnnouncementBar />
+              <Navbar />
+            </div>
+            <FloatingLogo />
+          </HideOnAdmin>
+          {children}
+          <HideOnAdmin>
+            <StorefrontFooter />
+          </HideOnAdmin>
+          <WhatsAppButton />
+        </AppProviders>
       </body>
     </html>
   );

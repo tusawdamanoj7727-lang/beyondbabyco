@@ -1,9 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { Session } from "@supabase/supabase-js";
-
-import { AuthProvider } from "@/lib/auth/auth-context";
 import { NotifyMeProvider } from "@/lib/homepage/notify-me-context";
 import { CartProvider } from "@/lib/storefront/cart-context";
 import { CartUiProvider } from "@/lib/storefront/cart-ui-context";
@@ -18,16 +15,13 @@ const MiniCartDrawer = dynamic(() => import("@/components/catalog/MiniCartDrawer
 export default function StorefrontProviders({
   children,
   wishlistIds = [],
-  initialSession = null,
 }: {
   children: React.ReactNode;
   wishlistIds?: string[];
-  initialSession?: Session | null;
 }) {
   return (
-    <AuthProvider initialSession={initialSession}>
-      <NotifyMeProvider>
-        <ToastProvider>
+    <NotifyMeProvider>
+      <ToastProvider>
         <CartUiProvider>
           <CartProvider>
             <WishlistProvider initialIds={wishlistIds}>
@@ -38,7 +32,6 @@ export default function StorefrontProviders({
           </CartProvider>
         </CartUiProvider>
       </ToastProvider>
-      </NotifyMeProvider>
-    </AuthProvider>
+    </NotifyMeProvider>
   );
 }
