@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { X } from "lucide-react";
 
 import type { AuthError } from "@supabase/supabase-js";
 
@@ -24,15 +25,13 @@ const TRUST_POINTS = [
   "Safe for Newborns",
 ] as const;
 
-const PANEL_CIRCLES = [
-  { left: "8%", top: "12%", size: 128 },
-  { left: "72%", top: "18%", size: 96 },
-  { left: "45%", top: "8%", size: 64 },
-  { left: "18%", top: "55%", size: 112 },
-  { left: "68%", top: "62%", size: 80 },
-  { left: "38%", top: "78%", size: 144 },
-  { left: "82%", top: "38%", size: 56 },
-  { left: "5%", top: "82%", size: 72 },
+const AMBIENT_DOTS = [
+  { left: "6%", top: "14%", size: 10, delay: 0 },
+  { left: "18%", top: "72%", size: 8, delay: 0.6 },
+  { left: "82%", top: "22%", size: 12, delay: 1.2 },
+  { left: "74%", top: "78%", size: 9, delay: 0.3 },
+  { left: "42%", top: "8%", size: 7, delay: 0.9 },
+  { left: "55%", top: "88%", size: 11, delay: 1.5 },
 ] as const;
 
 function GoogleIcon() {
@@ -54,6 +53,23 @@ function GoogleIcon() {
         fill="#EA4335"
         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
       />
+    </svg>
+  );
+}
+
+function GentleAlertIcon({ variant }: { variant: "error" | "success" }) {
+  if (variant === "success") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 8v5" />
+      <path d="M12 16h.01" />
     </svg>
   );
 }
@@ -140,92 +156,98 @@ export default function LoginPageClient() {
     }
   };
 
-  const inputClassName =
-    "w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d5a27]";
+  const inputClassName = "auth-modal-input w-full text-sm text-green-900 placeholder:text-green-700/45";
 
   return (
-    <div className="flex min-h-screen bg-[#faf5f0]">
-      {/* Left panel — desktop */}
-      <div className="relative hidden w-5/12 flex-col items-center justify-center overflow-hidden bg-[#2d5a27] p-12 lg:flex">
-        <div aria-hidden="true" className="absolute inset-0 opacity-5">
-          {PANEL_CIRCLES.map((circle, index) => (
-            <div
-              key={index}
-              className="absolute rounded-full border border-white"
-              style={{
-                left: circle.left,
-                top: circle.top,
-                width: circle.size,
-                height: circle.size,
-              }}
-            />
+    <div className="auth-modal-page relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-4 py-10 sm:px-6">
+      <div aria-hidden="true" className="auth-modal-ambient pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_15%_0%,rgba(232,180,184,0.22),transparent_68%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_88%_100%,rgba(168,191,160,0.2),transparent_72%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_50%,rgba(245,220,160,0.14),transparent_70%)]" />
+        {AMBIENT_DOTS.map((dot, index) => (
+          <span
+            key={index}
+            className="auth-modal-dot absolute rounded-full bg-[#e8b4b8]/35"
+            style={{
+              left: dot.left,
+              top: dot.top,
+              width: dot.size,
+              height: dot.size,
+              animationDelay: `${dot.delay}s`,
+            }}
+          />
+        ))}
+        <span className="auth-modal-cloud auth-modal-cloud--one" />
+        <span className="auth-modal-cloud auth-modal-cloud--two" />
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-10 left-10 hidden max-w-xs lg:block"
+      >
+        <p className="font-heading text-sm font-semibold uppercase tracking-[0.18em] text-green-800/35">
+          BeyondBabyCo
+        </p>
+        <ul className="mt-3 space-y-1.5">
+          {TRUST_POINTS.map((point) => (
+            <li key={point} className="text-xs text-green-800/30">
+              {point}
+            </li>
           ))}
-        </div>
+        </ul>
+      </div>
 
-        <Image
-          src="/images/brand/logo.svg"
-          alt="BeyondBabyCo"
-          width={160}
-          height={52}
-          sizes="160px"
-          className="relative z-10 mb-8 h-12 w-auto brightness-0 invert"
-          priority
-        />
+      <div className="auth-modal-card auth-panel-enter relative z-10 w-full max-w-md overflow-visible px-6 py-8 sm:px-8 sm:py-10">
+        <Link
+          href="/"
+          aria-label="Close and return home"
+          className="auth-modal-close absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#e8dfd2] bg-[#fff9f2]/90 text-green-800/70 shadow-sm transition-all hover:scale-105 hover:bg-white hover:text-green-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8b4b8]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#fffbf5] sm:right-5 sm:top-5"
+        >
+          <X size={18} strokeWidth={2} aria-hidden="true" />
+        </Link>
 
-        <div className="relative z-10 my-6">
+        <div
+          aria-hidden="true"
+          className="auth-modal-mascot-peek pointer-events-none absolute -right-2 -top-14 z-20 sm:-right-4 sm:-top-16"
+        >
           <Mascot
-            mascot="bella-bunny"
+            mascot="gigi-giraffe"
             pose="welcome"
-            size={224}
+            size={96}
             priority
             animated
             floating
-            alt="Bella Bunny welcomes you to BeyondBabyCo"
+            duration={4}
+            alt=""
           />
         </div>
 
-        <h2 className="relative z-10 mb-4 text-center text-2xl font-black leading-tight text-white">
-          Every Baby Deserves
-          <br />
-          The Safest Touch
-        </h2>
+        <span aria-hidden="true" className="auth-modal-star absolute left-6 top-3 text-[#f5dca0] sm:left-8">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l2.2 6.8H21l-5.5 4 2.1 6.7L12 17.8 6.4 19.5l2.1-6.7L3 8.8h6.8L12 2z" />
+          </svg>
+        </span>
 
-        <div className="relative z-10 mt-4 space-y-2">
-          {TRUST_POINTS.map((point) => (
-            <div key={point} className="flex items-center gap-2 text-sm text-green-200">
-              <span className="font-bold text-green-400">✓</span>
-              {point}
-            </div>
-          ))}
-        </div>
+        <div className="relative mb-7 pt-2 text-center">
+          <Image
+            src="/images/brand/logo.svg"
+            alt="BeyondBabyCo"
+            width={132}
+            height={42}
+            sizes="132px"
+            className="mx-auto h-9 w-auto"
+            priority
+          />
 
-        <p className="relative z-10 mt-8 text-center text-xs text-green-300">
-          Join 2,000+ parents who trust BeyondBabyCo
-        </p>
-      </div>
-
-      {/* Right panel — form */}
-      <div className="flex flex-1 items-center justify-center p-6 py-12">
-        <div className="w-full max-w-md">
-          <div className="mb-8 text-center lg:hidden">
-            <Image
-              src="/images/brand/logo.svg"
-              alt="BeyondBabyCo"
-              width={140}
-              height={45}
-              sizes="140px"
-              className="mx-auto h-10 w-auto"
-              priority
-            />
-          </div>
-
-          <div className="mb-8 flex rounded-2xl bg-gray-100 p-1">
+          <div className="auth-modal-tabs mt-6 flex rounded-[22px] bg-[#f3ebe2]/80 p-1.5">
             <button
               type="button"
               onClick={() => switchTab("login")}
               className={cn(
-                "flex-1 rounded-xl py-2.5 text-sm font-bold transition-all",
-                tab === "login" ? "bg-white text-[#2d5a27] shadow-sm" : "text-gray-500",
+                "flex-1 rounded-[18px] py-2.5 text-sm font-semibold transition-all duration-300",
+                tab === "login"
+                  ? "auth-modal-tab--active bg-white text-green-900 shadow-[0_4px_14px_rgba(168,191,160,0.22)]"
+                  : "text-green-800/55 hover:text-green-800/75",
               )}
             >
               Sign In
@@ -234,107 +256,137 @@ export default function LoginPageClient() {
               type="button"
               onClick={() => switchTab("register")}
               className={cn(
-                "flex-1 rounded-xl py-2.5 text-sm font-bold transition-all",
-                tab === "register" ? "bg-white text-[#2d5a27] shadow-sm" : "text-gray-500",
+                "flex-1 rounded-[18px] py-2.5 text-sm font-semibold transition-all duration-300",
+                tab === "register"
+                  ? "auth-modal-tab--active bg-white text-green-900 shadow-[0_4px_14px_rgba(232,180,184,0.24)]"
+                  : "text-green-800/55 hover:text-green-800/75",
               )}
             >
               Create Account
             </button>
           </div>
 
-          <h1 className="mb-1 text-2xl font-black text-[#2d5a27]">
-            {tab === "login" ? "Welcome back 👋" : "Join the family ✨"}
+          <h1 className="auth-modal-title mt-6 font-heading text-[1.65rem] font-bold leading-[1.35] text-green-900">
+            {tab === "login" ? "Welcome back!" : "Join our little family"}
           </h1>
-          <p className="mb-6 text-sm text-gray-500">
-            {tab === "login" ? "Sign in to your BeyondBabyCo account" : "Create your free account"}
-          </p>
-
-          <button
-            type="button"
-            onClick={() => void handleGoogle()}
-            disabled={googleLoading}
-            className="mb-4 flex w-full items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-white py-3.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:bg-gray-50 disabled:opacity-60"
-          >
-            {googleLoading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-[#2d5a27]" />
-            ) : (
-              <GoogleIcon />
-            )}
-            Continue with Google
-          </button>
-
-          <div className="mb-4 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-xs font-medium text-gray-400">or continue with email</span>
-            <div className="h-px flex-1 bg-gray-200" />
-          </div>
-
-          {tab === "register" ? (
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your full name"
-              type="text"
-              autoComplete="name"
-              className={cn(inputClassName, "mb-3")}
-            />
-          ) : null}
-
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email address"
-            type="email"
-            autoComplete="email"
-            className={cn(inputClassName, "mb-3")}
-          />
-
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            type="password"
-            autoComplete={tab === "register" ? "new-password" : "current-password"}
-            className={cn(inputClassName, "mb-1")}
-          />
-
-          {tab === "login" ? (
-            <div className="mb-4 text-right">
-              <Link href="/forgot-password" className="text-xs text-[#2d5a27] hover:underline">
-                Forgot password?
-              </Link>
-            </div>
-          ) : (
-            <div className="mb-4" />
-          )}
-
-          {error ? (
-            <p className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-center text-xs text-red-500">{error}</p>
-          ) : null}
-          {message ? (
-            <p className="mb-3 rounded-xl bg-green-50 px-3 py-2 text-center text-xs text-green-600">{message}</p>
-          ) : null}
-
-          <button
-            type="button"
-            onClick={() => void handleSubmit()}
-            disabled={loading}
-            className="w-full rounded-2xl bg-[#2d5a27] py-4 text-base font-bold text-white shadow-lg shadow-green-900/20 transition-colors hover:bg-[#234821] disabled:opacity-60"
-          >
-            {loading ? "Please wait..." : tab === "login" ? "Sign In →" : "Create Account →"}
-          </button>
-
-          <p className="mt-6 text-center text-xs text-gray-400">
-            By continuing you agree to our{" "}
-            <Link href="/terms-of-service" className="underline hover:text-gray-600">
-              Terms
-            </Link>{" "}
-            and{" "}
-            <Link href="/privacy-policy" className="underline hover:text-gray-600">
-              Privacy Policy
-            </Link>
+          <p className="auth-modal-subtitle mt-2 text-sm leading-relaxed text-green-800/65">
+            {tab === "login"
+              ? "We're so glad you're here — sign in to pick up where you left off."
+              : "Create your free account and discover gentle, research-backed baby care."}
           </p>
         </div>
+
+        <button
+          type="button"
+          onClick={() => void handleGoogle()}
+          disabled={googleLoading}
+          className="auth-modal-google mb-4 flex w-full items-center justify-center gap-3 rounded-[22px] border border-[#e5ddd3] bg-white/85 py-3.5 text-sm font-medium text-green-900/85 shadow-sm transition-all hover:-translate-y-px hover:border-[#d8cfc4] hover:bg-white hover:shadow-md disabled:opacity-60"
+        >
+          {googleLoading ? (
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#e8dfd2] border-t-green-800" />
+          ) : (
+            <GoogleIcon />
+          )}
+          Continue with Google
+        </button>
+
+        <div className="auth-modal-divider mb-4 flex items-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#e5ddd3] to-transparent" />
+          <span className="text-xs font-medium text-green-800/45">or continue with email</span>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#e5ddd3] to-transparent" />
+        </div>
+
+        {tab === "register" ? (
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your full name"
+            type="text"
+            autoComplete="name"
+            className={cn(inputClassName, "mb-3")}
+          />
+        ) : null}
+
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email address"
+          type="email"
+          autoComplete="email"
+          className={cn(inputClassName, "mb-3")}
+        />
+
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          type="password"
+          autoComplete={tab === "register" ? "new-password" : "current-password"}
+          className={cn(inputClassName, "mb-1")}
+        />
+
+        {tab === "login" ? (
+          <div className="mb-4 text-right">
+            <Link
+              href="/forgot-password"
+              className="rounded-full px-1 text-xs font-medium text-[#c4673a]/90 transition-colors hover:text-[#a8522e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8b4b8]/50"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        ) : (
+          <div className="mb-4" />
+        )}
+
+        {error ? (
+          <p
+            role="alert"
+            className="auth-modal-alert auth-modal-alert--error mb-3 flex items-start gap-2.5 rounded-[18px] px-3.5 py-2.5 text-left text-xs leading-relaxed"
+          >
+            <span className="mt-0.5 shrink-0 opacity-80">
+              <GentleAlertIcon variant="error" />
+            </span>
+            <span>{error}</span>
+          </p>
+        ) : null}
+
+        {message ? (
+          <p
+            role="status"
+            className="auth-modal-alert auth-modal-alert--success mb-3 flex items-start gap-2.5 rounded-[18px] px-3.5 py-2.5 text-left text-xs leading-relaxed"
+          >
+            <span className="mt-0.5 shrink-0 opacity-80">
+              <GentleAlertIcon variant="success" />
+            </span>
+            <span>{message}</span>
+          </p>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={() => void handleSubmit()}
+          disabled={loading}
+          className="auth-modal-primary w-full rounded-full py-4 text-base font-bold text-white disabled:opacity-60"
+        >
+          {loading ? "Please wait..." : tab === "login" ? "Sign In →" : "Create Account →"}
+        </button>
+
+        <p className="auth-modal-legal mt-6 text-center text-xs leading-relaxed text-green-800/45">
+          By continuing you agree to our{" "}
+          <Link
+            href="/terms-of-service"
+            className="font-medium text-green-800/60 underline decoration-[#e8b4b8]/50 underline-offset-2 hover:text-green-900"
+          >
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="/privacy-policy"
+            className="font-medium text-green-800/60 underline decoration-[#e8b4b8]/50 underline-offset-2 hover:text-green-900"
+          >
+            Privacy Policy
+          </Link>
+        </p>
       </div>
     </div>
   );

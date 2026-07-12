@@ -55,6 +55,12 @@ const FOOTER_MASCOT_POSES: Record<MascotType, MascotPose> = {
   "freddy-ferret": "celebration",
 };
 
+/** Company links only — excludes Careers/Press "Coming Soon" placeholders. */
+const FOOTER_COMPANY_ACTIVE_LINKS = FOOTER_COMPANY_LINKS.filter(
+  (item): item is Extract<FooterNavItem, { href: string }> =>
+    !("comingSoon" in item && item.comingSoon),
+);
+
 const linkClass =
   "motion-link font-body text-sm text-green-700/90 transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-50 rounded";
 
@@ -81,19 +87,20 @@ function FooterLink({ href, className, children }: { href: string; className: st
   );
 }
 
-function FooterNavItemRow({ item, className }: { item: FooterNavItem; className: string }) {
-  if ("comingSoon" in item && item.comingSoon) {
-    return (
-      <span className="font-body text-sm text-green-700/55">
-        {item.label}{" "}
-        <span className="text-xs font-medium uppercase tracking-wide text-green-700/45">Coming Soon</span>
-      </span>
-    );
-  }
+function FooterColumn({
+  title,
+  delay,
+  children,
+}: {
+  title: string;
+  delay: number;
+  children: React.ReactNode;
+}) {
   return (
-    <FooterLink href={"href" in item ? item.href : "/"} className={className}>
-      {item.label}
-    </FooterLink>
+    <Reveal as="div" variant="fadeUp" delay={delay} className="footer-column w-full">
+      <h3 className="footer-column-title">{title}</h3>
+      <div className="footer-column-body">{children}</div>
+    </Reveal>
   );
 }
 
@@ -198,44 +205,44 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
   return (
     <footer id="contact" className="homepage-footer relative overflow-hidden">
       <FooterEmailCapture />
+
       <MotionSection as="div" variant="fadeUp" className="homepage-footer-inner relative z-10">
         <div className="container w-full">
-          <div className="grid grid-cols-1 items-start gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-10">
-            <Reveal as="div" variant="fadeUp" delay={0} className="w-full sm:col-span-2 lg:col-span-4">
-              <div className="flex flex-col">
-                <Logo size="footer" variant="default" />
-                <AccentBar width="md" align="left" className="mt-4" />
-                <p className="prose-measure mt-4 font-body text-sm leading-[1.72] text-green-800/88">
-                  {companyInfo}
-                </p>
+          {/* ── Brand block (top row, full width) ── */}
+          <Reveal as="div" variant="fadeUp" delay={0} className="footer-brand-block w-full">
+            <Logo size="footer" variant="default" />
+            <AccentBar width="md" align="left" className="mt-4" />
+            <p className="prose-measure mt-4 max-w-2xl font-body text-sm leading-[1.72] text-green-800/88">
+              {companyInfo}
+            </p>
 
-                <div className="homepage-footer-trust mt-5" aria-label="Trust guarantees">
-                  {FOOTER_TRUST.map(({ icon: Icon, label }) => (
-                    <span key={label}>
-                      <Icon aria-hidden="true" className={cn("icon-outline text-green-600", trustIconSize)} strokeWidth={1.75} />
-                      {label}
-                    </span>
-                  ))}
-                </div>
+            <div className="homepage-footer-trust mt-5" aria-label="Trust guarantees">
+              {FOOTER_TRUST.map(({ icon: Icon, label }) => (
+                <span key={label}>
+                  <Icon aria-hidden="true" className={cn("icon-outline text-green-600", trustIconSize)} strokeWidth={1.75} />
+                  {label}
+                </span>
+              ))}
+            </div>
 
-                <div className="mt-5 space-y-2.5 font-body text-sm text-green-800/88">
-                  <div>
-                    <p className="font-semibold text-green-900">Parent Company</p>
-                    <p className="mt-0.5">Tusawda Global Private Limited</p>
-                  </div>
-                  {address ? (
-                    <div>
-                      <p className="font-semibold text-green-900">Location</p>
-                      <p className="mt-0.5">{address}</p>
-                    </div>
-                  ) : null}
-                </div>
+            <div className="mt-5 flex flex-col gap-4 font-body text-sm text-green-800/88 sm:flex-row sm:gap-10">
+              <div>
+                <p className="font-semibold text-green-900">Parent Company</p>
+                <p className="mt-0.5">Tusawda Global Private Limited</p>
               </div>
-            </Reveal>
+              {address ? (
+                <div>
+                  <p className="font-semibold text-green-900">Location</p>
+                  <p className="mt-0.5">{address}</p>
+                </div>
+              ) : null}
+            </div>
+          </Reveal>
 
-            <Reveal as="div" variant="fadeUp" delay={0.1} className="w-full lg:col-span-2">
-              <h3 className="footer-column-title">Quick Links</h3>
-              <ul className="mt-5 flex flex-col gap-3">
+          {/* ── 4-column nav grid ── */}
+          <div className="footer-columns-grid mt-12 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:mt-14 lg:grid-cols-4 lg:gap-x-8">
+            <FooterColumn title="Quick Links" delay={0.1}>
+              <ul className="footer-link-list">
                 {FOOTER_QUICK_LINKS.map((item) => (
                   <li key={item.label}>
                     <FooterLink href={item.href} className={linkClass}>
@@ -244,22 +251,22 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   </li>
                 ))}
               </ul>
-            </Reveal>
+            </FooterColumn>
 
-            <Reveal as="div" variant="fadeUp" delay={0.2} className="w-full lg:col-span-3">
-              <h3 className="footer-column-title">Company</h3>
-              <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {FOOTER_COMPANY_LINKS.map((item) => (
+            <FooterColumn title="Company" delay={0.15}>
+              <ul className="footer-link-list">
+                {FOOTER_COMPANY_ACTIVE_LINKS.map((item) => (
                   <li key={item.label}>
-                    <FooterNavItemRow item={item} className={linkClass} />
+                    <FooterLink href={item.href} className={linkClass}>
+                      {item.label}
+                    </FooterLink>
                   </li>
                 ))}
               </ul>
-            </Reveal>
+            </FooterColumn>
 
-            <Reveal as="div" variant="fadeUp" delay={0.25} className="w-full lg:col-span-3">
-              <h3 className="footer-column-title">Legal & Support</h3>
-              <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <FooterColumn title="Legal & Support" delay={0.2}>
+              <ul className="footer-link-list">
                 {FOOTER_LEGAL_LINKS.map((item) => (
                   <li key={item.label}>
                     <FooterLink href={item.href} className={linkClass}>
@@ -268,20 +275,19 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   </li>
                 ))}
               </ul>
-            </Reveal>
+            </FooterColumn>
 
-            <Reveal as="div" variant="fadeUp" delay={0.3} className="w-full lg:col-span-4">
-              <h3 className="footer-column-title">Stay Connected</h3>
-              <div className="mt-5 flex flex-col gap-4 font-body text-sm text-green-800/88">
+            <FooterColumn title="Stay Connected" delay={0.25}>
+              <div className="footer-stay-connected flex flex-col gap-4 font-body text-sm text-green-800/88">
                 <div>
-                  <p className="font-semibold text-green-900">Email</p>
+                  <p className="footer-field-label">Email</p>
                   <a href={`mailto:${email}`} className={linkClass}>
                     {email}
                   </a>
                 </div>
                 {phoneDisplay ? (
                   <div>
-                    <p className="font-semibold text-green-900">Phone</p>
+                    <p className="footer-field-label">Phone</p>
                     <a href={`tel:${phoneTel}`} className={linkClass}>
                       {phoneDisplay}
                     </a>
@@ -289,7 +295,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                 ) : null}
                 {whatsappUrl ? (
                   <div>
-                    <p className="font-semibold text-green-900">WhatsApp</p>
+                    <p className="footer-field-label">WhatsApp</p>
                     <a
                       href={whatsappUrl}
                       target="_blank"
@@ -304,7 +310,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   </div>
                 ) : null}
                 <div>
-                  <p className="mb-2.5 font-semibold text-green-900">Follow Us</p>
+                  <p className="footer-field-label mb-2.5">Follow Us</p>
                   <div className="flex flex-col gap-2">
                     <a
                       href={INSTAGRAM_URL}
@@ -333,7 +339,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   </div>
                 </div>
                 <div>
-                  <p className="font-semibold text-green-900">Support</p>
+                  <p className="footer-field-label">Support</p>
                   <p className="mt-0.5">Monday–Saturday · 10 AM – 6 PM</p>
                 </div>
               </div>
@@ -343,10 +349,11 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
                   Contact Us
                 </FooterLink>
               </div>
-            </Reveal>
+            </FooterColumn>
           </div>
 
-          <Reveal as="div" variant="fadeUp" delay={0.35} className="mt-14 w-full">
+          {/* ── Mascot family ── */}
+          <Reveal as="div" variant="fadeUp" delay={0.35} className="footer-mascot-section mt-14 w-full lg:mt-16">
             <p className="mb-6 text-center font-heading text-xs font-semibold uppercase tracking-[0.14em] text-green-700/65 lg:text-left">
               Our Mascot Family
             </p>
@@ -372,14 +379,15 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
             </div>
           </Reveal>
 
-          <div className="my-12 border-t border-green-200/60" />
-
-          <Reveal as="div" variant="fadeUp" delay={0.4} className="w-full">
-            <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
-              <p className="font-body text-sm text-green-800/82">{copyright}</p>
-              <p className="font-body text-sm text-green-800/82">{FOOTER_COPY.madeWith}</p>
-            </div>
-          </Reveal>
+          {/* ── Copyright (bottom, separated by divider) ── */}
+          <div className="footer-bottom mt-12 border-t border-green-200/60 pt-10 lg:mt-14 lg:pt-12">
+            <Reveal as="div" variant="fadeUp" delay={0.4} className="w-full">
+              <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+                <p className="font-body text-sm text-green-800/82">{copyright}</p>
+                <p className="font-body text-sm text-green-800/82">{FOOTER_COPY.madeWith}</p>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </MotionSection>
     </footer>
