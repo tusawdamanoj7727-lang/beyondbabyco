@@ -13,15 +13,16 @@ import {
 
 export default function CartSyncEffect() {
   const { user, loading } = useAuth();
-  const cart = useCartOptional();
+  const setLoggedIn = useCartOptional()?.setLoggedIn;
+  const userId = user?.id ?? null;
 
   useEffect(() => {
-    if (loading || !cart) return;
-    cart.setLoggedIn(!!user);
-  }, [user, loading, cart]);
+    if (loading || !setLoggedIn) return;
+    setLoggedIn(Boolean(userId), userId);
+  }, [userId, loading, setLoggedIn]);
 
   useEffect(() => {
-    if (loading || !user) return;
+    if (loading || !userId) return;
 
     const guestIds = readGuestWishlistIds();
     if (guestIds.length === 0) return;
@@ -31,7 +32,7 @@ export default function CartSyncEffect() {
       writeGuestWishlistIds([]);
       window.dispatchEvent(new CustomEvent("bbc:wishlist-merged"));
     });
-  }, [user, loading]);
+  }, [userId, loading]);
 
   return null;
 }

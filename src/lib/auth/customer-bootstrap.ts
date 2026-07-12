@@ -9,8 +9,8 @@ import { createSupabaseServiceClient } from "@/lib/supabase/service";
  * Ensures profile + customer rows exist for a signed-in user.
  * Requires service role — safe no-op when not configured.
  */
-export async function ensureCustomerRecordsForUser(user: User): Promise<void> {
-  if (!isServiceRoleConfigured()) return;
+export async function ensureCustomerRecordsForUser(user: User): Promise<string | null> {
+  if (!isServiceRoleConfigured()) return null;
 
   const fullName =
     (typeof user.user_metadata?.full_name === "string" && user.user_metadata.full_name.trim()) ||
@@ -43,10 +43,13 @@ export async function ensureCustomerRecordsForUser(user: User): Promise<void> {
     .maybeSingle();
 
   if (!existingCustomer && email) {
-    await service.from("customers").insert({
+    const { data: created } = await service.from("customers").insert({
       profile_id: user.id,
       email,
       full_name: fullName,
-    });
+    }).select("id").single();
+    return created?.id ?? null;
   }
+
+  return existingCustomer?.id ?? null;
 }

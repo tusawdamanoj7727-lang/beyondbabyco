@@ -14,7 +14,12 @@ import {
 } from "./client";
 import { getDelhiveryConfig, requireDelhiveryConfig } from "./config";
 import { mapDelhiveryStatus } from "./status-map";
-import type { DelhiveryCreateShipmentPayload, DelhiveryTrackingScan } from "./types";
+import { onShipmentStatusChanged } from "@/lib/email/events/orders";
+import type {
+  DelhiveryApiError,
+  DelhiveryCreateShipmentPayload,
+  DelhiveryTrackingScan,
+} from "./types";
 
 export interface DelhiveryActionResult {
   ok: boolean;
@@ -122,12 +127,20 @@ export async function delhiveryCheckServiceability(pincode: string): Promise<Del
       action: "serviceability",
       requestUrl: `/c/api/pin-codes/json/?filter_codes=${pincode}`,
       responseBody: result.raw,
+      statusCode: result.httpStatus,
       success: true,
     });
     return { ok: true, error: null, data: result as unknown as Record<string, unknown> };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Serviceability check failed";
-    await logCourierCall({ action: "serviceability", success: false, errorMessage: message });
+    const statusCode = (err as DelhiveryApiError).statusCode;
+    await logCourierCall({
+      action: "serviceability",
+      requestUrl: `/c/api/pin-codes/json/?filter_codes=${pincode}`,
+      success: false,
+      errorMessage: message,
+      statusCode,
+    });
     return { ok: false, error: message };
   }
 }
@@ -310,6 +323,8 @@ export async function delhiveryTrackAndPersist(input: {
     }
 
     await supabase.from("shipments").update(patch).eq("id", input.shipmentId);
+
+    onShipmentStatusChanged(input.orderId, mappedStatus);
 
     if (mappedStatus === "delivered") {
       await supabase

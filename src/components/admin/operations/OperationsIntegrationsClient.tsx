@@ -33,7 +33,7 @@ export default function OperationsIntegrationsClient({
 
   return (
     <div className="space-y-6">
-      <OpsSection title="Email provider" description="Environment-driven transactional email via Phase 9.3 templates.">
+      <OpsSection title="Email (Hostinger SMTP)" description="Transactional email via Nodemailer + branded templates.">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <OpsStatusBadge status={data.email.status === "ok" ? "ready" : data.email.status === "degraded" ? "warning" : "missing"} />
           <span className="text-sm text-green-700/70 dark:text-green-200/60">

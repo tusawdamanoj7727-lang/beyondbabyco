@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { Heart, Menu, ShoppingBag, UserCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 
 import StaticSvgImage from "@/components/media/StaticSvgImage";
+import { useAuth } from "@/lib/auth/hooks";
 import { HEADER_ACCOUNT_HREF, PRIMARY_NAV_LINKS } from "@/lib/brand/navigation";
 import { INSTAGRAM_URL } from "@/lib/brand/social";
-import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
 import { isCustomerAuthPath } from "@/lib/routes";
@@ -39,7 +38,7 @@ function InstagramIcon({ size = 20 }: { size?: number }) {
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const scrolledRef = useRef(false);
   const hydrated = useCartHydrated();
@@ -47,28 +46,6 @@ export function Navbar() {
   const count = hydrated ? itemCount : 0;
 
   useEffect(() => {
-    let subscription: { unsubscribe: () => void } | undefined;
-    let idleHandle: number | undefined;
-    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
-
-    const runAuth = () => {
-      const supabase = createClient();
-      supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
-
-      const {
-        data: { subscription: sub },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null);
-      });
-      subscription = sub;
-    };
-
-    if (typeof requestIdleCallback !== "undefined") {
-      idleHandle = requestIdleCallback(runAuth, { timeout: 2000 });
-    } else {
-      timeoutHandle = setTimeout(runAuth, 0);
-    }
-
     let ticking = false;
     const syncScrolled = () => {
       const next = window.scrollY > 20;
@@ -88,13 +65,6 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      subscription?.unsubscribe();
-      if (idleHandle !== undefined && typeof cancelIdleCallback !== "undefined") {
-        cancelIdleCallback(idleHandle);
-      }
-      if (timeoutHandle !== undefined) {
-        clearTimeout(timeoutHandle);
-      }
       window.removeEventListener("scroll", onScroll);
     };
   }, []);

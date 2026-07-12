@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { ensureCustomerRecordsForUser } from "@/lib/auth/customer-bootstrap";
+import { onNewCustomer } from "@/lib/email/events/admin";
 import { getAuthBaseUrlForRequest } from "@/lib/app-url.server";
 import {
   emailVerificationRedirectUrl,
@@ -104,11 +105,9 @@ export async function customerSignInAction(
   }
 
   if (data.user) {
-    try {
-      await ensureCustomerRecordsForUser(data.user);
-    } catch (err) {
+    void ensureCustomerRecordsForUser(data.user).catch((err) => {
       console.warn("[customer-auth] profile bootstrap skipped:", err);
-    }
+    });
   }
 
   redirect(resolveCustomerRedirect(redirectTo));
@@ -159,11 +158,13 @@ export async function customerSignUpAction(
   }
 
   if (data.user) {
-    try {
-      await ensureCustomerRecordsForUser(data.user);
-    } catch (err) {
-      console.warn("[customer-auth] profile bootstrap skipped:", err);
-    }
+    void ensureCustomerRecordsForUser(data.user)
+      .then((customerId) => {
+        if (customerId) onNewCustomer(customerId);
+      })
+      .catch((err) => {
+        console.warn("[customer-auth] profile bootstrap skipped:", err);
+      });
   }
 
   if (data.session) {

@@ -16,13 +16,11 @@ async function handleLogout(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (user) {
-    await supabase.rpc("log_activity", {
+    void supabase.rpc("log_activity", {
       p_action: "auth.logout",
       p_entity: "session",
     }).then(({ error }) => {
-      if (error) {
-        console.warn("[auth] log_activity skipped:", error.message);
-      }
+      if (error) console.warn("[auth] log_activity skipped:", error.message);
     });
   }
 

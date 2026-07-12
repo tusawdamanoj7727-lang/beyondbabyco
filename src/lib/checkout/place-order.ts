@@ -14,7 +14,11 @@ import {
 } from "@/lib/inventory/storefront-stock";
 import { placeOrderSchema, type PlaceOrderInput } from "@/lib/checkout/schema";
 import { createRazorpayOrder } from "@/lib/checkout/razorpay-client";
-import { getEnabledRazorpayGateway } from "@/lib/checkout/gateways";
+import {
+  getEnabledRazorpayGateway,
+  PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE,
+} from "@/lib/checkout/gateways";
+import { onOrderCreated, onPaymentSuccess } from "@/lib/email/events/orders";
 
 export interface PlaceOrderResult {
   ok: boolean;
@@ -82,6 +86,14 @@ export async function placeStorefrontOrder(
   }
 
   const input = parsed.data;
+
+  if (input.paymentMethod === "razorpay") {
+    const gateway = await getEnabledRazorpayGateway();
+    if (!gateway?.keyId || !gateway.keySecret) {
+      return { ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE };
+    }
+  }
+
   const existing = await findOrderByIdempotencyKey(customerId, input.idempotencyKey);
   if (existing) {
     return {
@@ -229,6 +241,8 @@ export async function placeStorefrontOrder(
     metadata: { payment_method: input.paymentMethod } as Json,
   });
 
+  onOrderCreated(order.id, input.paymentMethod);
+
   if (input.paymentMethod === "cod") {
     await supabase
       .from("payments")
@@ -360,6 +374,8 @@ export async function completeRazorpayOrder(input: {
       razorpay_order_id: input.razorpayOrderId,
     } as Json,
   });
+
+  onPaymentSuccess(input.orderId);
 
   const fulfillment = await fulfillOrderWithDelhivery(input.orderId);
   if (!fulfillment.ok) {

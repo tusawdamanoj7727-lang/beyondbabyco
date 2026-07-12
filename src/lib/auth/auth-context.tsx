@@ -77,7 +77,9 @@ export function AuthProvider({
   }, [initialSession]);
 
   const signOut = useCallback(() => {
-    window.location.href = "/logout";
+    setSession(null);
+    window.location.replace("/");
+    void supabase.auth.signOut();
   }, []);
 
   const value = useMemo<AuthContextValue>(

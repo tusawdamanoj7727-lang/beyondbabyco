@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { onContactFormSubmitted } from "@/lib/email/events/admin";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2),
@@ -42,6 +43,7 @@ export async function submitContactQueryAction(input: {
   });
 
   if (error) return { ok: false, error: error.message };
+  onContactFormSubmitted(parsed.data);
   return { ok: true, error: null };
 }
 

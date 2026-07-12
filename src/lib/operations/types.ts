@@ -1,6 +1,6 @@
 export type OpsStatus = "ready" | "warning" | "missing" | "error" | "ok" | "degraded";
 
-export type EmailProviderId = "resend" | "sendgrid" | "ses" | "smtp";
+export type EmailProviderId = "smtp";
 
 export type ErrorTrackingProviderId = "sentry" | "better_stack" | "logtail" | "none";
 

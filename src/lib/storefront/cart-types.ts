@@ -22,6 +22,11 @@ export interface CartItem {
 
 /** Max quantity per line on the cart page. */
 export const CART_MAX_QUANTITY = 10;
+export const CART_MIN_QUANTITY = 1;
+
+export function clampCartQuantity(quantity: number): number {
+  return Math.min(CART_MAX_QUANTITY, Math.max(CART_MIN_QUANTITY, Math.round(quantity)));
+}
 
 export type CartProductInput = Pick<
   StorefrontProduct,
@@ -61,7 +66,7 @@ export function productToCartItem(
   return {
     productId: product.id,
     variantId,
-    quantity,
+    quantity: clampCartQuantity(quantity),
     addedAt: Date.now(),
     name: product.name,
     slug: product.slug,
@@ -81,17 +86,17 @@ export function mergeCartItems(local: CartItem[], remote: CartItem[]): CartItem[
   const map = new Map<string, CartItem>();
 
   for (const item of remote) {
-    map.set(cartLineKey(item.productId, item.variantId), { ...item });
+    map.set(cartLineKey(item.productId, item.variantId), {
+      ...item,
+      quantity: clampCartQuantity(item.quantity),
+    });
   }
 
   for (const item of local) {
     const key = cartLineKey(item.productId, item.variantId);
     const existing = map.get(key);
     if (existing) {
-      const mergedQty = Math.min(
-        existing.quantity + item.quantity,
-        Math.max(existing.stock, item.stock, 99),
-      );
+      const mergedQty = clampCartQuantity(existing.quantity + item.quantity);
       map.set(key, {
         ...existing,
         quantity: mergedQty,
@@ -106,7 +111,7 @@ export function mergeCartItems(local: CartItem[], remote: CartItem[]): CartItem[
         stock: Math.max(item.stock, existing.stock),
       });
     } else {
-      map.set(key, { ...item });
+      map.set(key, { ...item, quantity: clampCartQuantity(item.quantity) });
     }
   }
 

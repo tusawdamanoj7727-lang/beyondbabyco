@@ -6,6 +6,7 @@ import Icon from "../Icon";
 import { initialsFrom, useAdmin } from "../context";
 import { ROLE_LABELS } from "@/lib/auth/roles";
 import { useRole } from "@/lib/auth/hooks";
+import { supabase } from "@/lib/supabase/client";
 
 export default function UserMenu() {
   const { user, role: serverRole } = useAdmin();
@@ -85,16 +86,19 @@ export default function UserMenu() {
                 Profile
               </button>
 
-              <form action="/admin/logout" method="post" role="none">
-                <button
-                  type="submit"
-                  role="menuitem"
-                  className="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-terra-600 transition-colors hover:bg-terra-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50"
-                >
-                  <Icon name="logout" size={18} />
-                  Log out
-                </button>
-              </form>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setOpen(false);
+                  void supabase.auth.signOut();
+                  window.location.href = "/admin/logout";
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-terra-600 transition-colors hover:bg-terra-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50"
+              >
+                <Icon name="logout" size={18} />
+                Log out
+              </button>
             </div>
         </div>
       ) : null}

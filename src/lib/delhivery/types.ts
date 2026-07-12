@@ -61,6 +61,7 @@ export interface DelhiveryServiceabilityResult {
   cod: boolean;
   prepaid: boolean;
   raw: Record<string, unknown>;
+  httpStatus: number;
 }
 
 export interface DelhiveryTrackingScan {

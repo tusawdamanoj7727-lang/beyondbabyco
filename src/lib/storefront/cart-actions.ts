@@ -8,6 +8,7 @@ import { getCustomerIdForUser } from "@/lib/orders/customer-auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   cartLineKey,
+  clampCartQuantity,
   mergeCartItems,
   productToCartItem,
   type CartItem,
@@ -131,7 +132,7 @@ export async function syncServerCartItems(items: CartItem[]): Promise<CartAction
       inserts.push({
         cart_id: cartId,
         product_variant_id: variantId,
-        quantity: item.quantity,
+        quantity: clampCartQuantity(item.quantity),
       });
     }
     if (inserts.length > 0) {

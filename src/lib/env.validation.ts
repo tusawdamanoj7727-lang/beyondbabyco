@@ -89,8 +89,14 @@ export function getProductionEnvWarnings(): string[] {
   if (!process.env.RAZORPAY_WEBHOOK_SECRET) {
     warnings.push("RAZORPAY_WEBHOOK_SECRET not set (webhook HMAC verification requires dedicated secret)");
   }
-  if (!process.env.EMAIL_PROVIDER) {
-    warnings.push("EMAIL_PROVIDER not set (transactional email disabled)");
+  if (!process.env.RAZORPAY_KEY_ID?.trim() && !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim()) {
+    warnings.push("RAZORPAY_KEY_ID not set (online payments disabled unless configured in Admin → Payment Gateways)");
+  }
+  if (!process.env.RAZORPAY_KEY_SECRET?.trim()) {
+    warnings.push("RAZORPAY_KEY_SECRET not set (online payments disabled unless configured in Admin → Payment Gateways)");
+  }
+  if (!process.env.SMTP_HOST?.trim() || !process.env.SMTP_USER?.trim() || !process.env.SMTP_PASS?.trim()) {
+    warnings.push("SMTP not configured (transactional email disabled)");
   }
   if (!process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID && !process.env.NEXT_PUBLIC_META_PIXEL_ID) {
     warnings.push("No analytics providers configured (GA4 or Meta Pixel)");

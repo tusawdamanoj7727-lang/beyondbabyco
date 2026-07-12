@@ -3,7 +3,7 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import Razorpay from "razorpay";
 
-import { getEnabledRazorpayGateway } from "./gateways";
+import { getEnabledRazorpayGateway, PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE } from "./gateways";
 
 export const MIN_RAZORPAY_AMOUNT_PAISE = 100;
 
@@ -31,7 +31,7 @@ export async function createRazorpayOrder(input: {
 }): Promise<{ ok: boolean; error: string | null; razorpayOrderId?: string }> {
   const { client } = await getRazorpayClient();
   if (!client) {
-    return { ok: false, error: "Online payments are not configured." };
+    return { ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE };
   }
 
   const amountPaise = Math.round(input.amountInr * 100);

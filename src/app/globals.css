@@ -1785,6 +1785,85 @@ body {
   justify-self: end;
 }
 
+/* ── Floating brand medallion (presentational, outside navbar) ── */
+
+:root {
+  --floating-logo-size: 3.75rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --floating-logo-size: 5.25rem;
+  }
+}
+
+@keyframes floating-logo-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.floating-logo {
+  position: fixed;
+  z-index: 51;
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
+  top: calc(var(--site-header-h) - (var(--floating-logo-size) / 2));
+  width: var(--floating-logo-size);
+  height: var(--floating-logo-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  animation: floating-logo-breathe 3.5s ease-in-out infinite;
+  pointer-events: auto;
+}
+
+.floating-logo__disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--cream-50);
+  padding: 0.875rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition:
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+
+.floating-logo:hover .floating-logo__disc,
+.floating-logo:focus-visible .floating-logo__disc {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+}
+
+.floating-logo:focus-visible {
+  outline: none;
+}
+
+.floating-logo:focus-visible .floating-logo__disc {
+  outline: 2px solid var(--green-900, #2d5a27);
+  outline-offset: 3px;
+}
+
+.floating-logo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-logo {
+    animation: none;
+  }
+}
+
 .header-nav-link {
   display: inline-flex;
   flex-direction: column;

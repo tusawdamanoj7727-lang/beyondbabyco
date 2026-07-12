@@ -36,7 +36,7 @@ export function initialsFromName(name: string): string {
 }
 
 export function useCustomerAuth(): UseCustomerAuthResult {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut: authSignOut } = useAuth();
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
 
   useEffect(() => {
@@ -73,8 +73,8 @@ export function useCustomerAuth(): UseCustomerAuthResult {
   }, [user, authLoading]);
 
   const signOut = useCallback(() => {
-    window.location.href = "/logout";
-  }, []);
+    authSignOut();
+  }, [authSignOut]);
 
   const displayName = displayNameFrom(user, profile);
   // Show authenticated UI as soon as user is known — profile enriches in background.

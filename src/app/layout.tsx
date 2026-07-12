@@ -4,6 +4,7 @@ import { Montserrat, Geist } from "next/font/google";
 import JsonLd from "@/components/seo/JsonLd";
 import StorefrontFooter from "@/components/homepage/StorefrontFooter";
 import HideOnAdmin from "@/components/layout/HideOnAdmin";
+import FloatingLogo from "@/components/layout/FloatingLogo";
 import AnnouncementBar from "@/components/homepage/AnnouncementBar";
 import { Navbar } from "@/components/layout/Navbar";
 import ResourceHints from "@/components/seo/ResourceHints";
@@ -83,6 +84,7 @@ export default function RootLayout({
             <AnnouncementBar />
             <Navbar />
           </div>
+          <FloatingLogo />
         </HideOnAdmin>
         {children}
         <HideOnAdmin>

@@ -24,14 +24,14 @@ describe("operations navigation", () => {
 });
 
 describe("email provider config", () => {
-  it("returns null when EMAIL_PROVIDER unset", () => {
+  it("returns null when SMTP unset", () => {
     expect(getEmailProviderId()).toBeNull();
   });
 
-  it("validates missing provider env", () => {
+  it("validates missing SMTP env", () => {
     const result = validateEmailProviderEnv();
     expect(result.valid).toBe(false);
-    expect(result.missing).toContain("EMAIL_PROVIDER");
+    expect(result.missing.length).toBeGreaterThan(0);
   });
 });
 

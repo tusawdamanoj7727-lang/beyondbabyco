@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 import { gstFromInclusiveLine } from "@/lib/catalog/gst-rates";
+import { clampCartQuantity, CART_MIN_QUANTITY } from "@/lib/storefront/cart-types";
 
 export interface CartItem {
   id: string;
@@ -33,7 +34,7 @@ export interface AppliedCoupon {
 interface CartStore {
   items: CartItem[];
   coupon: AppliedCoupon | null;
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
   updateQty: (variantId: string, quantity: number) => void;
@@ -84,19 +85,20 @@ export const useCartStore = create<CartStore>()(
       items: [],
       coupon: null,
 
-      addItem: (newItem) =>
+      addItem: (newItem, quantity = 1) =>
         set((state) => {
+          const qty = clampCartQuantity(quantity);
           const exists = state.items.find((i) => i.variantId === newItem.variantId);
           if (exists) {
             return {
               items: state.items.map((i) =>
                 i.variantId === newItem.variantId
-                  ? { ...i, quantity: Math.min(i.quantity + 1, 10) }
+                  ? { ...i, quantity: clampCartQuantity(i.quantity + qty) }
                   : i,
               ),
             };
           }
-          return { items: [...state.items, { ...newItem, quantity: 1 }] };
+          return { items: [...state.items, { ...newItem, quantity: qty }] };
         }),
 
       removeItem: (variantId) =>
@@ -105,10 +107,10 @@ export const useCartStore = create<CartStore>()(
       updateQuantity: (variantId, qty) =>
         set((s) => ({
           items:
-            qty < 1
+            qty < CART_MIN_QUANTITY
               ? s.items.filter((i) => i.variantId !== variantId)
               : s.items.map((i) =>
-                  i.variantId === variantId ? { ...i, quantity: Math.min(qty, 10) } : i,
+                  i.variantId === variantId ? { ...i, quantity: clampCartQuantity(qty) } : i,
                 ),
         })),
 
@@ -129,7 +131,13 @@ export const useCartStore = create<CartStore>()(
 
       removeCoupon: () => set({ coupon: null }),
 
-      replaceItems: (items) => set({ items }),
+      replaceItems: (items) =>
+        set({
+          items: items.map((item) => ({
+            ...item,
+            quantity: clampCartQuantity(item.quantity),
+          })),
+        }),
 
       itemCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
 

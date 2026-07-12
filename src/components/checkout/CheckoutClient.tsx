@@ -14,6 +14,7 @@ import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/ToastProvider";
 import type { CheckoutInitialData } from "@/lib/checkout/actions";
 import { lookupPincodeAction, placeCheckoutOrderAction } from "@/lib/checkout/actions";
+import { notifyPaymentFailedAction } from "@/lib/checkout/payment-email-actions";
 import { INDIAN_STATES, type AddressFormValues } from "@/lib/checkout/schema";
 import type { CustomerAddressRow } from "@/lib/checkout/address-actions";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
@@ -27,6 +28,10 @@ function notifyCheckoutError(
   toast: ReturnType<typeof useToast>,
   message: string,
 ) {
+  if (/payment gateway not configured|razorpay.*not configured|online payments are not configured/i.test(message)) {
+    toast.error(message);
+    return;
+  }
   if (/out of stock/i.test(message)) {
     toast.warning("This item is out of stock");
     return;
@@ -132,6 +137,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     prepaid: boolean;
     estimatedDelivery?: string;
   } | null>(null);
+  const [deliveryError, setDeliveryError] = useState<string | null>(null);
   const [checkingPin, setCheckingPin] = useState(false);
 
   const shippingFee = estimateShippingFee(
@@ -143,12 +149,18 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   const checkPin = useCallback(async (pincode: string) => {
     if (pincode.length !== 6) return;
     setCheckingPin(true);
+    setDeliveryError(null);
     try {
       const [deliveryResult, lookup] = await Promise.all([
         checkDeliveryEstimateAction(pincode),
         lookupPincodeAction(pincode),
       ]);
-      if (deliveryResult.ok && deliveryResult.serviceable != null) {
+      if (!deliveryResult.ok) {
+        setDelivery(null);
+        setDeliveryError(deliveryResult.error ?? "Could not check delivery.");
+        return;
+      }
+      if (deliveryResult.serviceable != null) {
         setDelivery({
           serviceable: deliveryResult.serviceable,
           cod: deliveryResult.cod ?? false,
@@ -204,6 +216,9 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     if (!/^\d{6}$/.test(shipping.pincode)) return "Enter a valid PIN code.";
     if (delivery && !delivery.serviceable) return "Delivery not available to this PIN.";
     if (paymentMethod === "cod" && delivery && !delivery.cod) return "COD not available for this PIN.";
+    if (paymentMethod === "razorpay" && !initial.razorpayAvailable) {
+      return "Payment gateway not configured. Online payments are unavailable — choose Cash on Delivery or contact support.";
+    }
     return null;
   }
 
@@ -361,6 +376,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         });
         rzp.on("payment.failed", (response: unknown) => {
           capturePaymentError(response, { orderId, cartTotal: totals.total });
+          void notifyPaymentFailedAction(orderId);
           toast.error("Payment failed. Please try again.");
           placingRef.current = false;
         });
@@ -464,6 +480,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   <p className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" /> Checking delivery…
                   </p>
+                ) : deliveryError ? (
+                  <p className="font-semibold text-terra-700">{deliveryError}</p>
                 ) : delivery ? (
                   delivery.serviceable ? (
                     <>

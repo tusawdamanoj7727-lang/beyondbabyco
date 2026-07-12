@@ -14,12 +14,12 @@ import { PROVIDER_ADAPTERS } from "@/lib/communications/adapters";
 
 describe("communications email templates", () => {
   it("registers all required template counts", () => {
-    expect(EMAIL_TEMPLATE_COUNTS.account).toBe(7);
-    expect(EMAIL_TEMPLATE_COUNTS.order).toBe(15);
+    expect(EMAIL_TEMPLATE_COUNTS.account).toBe(10);
+    expect(EMAIL_TEMPLATE_COUNTS.order).toBe(18);
     expect(EMAIL_TEMPLATE_COUNTS.delivery).toBe(9);
-    expect(EMAIL_TEMPLATE_COUNTS.marketing).toBe(11);
-    expect(EMAIL_TEMPLATE_COUNTS.total).toBe(42);
-    expect(ALL_EMAIL_TEMPLATES.length).toBe(42);
+    expect(EMAIL_TEMPLATE_COUNTS.marketing).toBe(16);
+    expect(EMAIL_TEMPLATE_COUNTS.total).toBe(54);
+    expect(ALL_EMAIL_TEMPLATES.length).toBe(54);
   });
 
   it("renders branded email HTML with subject and body", () => {
@@ -62,9 +62,9 @@ describe("multi-channel notifications", () => {
 });
 
 describe("provider adapters", () => {
-  it("prepared adapters return not-configured without sending", async () => {
-    const resend = new PROVIDER_ADAPTERS.email.resend();
-    const result = await resend.send({
+  it("SMTP adapter returns not-configured without env", async () => {
+    const smtp = new PROVIDER_ADAPTERS.email.smtp();
+    const result = await smtp.send({
       to: "test@example.com",
       subject: "Test",
       html: "<p>Test</p>",

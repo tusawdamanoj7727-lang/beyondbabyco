@@ -21,6 +21,7 @@ import {
 } from "@/lib/store/cart-mappers";
 import { useCartStore } from "@/lib/store/cart-store";
 import {
+  getServerCartItems,
   mergeGuestCartOnLogin,
   syncServerCartItems,
 } from "@/lib/storefront/cart-actions";
@@ -29,7 +30,7 @@ import {
   cartItemCount,
   cartLineKey,
   cartSubtotal,
-  mergeCartItems,
+  clampCartQuantity,
   productToCartItem,
   type AppliedCoupon,
   type CartItem,
@@ -57,7 +58,7 @@ type CartContextValue = {
   removeSaved: (productId: string, variantId: string | null) => void;
   clear: () => void;
   setAppliedCoupon: (coupon: AppliedCoupon | null) => void;
-  setLoggedIn: (loggedIn: boolean) => void;
+  setLoggedIn: (loggedIn: boolean, userId?: string | null) => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -74,7 +75,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mergedRef = useRef(false);
+  const mergedUserIdRef = useRef<string | null>(null);
 
   const items = useMemo(() => storeItems.map(storeItemToLegacy), [storeItems]);
   const appliedCoupon = useMemo(() => storeCouponToLegacy(storeCoupon), [storeCoupon]);
@@ -104,23 +105,44 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setLoggedIn = useCallback(
-    (loggedIn: boolean) => {
+    (loggedIn: boolean, userId?: string | null) => {
       setIsLoggedIn(loggedIn);
-      if (loggedIn && hydrated && !mergedRef.current) {
-        mergedRef.current = true;
-        const local = currentLegacyItems();
-        void mergeGuestCartOnLogin(local).then((result) => {
-          if (result.ok && result.items) {
-            const merged = mergeCartItems(local, result.items);
-            useCartStore.getState().replaceItems(legacyItemsToStore(merged));
-            syncToServer(merged);
-          }
-        });
+
+      if (!loggedIn) {
+        if (mergedUserIdRef.current !== null) {
+          mergedUserIdRef.current = null;
+        }
+        return;
       }
-      if (!loggedIn) mergedRef.current = false;
+
+      const uid = userId?.trim() || null;
+      if (!uid || !hydrated || mergedUserIdRef.current === uid) return;
+
+      mergedUserIdRef.current = uid;
+      const local = currentLegacyItems();
+      void mergeGuestCartOnLogin(local).then((result) => {
+        if (result.ok && result.items) {
+          useCartStore.getState().replaceItems(legacyItemsToStore(result.items));
+          syncToServer(result.items);
+        }
+      });
     },
     [hydrated, syncToServer],
   );
+
+  useEffect(() => {
+    if (!isLoggedIn || !hydrated) return;
+
+    const syncFromServer = () => {
+      if (document.visibilityState !== "visible") return;
+      void getServerCartItems().then((items) => {
+        useCartStore.getState().replaceItems(legacyItemsToStore(items));
+      });
+    };
+
+    document.addEventListener("visibilitychange", syncFromServer, { passive: true });
+    return () => document.removeEventListener("visibilitychange", syncFromServer);
+  }, [isLoggedIn, hydrated]);
 
   const addItem = useCallback(
     (
@@ -130,8 +152,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       variantName: string | null = null,
     ) => {
       const input = buildCartItemInput(product, { variantId, variantName });
-      const add = useCartStore.getState().addItem;
-      for (let i = 0; i < quantity; i += 1) add(input);
+      useCartStore.getState().addItem(input, clampCartQuantity(quantity));
       syncToServer(currentLegacyItems());
     },
     [syncToServer],
@@ -139,7 +160,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = useCallback(
     (productId: string, variantId: string | null, quantity: number) => {
-      useCartStore.getState().updateQuantity(legacyVariantKey(variantId), quantity);
+      useCartStore.getState().updateQuantity(legacyVariantKey(variantId), clampCartQuantity(quantity));
       syncToServer(currentLegacyItems());
     },
     [syncToServer],

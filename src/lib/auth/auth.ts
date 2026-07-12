@@ -88,14 +88,12 @@ export async function signInAction(
     return { error: "This account does not have admin access." };
   }
 
-  await supabase.rpc("log_activity", {
+  void supabase.rpc("log_activity", {
     p_action: "auth.login",
     p_entity: "session",
     p_metadata: { role, method: "password" },
   }).then(({ error }) => {
-    if (error) {
-      console.warn("[auth] log_activity skipped:", error.message);
-    }
+    if (error) console.warn("[auth] log_activity skipped:", error.message);
   });
 
   redirect(resolveRedirect(redirectTo));
@@ -113,7 +111,7 @@ export async function signOutAction(): Promise<void> {
   } = await supabase.auth.getUser();
 
   if (user) {
-    await supabase.rpc("log_activity", {
+    void supabase.rpc("log_activity", {
       p_action: "auth.logout",
       p_entity: "session",
     });

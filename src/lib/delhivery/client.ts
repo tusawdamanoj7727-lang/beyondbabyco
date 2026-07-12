@@ -66,6 +66,47 @@ function asRecord(value: unknown): Record<string, unknown> {
   return {};
 }
 
+/** Delhivery flags use "Y"/"y" or boolean true. */
+export function isDelhiveryYes(value: unknown): boolean {
+  if (value === true) return true;
+  if (typeof value === "string") return value.toUpperCase() === "Y";
+  return false;
+}
+
+function normalizePincode(value: unknown): string | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return String(Math.trunc(value)).padStart(6, "0").slice(-6);
+  }
+  if (typeof value === "string") {
+    const digits = value.replace(/\D/g, "").slice(0, 6);
+    return digits.length === 6 ? digits : null;
+  }
+  return null;
+}
+
+/** Parse pin-code serviceability from Delhivery JSON (nested postal_code or legacy top-level). */
+export function parseServiceabilityResponse(
+  pincode: string,
+  raw: Record<string, unknown>,
+): Pick<DelhiveryServiceabilityResult, "pincode" | "serviceable" | "cod" | "prepaid"> {
+  const deliveryCodes = Array.isArray(raw.delivery_codes) ? raw.delivery_codes : [];
+  const first = asRecord(deliveryCodes[0]);
+  const postal = asRecord(first.postal_code);
+  const source = Object.keys(postal).length > 0 ? postal : first;
+
+  const prepaid = isDelhiveryYes(source.pre_paid) || isDelhiveryYes(source.prepaid);
+  const cod = isDelhiveryYes(source.cod);
+  const serviceable = Boolean(deliveryCodes[0]) && (prepaid || cod);
+  const resolvedPin = normalizePincode(source.pin) ?? pincode;
+
+  return {
+    pincode: resolvedPin,
+    serviceable,
+    cod,
+    prepaid,
+  };
+}
+
 /** Validates API key presence (Delhivery uses static token auth). */
 export function authenticate(): { ok: boolean; baseUrl: string } {
   const config = getDelhiveryConfig();
@@ -73,24 +114,44 @@ export function authenticate(): { ok: boolean; baseUrl: string } {
 }
 
 export async function checkServiceability(pincode: string): Promise<DelhiveryServiceabilityResult> {
-  const res = await delhiveryFetch(
-    `/c/api/pin-codes/json/?filter_codes=${encodeURIComponent(pincode)}`,
-    { method: "GET" },
-  );
-  const raw = asRecord(await res.json().catch(() => ({})));
-  const deliveryCodes = Array.isArray(raw.delivery_codes) ? raw.delivery_codes : [];
-  const first = deliveryCodes[0] as Record<string, unknown> | undefined;
+  const config = requireDelhiveryConfig();
+  const path = `/c/api/pin-codes/json/?filter_codes=${encodeURIComponent(pincode)}`;
+  const requestUrl = `${config.baseUrl}${path}`;
 
-  const prepaid = first?.pre_paid === "Y" || first?.prepaid === "Y";
-  const cod = first?.cod === "Y";
-  const serviceable = Boolean(first) && (prepaid || cod);
+  const res = await delhiveryFetch(path, { method: "GET" });
+  const responseText = await res.text();
+
+  // TEMP: debug PIN serviceability parsing — remove after verification
+  console.log("[delhivery:serviceability] input pincode:", pincode, "typeof:", typeof pincode);
+  console.log("[delhivery:serviceability] request:", requestUrl);
+  console.log("[delhivery:serviceability] status:", res.status);
+  console.log("[delhivery:serviceability] raw response:", responseText.slice(0, 2000));
+
+  if (!res.ok) {
+    const snippet = responseText.slice(0, 500).trim() || "(empty body)";
+    const err = new Error(
+      `Delhivery serviceability failed (${res.status}): ${snippet}`,
+    ) as import("./types").DelhiveryApiError;
+    err.statusCode = res.status;
+    err.responseBody = responseText;
+    throw err;
+  }
+
+  let raw: Record<string, unknown>;
+  try {
+    raw = asRecord(responseText ? JSON.parse(responseText) : {});
+  } catch {
+    throw new Error(
+      `Delhivery serviceability returned invalid JSON: ${responseText.slice(0, 200)}`,
+    );
+  }
+
+  const parsed = parseServiceabilityResponse(pincode, raw);
 
   return {
-    pincode,
-    serviceable,
-    cod,
-    prepaid,
+    ...parsed,
     raw,
+    httpStatus: res.status,
   };
 }
 

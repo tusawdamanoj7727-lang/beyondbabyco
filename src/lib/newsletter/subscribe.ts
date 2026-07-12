@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { isSupabaseConfigured } from "@/lib/env";
 import { logger } from "@/lib/observability/logger";
+import { onNewsletterSubscribed } from "@/lib/email/events/admin";
 import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -126,6 +127,7 @@ export async function subscribeToNewsletter(
     if (klaviyo.ok) {
       void subscribeViaSupabase(normalized, source).catch(() => undefined);
       logger.info("newsletter.subscribe.success", { email: normalized, provider: "klaviyo", source });
+      onNewsletterSubscribed(normalized);
       return { success: true, message: NEWSLETTER_MESSAGES.success };
     }
     if (klaviyo.duplicate) {
@@ -144,6 +146,7 @@ export async function subscribeToNewsletter(
       provider: hasKlaviyo ? "supabase_fallback" : "supabase",
       source,
     });
+    onNewsletterSubscribed(normalized);
     return { success: true, message: NEWSLETTER_MESSAGES.success };
   }
 

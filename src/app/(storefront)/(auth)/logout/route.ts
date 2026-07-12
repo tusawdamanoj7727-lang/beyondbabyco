@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 async function handleLogout(request: NextRequest) {
   const supabase = await createSupabaseServerClient();
-  await supabase.auth.signOut();
+  void supabase.auth.signOut();
   return NextResponse.redirect(new URL("/", request.url));
 }
 

@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createRazorpayOrder, MIN_RAZORPAY_AMOUNT_PAISE } from "@/lib/checkout/razorpay-client";
-import { getEnabledRazorpayGateway } from "@/lib/checkout/gateways";
+import {
+  getEnabledRazorpayGateway,
+  PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE,
+} from "@/lib/checkout/gateways";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +34,7 @@ export async function POST(req: Request) {
 
     const gateway = await getEnabledRazorpayGateway();
     if (!gateway?.keyId || !gateway.keySecret) {
-      return NextResponse.json({ ok: false, error: "Razorpay is not configured." }, { status: 401 });
+      return NextResponse.json({ ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE }, { status: 503 });
     }
 
     const result = await createRazorpayOrder({

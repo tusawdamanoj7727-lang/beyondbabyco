@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getAppUrl, isProduction } from "@/lib/env.validation";
+import { isRazorpayEnvConfigured, missingRazorpayEnvVars } from "@/lib/checkout/gateways";
 import { isAiDevEnabled } from "@/lib/ai/config";
 import { validateEmailProviderEnv } from "./email/config";
 import { getAnalyticsIntegrationStatuses } from "@/lib/analytics/integrations";
@@ -24,7 +25,8 @@ export function getDeploymentChecklist(): DeploymentCheckItem[] {
     process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim(),
   );
   const hasServiceRole = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
-  const hasRazorpay = Boolean(process.env.RAZORPAY_KEY_ID?.trim() && process.env.RAZORPAY_KEY_SECRET?.trim());
+  const hasRazorpay = isRazorpayEnvConfigured();
+  const razorpayMissing = missingRazorpayEnvVars();
   const hasDelhivery = Boolean(process.env.DELHIVERY_API_KEY?.trim() && process.env.DELHIVERY_BASE_URL?.trim());
   const hasCron = Boolean(process.env.CRON_SECRET?.trim());
   const prodUrlReady = isProduction() ? appUrl.startsWith("https://") && !appUrl.includes("localhost") : true;
@@ -51,8 +53,12 @@ export function getDeploymentChecklist(): DeploymentCheckItem[] {
     {
       id: "razorpay",
       label: "Razorpay",
-      status: statusFromBool(hasRazorpay),
-      detail: hasRazorpay ? "Key ID and secret present" : "RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET missing",
+      status: statusFromBool(hasRazorpay, hasRazorpay && razorpayMissing.includes("RAZORPAY_WEBHOOK_SECRET")),
+      detail: hasRazorpay
+        ? razorpayMissing.length
+          ? `API keys present; missing: ${razorpayMissing.join(", ")}`
+          : "Key ID, secret, and webhook secret present in env"
+        : `Missing in Vercel env: ${razorpayMissing.filter((v) => v !== "RAZORPAY_WEBHOOK_SECRET").join(", ") || "RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET"} — or configure Admin → Payment Gateways`,
       category: "integrations",
     },
     {
@@ -64,13 +70,13 @@ export function getDeploymentChecklist(): DeploymentCheckItem[] {
     },
     {
       id: "smtp",
-      label: "Email (SMTP/provider)",
-      status: statusFromBool(emailValidation.valid, Boolean(process.env.EMAIL_PROVIDER)),
+      label: "Email (Hostinger SMTP)",
+      status: statusFromBool(emailValidation.valid),
       detail: emailValidation.valid
-        ? `Provider: ${process.env.EMAIL_PROVIDER}`
+        ? `Hostinger SMTP (${process.env.SMTP_HOST})`
         : emailValidation.missing.length
           ? `Missing: ${emailValidation.missing.join(", ")}`
-          : "EMAIL_PROVIDER not set",
+          : "SMTP not configured",
       category: "integrations",
     },
     {

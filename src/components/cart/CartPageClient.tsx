@@ -14,6 +14,7 @@ import {
   FREE_SHIPPING_THRESHOLD,
   STANDARD_SHIPPING_FEE,
 } from "@/lib/storefront/shipping";
+import { clampCartQuantity } from "@/lib/storefront/cart-types";
 import { cn } from "@/lib/utils";
 
 function CartSkeleton() {
@@ -187,7 +188,7 @@ export default function CartPageClient() {
                         type="button"
                         aria-label="Increase quantity"
                         disabled={item.quantity >= 10}
-                        onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.variantId, clampCartQuantity(item.quantity + 1))}
                         className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-gray-50 disabled:opacity-40"
                       >
                         <Plus size={14} />

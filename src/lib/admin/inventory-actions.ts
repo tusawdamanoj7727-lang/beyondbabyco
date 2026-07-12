@@ -13,6 +13,7 @@ import {
   receiveGoodsSchema,
 } from "./inventory-schema";
 import { ensureInventoryRecord, getInventoryRow } from "./inventory";
+import { onLowStockAlert, onOutOfStockAlert } from "@/lib/email/events/admin";
 import type { PoStatus } from "@/lib/supabase/database.types";
 
 export interface InventoryActionResult {
@@ -75,6 +76,29 @@ export async function adjustStock(input: {
     .select("id")
     .single();
   if (movErr) return { ok: false, error: movErr.message };
+
+  const available = nextQty - row.reserved;
+  if (available <= 0 || available <= row.reorder_level) {
+    const { data: variant } = await supabase
+      .from("product_variants")
+      .select("name, sku, products(name)")
+      .eq("id", row.product_variant_id)
+      .maybeSingle();
+    const productName =
+      (variant?.products as { name?: string } | null)?.name ??
+      variant?.name ??
+      "Product";
+    if (available <= 0) {
+      onOutOfStockAlert({ productName, sku: variant?.sku ?? "N/A" });
+    } else {
+      onLowStockAlert({
+        productName,
+        sku: variant?.sku ?? "N/A",
+        quantity: available,
+        reorderLevel: row.reorder_level,
+      });
+    }
+  }
 
   await supabase.rpc("log_audit", {
     p_table: "inventory",

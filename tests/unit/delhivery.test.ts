@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { authenticate } from "@/lib/delhivery/client";
+import { authenticate, isDelhiveryYes, parseServiceabilityResponse } from "@/lib/delhivery/client";
 import { getDelhiveryConfig } from "@/lib/delhivery/config";
 import {
   cancelBodySchema,
@@ -62,6 +62,58 @@ describe("Delhivery schemas", () => {
   it("accepts webhook payloads with waybill or AWB", () => {
     expect(delhiveryWebhookSchema.safeParse({ waybill: "WB123", status: "In Transit" }).success).toBe(true);
     expect(delhiveryWebhookSchema.safeParse({ AWB: "WB456", Status: "Delivered" }).success).toBe(true);
+  });
+});
+
+describe("Delhivery serviceability parsing", () => {
+  it("parses nested postal_code from live API shape", () => {
+    const raw = {
+      delivery_codes: [
+        {
+          postal_code: {
+            pin: 313001,
+            cod: "Y",
+            pre_paid: "Y",
+          },
+        },
+      ],
+    };
+
+    expect(parseServiceabilityResponse("313001", raw)).toEqual({
+      pincode: "313001",
+      serviceable: true,
+      cod: true,
+      prepaid: true,
+    });
+  });
+
+  it("falls back to top-level flags for legacy payloads", () => {
+    const raw = {
+      delivery_codes: [{ pin: "560001", cod: "Y", prepaid: "Y" }],
+    };
+
+    expect(parseServiceabilityResponse("560001", raw)).toEqual({
+      pincode: "560001",
+      serviceable: true,
+      cod: true,
+      prepaid: true,
+    });
+  });
+
+  it("returns not serviceable when delivery_codes is empty", () => {
+    expect(parseServiceabilityResponse("999999", { delivery_codes: [] })).toEqual({
+      pincode: "999999",
+      serviceable: false,
+      cod: false,
+      prepaid: false,
+    });
+  });
+
+  it("recognizes Delhivery yes values", () => {
+    expect(isDelhiveryYes("Y")).toBe(true);
+    expect(isDelhiveryYes("y")).toBe(true);
+    expect(isDelhiveryYes(true)).toBe(true);
+    expect(isDelhiveryYes("N")).toBe(false);
   });
 });
 
