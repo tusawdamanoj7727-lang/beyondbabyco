@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-
-import { jsonOk } from "@/lib/api/route-helpers";
+import { parsePagination } from "@/lib/api/schemas";
+import { jsonOk, jsonError } from "@/lib/api/route-helpers";
 import { handleAdminApiError, requireAdminUserApi } from "@/lib/api/admin-user-api";
+import { logger } from "@/lib/observability/logger";
 import { buildAdminUserRow } from "@/lib/admin/user-management-server";
 
 export const dynamic = "force-dynamic";
@@ -13,12 +13,15 @@ export async function GET(request: Request) {
 
   try {
     const url = new URL(request.url);
-    const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
-    const perPage = Math.min(200, Math.max(1, Number(url.searchParams.get("perPage")) || 50));
+    const { page, perPage } = parsePagination(url.searchParams, {
+      maxPerPage: 100,
+      defaultPerPage: 50,
+    });
 
     const { data, error } = await gate.admin.auth.admin.listUsers({ page, perPage });
     if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+      logger.error("admin.users.list", { error: error.message });
+      return jsonError("Request failed", 500);
     }
 
     const users = data.users ?? [];
@@ -40,7 +43,8 @@ export async function GET(request: Request) {
         .in("id", ids);
 
       if (profileError) {
-        return NextResponse.json({ ok: false, error: profileError.message }, { status: 500 });
+        logger.error("admin.users.profiles", { error: profileError.message });
+        return jsonError("Request failed", 500);
       }
 
       for (const row of profiles ?? []) {

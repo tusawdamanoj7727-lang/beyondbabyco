@@ -1,13 +1,16 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { jsonOk } from "@/lib/api/route-helpers";
+import { logApiAction } from "@/lib/api/audit";
+import { parseJsonBody } from "@/lib/api/request";
+import { uuidSchema } from "@/lib/api/schemas";
+import { jsonOk, jsonError } from "@/lib/api/route-helpers";
 import { handleAdminApiError, requireAdminUserApi } from "@/lib/api/admin-user-api";
+import { logger } from "@/lib/observability/logger";
 
 export const dynamic = "force-dynamic";
 
 const deactivateSchema = z.object({
-  userId: z.string().uuid("Invalid user id"),
+  userId: uuidSchema,
 });
 
 /** Ban a user and mark their profile inactive (admin only). */
@@ -16,13 +19,9 @@ export async function POST(request: Request) {
   if (!gate.ok) return gate.response;
 
   try {
-    const body = await request.json();
-    const parsed = deactivateSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid request" },
-        { status: 400 },
-      );
+    const parsed = await parseJsonBody(request, { schema: deactivateSchema });
+    if (!parsed.ok) {
+      return jsonError(parsed.error, parsed.status);
     }
 
     const { userId } = parsed.data;
@@ -31,7 +30,8 @@ export async function POST(request: Request) {
       ban_duration: "876000h",
     });
     if (banError) {
-      return NextResponse.json({ ok: false, error: banError.message }, { status: 400 });
+      logger.error("admin.users.deactivate", { error: banError.message });
+      return jsonError("Could not deactivate user", 400);
     }
 
     const { error: profileError } = await gate.admin
@@ -40,8 +40,15 @@ export async function POST(request: Request) {
       .eq("id", userId);
 
     if (profileError) {
-      return NextResponse.json({ ok: false, error: profileError.message }, { status: 500 });
+      logger.error("admin.users.deactivate.profile", { error: profileError.message });
+      return jsonError("Request failed", 500);
     }
+
+    logApiAction({
+      action: "api.admin.users.deactivate",
+      entity: "profiles",
+      entityId: userId,
+    });
 
     return jsonOk({ userId, deactivated: true });
   } catch (error) {

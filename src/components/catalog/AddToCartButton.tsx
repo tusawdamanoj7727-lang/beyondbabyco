@@ -9,7 +9,7 @@ import type { StorefrontProduct } from "@/lib/catalog/types";
 import { buildCartItemInput } from "@/lib/store/cart-mappers";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
-import { focusRing } from "@/lib/design/ui";
+import { focusRing, motionButton } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 type AddToCartButtonProps = {
@@ -54,9 +54,10 @@ export default function AddToCartButton({
         });
       }}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full bg-[#2d5a27] font-semibold text-white transition hover:bg-[#234a20] disabled:cursor-wait disabled:opacity-80",
+        "inline-flex items-center justify-center gap-2 rounded-full btn-primary-premium font-semibold text-white disabled:cursor-wait disabled:opacity-80",
         size === "sm" ? "h-11 px-4 text-sm" : "h-11 px-5 text-sm",
         fullWidth && "w-full",
+        motionButton,
         focusRing,
         className,
       )}

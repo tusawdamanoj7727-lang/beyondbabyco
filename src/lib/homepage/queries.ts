@@ -1,5 +1,7 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
+
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { DEFAULTS, type PublishStatus } from "@/lib/admin/homepage-schema";
 
@@ -111,7 +113,7 @@ export async function getHomepageTestimonials(): Promise<HomepageTestimonial[]> 
 }
 
 /** Full homepage payload — settings, sections, hero and testimonials. */
-export async function getHomepage(): Promise<Homepage> {
+async function fetchHomepage(): Promise<Homepage> {
   const supabase = await createSupabaseServerClient();
 
   const [settingsRes, sections, hero, testimonials] = await Promise.all([
@@ -135,4 +137,12 @@ export async function getHomepage(): Promise<Homepage> {
     hero,
     testimonials,
   };
+}
+
+const getCachedHomepage = unstable_cache(fetchHomepage, ["homepage-cms"], {
+  revalidate: 60,
+});
+
+export async function getHomepage(): Promise<Homepage> {
+  return getCachedHomepage();
 }

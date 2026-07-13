@@ -13,17 +13,15 @@ export default function OrderDetailActions({ orderId, status }: { orderId: strin
   return (
     <div className="flex flex-wrap gap-3">
       {canCancel ? (
-        <Link href={`${supportHref}&subject=${encodeURIComponent("Cancel order request")}`}>
-          <Button variant="secondary" size="sm" type="button">
+        <Button asChild variant="secondary" size="sm">
+          <Link href={`${supportHref}&subject=${encodeURIComponent("Cancel order request")}`}>
             Request cancellation
-          </Button>
-        </Link>
-      ) : null}
-      <Link href={`${supportHref}&subject=${encodeURIComponent("Return request")}`}>
-        <Button variant="secondary" size="sm" type="button">
-          Request return
+          </Link>
         </Button>
-      </Link>
+      ) : null}
+      <Button asChild variant="secondary" size="sm">
+        <Link href={`${supportHref}&subject=${encodeURIComponent("Return request")}`}>Request return</Link>
+      </Button>
       <Link
         href={supportHref}
         className="inline-flex min-h-[44px] items-center rounded-full border border-green-200 px-4 text-sm font-semibold text-green-800 hover:bg-green-50"

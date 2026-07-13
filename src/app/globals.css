@@ -44,8 +44,8 @@
   --brand-mint: #eaf3de;
   --brand-forest-dark: #1a3a16;
 
-  /* Typography — Montserrat headings, Helvetica body (no Arial) */
-  --font-heading: var(--font-montserrat), Montserrat, "Helvetica Neue", Helvetica, sans-serif;
+  /* Typography — Geist headings (via @theme), Helvetica body (no Arial) */
+  --font-heading: var(--font-sans);
   --font-body: "Helvetica Neue", Helvetica, sans-serif;
 
   /* Type scale — Sprint 2: calmer luxury editorial rhythm */
@@ -254,6 +254,12 @@
   --color-cream-700: var(--cream-700);
   --color-cream-800: var(--cream-800);
   --color-cream-900: var(--cream-900);
+
+  --color-brand-forest: var(--brand-forest);
+  --color-brand-terra: var(--brand-terra);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-forest-dark: var(--brand-forest-dark);
 
   --shadow-clay: var(--shadow-clay);
   --shadow-card: var(--shadow-card);
@@ -724,10 +730,15 @@
   .animate-drawer-panel-in,
   .animate-search-dialog-in,
   .mascot-float,
-  .mascot-interactive:hover {
-    animation: none;
-    opacity: 1;
-    transform: none;
+  .mascot-interactive:hover,
+  .scroll-reveal.is-revealed,
+  .scroll-reveal-item.is-revealed,
+  .scroll-reveal-slide-left.is-revealed,
+  .scroll-reveal-slide-right.is-revealed,
+  .scroll-reveal-scale-in.is-revealed {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .homepage-section {
@@ -1162,6 +1173,44 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--terra-500) 45%, transparent);
 }
 
+/* Skip link — visible on keyboard focus only */
+.a11y-skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.a11y-skip-link:focus-visible {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  border-radius: 0.75rem;
+  background: white;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--green-900);
+  text-decoration: none;
+  box-shadow:
+    var(--shadow-soft),
+    0 0 0 3px color-mix(in srgb, var(--terra-500) 80%, transparent);
+  outline: none;
+}
+
 .text-label {
   font-family: var(--font-body);
   font-size: var(--text-label);
@@ -1175,12 +1224,12 @@
   font-size: var(--text-caption);
   font-weight: 400;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--green-700) 75%, transparent);
+  color: color-mix(in srgb, var(--green-700) 88%, transparent);
 }
 
 /* Alias for secondary / helper copy — use instead of ad-hoc text-green-700/50–/60 */
 .text-muted {
-  color: color-mix(in srgb, var(--green-700) 75%, transparent);
+  color: color-mix(in srgb, var(--green-700) 88%, transparent);
 }
 
 .text-body-secondary {
@@ -1295,7 +1344,7 @@
     background-color 220ms var(--ease-out);
 }
 
-.auth-modal-input:focus {
+.auth-modal-input:focus-visible {
   outline: none;
   border-color: rgba(232, 180, 184, 0.75);
   box-shadow: 0 0 0 4px rgba(232, 180, 184, 0.22);

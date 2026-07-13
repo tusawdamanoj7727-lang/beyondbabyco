@@ -13,10 +13,7 @@ export default async function StorefrontLayout({
 
   return (
     <StorefrontProviders wishlistIds={wishlistIds}>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-green-900 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-terra-500"
-      >
+      <a href="#main-content" className="a11y-skip-link">
         Skip to main content
       </a>
       <main id="main-content" className="site-main-offset">

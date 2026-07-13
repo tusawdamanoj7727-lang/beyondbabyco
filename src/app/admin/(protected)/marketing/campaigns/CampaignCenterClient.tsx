@@ -88,15 +88,15 @@ export default function CampaignCenterClient({
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/admin/marketing/campaigns/calendar">
-            <Button variant="ghost" size="sm">Calendar</Button>
-          </Link>
-          <Link href="/admin/marketing/campaigns/creative">
-            <Button variant="ghost" size="sm">AI Creative</Button>
-          </Link>
-          <Link href="/admin/marketing/campaigns/new">
-            <Button size="sm">New campaign</Button>
-          </Link>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/admin/marketing/campaigns/calendar">Calendar</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/admin/marketing/campaigns/creative">AI Creative</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/admin/marketing/campaigns/new">New campaign</Link>
+          </Button>
         </div>
       </div>
 

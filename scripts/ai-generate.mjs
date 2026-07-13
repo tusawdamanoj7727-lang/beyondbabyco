@@ -62,9 +62,9 @@ async function main() {
   }
 
   console.log("✓ Image saved:");
-  console.log(`  ${data.result.localPath}`);
-  console.log(`  ${data.result.publicPath}`);
-  console.log(`  seed=${data.result.seed} duration=${data.result.durationMs}ms`);
+  console.log(`  ${data.data.result.localPath}`);
+  console.log(`  ${data.data.result.publicPath}`);
+  console.log(`  seed=${data.data.result.seed} duration=${data.data.result.durationMs}ms`);
 }
 
 main().catch((err) => {

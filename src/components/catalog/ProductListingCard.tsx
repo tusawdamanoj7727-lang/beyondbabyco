@@ -29,7 +29,7 @@ function cardPurchaseAction(product: StorefrontProduct) {
         product.status === "coming_soon" ? "launch" : "restock",
         product.status,
       )}
-      className="h-auto shrink-0 rounded-lg border border-[#2d5a27] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#2d5a27] hover:bg-[#eaf3de]"
+      className="h-auto shrink-0 rounded-lg border border-brand-forest bg-transparent px-3 py-1.5 text-xs font-semibold text-brand-forest hover:bg-brand-mint"
     />
   );
 }

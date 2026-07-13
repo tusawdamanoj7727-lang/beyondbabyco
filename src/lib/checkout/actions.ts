@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { ensureCustomerRecordsForUser } from "@/lib/auth/customer-bootstrap";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getCustomerIdForUser } from "@/lib/orders/customer-auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -41,15 +42,21 @@ export interface CheckoutActionResult {
   awb?: string;
 }
 
-async function requireCustomerId(): Promise<string | null> {
+async function requireCustomerId(): Promise<{ customerId: string | null; authenticated: boolean }> {
   const user = await getCurrentUser();
-  if (!user) return null;
-  return getCustomerIdForUser(user.id);
+  if (!user) return { customerId: null, authenticated: false };
+
+  let customerId = await getCustomerIdForUser(user.id);
+  if (!customerId) {
+    customerId = await ensureCustomerRecordsForUser(user);
+  }
+
+  return { customerId, authenticated: true };
 }
 
 export async function getCheckoutInitialDataAction(): Promise<CheckoutInitialData | null> {
   const user = await getCurrentUser();
-  const customerId = await requireCustomerId();
+  const { customerId } = await requireCustomerId();
   if (!user || !customerId) return null;
 
   const supabase = await createSupabaseServerClient();
@@ -71,8 +78,14 @@ export async function getCheckoutInitialDataAction(): Promise<CheckoutInitialDat
 }
 
 export async function placeCheckoutOrderAction(input: PlaceOrderInput): Promise<CheckoutActionResult> {
-  const customerId = await requireCustomerId();
-  if (!customerId) return { ok: false, error: "Sign in to checkout." };
+  const { customerId, authenticated } = await requireCustomerId();
+  if (!authenticated) return { ok: false, error: "Sign in to checkout." };
+  if (!customerId) {
+    return {
+      ok: false,
+      error: "Unable to set up your checkout profile. Please try again or contact support.",
+    };
+  }
 
   const supabase = await createSupabaseServerClient();
   await supabase
@@ -113,8 +126,14 @@ export async function verifyRazorpayCheckoutAction(input: {
   razorpayPaymentId: string;
   razorpaySignature: string;
 }): Promise<CheckoutActionResult> {
-  const customerId = await requireCustomerId();
-  if (!customerId) return { ok: false, error: "Not signed in." };
+  const { customerId, authenticated } = await requireCustomerId();
+  if (!authenticated) return { ok: false, error: "Not signed in." };
+  if (!customerId) {
+    return {
+      ok: false,
+      error: "Unable to set up your checkout profile. Please try again or contact support.",
+    };
+  }
 
   const result = await completeRazorpayOrder({
     ...input,
@@ -128,7 +147,7 @@ export async function verifyRazorpayCheckoutAction(input: {
 }
 
 export async function getOrderSuccessDataAction(orderId: string) {
-  const customerId = await requireCustomerId();
+  const { customerId } = await requireCustomerId();
   if (!customerId) return null;
   return getCheckoutOrderSummary(orderId, customerId);
 }

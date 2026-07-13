@@ -132,12 +132,12 @@ export default function ProductGallery({
                 aria-selected={activeIndex === index}
                 data-active={activeIndex === index ? "true" : "false"}
                 onClick={() => setActiveIndex(index)}
-                aria-label={`View image ${index + 1}`}
+                aria-label={`View image ${index + 1} of ${sorted.length}`}
                 className={cn("pdp-gallery-thumb", focusRing)}
               >
                 <Image
                   src={img.url}
-                  alt=""
+                  alt={`${productName} view ${index + 1}`}
                   fill
                   loading="lazy"
                   sizes="80px"
@@ -167,6 +167,9 @@ export default function ProductGallery({
           <Dialog.Overlay className="fixed inset-0 z-[120] bg-green-950/82 backdrop-blur-sm" />
           <Dialog.Content className="fixed inset-4 z-[130] flex items-center justify-center outline-none sm:inset-8">
             <Dialog.Title className="sr-only">{productName} — enlarged view</Dialog.Title>
+            <Dialog.Description className="sr-only">
+              Enlarged product image. Use arrow keys or swipe to navigate between images.
+            </Dialog.Description>
             {current ? (
               <div className="relative h-full max-h-[85vh] w-full max-w-4xl">
                 <Image

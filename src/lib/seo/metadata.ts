@@ -23,6 +23,7 @@ type PageMetaInput = {
   image?: string;
   imageWidth?: number;
   imageHeight?: number;
+  keywords?: string[];
   /** Use /api/og with page title when no static image is provided. */
   dynamicOg?: boolean;
 };
@@ -52,16 +53,19 @@ function resolveOgImage(input: PageMetaInput): { url: string; width: number; hei
 }
 
 export function buildPageMetadata(input: PageMetaInput): Metadata {
-  const title = input.title.includes(SITE_NAME) ? input.title : `${input.title} — ${SITE_NAME}`;
+  const pageTitle = input.title;
+  const title = pageTitle.includes(SITE_NAME) ? pageTitle : `${pageTitle} — ${SITE_NAME}`;
   const description = input.description ?? SITE_DESCRIPTION;
-  const url = input.path ? absoluteUrl(input.path) : getCanonicalSiteUrl();
+  const canonicalPath = input.path ?? "/";
+  const url = absoluteUrl(canonicalPath);
   const { url: image, width: imageWidth, height: imageHeight } = resolveOgImage(input);
 
   return {
     metadataBase: metadataBase(),
     title,
     description,
-    alternates: input.path ? { canonical: url } : undefined,
+    ...(input.keywords?.length ? { keywords: input.keywords } : {}),
+    alternates: { canonical: url },
     robots: input.noIndex ? { index: false, follow: false } : { index: true, follow: true },
     openGraph: {
       title,
@@ -70,13 +74,14 @@ export function buildPageMetadata(input: PageMetaInput): Metadata {
       siteName: SITE_NAME,
       locale: "en_IN",
       type: "website",
-      images: [{ url: image, alt: SITE_NAME, width: imageWidth, height: imageHeight }],
+      images: [{ url: image, alt: pageTitle, width: imageWidth, height: imageHeight }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
       site: SITE_TWITTER,
+      creator: SITE_TWITTER,
       images: [image],
     },
   };
@@ -100,15 +105,24 @@ export function buildProductMetadata(
   const ogPath = input.image
     ? input.image
     : resolveProductOgPath(input.productSlug, BRAND_OG_PRODUCTS);
-  return buildPageMetadata({
+  const base = buildPageMetadata({
     title: input.title,
     description: input.description,
     path: input.path,
     noIndex: input.noIndex,
+    keywords: input.keywords,
     image: ogPath,
     imageWidth: ogPath.includes("/real/og/") || ogPath.includes("/images/og/") ? BRAND_OG_WIDTH : input.imageWidth,
     imageHeight: ogPath.includes("/real/og/") || ogPath.includes("/images/og/") ? BRAND_OG_HEIGHT : input.imageHeight,
   });
+
+  return {
+    ...base,
+    openGraph: {
+      ...(typeof base.openGraph === "object" ? base.openGraph : {}),
+      type: "product",
+    } as Metadata["openGraph"],
+  };
 }
 
 /** Category / catalog OG */

@@ -1,29 +1,121 @@
 import "server-only";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import type { Json } from "@/lib/supabase/database.types";
 import { logger } from "@/lib/observability/logger";
+import {
+  captureRazorpayPayment,
+  parseRazorpayWebhookCaptureInfo,
+  resolveInternalOrderIdForRazorpayWebhook,
+} from "@/lib/checkout/razorpay-capture";
+import { fetchRazorpayOrderPayments } from "@/lib/checkout/razorpay-verify";
 import { getPaymentGatewayAdapter } from "./gateway-adapters";
 import { decodeGatewaySecret } from "./gateway-adapters/razorpay";
 import type { GatewayProvider } from "./payment-types";
-import { runReconciliationForPayment } from "./payments";
+import { isRazorpayCaptureEvent } from "./razorpay-webhook-idempotency";
+import {
+  isRazorpayCaptureCompleted,
+  logRazorpayWebhookReceived,
+  markRazorpayWebhookCaptureComplete,
+} from "./razorpay-webhook-processing";
 
 export interface WebhookProcessOptions {
   rawBody?: string;
   eventId?: string | null;
 }
 
-async function isDuplicateRazorpayEvent(gatewayId: string, eventId: string): Promise<boolean> {
-  const supabase = await createSupabaseServerClient();
-  const { count, error } = await supabase
-    .from("payment_logs")
-    .select("id", { count: "exact", head: true })
-    .eq("gateway_id", gatewayId)
-    .eq("message", "Webhook event processed")
-    .contains("metadata", { razorpay_event_id: eventId });
+async function resolveRazorpayPaymentId(info: {
+  razorpayPaymentId: string;
+  razorpayOrderId: string;
+}): Promise<string | null> {
+  if (info.razorpayPaymentId) return info.razorpayPaymentId;
 
-  if (error) return false;
-  return (count ?? 0) > 0;
+  const fetched = await fetchRazorpayOrderPayments(info.razorpayOrderId);
+  if (!fetched.ok || !fetched.payments?.length) return null;
+
+  const paid = fetched.payments.find(
+    (p) => p.status === "captured" || p.status === "authorized",
+  );
+  return paid?.id ?? null;
+}
+
+async function processRazorpayCaptureWebhook(
+  gatewayId: string,
+  webhookId: string,
+  payload: Record<string, unknown>,
+  eventId: string | null,
+): Promise<{ ok: boolean; error: string | null }> {
+  const supabase = createSupabaseServiceClient();
+  const eventType = String(payload.event ?? payload.type ?? "unknown");
+
+  if (!isRazorpayCaptureEvent(eventType)) {
+    await supabase
+      .from("payment_webhooks")
+      .update({ processed: true, processed_at: new Date().toISOString(), error: null })
+      .eq("id", webhookId);
+    return { ok: true, error: null };
+  }
+
+  const captureInfo = parseRazorpayWebhookCaptureInfo(payload);
+  if (!captureInfo) {
+    await supabase
+      .from("payment_webhooks")
+      .update({
+        processed: false,
+        error: "Could not parse Razorpay payment payload.",
+      })
+      .eq("id", webhookId);
+    return { ok: false, error: "Could not parse Razorpay payment payload." };
+  }
+
+  const razorpayPaymentId = await resolveRazorpayPaymentId(captureInfo);
+  if (!razorpayPaymentId) {
+    await supabase
+      .from("payment_webhooks")
+      .update({
+        processed: false,
+        error: "No captured Razorpay payment found for webhook event.",
+      })
+      .eq("id", webhookId);
+    return { ok: false, error: "No captured Razorpay payment found for webhook event." };
+  }
+
+  const internalOrderId = await resolveInternalOrderIdForRazorpayWebhook(captureInfo);
+  if (!internalOrderId) {
+    await supabase
+      .from("payment_webhooks")
+      .update({
+        processed: false,
+        error: "Internal order not found for Razorpay webhook.",
+      })
+      .eq("id", webhookId);
+    return { ok: false, error: "Internal order not found for Razorpay webhook." };
+  }
+
+  const capture = await captureRazorpayPayment({
+    orderId: internalOrderId,
+    razorpayPaymentId,
+    razorpayOrderId: captureInfo.razorpayOrderId,
+    source: "webhook",
+  });
+
+  if (!capture.ok) {
+    await supabase
+      .from("payment_webhooks")
+      .update({ processed: false, error: capture.error ?? "Capture failed." })
+      .eq("id", webhookId);
+    return { ok: false, error: capture.error ?? "Capture failed." };
+  }
+
+  await markRazorpayWebhookCaptureComplete({
+    gatewayId,
+    webhookId,
+    eventId,
+    orderId: internalOrderId,
+    razorpayPaymentId,
+  });
+
+  return { ok: true, error: null };
 }
 
 export async function processWebhookPayload(
@@ -32,7 +124,7 @@ export async function processWebhookPayload(
   signature: string | null,
   opts?: WebhookProcessOptions,
 ): Promise<{ ok: boolean; error: string | null; webhookId?: string; duplicate?: boolean }> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseServiceClient();
 
   const { data: gateway } = await supabase
     .from("payment_gateways")
@@ -44,11 +136,12 @@ export async function processWebhookPayload(
 
   const provider = gateway.provider as GatewayProvider;
   const webhookSecret = decodeGatewaySecret(gateway.webhook_secret_encrypted);
+  const eventId = opts?.eventId?.trim() || null;
 
-  if (opts?.eventId && provider === "razorpay") {
-    const duplicate = await isDuplicateRazorpayEvent(gatewayId, opts.eventId);
-    if (duplicate) {
-      logger.info("razorpay.webhook.duplicate", { gatewayId, eventId: opts.eventId });
+  if (eventId && provider === "razorpay") {
+    const alreadyComplete = await isRazorpayCaptureCompleted(gatewayId, eventId);
+    if (alreadyComplete) {
+      logger.info("razorpay.webhook.duplicate", { gatewayId, eventId });
       return { ok: true, error: null, duplicate: true };
     }
   }
@@ -72,7 +165,7 @@ export async function processWebhookPayload(
       gateway_id: gatewayId,
       level: "error",
       message: `Webhook rejected: ${verify.message ?? "Verification failed"}`,
-      metadata: { event_id: opts?.eventId ?? null } as Json,
+      metadata: { event_id: eventId } as Json,
     });
 
     return { ok: false, error: verify.message ?? "Webhook verification failed" };
@@ -89,21 +182,18 @@ export async function processWebhookPayload(
       signature,
       processed: false,
       error: null,
+      provider_event_id: eventId,
     })
     .select("id")
     .single();
 
   if (error) return { ok: false, error: error.message };
 
-  await supabase.from("payment_logs").insert({
-    gateway_id: gatewayId,
-    level: "info",
-    message: "Webhook event processed",
-    metadata: {
-      webhook_id: webhook.id,
-      razorpay_event_id: opts?.eventId ?? null,
-      event_type: eventType,
-    } as Json,
+  await logRazorpayWebhookReceived({
+    gatewayId,
+    webhookId: webhook.id,
+    eventId,
+    eventType,
   });
 
   logger.info("payment.webhook.received", {
@@ -111,17 +201,40 @@ export async function processWebhookPayload(
     provider,
     webhookId: webhook.id,
     eventType,
-    eventId: opts?.eventId,
+    eventId,
   });
+
+  if (provider === "razorpay") {
+    if (isRazorpayCaptureEvent(eventType)) {
+      const captureResult = await processRazorpayCaptureWebhook(
+        gatewayId,
+        webhook.id,
+        payload,
+        eventId,
+      );
+      if (!captureResult.ok) {
+        return { ok: false, error: captureResult.error, webhookId: webhook.id };
+      }
+    } else {
+      await supabase
+        .from("payment_webhooks")
+        .update({ processed: true, processed_at: new Date().toISOString(), error: null })
+        .eq("id", webhook.id);
+    }
+  }
 
   return { ok: true, error: null, webhookId: webhook.id };
 }
 
 export async function replayWebhook(webhookId: string): Promise<{ ok: boolean; error: string | null }> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseServiceClient();
 
   const { data: webhook } = await supabase.from("payment_webhooks").select("*").eq("id", webhookId).maybeSingle();
   if (!webhook) return { ok: false, error: "Webhook not found." };
+
+  if (webhook.processed) {
+    return { ok: true, error: null };
+  }
 
   const payload = webhook.payload as Record<string, unknown>;
   const gatewayId = webhook.gateway_id;
@@ -150,32 +263,22 @@ export async function replayWebhook(webhookId: string): Promise<{ ok: boolean; e
     return { ok: false, error: verify.message ?? "Verification failed" };
   }
 
-  const paymentId = (payload.payment_id as string) ?? webhook.payment_id;
-  const orderId = (payload.order_id as string) ?? (payload.notes as Record<string, string> | undefined)?.order_id;
-
-  if (paymentId) {
-    await runReconciliationForPayment(paymentId);
-  }
-
-  if (orderId) {
-    const { fulfillOrderWithDelhivery } = await import("@/lib/checkout/fulfillment");
-    await fulfillOrderWithDelhivery(orderId).catch(() => undefined);
-  } else if (paymentId) {
-    const { data: payment } = await supabase
-      .from("payments")
-      .select("order_id, status")
-      .eq("id", paymentId)
-      .maybeSingle();
-    if (payment?.order_id && ["paid", "captured"].includes(payment.status)) {
-      const { fulfillOrderWithDelhivery } = await import("@/lib/checkout/fulfillment");
-      await fulfillOrderWithDelhivery(payment.order_id).catch(() => undefined);
+  if (gateway.provider === "razorpay") {
+    const captureResult = await processRazorpayCaptureWebhook(
+      gatewayId,
+      webhookId,
+      payload,
+      webhook.provider_event_id,
+    );
+    if (!captureResult.ok) {
+      return captureResult;
     }
+  } else {
+    await supabase
+      .from("payment_webhooks")
+      .update({ processed: true, processed_at: new Date().toISOString(), error: null })
+      .eq("id", webhookId);
   }
-
-  await supabase
-    .from("payment_webhooks")
-    .update({ processed: true, processed_at: new Date().toISOString(), error: null })
-    .eq("id", webhookId);
 
   await supabase.rpc("log_audit", {
     p_table: "payment_webhooks",

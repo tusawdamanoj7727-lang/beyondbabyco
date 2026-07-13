@@ -40,7 +40,7 @@ export default function HomePageContent({
     <>
       {/* 1. Hero */}
       {data.sections.hero.enabled ? <HeroSection hero={data.hero} /> : null}
-      <SectionWaveDivider fill="#faf5f0" />
+      <SectionWaveDivider />
 
       {/* 2. Products — immediately after hero */}
       {data.sections.featured_products.enabled ? (
@@ -77,7 +77,7 @@ export default function HomePageContent({
         </div>
       ) : null}
 
-      <SectionWaveDivider fill="#faf5f0" />
+      <SectionWaveDivider />
 
       {/* 4. Stats */}
       <StatsBar />
@@ -92,7 +92,7 @@ export default function HomePageContent({
       {/* 7. Brand promise */}
       {data.sections.brand_promise.enabled ? <BrandPromise config={data.brandPromise} /> : null}
 
-      <SectionWaveDivider fill="#faf5f0" />
+      <SectionWaveDivider />
 
       {/* 8. Research timeline */}
       {data.sections.research_timeline.enabled ? (
@@ -104,7 +104,7 @@ export default function HomePageContent({
       {/* 9. Lifestyle */}
       {data.sections.lifestyle.enabled ? <LifestyleSection config={data.lifestyle} /> : null}
 
-      <SectionWaveDivider fill="#faf5f0" />
+      <SectionWaveDivider />
 
       {/* 10. Reviews */}
       {showReviews ? (

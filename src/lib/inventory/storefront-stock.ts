@@ -82,41 +82,6 @@ export async function checkAndReserveStock(
   return !error && Boolean(data);
 }
 
-export async function decrementOrderStock(
-  lines: OrderStockLine[],
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  const validLines = lines.filter((l) => l.variantId && l.quantity > 0);
-  if (validLines.length === 0) {
-    return { ok: false, error: "No valid line items for stock decrement." };
-  }
-
-  const reserved: OrderStockLine[] = [];
-
-  for (const line of validLines) {
-    const ok = await checkAndReserveStock(line.variantId, line.quantity);
-    if (!ok) {
-      if (reserved.length > 0) {
-        await restoreOrderStock(reserved);
-      }
-      return { ok: false, error: OUT_OF_STOCK_MESSAGE };
-    }
-    reserved.push(line);
-  }
-
-  return { ok: true };
-}
-
-export async function restoreOrderStock(lines: OrderStockLine[]): Promise<void> {
-  const supabase = createSupabaseServiceClient();
-  for (const line of lines) {
-    if (!line.variantId || line.quantity <= 0) continue;
-    await supabase.rpc("restore_stock", {
-      p_variant_id: line.variantId,
-      p_quantity: line.quantity,
-    });
-  }
-}
-
 export async function getProductVariantStock(productId: string): Promise<{
   variants: VariantStockRow[];
   totalAvailable: number;

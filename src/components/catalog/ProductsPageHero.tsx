@@ -3,7 +3,7 @@ import { PRODUCTS_PAGE } from "@/lib/brand/copy";
 
 export default function ProductsPageHero() {
   return (
-    <section className="relative overflow-visible bg-[#faf5f0] py-16 text-center">
+    <section className="relative overflow-visible bg-brand-cream py-16 text-center">
       <HomepageMascotGuide
         mascot="bella-bunny"
         pose="hold-product"
@@ -11,13 +11,13 @@ export default function ProductsPageHero() {
         placementClassName="right-4 bottom-0 xl:right-8"
       />
       <div className="relative z-10 mx-auto max-w-3xl px-4">
-        <span className="text-sm font-bold uppercase tracking-widest text-[#c4673a]">
+        <span className="text-eyebrow font-bold uppercase tracking-widest text-brand-terra">
           {PRODUCTS_PAGE.heroEyebrow}
         </span>
-        <h1 className="mb-4 mt-3 text-4xl font-black text-[#2d5a27] sm:text-5xl font-[family-name:var(--font-montserrat)]">
+        <h1 className="mb-4 mt-3 font-heading text-4xl font-black text-brand-forest sm:text-5xl">
           {PRODUCTS_PAGE.heroTitle}
         </h1>
-        <p className="mx-auto max-w-xl text-lg text-gray-600 sm:text-xl">
+        <p className="mx-auto max-w-xl text-body text-green-700/80 sm:text-lg">
           {PRODUCTS_PAGE.heroDescription}
         </p>
       </div>

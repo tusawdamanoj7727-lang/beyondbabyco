@@ -15,17 +15,12 @@ import {
 export { isUserPanelRole };
 
 function resolvePanelRole(
-  user: User,
+  _user: User,
   profile?: { roleName?: string | null; isActive?: boolean },
 ): UserPanelRole {
-  const metaRole = user.user_metadata?.role;
-  if (isUserPanelRole(metaRole)) return metaRole;
-
   if (profile?.roleName === "admin") return "admin";
   if (profile?.roleName === "manager") return "editor";
   if (profile?.roleName === "support") return "viewer";
-
-  if (user.user_metadata?.is_admin === true) return "super_admin";
 
   return "viewer";
 }
@@ -91,9 +86,11 @@ export async function syncUserAccess(
   const isActive = options?.isActive ?? true;
 
   const { error: metaError } = await admin.auth.admin.updateUserById(userId, {
-    user_metadata: {
-      role: panelRole,
+    app_metadata: {
+      role: panelRoleToDbRole(panelRole),
       is_admin: panelRole === "super_admin" || panelRole === "admin",
+    },
+    user_metadata: {
       ...(fullName ? { full_name: fullName } : {}),
     },
     ...(isActive ? { ban_duration: "none" } : {}),

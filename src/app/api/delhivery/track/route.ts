@@ -57,5 +57,5 @@ export async function GET(request: Request) {
   });
 
   if (!result.ok) return jsonError(result.error ?? "Tracking failed", 502);
-  return jsonOk({ data: result.data ?? {} });
+  return jsonOk(result.data ?? {});
 }

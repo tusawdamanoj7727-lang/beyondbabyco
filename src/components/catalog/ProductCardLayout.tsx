@@ -45,12 +45,12 @@ export function ProductCardLayout({
   return (
     <div
       className={cn(
-        "group overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-2 hover:border-[#2d5a27]/20 hover:shadow-2xl",
+        "group overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-2 hover:border-brand-forest/20 hover:shadow-2xl",
         className,
       )}
     >
       <Link href={`/products/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-[#faf5f0]">
+        <div className="relative aspect-square overflow-hidden bg-brand-cream">
           {useProductCardImage ? (
             <ProductCardImage
               src={product.imageUrl}
@@ -91,7 +91,7 @@ export function ProductCardLayout({
 
           {isResearchBacked(product) ? (
             <div className="absolute left-3 top-3">
-              <span className="rounded-full bg-[#2d5a27]/10 px-2 py-0.5 text-[10px] font-semibold text-[#2d5a27]">
+              <span className="rounded-full bg-brand-forest/10 px-2 py-0.5 text-[10px] font-semibold text-brand-forest">
                 Research Backed
               </span>
             </div>
@@ -120,7 +120,7 @@ export function ProductCardLayout({
           <div className="min-w-0">
             {showPrice ? (
               <div className="flex items-baseline gap-1.5">
-                <span className="text-base font-bold text-[#2d5a27]">
+                <span className="text-base font-bold text-brand-forest">
                   {formatInr(product.effectivePrice)}
                 </span>
                 {showCompare ? (
@@ -139,7 +139,7 @@ export function ProductCardLayout({
         <div className="px-4 pb-4">
           {showPrice ? (
             <div className="flex items-baseline gap-1.5">
-              <span className="text-base font-bold text-[#2d5a27]">
+              <span className="text-base font-bold text-brand-forest">
                 {formatInr(product.effectivePrice)}
               </span>
               {showCompare ? (

@@ -1,8 +1,6 @@
 import "server-only";
 
-import { NextResponse } from "next/server";
-
-import { jsonError } from "@/lib/api/route-helpers";
+import { jsonError, handleApiError } from "@/lib/api/route-helpers";
 import { requireAdminApi } from "@/lib/api/route-helpers";
 import { isServiceRoleConfigured } from "@/lib/env";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
@@ -14,10 +12,7 @@ export async function requireAdminUserApi() {
   if (!isServiceRoleConfigured()) {
     return {
       ok: false as const,
-      response: jsonError(
-        "SUPABASE_SERVICE_ROLE_KEY is not configured. Add it to .env.local.",
-        503,
-      ),
+      response: jsonError("Service unavailable", 503),
     };
   }
 
@@ -25,6 +20,5 @@ export async function requireAdminUserApi() {
 }
 
 export function handleAdminApiError(error: unknown) {
-  const message = error instanceof Error ? error.message : "Unexpected error";
-  return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  return handleApiError(error, "admin-api");
 }

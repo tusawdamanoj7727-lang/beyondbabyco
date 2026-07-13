@@ -24,6 +24,6 @@ test.describe("Health", () => {
     const res = await request.get("/api/health/memory");
     expect(res.ok()).toBeTruthy();
     const body = await res.json();
-    expect(body.memory).toBeDefined();
+    expect(body.data.memory).toBeDefined();
   });
 });

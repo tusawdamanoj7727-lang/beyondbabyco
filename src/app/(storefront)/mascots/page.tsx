@@ -24,13 +24,13 @@ export default function MascotsHubPage() {
           ]),
         ]}
       />
-      <div className="min-h-screen bg-gradient-to-b from-[#faf5f0] to-[#f0f7ee]">
+      <div className="min-h-screen bg-gradient-to-b from-brand-cream to-green-50">
         <div className="mx-auto max-w-7xl px-4 py-16">
           <div className="mb-16 text-center">
-            <span className="text-sm font-bold uppercase tracking-widest text-[#c4673a]">
+            <span className="text-sm font-bold uppercase tracking-widest text-brand-terra">
               {MASCOTS.eyebrow}
             </span>
-            <h1 className="mb-4 mt-3 text-5xl font-black text-[#2d5a27]">Meet the BeyondBabyCo Family</h1>
+            <h1 className="mb-4 mt-3 text-5xl font-black text-brand-forest">Meet the BeyondBabyCo Family</h1>
             <p className="mx-auto max-w-2xl text-xl text-gray-500">{MASCOTS.intro}</p>
           </div>
 

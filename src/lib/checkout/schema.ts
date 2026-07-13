@@ -65,6 +65,15 @@ export const checkoutCustomerSchema = z.object({
 
 export type PaymentMethodId = "razorpay" | "cod";
 
+/** Client cart line — server resolves price, GST, and availability. */
+export const checkoutCartLineSchema = z.object({
+  productId: z.string().uuid(),
+  variantId: z.string().uuid().nullable(),
+  quantity: z.number().int().positive(),
+});
+
+export type CheckoutCartLineInput = z.infer<typeof checkoutCartLineSchema>;
+
 export const placeOrderSchema = z.object({
   idempotencyKey: z.string().uuid(),
   customer: checkoutCustomerSchema,
@@ -72,27 +81,9 @@ export const placeOrderSchema = z.object({
   billingSameAsShipping: z.boolean(),
   billing: addressFormSchema.optional(),
   paymentMethod: z.enum(["razorpay", "cod"]),
-  cartItems: z.array(
-    z.object({
-      productId: z.string().uuid(),
-      variantId: z.string().uuid().nullable(),
-      quantity: z.number().int().positive(),
-      name: z.string(),
-      price: z.number().nonnegative(),
-      gstRate: z.number().nonnegative(),
-      variantName: z.string().nullable().optional(),
-    }),
-  ).min(1),
-  coupon: z
-    .object({
-      code: z.string(),
-      couponId: z.string().uuid(),
-      discountAmount: z.number().nonnegative(),
-      freeShipping: z.boolean(),
-    })
-    .optional()
-    .nullable(),
-  shippingTotal: z.number().nonnegative(),
+  cartItems: z.array(checkoutCartLineSchema).min(1),
+  /** Coupon code only — discount computed server-side. */
+  couponCode: z.string().trim().optional().nullable(),
   saveShippingAddress: z.boolean().optional(),
   buyerGstin: z.string().trim().optional().nullable(),
 });

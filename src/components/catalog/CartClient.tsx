@@ -16,13 +16,13 @@ export default function CartClient() {
     return (
       <div className="container mx-auto max-w-7xl px-4 py-16">
         <div className="animate-pulse space-y-4">
-          <div className="h-10 w-48 rounded-xl bg-[#2d5a27]/10" />
+          <div className="h-10 w-48 rounded-xl bg-brand-forest/10" />
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-4">
-              <div className="h-32 rounded-2xl bg-[#2d5a27]/5" />
-              <div className="h-32 rounded-2xl bg-[#2d5a27]/5" />
+              <div className="h-32 rounded-2xl bg-brand-forest/5" />
+              <div className="h-32 rounded-2xl bg-brand-forest/5" />
             </div>
-            <div className="h-80 rounded-3xl bg-[#2d5a27]/5" />
+            <div className="h-80 rounded-3xl bg-brand-forest/5" />
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function CartClient() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[60vh] bg-[#faf5f0]/40">
+      <div className="min-h-[60vh] bg-brand-cream/40">
         <CartEmptyState />
       </div>
     );
@@ -40,10 +40,10 @@ export default function CartClient() {
   return (
     <div className="container mx-auto max-w-7xl px-4 pb-16 pt-6">
       <header className="mb-8">
-        <h1 className="font-heading text-[clamp(1.75rem,3vw,2.25rem)] font-bold text-[#2d5a27]">
+        <h1 className="font-heading text-[clamp(1.75rem,3vw,2.25rem)] font-bold text-brand-forest">
           Your Cart
         </h1>
-        <p className="mt-2 text-sm text-[#2d5a27]/70">
+        <p className="mt-2 text-sm text-brand-forest/70">
           {items.length} item{items.length === 1 ? "" : "s"} · Free shipping on orders ₹999+
         </p>
         <div className="mt-4">
@@ -76,7 +76,7 @@ export default function CartClient() {
 
           <Link
             href="/products"
-            className="mt-6 inline-flex text-sm font-semibold text-[#c4673a] hover:underline"
+            className="mt-6 inline-flex text-sm font-semibold text-brand-terra hover:underline"
           >
             ← Continue Shopping
           </Link>

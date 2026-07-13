@@ -90,7 +90,7 @@ function MascotCard({ mascot, delay }: { mascot: MascotCardData; delay: number }
           style={{ background: "transparent" }}
         />
       </div>
-      <h3 className="text-base font-bold text-[#2d5a27]">{mascot.name}</h3>
+      <h3 className="text-base font-bold text-brand-forest">{mascot.name}</h3>
       <p className="mt-1 text-xs text-gray-400">{mascot.role}</p>
       <div className="mt-2 h-1 w-8 rounded-full" style={{ backgroundColor: mascot.color }} />
     </Link>
@@ -103,14 +103,14 @@ export default function MeetOurFriends({ config }: { config?: MascotsConfig }) {
   return (
     <section
       id="mascots"
-      className="relative overflow-visible bg-gradient-to-b from-[#faf5f0] to-[#f0f7ee] py-20"
+      className="relative overflow-visible bg-gradient-to-b from-brand-cream to-green-50 py-20"
     >
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-16 text-center">
-          <span className="text-sm font-bold uppercase tracking-widest text-[#c4673a]">
+          <span className="text-sm font-bold uppercase tracking-widest text-brand-terra">
             {MASCOTS.eyebrow}
           </span>
-          <h2 className="mb-4 mt-3 text-5xl font-black text-[#2d5a27]">{heading}</h2>
+          <h2 className="mb-4 mt-3 text-5xl font-black text-brand-forest">{heading}</h2>
           <p className="mx-auto max-w-2xl text-xl text-gray-500">
             Each mascot represents a promise we make to every little one
           </p>
@@ -125,7 +125,7 @@ export default function MeetOurFriends({ config }: { config?: MascotsConfig }) {
         <div className="mt-16 text-center">
           <Link
             href="/mascots"
-            className="mt-6 inline-flex items-center justify-center rounded-full bg-[#2d5a27] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a3a16]"
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-brand-forest px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-forest-dark"
           >
             Meet the whole family →
           </Link>

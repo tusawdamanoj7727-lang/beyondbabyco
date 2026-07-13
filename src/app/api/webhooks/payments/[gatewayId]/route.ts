@@ -50,12 +50,21 @@ export async function POST(
           : 500;
 
     logger.warn("payment.webhook.http_rejected", { gatewayId, status, error: result.error });
-    return NextResponse.json({ ok: false, error: result.error }, { status });
+    const error =
+      status === 404
+        ? "Gateway not found."
+        : status === 401
+          ? "Unauthorized"
+          : "Request failed";
+    return NextResponse.json({ ok: false, error }, { status });
   }
 
   return NextResponse.json({
     ok: true,
-    webhookId: result.webhookId,
-    duplicate: result.duplicate ?? false,
+    data: {
+      received: true,
+      webhookId: result.webhookId,
+      duplicate: result.duplicate ?? false,
+    },
   });
 }

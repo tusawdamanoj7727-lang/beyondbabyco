@@ -15,7 +15,7 @@ export default function RelatedProductCard({ product }: { product: StorefrontPro
   return (
     <Link href={`/products/${product.slug}`} className="block no-underline">
       <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all hover:shadow-lg">
-        <div className="relative aspect-square bg-[#faf5f0]">
+        <div className="relative aspect-square bg-brand-cream">
           <ProductCardImage
             src={product.imageUrl}
             alt={product.name}
@@ -35,7 +35,7 @@ export default function RelatedProductCard({ product }: { product: StorefrontPro
           </p>
           <h3 className="line-clamp-2 text-sm font-bold text-gray-900">{product.name}</h3>
           <div className="mt-2 flex items-center justify-between gap-2">
-            <span className="font-black text-[#2d5a27]">{formatInr(product.effectivePrice)}</span>
+            <span className="font-black text-brand-forest">{formatInr(product.effectivePrice)}</span>
             <span
               className={
                 inStock

@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { appUrlMatchesOrigin } from "@/lib/app-url";
 import { isSupabaseConfigured, env } from "@/lib/env";
-import { isStaffRole, resolveEffectiveRole } from "@/lib/auth/roles";
+import { isStaffRole, normalizeRole } from "@/lib/auth/roles";
 import type { Database } from "@/lib/supabase/types";
 
 /** Admin routes that must remain reachable without a session. */
@@ -17,12 +17,27 @@ const AUTH_SENSITIVE_PREFIXES = [
   "/auth/",
 ] as const;
 
+const CUSTOMER_PROTECTED_PREFIXES = ["/account", "/checkout"] as const;
+
 function isAuthSensitivePath(pathname: string): boolean {
   return (
     pathname === "/admin/login" ||
     AUTH_SENSITIVE_PREFIXES.some(
       (prefix) => pathname === prefix || pathname.startsWith(prefix),
     )
+  );
+}
+
+function isCustomerProtectedPath(pathname: string): boolean {
+  return CUSTOMER_PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
+/** True when a Supabase auth session cookie is present on the request. */
+function hasSupabaseAuthCookies(request: NextRequest): boolean {
+  return request.cookies.getAll().some(
+    (cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("auth"),
   );
 }
 
@@ -46,6 +61,19 @@ function devAppUrlMismatchRedirect(request: NextRequest): NextResponse | null {
   return NextResponse.redirect(url);
 }
 
+async function staffMayAccessAdmin(
+  supabase: ReturnType<typeof createServerClient<Database>>,
+  userId: string,
+): Promise<boolean> {
+  const [{ data: roleName }, { data: profile }] = await Promise.all([
+    supabase.rpc("current_user_role"),
+    supabase.from("profiles").select("is_active").eq("id", userId).maybeSingle(),
+  ]);
+
+  const role = normalizeRole(roleName);
+  return isStaffRole(role) && profile?.is_active !== false;
+}
+
 /**
  * Refreshes Supabase session cookies on every matched request and guards /admin.
  */
@@ -58,6 +86,7 @@ export async function updateSessionAndGuard(
   const { pathname } = request.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
   const isPublicAdminPath = PUBLIC_ADMIN_PATHS.has(pathname);
+  const hasAuthCookies = hasSupabaseAuthCookies(request);
 
   if (!isSupabaseConfigured()) {
     if (isAdminRoute && !isPublicAdminPath) {
@@ -66,6 +95,32 @@ export async function updateSessionAndGuard(
       url.searchParams.set("redirectTo", pathname);
       return NextResponse.redirect(url);
     }
+    return NextResponse.next({ request });
+  }
+
+  // Protected routes without a session cookie — redirect without calling Auth API.
+  if (isCustomerProtectedPath(pathname) && !hasAuthCookies) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  if (isAdminRoute && !isPublicAdminPath && !hasAuthCookies) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/login";
+    url.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Public storefront pages with no auth cookie skip JWT validation (lower TTFB).
+  const needsSessionValidation =
+    hasAuthCookies ||
+    isCustomerProtectedPath(pathname) ||
+    (isAdminRoute && !isPublicAdminPath) ||
+    pathname === "/admin/login";
+
+  if (!needsSessionValidation) {
     return NextResponse.next({ request });
   }
 
@@ -92,24 +147,38 @@ export async function updateSessionAndGuard(
     },
   );
 
-  // IMPORTANT: getUser() validates the token and refreshes cookies.
+  // IMPORTANT: getUser() validates the JWT with Supabase Auth — never trust getSession() alone.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (isAdminRoute && !isPublicAdminPath && !user) {
+  if (isCustomerProtectedPath(pathname) && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/admin/login";
+    url.pathname = "/login";
     url.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(url);
   }
 
-  if (user && pathname === "/admin/login") {
-    const { data: roleName } = await supabase.rpc("current_user_role");
-    const role = resolveEffectiveRole(roleName, user);
+  if (isAdminRoute && !isPublicAdminPath) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("redirectTo", pathname);
+      return NextResponse.redirect(url);
+    }
 
-    // Only skip login for staff — prevents redirect loop for non-staff sessions.
-    if (isStaffRole(role)) {
+    const allowed = await staffMayAccessAdmin(supabase, user.id);
+    if (!allowed) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("error", "staff_required");
+      return NextResponse.redirect(url);
+    }
+  }
+
+  if (user && pathname === "/admin/login") {
+    const allowed = await staffMayAccessAdmin(supabase, user.id);
+    if (allowed) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin";
       url.search = "";

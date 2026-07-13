@@ -21,7 +21,7 @@ export default function StatsBar() {
             style={{ animationDelay: `${CARD_DELAYS[index] ?? 0}ms` }}
           >
             <div className="px-6 py-4 text-center">
-              <div className="text-3xl font-black text-[#2d5a27] md:text-4xl">{stat.value}</div>
+              <div className="text-3xl font-black text-brand-forest md:text-4xl">{stat.value}</div>
               <div className="mt-1 text-sm font-medium text-gray-500 md:text-base">{stat.label}</div>
             </div>
           </div>

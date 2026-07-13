@@ -67,21 +67,17 @@ export default async function CheckoutSuccessPage({
         </div>
 
         <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link href={`/account/orders/${orderId}`}>
-            <Button variant="primary" type="button">
-              Track Order
-            </Button>
-          </Link>
-          <Link href={`/account/orders/${orderId}/documents/invoice`} target="_blank">
-            <Button variant="secondary" type="button">
+          <Button asChild variant="primary">
+            <Link href={`/account/orders/${orderId}`}>Track Order</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link href={`/account/orders/${orderId}/documents/invoice`} target="_blank">
               Download Invoice
-            </Button>
-          </Link>
-          <Link href="/products">
-            <Button variant="secondary" type="button">
-              Continue Shopping
-            </Button>
-          </Link>
+            </Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link href="/products">Continue Shopping</Link>
+          </Button>
         </div>
       </div>
     </>

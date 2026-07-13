@@ -105,9 +105,11 @@ export async function customerSignInAction(
   }
 
   if (data.user) {
-    void ensureCustomerRecordsForUser(data.user).catch((err) => {
+    try {
+      await ensureCustomerRecordsForUser(data.user);
+    } catch (err) {
       console.warn("[customer-auth] profile bootstrap skipped:", err);
-    });
+    }
   }
 
   redirect(resolveCustomerRedirect(redirectTo));
@@ -158,13 +160,12 @@ export async function customerSignUpAction(
   }
 
   if (data.user) {
-    void ensureCustomerRecordsForUser(data.user)
-      .then((customerId) => {
-        if (customerId) onNewCustomer(customerId);
-      })
-      .catch((err) => {
-        console.warn("[customer-auth] profile bootstrap skipped:", err);
-      });
+    try {
+      const customerId = await ensureCustomerRecordsForUser(data.user);
+      if (customerId) onNewCustomer(customerId);
+    } catch (err) {
+      console.warn("[customer-auth] profile bootstrap skipped:", err);
+    }
   }
 
   if (data.session) {
@@ -283,4 +284,22 @@ export async function customerSignOutAction(): Promise<void> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
   redirect("/");
+}
+
+/** Client-side login path: bootstrap profile/customer after session is established. */
+export async function ensureCustomerBootstrapAction(): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  try {
+    await ensureCustomerRecordsForUser(user);
+  } catch (err) {
+    console.warn("[customer-auth] profile bootstrap skipped:", err);
+  }
 }

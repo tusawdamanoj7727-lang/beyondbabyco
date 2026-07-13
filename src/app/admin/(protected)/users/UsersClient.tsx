@@ -9,6 +9,7 @@ import EmptyState from "@/components/admin/EmptyState";
 import FormField, { Input, Select, fieldControlClasses } from "@/components/admin/FormField";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import { useToast } from "@/components/ui/ToastProvider";
 import { Spinner } from "@/components/admin/LoadingState";
 import {
   USER_PANEL_ROLES,
@@ -34,6 +35,7 @@ async function readJson<T>(res: Response): Promise<T & { ok?: boolean; error?: s
 }
 
 export default function UsersClient({ addOpenSignal = 0 }: { addOpenSignal?: number }) {
+  const toast = useToast();
   const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,19 +54,22 @@ export default function UsersClient({ addOpenSignal = 0 }: { addOpenSignal?: num
 
   const [deactivateTarget, setDeactivateTarget] = useState<AdminUserRow | null>(null);
   const [resetTarget, setResetTarget] = useState<AdminUserRow | null>(null);
-  const [resetPassword, setResetPassword] = useState<string | null>(null);
 
   const loadUsers = useCallback(async (nextPage = page) => {
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(`/api/admin/users?page=${nextPage}&perPage=50`);
-      const data = await readJson<{ users: AdminUserRow[]; total: number; ok: boolean; error?: string }>(res);
+      const data = await readJson<{
+        ok: boolean;
+        data?: { users: AdminUserRow[]; total: number };
+        error?: string;
+      }>(res);
       if (!res.ok || !data.ok) {
         throw new Error(data.error ?? "Failed to load users");
       }
-      setUsers(data.users);
-      setTotal(data.total);
+      setUsers(data.data?.users ?? []);
+      setTotal(data.data?.total ?? 0);
       setPage(nextPage);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load users");
@@ -152,12 +157,20 @@ export default function UsersClient({ addOpenSignal = 0 }: { addOpenSignal?: num
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: target.id }),
       });
-      const data = await readJson<{ ok: boolean; password?: string; error?: string }>(res);
-      if (!res.ok || !data.ok || !data.password) {
+      const data = await readJson<{ ok: boolean; data?: { emailSent?: boolean }; error?: string }>(res);
+
+      if (res.status === 503) {
+        toast.error("Password reset email could not be sent. Check SMTP configuration.");
+        return;
+      }
+
+      if (!res.ok || !data.ok || !data.data?.emailSent) {
         setError(data.error ?? "Failed to reset password");
         return;
       }
-      setResetPassword(data.password);
+
+      setResetTarget(null);
+      toast.success("Password reset email sent successfully.");
     });
   }
 
@@ -225,10 +238,7 @@ export default function UsersClient({ addOpenSignal = 0 }: { addOpenSignal?: num
             variant="ghost"
             size="sm"
             disabled={isPending || !row.isActive}
-            onClick={() => {
-              setResetPassword(null);
-              setResetTarget(row);
-            }}
+            onClick={() => setResetTarget(row)}
           >
             Reset password
           </Button>
@@ -378,10 +388,7 @@ export default function UsersClient({ addOpenSignal = 0 }: { addOpenSignal?: num
       <Dialog.Root
         open={Boolean(resetTarget)}
         onOpenChange={(open) => {
-          if (!open) {
-            setResetTarget(null);
-            setResetPassword(null);
-          }
+          if (!open) setResetTarget(null);
         }}
       >
         <Dialog.Portal>
@@ -391,40 +398,26 @@ export default function UsersClient({ addOpenSignal = 0 }: { addOpenSignal?: num
               Reset password
             </Dialog.Title>
             <Dialog.Description className="mt-1 text-sm text-green-700/70">
-              {resetTarget ? `Set a new temporary password for ${resetTarget.email}.` : ""}
+              {resetTarget
+                ? `Send a one-time password reset link to ${resetTarget.email}.`
+                : ""}
             </Dialog.Description>
 
-            {resetPassword ? (
-              <div className="mt-4 space-y-3">
-                <p className="text-sm text-green-800">Share this temporary password securely:</p>
-                <code className="block rounded-2xl border border-cream-300 bg-cream-50 px-4 py-3 text-sm font-semibold text-green-900">
-                  {resetPassword}
-                </code>
-                <div className="flex justify-end">
-                  <Dialog.Close asChild>
-                    <Button type="button" variant="primary">
-                      Done
-                    </Button>
-                  </Dialog.Close>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-6 flex justify-end gap-2">
-                <Dialog.Close asChild>
-                  <Button type="button" variant="ghost" disabled={isPending}>
-                    Cancel
-                  </Button>
-                </Dialog.Close>
-                <Button
-                  type="button"
-                  variant="primary"
-                  loading={isPending}
-                  onClick={handleResetPassword}
-                >
-                  Generate password
+            <div className="mt-6 flex justify-end gap-2">
+              <Dialog.Close asChild>
+                <Button type="button" variant="ghost" disabled={isPending}>
+                  Cancel
                 </Button>
-              </div>
-            )}
+              </Dialog.Close>
+              <Button
+                type="button"
+                variant="primary"
+                loading={isPending}
+                onClick={handleResetPassword}
+              >
+                Send reset email
+              </Button>
+            </div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

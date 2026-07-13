@@ -38,7 +38,18 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ["lucide-react", "@radix-ui/react-dialog"],
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-select",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-toast",
+      "date-fns",
+      "@supabase/supabase-js",
+    ],
   },
 
   async headers() {
@@ -67,16 +78,7 @@ const nextConfig: NextConfig = {
       { source: "/terms", destination: "/terms-of-service", permanent: true },
       { source: "/return-policy", destination: "/refund-policy", permanent: true },
       { source: "/cookies", destination: "/privacy-policy", permanent: true },
-      { source: "/trust-center", destination: "/about", permanent: false },
-      { source: "/our-story", destination: "/about", permanent: false },
-      { source: "/why-beyondbabyco", destination: "/about", permanent: false },
-      { source: "/ingredients", destination: "/research", permanent: false },
-      { source: "/manufacturing", destination: "/about", permanent: false },
-      { source: "/certifications", destination: "/research", permanent: false },
-      { source: "/safety-standards", destination: "/research", permanent: false },
-      { source: "/careers", destination: "/about", permanent: false },
-      { source: "/press", destination: "/about", permanent: false },
-      { source: "/community", destination: "/about", permanent: false },
+      // /blog has no route — keep redirect until a blog is published.
       { source: "/blog", destination: "/about", permanent: false },
     ];
   },

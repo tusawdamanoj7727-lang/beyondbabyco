@@ -26,8 +26,8 @@ export function ProductCard({ product, className, priority = false }: ProductCar
 
   return (
     <Link href={`/products/${product.slug}`} className={cn("block h-full", className)}>
-      <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#2d5a27]/20 hover:shadow-xl">
-        <div className="relative aspect-square flex-shrink-0 overflow-hidden bg-[#faf5f0]">
+      <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-brand-forest/20 hover:shadow-xl">
+        <div className="relative aspect-square flex-shrink-0 overflow-hidden bg-brand-cream">
           <Image
             src={imageSrc}
             alt={product.name}
@@ -61,7 +61,7 @@ export function ProductCard({ product, className, priority = false }: ProductCar
 
           <div className="mt-auto">
             <div className="mb-2 flex flex-wrap items-baseline gap-1.5">
-              <span className="text-xl font-black text-[#2d5a27]">₹{Math.round(price)}</span>
+              <span className="text-xl font-black text-brand-forest">₹{Math.round(price)}</span>
               {savings > 0 ? (
                 <>
                   <span className="text-xs text-gray-400 line-through">₹{Math.round(compareAt)}</span>

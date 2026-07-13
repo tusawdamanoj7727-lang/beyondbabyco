@@ -1,7 +1,10 @@
 import "server-only";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createSupabaseServiceClient } from "@/lib/supabase/service";
+import {
+  releaseOrderStockReservations,
+  restoreCommittedOrderStock,
+} from "@/lib/inventory/order-reservations";
 import { getCurrentUser } from "@/lib/auth/session";
 import { ensureInventoryRecord, getInventoryRow } from "./inventory";
 import type { OrderStatus } from "@/lib/supabase/database.types";
@@ -23,19 +26,8 @@ async function getOrderLines(orderId: string): Promise<OrderLine[]> {
 
 /** Restore sellable stock when a pre-shipment order is cancelled. */
 export async function restoreStockForOrder(orderId: string): Promise<string | null> {
-  const lines = await getOrderLines(orderId);
-  const supabase = createSupabaseServiceClient();
-
-  for (const line of lines) {
-    if (!line.product_variant_id) continue;
-    const { data, error } = await supabase.rpc("restore_stock", {
-      p_variant_id: line.product_variant_id,
-      p_quantity: line.quantity,
-    });
-    if (error) return error.message;
-    if (!data) return `Could not restore stock for variant ${line.product_variant_id}.`;
-  }
-  return null;
+  await releaseOrderStockReservations(orderId);
+  return restoreCommittedOrderStock(orderId);
 }
 
 /** Log sale movement when order ships (quantity already deducted at checkout). */
@@ -107,7 +99,7 @@ export async function handleOrderStatusInventory(
   const wasFulfilled = (FULFILLMENT_STATUSES as readonly string[]).includes(prevStatus);
   const willFulfill = nextStatus === "shipped" && !wasFulfilled;
 
-  // Storefront checkout decrements inventory at order placement.
+  // Storefront checkout reserves at placement; commits on payment/COD, releases on cancel.
   if (nextStatus === "cancelled" && !wasFulfilled) return restoreStockForOrder(orderId);
   if (willFulfill) return logSaleMovementsForOrder(orderId, warehouseId);
   if (nextStatus === "returned" && wasFulfilled) return returnStockForOrder(orderId, warehouseId);

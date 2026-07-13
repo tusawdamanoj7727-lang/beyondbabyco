@@ -52,11 +52,9 @@ export default function RegisterForm({ redirectTo }: { redirectTo?: string }) {
       {state.success ? (
         <div className="space-y-4">
           <AuthAlert id={messageId} variant="success" message={state.success} />
-          <Link href={loginHref} className="block">
-            <Button variant="primary" size="lg" fullWidth type="button">
-              Go to Sign In
-            </Button>
-          </Link>
+          <Button asChild variant="primary" size="lg" fullWidth>
+            <Link href={loginHref}>Go to Sign In</Link>
+          </Button>
         </div>
       ) : (
         <>

@@ -32,7 +32,7 @@ export default function ContentPageView({ slug }: { slug: string }) {
     ]),
   ];
 
-  if (page.jsonLd === "faq") {
+  if (page.jsonLd === "faq" || getAllFaqItems(page).length > 0) {
     const faqs = getAllFaqItems(page);
     const faqSchema = faqJsonLd(faqs);
     if (faqSchema) jsonLdItems.push(faqSchema);

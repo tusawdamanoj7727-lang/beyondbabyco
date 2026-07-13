@@ -103,11 +103,15 @@ export default function QuickViewModal({
                     onAction={() => onOpenChange(false)}
                   />
                 )}
-                <Link href={`/products/${product.slug}`} onClick={() => onOpenChange(false)}>
-                  <Button variant={canPurchase ? "secondary" : "ghost"} fullWidth type="button">
+                <Button
+                  asChild
+                  variant={canPurchase ? "secondary" : "ghost"}
+                  fullWidth
+                >
+                  <Link href={`/products/${product.slug}`} onClick={() => onOpenChange(false)}>
                     View Full Details
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

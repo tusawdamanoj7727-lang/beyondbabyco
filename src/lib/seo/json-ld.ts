@@ -12,6 +12,19 @@ export function organizationJsonLd() {
     sameAs: ["https://www.instagram.com/beyondbabyco"],
     foundingDate: "2021",
     areaServed: "IN",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Udaipur",
+      addressRegion: "Rajasthan",
+      addressCountry: "IN",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "care@beyondbabyco.com",
+      contactType: "customer service",
+      areaServed: "IN",
+      availableLanguage: "English",
+    },
     knowsAbout: [
       "Baby care products",
       "Dermatologically tested formulations",
@@ -46,11 +59,30 @@ export function breadcrumbJsonLd(items: { name: string; url?: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => {
+      const listItem: Record<string, unknown> = {
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+      };
+      if (item.url) {
+        listItem.item = absoluteUrl(item.url);
+      }
+      return listItem;
+    }),
+  };
+}
+
+export function itemListJsonLd(items: { name: string; url: string }[]) {
+  if (items.length === 0) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
     itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url ? absoluteUrl(item.url) : undefined,
+      url: absoluteUrl(item.url),
     })),
   };
 }
@@ -69,20 +101,23 @@ export function productJsonLd(product: {
   brandName?: string | null;
 }) {
   const description = product.description ?? product.shortDescription ?? undefined;
+  const productUrl = absoluteUrl(`/products/${product.slug}`);
 
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description,
-    image: product.imageUrl ? [product.imageUrl] : undefined,
+    url: productUrl,
+    sku: product.slug,
+    image: product.imageUrl ? [absoluteUrl(product.imageUrl)] : undefined,
     brand: {
       "@type": "Brand",
       name: product.brandName?.trim() || SITE_NAME,
     },
     offers: {
       "@type": "Offer",
-      url: absoluteUrl(`/products/${product.slug}`),
+      url: productUrl,
       priceCurrency: "INR",
       price: product.price,
       availability: product.inStock
@@ -93,14 +128,15 @@ export function productJsonLd(product: {
         name: SITE_NAME,
       },
     },
-    aggregateRating:
-      product.ratingCount > 0
-        ? {
+    ...(product.ratingCount > 0
+      ? {
+          aggregateRating: {
             "@type": "AggregateRating",
             ratingValue: product.ratingAvg,
             reviewCount: product.ratingCount,
-          }
-        : undefined,
+          },
+        }
+      : {}),
   };
 }
 

@@ -50,7 +50,7 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
   }));
   const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
   const gstLines = gstDisplayLines(gstBreakdown, gstLineItems);
-  const total = Math.max(0, afterDiscount + shipping + gstBreakdown.total);
+  const total = Math.max(0, afterDiscount + shipping);
 
   async function applyCoupon() {
     setApplying(true);
@@ -104,18 +104,18 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
       className={
         compact
           ? "space-y-4"
-          : "sticky top-32 rounded-3xl border border-[#2d5a27]/10 bg-[#faf5f0]/90 p-6 shadow-[0_8px_32px_rgba(45,90,39,0.08)] backdrop-blur-sm"
+          : "glass-surface-strong sticky top-32 rounded-[var(--radius-card)] p-6"
       }
       aria-label="Order summary"
     >
       {!compact ? (
-        <h2 className="font-heading text-xl font-bold text-[#2d5a27]">Order Summary</h2>
+        <h2 className="font-heading text-xl font-bold text-brand-forest">Order Summary</h2>
       ) : null}
 
       <dl className={cn("space-y-3 text-sm", compact ? "mt-0" : "mt-5")}>
-        <div className="flex justify-between text-[#2d5a27]/85">
+        <div className="flex justify-between text-brand-forest/85">
           <dt>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</dt>
-          <dd className="font-medium text-[#2d5a27]">{formatInr(subtotal)}</dd>
+          <dd className="font-medium text-brand-forest">{formatInr(subtotal)}</dd>
         </div>
 
         {appliedCoupon && couponDiscount > 0 ? (
@@ -128,18 +128,18 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
         ) : null}
 
         {gstLines.map((line) => (
-          <div key={line.label} className="flex justify-between text-[#2d5a27]/85">
+          <div key={line.label} className="flex justify-between text-brand-forest/85">
             <dt>{line.label}</dt>
-            <dd className="font-medium text-[#2d5a27]">{formatInr(line.amount)}</dd>
+            <dd className="font-medium text-brand-forest">{formatInr(line.amount)}</dd>
           </div>
         ))}
 
-        <div className="flex justify-between text-[#2d5a27]/85">
+        <div className="flex justify-between text-brand-forest/85">
           <dt className="flex items-center gap-1.5">
             <Truck className="h-4 w-4 shrink-0" aria-hidden="true" />
             Delivery
           </dt>
-          <dd className="font-medium text-[#2d5a27]">
+          <dd className="font-medium text-brand-forest">
             {shipping === 0 ? (
               <span className="font-semibold text-emerald-700">FREE</span>
             ) : (
@@ -150,8 +150,8 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
       </dl>
 
       {!compact ? (
-        <div className="mt-4 space-y-2 border-t border-[#2d5a27]/10 pt-4">
-          <label htmlFor="summary-gst-state" className="text-xs font-semibold text-[#2d5a27]/70">
+        <div className="mt-4 space-y-2 border-t border-brand-forest/10 pt-4">
+          <label htmlFor="summary-gst-state" className="text-xs font-semibold text-brand-forest/70">
             Delivery state (GST estimate)
           </label>
           <select
@@ -170,8 +170,8 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
       ) : null}
 
       {!compact ? (
-        <div className="mt-5 space-y-2 border-t border-[#2d5a27]/10 pt-5">
-          <label htmlFor="coupon-code" className="flex items-center gap-1.5 text-sm font-semibold text-[#2d5a27]">
+        <div className="mt-5 space-y-2 border-t border-brand-forest/10 pt-5">
+          <label htmlFor="coupon-code" className="flex items-center gap-1.5 text-sm font-semibold text-brand-forest">
             <Tag className="h-4 w-4" aria-hidden="true" />
             Coupon code
           </label>
@@ -193,7 +193,7 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
                 type="button"
                 onClick={removeCoupon}
                 aria-label="Remove coupon"
-                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#2d5a27]/20 bg-white text-[#2d5a27] transition-colors hover:bg-[#2d5a27]/5"
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brand-forest/20 bg-white text-brand-forest transition-colors hover:bg-brand-forest/5"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -228,7 +228,7 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
       ) : null}
 
       {!compact ? (
-        <div className="mt-5 border-t border-[#2d5a27]/10 pt-5">
+        <div className="mt-5 border-t border-brand-forest/10 pt-5">
           <FreeShippingProgress
             subtotal={subtotal}
             unlocked={appliedCoupon?.freeShipping ?? subtotal >= FREE_SHIPPING_THRESHOLD}
@@ -236,9 +236,9 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
         </div>
       ) : null}
 
-      <div className="mt-5 flex items-center justify-between border-t border-[#2d5a27]/10 pt-5">
-        <span className="font-heading text-lg font-bold text-[#2d5a27]">Total</span>
-        <span className="font-heading text-2xl font-bold text-[#2d5a27]">{formatInr(total)}</span>
+      <div className="mt-5 flex items-center justify-between border-t border-brand-forest/10 pt-5">
+        <span className="font-heading text-lg font-bold text-brand-forest">Total</span>
+        <span className="font-heading text-2xl font-bold text-brand-forest">{formatInr(total)}</span>
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
@@ -248,13 +248,13 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
           type="button"
           disabled={items.length === 0 || items.some((i) => !i.inStock)}
           onClick={onCheckout ?? (() => { window.location.href = "/checkout"; })}
-          className="bg-[#2d5a27] hover:bg-[#244a20] border-transparent font-semibold"
+          className="bg-brand-forest hover:bg-green-800 border-transparent font-semibold"
         >
           Proceed to Checkout
         </Button>
         <Link
           href="/products"
-          className="inline-flex min-h-[44px] items-center justify-center text-sm font-semibold text-[#c4673a] transition-colors hover:text-[#a85532] hover:underline"
+          className="inline-flex min-h-[44px] items-center justify-center text-sm font-semibold text-brand-terra transition-colors hover:text-terra-700 hover:underline"
         >
           Continue Shopping
         </Link>

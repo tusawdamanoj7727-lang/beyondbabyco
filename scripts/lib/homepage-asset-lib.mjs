@@ -217,7 +217,7 @@ export async function generateViaComfy(appUrl, { prompt, width, height, seed, ou
   });
   const data = await res.json();
   if (!res.ok || !data.ok) throw new Error(data.error ?? res.statusText);
-  return data.result;
+  return data.data.result;
 }
 
 export function saveSvg(root, section, slug, svg) {

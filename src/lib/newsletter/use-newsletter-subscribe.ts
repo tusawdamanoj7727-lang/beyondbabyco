@@ -7,8 +7,8 @@ import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 export type NewsletterStatus = "idle" | "loading" | "success" | "error";
 
 type SubscribeResponse = {
-  success?: boolean;
-  message?: string;
+  ok?: boolean;
+  data?: { message?: string };
   error?: string;
 };
 
@@ -44,16 +44,16 @@ export function useNewsletterSubscribe(
 
         const data = (await res.json()) as SubscribeResponse;
 
-        if (data.error) {
+        if (!data.ok || data.error) {
           setStatus("error");
-          setMsg(data.error);
+          setMsg(data.error ?? NEWSLETTER_MESSAGES.error);
           return;
         }
 
         setStatus("success");
         setMsg(
           mapSuccessMessageRef.current?.(data) ??
-            data.message ??
+            data.data?.message ??
             NEWSLETTER_MESSAGES.success,
         );
         setEmail("");

@@ -66,7 +66,7 @@ const linkClass =
 
 const socialLinkClass = cn(
   linkClass,
-  "inline-flex w-fit items-center gap-2 font-medium hover:text-[#2d5a27]",
+  "inline-flex w-fit items-center gap-2 font-medium hover:text-brand-forest",
 );
 
 const linkBtn =
@@ -113,7 +113,7 @@ function FooterEmailCapture() {
   }
 
   return (
-    <div className="relative overflow-visible bg-[#1a3a16] py-6">
+    <div className="relative overflow-visible bg-brand-forest-dark py-6">
       <div
         className="pointer-events-none absolute -bottom-1 left-2 z-20 hidden sm:block"
         aria-hidden="true"
@@ -150,12 +150,18 @@ function FooterEmailCapture() {
             placeholder="your@email.com"
             autoComplete="email"
             disabled={status === "loading"}
-            className="flex-1 rounded-lg px-4 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#c4673a] sm:w-64"
+            className={cn(
+              "flex-1 rounded-lg px-4 py-2 text-sm text-gray-900 sm:w-64",
+              focusRing,
+            )}
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#c4673a] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#a8522e] disabled:opacity-60"
+            className={cn(
+              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-terra px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-terra-700 disabled:opacity-60 motion-button",
+              focusRing,
+            )}
           >
             {status === "loading" ? (
               <>

@@ -86,8 +86,16 @@ export const razorpayGatewayAdapter: PaymentGatewayAdapter = {
     return this.verifyWebhook(params);
   },
 
-  async fetchPayment() {
-    return { success: false, message: "Use admin payments module." };
+  async fetchPayment(params) {
+    const { fetchRazorpayPayment } = await import("@/lib/checkout/razorpay-verify");
+    const result = await fetchRazorpayPayment(params.gatewayTxnId);
+    if (!result.ok || !result.payment) {
+      return { success: false, message: result.error ?? "Could not fetch payment." };
+    }
+    return {
+      success: true,
+      data: { status: result.payment.status, amount: result.payment.amount / 100 },
+    };
   },
 
   async fetchRefund() {

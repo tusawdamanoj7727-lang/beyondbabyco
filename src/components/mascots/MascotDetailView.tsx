@@ -61,16 +61,12 @@ export default function MascotDetailView({
               {mascot.categoryLabel}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={`/products?category=${mascot.categorySlug}`}>
-                <Button variant="primary" type="button">
-                  Shop {mascot.categoryLabel}
-                </Button>
-              </Link>
-              <Link href="/mascots">
-                <Button variant="outline" type="button">
-                  Meet the family
-                </Button>
-              </Link>
+              <Button asChild variant="primary">
+                <Link href={`/products?category=${mascot.categorySlug}`}>Shop {mascot.categoryLabel}</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/mascots">Meet the family</Link>
+              </Button>
             </div>
           </div>
         </div>

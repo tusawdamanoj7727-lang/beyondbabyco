@@ -2454,6 +2454,44 @@ export type Database = {
           },
         ]
       }
+      order_email_logs: {
+        Row: {
+          error_message: string | null
+          id: string
+          order_id: string
+          recipient: string
+          sent_at: string
+          status: string
+          template_id: string
+        }
+        Insert: {
+          error_message?: string | null
+          id?: string
+          order_id: string
+          recipient: string
+          sent_at?: string
+          status?: string
+          template_id: string
+        }
+        Update: {
+          error_message?: string | null
+          id?: string
+          order_id?: string
+          recipient?: string
+          sent_at?: string
+          status?: string
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_email_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_events: {
         Row: {
           created_at: string
@@ -2985,6 +3023,7 @@ export type Database = {
           payment_id: string | null
           processed: boolean
           processed_at: string | null
+          provider_event_id: string | null
           signature: string | null
         }
         Insert: {
@@ -2997,6 +3036,7 @@ export type Database = {
           payment_id?: string | null
           processed?: boolean
           processed_at?: string | null
+          provider_event_id?: string | null
           signature?: string | null
         }
         Update: {
@@ -3009,6 +3049,7 @@ export type Database = {
           payment_id?: string | null
           processed?: boolean
           processed_at?: string | null
+          provider_event_id?: string | null
           signature?: string | null
         }
         Relationships: [
@@ -5518,9 +5559,47 @@ export type Database = {
         Args: { p_variant_id: string; p_quantity: number }
         Returns: boolean
       }
+      ensure_customer_account: {
+        Args: { p_full_name?: string | null }
+        Returns: string
+      }
       restore_stock: {
         Args: { p_variant_id: string; p_quantity: number }
         Returns: boolean
+      }
+      reserve_order_inventory: {
+        Args: { p_order_id: string; p_lines: Json; p_ttl_minutes?: number }
+        Returns: boolean
+      }
+      commit_order_inventory: {
+        Args: { p_order_id: string }
+        Returns: boolean
+      }
+      release_order_inventory: {
+        Args: { p_order_id: string; p_status?: string }
+        Returns: boolean
+      }
+      restore_committed_order_inventory: {
+        Args: { p_order_id: string }
+        Returns: boolean
+      }
+      expire_stale_inventory_reservations: {
+        Args: Record<string, never>
+        Returns: number
+      }
+      redeem_coupon_for_order: {
+        Args: {
+          p_order_id: string
+          p_coupon_id: string
+          p_customer_id: string | null
+          p_discount_amount: number
+          p_order_subtotal: number
+        }
+        Returns: string | null
+      }
+      release_coupon_for_order: {
+        Args: { p_order_id: string }
+        Returns: string | null
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }

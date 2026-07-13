@@ -5,20 +5,21 @@ import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { applyCoupon } from "@/lib/coupons/queries";
 import { generateOrderNumber, calcLineTotal } from "@/lib/admin/order-schema";
 import { fulfillOrderWithDelhivery } from "@/lib/checkout/fulfillment";
-import { calcCheckoutTotals } from "@/lib/checkout/tax";
-import { calculateGSTFromCart } from "@/lib/utils/gst";
 import {
-  decrementOrderStock,
-  restoreOrderStock,
+  commitOrderStockReservations,
+  releaseOrderStockReservations,
+  reserveOrderStock,
   type OrderStockLine,
-} from "@/lib/inventory/storefront-stock";
+} from "@/lib/inventory/order-reservations";
 import { placeOrderSchema, type PlaceOrderInput } from "@/lib/checkout/schema";
+import { resolveCheckoutCart } from "@/lib/checkout/resolve-order-cart";
 import { createRazorpayOrder } from "@/lib/checkout/razorpay-client";
 import {
   getEnabledRazorpayGateway,
   PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE,
 } from "@/lib/checkout/gateways";
-import { onOrderCreated, onPaymentSuccess } from "@/lib/email/events/orders";
+import { onOrderCreated } from "@/lib/email/events/orders";
+import { runOrderShippingEmail } from "@/lib/email/lifecycle";
 
 export interface PlaceOrderResult {
   ok: boolean;
@@ -42,30 +43,17 @@ async function getDefaultWarehouseId(supabase: ReturnType<typeof createSupabaseS
   return data?.id ?? null;
 }
 
-async function resolveVariantId(
-  supabase: ReturnType<typeof createSupabaseServiceClient>,
-  productId: string,
-  variantId: string | null,
-): Promise<{ id: string; sku: string | null } | null> {
-  if (variantId) {
-    const { data } = await supabase.from("product_variants").select("id, sku").eq("id", variantId).maybeSingle();
-    return data;
-  }
-  const { data } = await supabase
-    .from("product_variants")
-    .select("id, sku")
-    .eq("product_id", productId)
-    .eq("is_active", true)
-    .order("position", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-  return data;
-}
-
 export async function findOrderByIdempotencyKey(
   customerId: string,
   idempotencyKey: string,
-): Promise<{ id: string; order_number: string; grand_total: number } | null> {
+): Promise<{
+  id: string;
+  order_number: string;
+  grand_total: number;
+  razorpayOrderId?: string;
+  razorpayKeyId?: string;
+  paymentMethod?: "razorpay" | "cod";
+} | null> {
   const supabase = createSupabaseServiceClient();
   const { data } = await supabase
     .from("orders")
@@ -73,7 +61,45 @@ export async function findOrderByIdempotencyKey(
     .eq("customer_id", customerId)
     .eq("notes", `idempotency:${idempotencyKey}`)
     .maybeSingle();
-  return data;
+
+  if (!data) return null;
+
+  const { data: payment } = await supabase
+    .from("payments")
+    .select("status, method, gateway_txn_id, provider")
+    .eq("order_id", data.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const paymentMethod =
+    payment?.method === "cod" || payment?.provider === "cod"
+      ? ("cod" as const)
+      : payment?.method === "razorpay" || payment?.provider === "razorpay"
+        ? ("razorpay" as const)
+        : undefined;
+
+  let razorpayOrderId: string | undefined;
+  let razorpayKeyId: string | undefined;
+
+  if (
+    paymentMethod === "razorpay" &&
+    payment?.status === "pending" &&
+    payment.gateway_txn_id
+  ) {
+    razorpayOrderId = payment.gateway_txn_id;
+    const gateway = await getEnabledRazorpayGateway();
+    razorpayKeyId = gateway?.keyId ?? undefined;
+  }
+
+  return {
+    id: data.id,
+    order_number: data.order_number,
+    grand_total: Number(data.grand_total),
+    razorpayOrderId,
+    razorpayKeyId,
+    paymentMethod,
+  };
 }
 
 export async function placeStorefrontOrder(
@@ -102,58 +128,51 @@ export async function placeStorefrontOrder(
       orderId: existing.id,
       orderNumber: existing.order_number,
       grandTotal: Number(existing.grand_total),
-      paymentMethod: input.paymentMethod,
+      razorpayOrderId: existing.razorpayOrderId,
+      razorpayKeyId: existing.razorpayKeyId,
+      paymentMethod: existing.paymentMethod ?? input.paymentMethod,
     };
   }
 
-  const supabase = createSupabaseServiceClient();
-  const subtotal = input.cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
-  const discountTotal = input.coupon?.discountAmount ?? 0;
-  const gstBreakdown = calculateGSTFromCart(
-    input.cartItems.map((i) => ({
-      price: i.price,
-      quantity: i.quantity,
-      gstRate: i.gstRate,
-    })),
-    input.shipping.state,
-    discountTotal,
-  );
-  const totals = calcCheckoutTotals({
-    subtotal,
-    discountTotal,
-    shippingTotal: input.shippingTotal,
-    taxTotal: gstBreakdown.total,
+  // Server-authoritative pricing — never trust client-submitted amounts.
+  const resolved = await resolveCheckoutCart({
+    customerId,
+    cartItems: input.cartItems,
+    couponCode: input.couponCode,
+    buyerState: input.shipping.state,
   });
+  if (!resolved.ok) {
+    return { ok: false, error: resolved.error };
+  }
 
+  const { lines, coupon, gstBreakdown, totals } = resolved.cart;
+  const subtotal = resolved.cart.subtotal;
+
+  const supabase = createSupabaseServiceClient();
   const warehouseId = await getDefaultWarehouseId(supabase);
   const orderNumber = generateOrderNumber();
 
-  const stockLines: OrderStockLine[] = [];
-  const lineItems = [];
-  for (const item of input.cartItems) {
-    const variant = await resolveVariantId(supabase, item.productId, item.variantId);
-    if (!variant?.id) {
-      return { ok: false, error: "One or more items are no longer available." };
-    }
-    stockLines.push({ variantId: variant.id, quantity: item.quantity });
-    lineItems.push({
-      product_id: item.productId,
-      product_variant_id: variant.id,
-      name: item.variantName ? `${item.name} — ${item.variantName}` : item.name,
-      sku: variant.sku ?? null,
-      unit_price: item.price,
-      quantity: item.quantity,
-      tax_rate: item.gstRate,
-      total: calcLineTotal(item.price, item.quantity, 0),
-    });
-  }
+  const stockLines: OrderStockLine[] = lines.map((line) => ({
+    variantId: line.variantId,
+    quantity: line.quantity,
+  }));
 
-  const stockResult = await decrementOrderStock(stockLines);
-  if (!stockResult.ok) {
-    return { ok: false, error: stockResult.error };
-  }
+  const lineItems = lines.map((line) => ({
+    product_id: line.productId,
+    product_variant_id: line.variantId,
+    name: line.variantName ? `${line.name} — ${line.variantName}` : line.name,
+    sku: line.sku,
+    unit_price: line.unitPrice,
+    quantity: line.quantity,
+    tax_rate: line.gstRate,
+    total: calcLineTotal(line.unitPrice, line.quantity, 0),
+  }));
 
-  let keepStock = false;
+  let orderId: string | undefined;
+  let stockReserved = false;
+  let stockCommitted = false;
+  let keepReservation = false;
+
   try {
   const { data: order, error: orderErr } = await supabase
     .from("orders")
@@ -172,7 +191,7 @@ export async function placeStorefrontOrder(
       igst_amount: gstBreakdown.igst,
       shipping_state: input.shipping.state,
       buyer_gstin: input.buyerGstin?.trim() || null,
-      coupon_id: input.coupon?.couponId ?? null,
+      coupon_id: coupon?.couponId ?? null,
       placed_at: new Date().toISOString(),
       notes: `idempotency:${input.idempotencyKey}`,
     })
@@ -182,6 +201,15 @@ export async function placeStorefrontOrder(
   if (orderErr || !order) {
     return { ok: false, error: orderErr?.message ?? "Could not create order." };
   }
+  orderId = order.id;
+
+  const stockResult = await reserveOrderStock(order.id, stockLines);
+  if (!stockResult.ok) {
+    await supabase.from("orders").update({ status: "cancelled" }).eq("id", order.id);
+    return { ok: false, error: stockResult.error };
+  }
+  stockReserved = true;
+
   const { error: itemsErr } = await supabase.from("order_items").insert(
     lineItems.map((item) => ({ order_id: order.id, ...item })),
   );
@@ -199,6 +227,20 @@ export async function placeStorefrontOrder(
     pincode: shipping.pincode,
   });
   if (addrErr) return { ok: false, error: addrErr.message };
+
+  if (coupon?.couponId) {
+    const couponErr = await applyCoupon(
+      order.id,
+      coupon.couponId,
+      customerId,
+      coupon.discountAmount,
+      subtotal,
+    );
+    if (couponErr) {
+      await supabase.from("orders").update({ status: "cancelled" }).eq("id", order.id);
+      return { ok: false, error: couponErr };
+    }
+  }
 
   const gateway =
     input.paymentMethod === "razorpay" ? await getEnabledRazorpayGateway() : null;
@@ -219,20 +261,6 @@ export async function placeStorefrontOrder(
     .single();
 
   if (payErr || !payment) return { ok: false, error: payErr?.message ?? "Payment record failed." };
-
-  if (input.coupon?.couponId) {
-    const couponErr = await applyCoupon(
-      order.id,
-      input.coupon.couponId,
-      customerId,
-      input.coupon.discountAmount,
-      subtotal,
-    );
-    if (couponErr) {
-      await supabase.from("orders").update({ status: "cancelled" }).eq("id", order.id);
-      return { ok: false, error: couponErr };
-    }
-  }
 
   await supabase.from("order_events").insert({
     order_id: order.id,
@@ -255,7 +283,15 @@ export async function placeStorefrontOrder(
       .eq("id", payment.id);
 
     const fulfillment = await fulfillOrderWithDelhivery(order.id);
-    keepStock = true;
+    const commitResult = await commitOrderStockReservations(order.id);
+    if (!commitResult.ok) {
+      return { ok: false, error: commitResult.error };
+    }
+    stockCommitted = true;
+    keepReservation = true;
+    if (fulfillment.ok && fulfillment.awb) {
+      await runOrderShippingEmail(order.id);
+    }
     if (!fulfillment.ok) {
       return {
         ok: true,
@@ -298,7 +334,7 @@ export async function placeStorefrontOrder(
     })
     .eq("id", payment.id);
 
-  keepStock = true;
+  keepReservation = true;
   return {
     ok: true,
     error: null,
@@ -310,12 +346,13 @@ export async function placeStorefrontOrder(
     paymentMethod: "razorpay",
   };
   } finally {
-    if (!keepStock) {
-      await restoreOrderStock(stockLines);
+    if (orderId && stockReserved && !stockCommitted && !keepReservation) {
+      await releaseOrderStockReservations(orderId);
     }
   }
 }
 
+/** Client fast-path — delegates to idempotent capture (webhook remains source of truth). */
 export async function completeRazorpayOrder(input: {
   orderId: string;
   customerId: string;
@@ -323,66 +360,18 @@ export async function completeRazorpayOrder(input: {
   razorpayPaymentId: string;
   razorpaySignature: string;
 }): Promise<{ ok: boolean; error: string | null; awb?: string }> {
-  const { verifyRazorpaySignature } = await import("@/lib/checkout/razorpay-client");
-  const valid = await verifyRazorpaySignature(input);
-  if (!valid) return { ok: false, error: "Payment verification failed." };
+  const { captureRazorpayPayment } = await import("@/lib/checkout/razorpay-capture");
 
-  const supabase = createSupabaseServiceClient();
-
-  const { data: order } = await supabase
-    .from("orders")
-    .select("id, customer_id, status")
-    .eq("id", input.orderId)
-    .maybeSingle();
-
-  if (!order || order.customer_id !== input.customerId) {
-    return { ok: false, error: "Order not found." };
-  }
-
-  const { data: payment } = await supabase
-    .from("payments")
-    .select("id, status")
-    .eq("order_id", input.orderId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (payment?.status === "paid" || payment?.status === "captured") {
-    const fulfillment = await fulfillOrderWithDelhivery(input.orderId);
-    return { ok: true, error: null, awb: fulfillment.awb };
-  }
-
-  await supabase
-    .from("payments")
-    .update({
-      status: "paid",
-      method: "razorpay",
-      provider: "razorpay",
-      gateway_txn_id: input.razorpayPaymentId,
-      payment_ref: input.razorpayPaymentId,
-      captured_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
-    .eq("order_id", input.orderId);
-
-  await supabase.from("order_events").insert({
-    order_id: input.orderId,
-    type: "payment",
-    message: "Razorpay payment captured.",
-    metadata: {
-      razorpay_payment_id: input.razorpayPaymentId,
-      razorpay_order_id: input.razorpayOrderId,
-    } as Json,
+  const result = await captureRazorpayPayment({
+    orderId: input.orderId,
+    customerId: input.customerId,
+    razorpayOrderId: input.razorpayOrderId,
+    razorpayPaymentId: input.razorpayPaymentId,
+    razorpaySignature: input.razorpaySignature,
+    source: "client",
   });
 
-  onPaymentSuccess(input.orderId);
-
-  const fulfillment = await fulfillOrderWithDelhivery(input.orderId);
-  if (!fulfillment.ok) {
-    return { ok: true, error: null };
-  }
-
-  return { ok: true, error: null, awb: fulfillment.awb };
+  return { ok: result.ok, error: result.error, awb: result.awb };
 }
 
 export async function getCheckoutOrderSummary(orderId: string, customerId: string) {

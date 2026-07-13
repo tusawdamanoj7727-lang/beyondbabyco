@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-
+import { jsonOk } from "@/lib/api/route-helpers";
+import { isProduction } from "@/lib/env.validation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getProductionEnvWarnings, isProduction, validatePublicEnv } from "@/lib/env.validation";
+import { getProductionEnvWarnings, validatePublicEnv } from "@/lib/env.validation";
 import { logger } from "@/lib/observability/logger";
 import { getRequestContext } from "@/lib/observability/request-context";
 import { attachRequestHeaders } from "@/lib/observability/request-id";
@@ -96,14 +96,15 @@ export async function GET() {
 
   logger.info("Health check", { requestId, correlationId, overall });
 
-  const body = {
-    status: overall,
-    timestamp: new Date().toISOString(),
-    requestId: isProduction() ? undefined : requestId,
-    checks: checks.map(sanitizeCheck),
-  };
-
-  const res = NextResponse.json(body, { status: hasError ? 503 : 200 });
+  const res = jsonOk(
+    {
+      status: overall,
+      timestamp: new Date().toISOString(),
+      requestId: isProduction() ? undefined : requestId,
+      checks: checks.map(sanitizeCheck),
+    },
+    hasError ? 503 : 200,
+  );
   attachRequestHeaders(res.headers, requestId, correlationId);
   return res;
 }

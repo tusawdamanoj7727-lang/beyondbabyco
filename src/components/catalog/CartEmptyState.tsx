@@ -21,7 +21,7 @@ export default function CartEmptyState({ className }: CartEmptyStateProps) {
   return (
     <div
       className={cn(
-        "mx-auto flex max-w-lg flex-col items-center px-4 py-16 text-center",
+        "mx-auto flex max-w-xl flex-col items-center px-4 py-16 text-center",
         className,
       )}
     >
@@ -42,18 +42,16 @@ export default function CartEmptyState({ className }: CartEmptyStateProps) {
         )}
       </div>
 
-      <h1 className="mt-8 font-heading text-[clamp(1.5rem,3vw,2rem)] font-bold text-[#2d5a27]">
+      <h2 className="mt-6 font-heading text-[clamp(1.375rem,2.5vw,1.75rem)] font-bold text-green-900">
         Your cart is empty
-      </h1>
-      <p className="mt-3 max-w-sm text-base leading-relaxed text-[#2d5a27]/75">
+      </h2>
+      <p className="mx-auto mt-3 max-w-md text-base leading-[1.75] text-green-700/88">
         When you find something gentle for your little one, it will appear here.
       </p>
 
-      <Link href="/products" className="mt-8">
-        <Button variant="primary" type="button" className={cn(ctaHeight, "min-w-[200px] font-semibold")}>
-          Explore Products
-        </Button>
-      </Link>
+      <Button asChild variant="primary" className={cn(ctaHeight, "mt-8 min-w-[200px] font-semibold")}>
+        <Link href="/products">Explore Products</Link>
+      </Button>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export default function CatalogEmptyState({
   className,
 }: CatalogEmptyStateProps) {
   return (
-    <div className={cn("mx-auto flex max-w-xl flex-col items-center px-4 py-14 text-center", className)}>
+    <div className={cn("mx-auto flex max-w-xl flex-col items-center px-4 py-16 text-center", className)}>
       <div className="collection-empty-state w-full">
         <div className="relative mx-auto flex h-36 w-36 items-center justify-center">
           <Mascot mascot={mascot} pose="peek" size={128} animated floating alt="" />
@@ -36,18 +36,14 @@ export default function CatalogEmptyState({
         <p className="mx-auto mt-3 max-w-md text-base leading-[1.75] text-green-700/88">{description}</p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           {actionHref ? (
-            <Link href={actionHref}>
-              <Button variant="primary" type="button" className={cn(ctaHeight, "font-semibold")}>
-                {actionLabel}
-              </Button>
-            </Link>
+            <Button asChild variant="primary" className={cn(ctaHeight, "font-semibold")}>
+              <Link href={actionHref}>{actionLabel}</Link>
+            </Button>
           ) : null}
           {secondaryHref && secondaryLabel ? (
-            <Link href={secondaryHref}>
-              <Button variant="outline" type="button" className={cn(ctaHeight, "font-semibold")}>
-                {secondaryLabel}
-              </Button>
-            </Link>
+            <Button asChild variant="outline" className={cn(ctaHeight, "font-semibold")}>
+              <Link href={secondaryHref}>{secondaryLabel}</Link>
+            </Button>
           ) : null}
         </div>
       </div>

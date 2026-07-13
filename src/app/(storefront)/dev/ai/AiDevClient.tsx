@@ -58,8 +58,12 @@ export default function AiDevClient() {
   const refreshHealth = useCallback(async () => {
     try {
       const res = await fetch("/api/dev/ai-health");
-      const data = (await res.json()) as { ok?: boolean; health?: typeof health };
-      setHealth(data.health ?? { available: false, url: "http://127.0.0.1:8188" });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        data?: { health?: typeof health };
+        error?: string;
+      };
+      setHealth(data.data?.health ?? { available: false, url: "http://127.0.0.1:8188" });
     } catch {
       setHealth({ available: false, url: "http://127.0.0.1:8188" });
     }
@@ -94,24 +98,26 @@ export default function AiDevClient() {
       const data = (await res.json()) as {
         ok?: boolean;
         error?: string;
-        result?: {
-          publicPath: string;
-          seed: number;
-          durationMs: number;
-          prompt: string;
+        data?: {
+          result?: {
+            publicPath: string;
+            seed: number;
+            durationMs: number;
+            prompt: string;
+          };
         };
       };
 
-      if (!res.ok || !data.ok || !data.result) {
+      if (!res.ok || !data.ok || !data.data?.result) {
         throw new Error(data.error ?? "Generation failed");
       }
 
       const entry: HistoryEntry = {
-        id: `${Date.now()}-${data.result.seed}`,
-        prompt: data.result.prompt,
-        publicPath: data.result.publicPath,
-        seed: data.result.seed,
-        durationMs: data.result.durationMs,
+        id: `${Date.now()}-${data.data.result.seed}`,
+        prompt: data.data.result.prompt,
+        publicPath: data.data.result.publicPath,
+        seed: data.data.result.seed,
+        durationMs: data.data.result.durationMs,
         createdAt: new Date().toISOString(),
       };
 

@@ -34,7 +34,7 @@ export default function TickerBar({
 
   const content = (
     <div
-      role="marquee"
+      role="region"
       aria-label="Store announcements"
       className={cn(announcementBar, "group relative w-full overflow-hidden")}
       style={backgroundColor ? { backgroundColor } : undefined}

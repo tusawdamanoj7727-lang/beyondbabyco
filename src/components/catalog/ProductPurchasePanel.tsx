@@ -63,11 +63,12 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       try {
         const res = await fetch(`/api/inventory/product/${product.id}`, { cache: "no-store" });
         if (!res.ok || cancelled) return;
-        const data = (await res.json()) as {
-          variants?: { variantId: string; available: number }[];
+        const body = (await res.json()) as {
+          ok?: boolean;
+          data?: { variants?: { variantId: string; available: number }[] };
         };
-        if (!data.variants || cancelled) return;
-        setVariantStock(new Map(data.variants.map((v) => [v.variantId, v.available])));
+        if (!body.ok || !body.data?.variants || cancelled) return;
+        setVariantStock(new Map(body.data.variants.map((v) => [v.variantId, v.available])));
       } catch {
         // Keep server-rendered stock on network failure.
       }
@@ -181,7 +182,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         aria-busy={pending}
         onClick={addToCart}
         className={cn(
-          "w-full rounded-2xl bg-[#2d5a27] py-4 text-base font-bold text-white transition-all hover:bg-[#234821] active:scale-95 disabled:cursor-wait disabled:opacity-80",
+          "w-full rounded-2xl bg-brand-forest py-4 text-base font-bold text-white transition-all hover:bg-green-800 active:scale-95 disabled:cursor-wait disabled:opacity-80",
           focusRing,
         )}
       >
@@ -192,7 +193,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         disabled={pending}
         onClick={buyNow}
         className={cn(
-          "w-full rounded-2xl border-2 border-[#2d5a27] py-4 text-base font-bold text-[#2d5a27] transition-all hover:bg-[#eaf3de]",
+          "w-full rounded-2xl border-2 border-brand-forest py-4 text-base font-bold text-brand-forest transition-all hover:bg-brand-mint",
           focusRing,
         )}
       >
@@ -208,7 +209,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         type="button"
         onClick={handleNotifyMe}
         className={cn(
-          "w-full rounded-2xl border-2 border-[#c4673a] py-4 text-base font-bold text-[#c4673a] transition-all hover:bg-[#fdf0eb]",
+          "w-full rounded-2xl border-2 border-brand-terra py-4 text-base font-bold text-brand-terra transition-all hover:bg-terra-50",
           focusRing,
         )}
       >
@@ -263,7 +264,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                 className={cn(
                   "rounded-xl border-2 px-4 py-2 text-sm font-semibold transition-all",
                   activeVariant?.id === variant.id
-                    ? "border-[#2d5a27] bg-[#eaf3de] text-[#2d5a27]"
+                    ? "border-brand-forest bg-brand-mint text-brand-forest"
                     : "border-gray-200 text-gray-600 hover:border-gray-400",
                   !variant.inStock && "cursor-not-allowed opacity-40",
                   focusRing,
@@ -284,7 +285,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
               <span className="text-2xl font-black text-terra-600">Launching 2026</span>
             ) : (
               <>
-                <span className="text-4xl font-black text-[#2d5a27]">{formatInr(displayPrice)}</span>
+                <span className="text-4xl font-black text-brand-forest">{formatInr(displayPrice)}</span>
                 {showCompare ? (
                   <span className="text-xl text-gray-400 line-through">{formatInr(displayCompare!)}</span>
                 ) : null}
@@ -370,7 +371,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
           {!isComingSoon ? (
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-gray-900">{product.name}</p>
-              <p className="text-base font-black text-[#2d5a27]">{formatInr(displayPrice)}</p>
+              <p className="text-base font-black text-brand-forest">{formatInr(displayPrice)}</p>
             </div>
           ) : null}
           <div className={cn("flex shrink-0 gap-2", isComingSoon && "w-full")}>
@@ -380,7 +381,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   type="button"
                   onClick={addToCart}
                   className={cn(
-                    "flex-1 rounded-xl bg-[#2d5a27] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#234821]",
+                    "flex-1 rounded-xl bg-brand-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-green-800",
                     focusRing,
                   )}
                 >
@@ -390,7 +391,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   type="button"
                   onClick={buyNow}
                   className={cn(
-                    "shrink-0 rounded-xl border-2 border-[#2d5a27] px-4 py-3 text-sm font-bold text-[#2d5a27] transition hover:bg-[#eaf3de]",
+                    "shrink-0 rounded-xl border-2 border-brand-forest px-4 py-3 text-sm font-bold text-brand-forest transition hover:bg-brand-mint",
                     focusRing,
                   )}
                 >
@@ -402,7 +403,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                 type="button"
                 onClick={handleNotifyMe}
                 className={cn(
-                  "w-full rounded-xl border-2 border-[#c4673a] py-3.5 text-sm font-bold text-[#c4673a] transition hover:bg-[#fdf0eb]",
+                  "w-full rounded-xl border-2 border-brand-terra py-3.5 text-sm font-bold text-brand-terra transition hover:bg-terra-50",
                   focusRing,
                 )}
               >

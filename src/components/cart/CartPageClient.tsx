@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Tag, Trash2 } from "lucide-react";
 
-import Mascot from "@/components/mascots/Mascot";
 import ProductImageFallback from "@/components/brand/ProductImageFallback";
+import CartEmptyState from "@/components/catalog/CartEmptyState";
+import Button from "@/components/ui/Button";
 import { formatInr } from "@/lib/catalog/format";
+import { applyCouponViaApi } from "@/lib/storefront/cart-coupons";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
 import {
@@ -16,18 +18,19 @@ import {
 } from "@/lib/storefront/shipping";
 import { clampCartQuantity } from "@/lib/storefront/cart-types";
 import { cn } from "@/lib/utils";
+import { focusRing } from "@/lib/design/ui";
 
 function CartSkeleton() {
   return (
-    <div className="min-h-screen bg-[#faf5f0] py-8">
+    <div className="min-h-screen bg-brand-cream py-8">
       <div className="mx-auto max-w-6xl animate-pulse px-4">
-        <div className="mb-8 h-9 w-48 rounded-lg bg-[#2d5a27]/10" />
+        <div className="skeleton-shimmer mb-8 h-9 w-48 rounded-lg" />
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            <div className="h-28 rounded-2xl bg-white/80" />
-            <div className="h-28 rounded-2xl bg-white/80" />
+            <div className="skeleton-shimmer h-28 rounded-[var(--radius-card)]" />
+            <div className="skeleton-shimmer h-28 rounded-[var(--radius-card)]" />
           </div>
-          <div className="h-96 rounded-2xl bg-white/80" />
+          <div className="skeleton-shimmer h-96 rounded-[var(--radius-card)]" />
         </div>
       </div>
     </div>
@@ -53,6 +56,7 @@ export default function CartPageClient() {
   const [couponInput, setCouponInput] = useState("");
   const [couponMsg, setCouponMsg] = useState({ text: "", type: "" as "" | "success" | "error" });
   const [applying, setApplying] = useState(false);
+  const couponId = useId();
 
   async function handleApplyCoupon() {
     const code = couponInput.trim().toUpperCase();
@@ -62,30 +66,13 @@ export default function CartPageClient() {
     setCouponMsg({ text: "", type: "" });
 
     try {
-      const res = await fetch("/api/coupons/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, cartTotal: subtotal }),
-      });
-      const data = (await res.json()) as {
-        valid: boolean;
-        error?: string;
-        code?: string;
-        discountType?: "percent" | "flat";
-        discountValue?: number;
-        type?: "percent" | "flat";
-        value?: number;
-        savings?: number;
-      };
+      const data = await applyCouponViaApi(code, subtotal);
 
-      const discountType = data.discountType ?? data.type;
-      const discountValue = data.discountValue ?? data.value;
-
-      if (data.valid && data.code && discountType && discountValue != null && data.savings != null) {
+      if (data.valid) {
         applyCoupon({
           code: data.code,
-          discountType,
-          discountValue,
+          discountType: data.discountType,
+          discountValue: data.discountValue,
           savings: data.savings,
         });
         setCouponMsg({
@@ -107,23 +94,8 @@ export default function CartPageClient() {
 
   if (items.length === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#faf5f0] px-4 py-20">
-        <Mascot
-          mascot="bella-bunny"
-          pose="sleeping"
-          size={200}
-          className="mb-6 opacity-80"
-          alt="Bella sleeping"
-          floating={false}
-        />
-        <h2 className="mb-3 text-3xl font-black text-[#2d5a27]">Your cart is empty</h2>
-        <p className="mb-8 text-gray-500">Looks like Bella hasn&apos;t added anything yet!</p>
-        <Link
-          href="/products"
-          className="rounded-2xl bg-[#2d5a27] px-8 py-4 font-bold text-white transition-colors hover:bg-[#234821]"
-        >
-          Shop Now 🛍️
-        </Link>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-brand-cream px-4 py-16">
+        <CartEmptyState />
       </div>
     );
   }
@@ -132,9 +104,9 @@ export default function CartPageClient() {
   const shipProgress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
-    <div className="min-h-screen bg-[#faf5f0] py-8">
+    <div className="min-h-screen bg-brand-cream py-8">
       <div className="mx-auto max-w-6xl px-4">
-        <h1 className="mb-8 text-3xl font-black text-[#2d5a27]">
+        <h1 className="mb-8 font-heading text-3xl font-black text-brand-forest">
           My Cart{" "}
           <span className="text-lg font-medium text-gray-500">({itemCount} items)</span>
         </h1>
@@ -142,10 +114,10 @@ export default function CartPageClient() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
             {items.map((item) => (
-              <div key={item.id} className="flex gap-4 rounded-2xl bg-white p-4 shadow-sm">
+              <div key={item.id} className="flex gap-4 rounded-[var(--radius-card)] bg-white p-4 shadow-sm">
                 <Link
                   href={`/products/${item.slug}`}
-                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#faf5f0]"
+                  className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-brand-cream"
                 >
                   {item.image ? (
                     <Image
@@ -163,7 +135,7 @@ export default function CartPageClient() {
                 <div className="min-w-0 flex-1">
                   <Link
                     href={`/products/${item.slug}`}
-                    className="truncate font-semibold text-gray-900 hover:text-[#2d5a27]"
+                    className="truncate font-semibold text-gray-900 hover:text-brand-forest"
                   >
                     {item.name}
                   </Link>
@@ -196,7 +168,7 @@ export default function CartPageClient() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="text-lg font-bold text-[#2d5a27]">
+                      <span className="text-lg font-bold text-brand-forest">
                         {formatInr(item.price * item.quantity)}
                       </span>
                       <button
@@ -215,7 +187,7 @@ export default function CartPageClient() {
 
             <Link
               href="/products"
-              className="flex items-center gap-2 text-sm font-medium text-[#2d5a27] hover:underline"
+              className="flex items-center gap-2 text-sm font-medium text-brand-forest hover:underline"
             >
               <ShoppingBag size={16} />
               Continue Shopping
@@ -223,13 +195,13 @@ export default function CartPageClient() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-2xl bg-white p-6 shadow-sm">
+            <div className="sticky top-24 rounded-[var(--radius-card)] bg-white p-6 shadow-sm">
               <h2 className="mb-4 text-lg font-bold text-gray-900">Order Summary</h2>
 
               <div className="mb-4">
                 {toFreeShip > 0 ? (
                   <p className="mb-2 text-sm text-gray-600">
-                    Add <span className="font-bold text-[#2d5a27]">{formatInr(toFreeShip)}</span> more
+                    Add <span className="font-bold text-brand-forest">{formatInr(toFreeShip)}</span> more
                     for FREE delivery!
                   </p>
                 ) : (
@@ -237,7 +209,7 @@ export default function CartPageClient() {
                 )}
                 <div className="h-2 w-full rounded-full bg-gray-100">
                   <div
-                    className="h-2 rounded-full bg-[#2d5a27] transition-all duration-500"
+                    className="h-2 rounded-full bg-brand-forest transition-all duration-500 motion-safe:transition-all"
                     style={{ width: `${shipProgress}%` }}
                   />
                 </div>
@@ -263,7 +235,11 @@ export default function CartPageClient() {
               ) : (
                 <div className="mb-4">
                   <div className="flex gap-2">
+                    <label htmlFor={couponId} className="sr-only">
+                      Coupon code
+                    </label>
                     <input
+                      id={couponId}
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                       onKeyDown={(e) => {
@@ -271,13 +247,19 @@ export default function CartPageClient() {
                       }}
                       placeholder="Coupon code"
                       disabled={applying}
-                      className="flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d5a27]"
+                      className={cn(
+                        "flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm",
+                        focusRing,
+                      )}
                     />
                     <button
                       type="button"
                       onClick={() => void handleApplyCoupon()}
                       disabled={applying || !couponInput.trim()}
-                      className="rounded-xl bg-[#2d5a27] px-4 py-2 text-sm font-semibold text-white hover:bg-[#234821] disabled:opacity-60"
+                      className={cn(
+                        "rounded-xl bg-brand-forest px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-60",
+                        focusRing,
+                      )}
                     >
                       {applying ? "..." : "Apply"}
                     </button>
@@ -316,18 +298,15 @@ export default function CartPageClient() {
                     {shippingCharge === 0 ? "FREE" : formatInr(shippingCharge)}
                   </span>
                 </div>
-                <div className="mt-2 flex justify-between border-t pt-3 text-xl font-black text-[#2d5a27]">
+                <div className="mt-2 flex justify-between border-t pt-3 text-xl font-black text-brand-forest">
                   <span>Total</span>
                   <span>{formatInr(total)}</span>
                 </div>
               </div>
 
-              <Link
-                href="/checkout"
-                className="mt-6 block w-full rounded-2xl bg-[#2d5a27] py-4 text-center text-lg font-bold text-white transition-all hover:bg-[#234821] active:scale-95"
-              >
-                Proceed to Checkout →
-              </Link>
+              <Button asChild variant="primary" size="lg" fullWidth className="mt-6">
+                <Link href="/checkout">Proceed to Checkout →</Link>
+              </Button>
               <p className="mt-3 text-center text-xs text-gray-400">
                 🔒 Secure checkout powered by Razorpay
               </p>

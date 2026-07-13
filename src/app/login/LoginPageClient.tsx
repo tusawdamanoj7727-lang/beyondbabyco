@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +9,10 @@ import { X } from "lucide-react";
 import type { AuthError } from "@supabase/supabase-js";
 
 import { Mascot } from "@/components/mascots";
-import { customerOAuthAction } from "@/lib/auth/customer-auth-actions";
+import {
+  customerOAuthAction,
+  ensureCustomerBootstrapAction,
+} from "@/lib/auth/customer-auth-actions";
 import { callbackErrorMessage, mapSupabaseAuthError } from "@/lib/auth/auth-errors";
 import { authCallbackUrl } from "@/lib/auth/auth-urls";
 import { resolveCustomerRedirect } from "@/lib/routes";
@@ -131,6 +134,7 @@ export default function LoginPageClient() {
       if (tab === "login") {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
+        await ensureCustomerBootstrapAction();
         router.push(redirectTo);
         router.refresh();
       } else {
@@ -156,7 +160,13 @@ export default function LoginPageClient() {
     }
   };
 
-  const inputClassName = "auth-modal-input w-full text-sm text-green-900 placeholder:text-green-700/45";
+  const nameId = useId();
+  const emailId = useId();
+  const passwordId = useId();
+  const formErrorId = useId();
+
+  const inputClassName =
+    "auth-modal-input w-full text-sm text-green-900 placeholder:text-green-700/55";
 
   return (
     <div className="auth-modal-page relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-4 py-10 sm:px-6">
@@ -239,7 +249,7 @@ export default function LoginPageClient() {
             priority
           />
 
-          <div className="auth-modal-tabs mt-6 flex rounded-[22px] bg-[#f3ebe2]/80 p-1.5">
+          <div className="auth-modal-tabs mt-6 flex rounded-[var(--radius-card)] bg-cream-200/80 p-1.5">
             <button
               type="button"
               onClick={() => switchTab("login")}
@@ -280,7 +290,7 @@ export default function LoginPageClient() {
           type="button"
           onClick={() => void handleGoogle()}
           disabled={googleLoading}
-          className="auth-modal-google mb-4 flex w-full items-center justify-center gap-3 rounded-[22px] border border-[#e5ddd3] bg-white/85 py-3.5 text-sm font-medium text-green-900/85 shadow-sm transition-all hover:-translate-y-px hover:border-[#d8cfc4] hover:bg-white hover:shadow-md disabled:opacity-60"
+          className="auth-modal-google mb-4 flex w-full items-center justify-center gap-3 rounded-[var(--radius-card)] border border-cream-300 bg-white/85 py-3.5 text-sm font-medium text-green-900/85 shadow-sm transition-all hover:-translate-y-px hover:border-cream-400 hover:bg-white hover:shadow-md disabled:opacity-60"
         >
           {googleLoading ? (
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#e8dfd2] border-t-green-800" />
@@ -291,87 +301,125 @@ export default function LoginPageClient() {
         </button>
 
         <div className="auth-modal-divider mb-4 flex items-center gap-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#e5ddd3] to-transparent" />
-          <span className="text-xs font-medium text-green-800/45">or continue with email</span>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#e5ddd3] to-transparent" />
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cream-300 to-transparent" />
+          <span className="text-xs font-medium text-green-800/58">or continue with email</span>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cream-300 to-transparent" />
         </div>
 
-        {tab === "register" ? (
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your full name"
-            type="text"
-            autoComplete="name"
-            className={cn(inputClassName, "mb-3")}
-          />
-        ) : null}
-
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email address"
-          type="email"
-          autoComplete="email"
-          className={cn(inputClassName, "mb-3")}
-        />
-
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          type="password"
-          autoComplete={tab === "register" ? "new-password" : "current-password"}
-          className={cn(inputClassName, "mb-1")}
-        />
-
-        {tab === "login" ? (
-          <div className="mb-4 text-right">
-            <Link
-              href="/forgot-password"
-              className="rounded-full px-1 text-xs font-medium text-[#c4673a]/90 transition-colors hover:text-[#a8522e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8b4b8]/50"
-            >
-              Forgot password?
-            </Link>
-          </div>
-        ) : (
-          <div className="mb-4" />
-        )}
-
-        {error ? (
-          <p
-            role="alert"
-            className="auth-modal-alert auth-modal-alert--error mb-3 flex items-start gap-2.5 rounded-[18px] px-3.5 py-2.5 text-left text-xs leading-relaxed"
-          >
-            <span className="mt-0.5 shrink-0 opacity-80">
-              <GentleAlertIcon variant="error" />
-            </span>
-            <span>{error}</span>
-          </p>
-        ) : null}
-
-        {message ? (
-          <p
-            role="status"
-            className="auth-modal-alert auth-modal-alert--success mb-3 flex items-start gap-2.5 rounded-[18px] px-3.5 py-2.5 text-left text-xs leading-relaxed"
-          >
-            <span className="mt-0.5 shrink-0 opacity-80">
-              <GentleAlertIcon variant="success" />
-            </span>
-            <span>{message}</span>
-          </p>
-        ) : null}
-
-        <button
-          type="button"
-          onClick={() => void handleSubmit()}
-          disabled={loading}
-          className="auth-modal-primary w-full rounded-full py-4 text-base font-bold text-white disabled:opacity-60"
+        <form
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleSubmit();
+          }}
         >
-          {loading ? "Please wait..." : tab === "login" ? "Sign In →" : "Create Account →"}
-        </button>
+          {tab === "register" ? (
+            <div className="mb-3">
+              <label htmlFor={nameId} className="sr-only">
+                Full name
+              </label>
+              <input
+                id={nameId}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your full name"
+                type="text"
+                autoComplete="name"
+                required
+                aria-required="true"
+                className={inputClassName}
+              />
+            </div>
+          ) : null}
 
-        <p className="auth-modal-legal mt-6 text-center text-xs leading-relaxed text-green-800/45">
+          <div className="mb-3">
+            <label htmlFor={emailId} className="sr-only">
+              Email address
+            </label>
+            <input
+              id={emailId}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              type="email"
+              autoComplete="email"
+              required
+              aria-required="true"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? formErrorId : undefined}
+              className={inputClassName}
+            />
+          </div>
+
+          <div className="mb-1">
+            <label htmlFor={passwordId} className="sr-only">
+              Password
+            </label>
+            <input
+              id={passwordId}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              type="password"
+              autoComplete={tab === "register" ? "new-password" : "current-password"}
+              required
+              aria-required="true"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? formErrorId : undefined}
+              className={inputClassName}
+            />
+          </div>
+
+          {tab === "login" ? (
+            <div className="mb-4 text-right">
+              <Link
+                href="/forgot-password"
+                className="rounded-full px-1 text-xs font-medium text-brand-terra/90 transition-colors hover:text-terra-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500/50"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          ) : (
+            <div className="mb-4" />
+          )}
+
+          {error ? (
+            <p
+              id={formErrorId}
+              role="alert"
+              aria-live="polite"
+              className="auth-modal-alert auth-modal-alert--error mb-3 flex items-start gap-2.5 rounded-[18px] px-3.5 py-2.5 text-left text-xs leading-relaxed"
+            >
+              <span className="mt-0.5 shrink-0 opacity-80">
+                <GentleAlertIcon variant="error" />
+              </span>
+              <span>{error}</span>
+            </p>
+          ) : null}
+
+          {message ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="auth-modal-alert auth-modal-alert--success mb-3 flex items-start gap-2.5 rounded-[18px] px-3.5 py-2.5 text-left text-xs leading-relaxed"
+            >
+              <span className="mt-0.5 shrink-0 opacity-80">
+                <GentleAlertIcon variant="success" />
+              </span>
+              <span>{message}</span>
+            </p>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="auth-modal-primary w-full rounded-full py-4 text-base font-bold text-white disabled:opacity-60"
+          >
+            {loading ? "Please wait..." : tab === "login" ? "Sign In →" : "Create Account →"}
+          </button>
+        </form>
+
+        <p className="auth-modal-legal mt-6 text-center text-xs leading-relaxed text-green-800/58">
           By continuing you agree to our{" "}
           <Link
             href="/terms-of-service"

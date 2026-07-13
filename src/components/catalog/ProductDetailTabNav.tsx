@@ -57,7 +57,7 @@ export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductD
           className={cn(
             "flex-shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors",
             activeTab === tab
-              ? "border-[#2d5a27] text-[#2d5a27]"
+              ? "border-brand-forest text-brand-forest"
               : "border-transparent text-gray-500",
             focusRing,
           )}

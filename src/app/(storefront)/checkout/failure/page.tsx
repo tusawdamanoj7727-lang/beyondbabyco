@@ -45,22 +45,16 @@ export default async function CheckoutFailurePage({
         ) : null}
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link href="/checkout">
-            <Button variant="primary" type="button">
-              Retry Checkout
-            </Button>
-          </Link>
-          <Link href="/cart">
-            <Button variant="secondary" type="button">
-              Back to Cart
-            </Button>
-          </Link>
+          <Button asChild variant="primary">
+            <Link href="/checkout">Retry Checkout</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link href="/cart">Back to Cart</Link>
+          </Button>
           {orderId ? (
-            <Link href={`/account/orders/${orderId}`}>
-              <Button variant="secondary" type="button">
-                View Order
-              </Button>
-            </Link>
+            <Button asChild variant="secondary">
+              <Link href={`/account/orders/${orderId}`}>View Order</Link>
+            </Button>
           ) : null}
         </div>
       </div>

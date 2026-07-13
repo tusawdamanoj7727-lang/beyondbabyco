@@ -1,62 +1,39 @@
-import { NextResponse } from "next/server";
-
+import { parseJsonBody } from "@/lib/api/request";
+import { notifyMeBodySchema } from "@/lib/api/schemas";
+import { jsonError, jsonOk } from "@/lib/api/route-helpers";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as {
-      email?: string;
-      productCategory?: string;
-      productId?: string;
-      productName?: string;
-      mode?: "launch" | "restock";
-      source?: string;
-    };
+    const parsed = await parseJsonBody(request, { schema: notifyMeBodySchema });
+    if (!parsed.ok) {
+      return jsonError(parsed.error, parsed.status);
+    }
 
-    const email = String(body.email ?? "")
-      .trim()
-      .toLowerCase();
-    const productCategory = String(body.productCategory ?? "").trim() || null;
-    const productId = body.productId?.trim() || null;
-    const productName = body.productName?.trim() || null;
-    const isRestock = body.mode === "restock";
-    const source = body.source?.trim() || "website";
+    const { email, productCategory, productId, productName, mode, source } = parsed.data;
+    const isRestock = mode === "restock";
+    const resolvedSource = source ?? "website";
     const displayName = productName ?? productCategory;
-
-    if (!email.includes("@")) {
-      return NextResponse.json(
-        { success: false, message: "Please enter a valid email address." },
-        { status: 400 },
-      );
-    }
-
-    if (!productCategory && !productId) {
-      return NextResponse.json(
-        { success: false, message: "Product category or product ID is required." },
-        { status: 400 },
-      );
-    }
 
     const supabase = await createClient();
 
     const { error } = await supabase.from("waitlist").insert({
       email,
-      product_category: productCategory,
-      product_id: productId,
-      source,
+      product_category: productCategory ?? null,
+      product_id: productId ?? null,
+      source: resolvedSource,
     });
 
     if (error?.code === "23505") {
-      return NextResponse.json(
+      return jsonOk(
         {
-          success: true,
           message: productCategory
             ? `You're already on the list for ${productCategory} — we'll be in touch soon.`
             : "You're already on the list — we'll be in touch soon.",
         },
-        { status: 409 },
+        409,
       );
     }
 
@@ -68,11 +45,8 @@ export async function POST(request: Request) {
         ? "We will notify you! 🎉"
         : "We'll notify you when it's available!";
 
-    return NextResponse.json({ success: true, message });
+    return jsonOk({ message });
   } catch {
-    return NextResponse.json(
-      { success: false, message: "Something went wrong. Please try again." },
-      { status: 500 },
-    );
+    return jsonError("Something went wrong. Please try again.", 500);
   }
 }

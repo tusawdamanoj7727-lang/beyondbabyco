@@ -54,7 +54,7 @@ function cardPurchaseAction(product: StorefrontProduct, compact = true) {
         product.status,
       )}
       className={cn(
-        "h-auto rounded-lg border border-[#2d5a27] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#2d5a27] hover:bg-[#eaf3de]",
+        "h-auto rounded-lg border border-brand-forest bg-transparent px-3 py-1.5 text-xs font-semibold text-brand-forest hover:bg-brand-mint",
         compact && "shrink-0",
       )}
     />
@@ -147,11 +147,11 @@ export default function ProductCard({
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
           className={cn(
-            "absolute left-3 top-[calc(100%-4.5rem)] z-10 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-[#2d5a27] sm:top-[13.5rem]",
+            "absolute left-3 top-[calc(100%-4.5rem)] z-10 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-brand-forest sm:top-[13.5rem]",
             focusRing,
           )}
         >
-          <Heart className={cn("h-3.5 w-3.5", wishlisted && "fill-current text-[#c4673a]")} aria-hidden="true" />
+          <Heart className={cn("h-3.5 w-3.5", wishlisted && "fill-current text-brand-terra")} aria-hidden="true" />
         </button>
       ) : null}
       {showListingCta ? (

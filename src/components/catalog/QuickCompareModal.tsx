@@ -120,11 +120,9 @@ function CompareColumn({ product }: { product: StorefrontProduct }) {
             </div>
           ) : null}
         </dl>
-        <Link href={`/products/${product.slug}`} className="mt-5">
-          <Button variant="primary" fullWidth className={cn(ctaHeight, "text-base font-semibold")}>
-            View product
-          </Button>
-        </Link>
+        <Button asChild variant="primary" fullWidth className={cn(ctaHeight, "mt-5 text-base font-semibold")}>
+          <Link href={`/products/${product.slug}`}>View product</Link>
+        </Button>
       </div>
     </article>
   );

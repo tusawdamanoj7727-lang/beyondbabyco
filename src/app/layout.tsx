@@ -1,18 +1,21 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Montserrat, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 
 import JsonLd from "@/components/seo/JsonLd";
 import StorefrontFooter from "@/components/homepage/StorefrontFooter";
 import AppProviders from "@/components/layout/AppProviders";
 import HideOnAdmin from "@/components/layout/HideOnAdmin";
-import FloatingLogo from "@/components/layout/FloatingLogo";
 import AnnouncementBar from "@/components/homepage/AnnouncementBar";
 import { Navbar } from "@/components/layout/Navbar";
 import ResourceHints from "@/components/seo/ResourceHints";
-import AnalyticsRoot from "@/components/analytics/AnalyticsRoot";
-import { AppToaster } from "@/components/ui/AppToaster";
-import ScrollRevealObserver from "@/components/ui/ScrollRevealObserver";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import {
+  AnalyticsRoot,
+  AppToaster,
+  FloatingLogo,
+  ScrollRevealObserver,
+  WhatsAppButton,
+} from "@/components/layout/DeferredClientWidgets";
 import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
 import { getCanonicalSiteUrl } from "@/lib/seo/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
@@ -31,13 +34,10 @@ import {
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const montserrat = Montserrat({
-  weight: ["500", "600", "700", "800", "900"],
-  variable: "--font-montserrat",
-  display: "swap",
+const geist = Geist({
   subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
   adjustFontFallback: true,
   preload: true,
 });
@@ -66,6 +66,11 @@ export const metadata: Metadata = {
   },
 };
 
+/** Reserves announcement ticker height while CMS data streams — prevents header CLS. */
+function AnnouncementBarFallback() {
+  return <div className="announcement-bar shrink-0" aria-hidden="true" />;
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -74,7 +79,7 @@ export default async function RootLayout({
   const initialSession = await getServerSession();
 
   return (
-    <html lang="en" className={cn("font-sans", geist.variable, montserrat.variable)}>
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <head>
         <ResourceHints />
       </head>
@@ -84,18 +89,22 @@ export default async function RootLayout({
           <AnalyticsRoot />
           <ScrollRevealObserver />
           <AppToaster />
-        <HideOnAdmin>
-          <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
-            <AnnouncementBar />
-            <Navbar />
-          </div>
-        </HideOnAdmin>
-        {children}
-        <HideOnAdmin>
-          <FloatingLogo />
-        </HideOnAdmin>
           <HideOnAdmin>
-            <StorefrontFooter />
+            <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
+              <Suspense fallback={<AnnouncementBarFallback />}>
+                <AnnouncementBar />
+              </Suspense>
+              <Navbar />
+            </div>
+          </HideOnAdmin>
+          {children}
+          <HideOnAdmin>
+            <FloatingLogo />
+          </HideOnAdmin>
+          <HideOnAdmin>
+            <Suspense fallback={null}>
+              <StorefrontFooter />
+            </Suspense>
           </HideOnAdmin>
           <WhatsAppButton />
         </AppProviders>

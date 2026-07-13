@@ -9,6 +9,8 @@ import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { IMAGES } from "@/lib/images";
 import { buildHomepageMetadata } from "@/lib/seo/metadata";
 
+export const revalidate = 60;
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getStorefrontHomepage();
   const title =

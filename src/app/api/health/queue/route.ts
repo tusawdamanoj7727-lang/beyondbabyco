@@ -1,10 +1,13 @@
-import { NextResponse } from "next/server";
-
+import { jsonOk } from "@/lib/api/route-helpers";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireHealthCheckAuth } from "@/lib/security/health-auth";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = requireHealthCheckAuth(request);
+  if (denied) return denied;
+
   const start = Date.now();
   try {
     const supabase = await createSupabaseServerClient();
@@ -14,7 +17,7 @@ export async function GET() {
       supabase.from("push_queue").select("id", { count: "exact", head: true }).eq("status", "queued"),
     ]);
 
-    return NextResponse.json({
+    return jsonOk({
       status: "ok",
       latencyMs: Date.now() - start,
       queues: {
@@ -24,6 +27,6 @@ export async function GET() {
       },
     });
   } catch {
-    return NextResponse.json({ status: "degraded", latencyMs: Date.now() - start, detail: "Queue tables unavailable" });
+    return jsonOk({ status: "degraded", latencyMs: Date.now() - start });
   }
 }

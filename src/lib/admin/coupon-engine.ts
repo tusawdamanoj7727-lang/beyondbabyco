@@ -1,7 +1,10 @@
 import "server-only";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import type { Json } from "@/lib/supabase/database.types";
+import {
+  countCouponUsageForCustomer,
+  redeemCouponForOrder,
+  releaseCouponForOrder,
+} from "@/lib/coupons/redemption";
 import {
   type BuyXGetYRule,
   type CouponEligibility,
@@ -143,13 +146,8 @@ export async function validateCoupon(
   }
 
   if (row.per_customer_limit != null && ctx.customerId) {
-    const supabase = await createSupabaseServerClient();
-    const { count } = await supabase
-      .from("coupon_usage")
-      .select("id", { count: "exact", head: true })
-      .eq("coupon_id", row.id)
-      .eq("customer_id", ctx.customerId);
-    if ((count ?? 0) >= row.per_customer_limit) {
+    const usageCount = await countCouponUsageForCustomer(row.id, ctx.customerId);
+    if (usageCount >= row.per_customer_limit) {
       return { valid: false, error: "Per-customer usage limit reached." };
     }
   }
@@ -187,60 +185,18 @@ export async function applyCoupon(
   discountAmount: number,
   orderSubtotal: number,
 ): Promise<string | null> {
-  const supabase = await createSupabaseServerClient();
-
-  const { data: coupon } = await supabase.from("coupons").select("id, used_count, max_uses, total_revenue").eq("id", couponId).maybeSingle();
-  if (!coupon) return "Coupon not found.";
-  if (coupon.max_uses != null && coupon.used_count >= coupon.max_uses) return "Usage limit reached.";
-
-  const { error: usageErr } = await supabase.from("coupon_usage").insert({
-    coupon_id: couponId,
-    customer_id: customerId,
-    order_id: orderId,
-    discount_amount: discountAmount,
-    order_subtotal: orderSubtotal,
-  });
-  if (usageErr) return usageErr.message;
-
-  await supabase
-    .from("coupons")
-    .update({
-      used_count: coupon.used_count + 1,
-      total_revenue: Number(coupon.total_revenue ?? 0) + discountAmount,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", couponId);
-
-  await supabase.rpc("log_audit", {
-    p_table: "coupons",
-    p_record: couponId,
-    p_action: "redeem",
-    p_new: { order_id: orderId, discount_amount: discountAmount } as Json,
+  const result = await redeemCouponForOrder({
+    orderId,
+    couponId,
+    customerId,
+    discountAmount,
+    orderSubtotal,
   });
 
-  return null;
+  return result.ok ? null : result.error;
 }
 
 export async function removeCoupon(orderId: string): Promise<string | null> {
-  const supabase = await createSupabaseServerClient();
-
-  const { data: usages } = await supabase.from("coupon_usage").select("id, coupon_id, discount_amount").eq("order_id", orderId);
-  if (!usages?.length) return null;
-
-  for (const u of usages) {
-    const { data: coupon } = await supabase.from("coupons").select("used_count, total_revenue").eq("id", u.coupon_id).maybeSingle();
-    if (coupon) {
-      await supabase
-        .from("coupons")
-        .update({
-          used_count: Math.max(0, coupon.used_count - 1),
-          total_revenue: Math.max(0, Number(coupon.total_revenue ?? 0) - Number(u.discount_amount ?? 0)),
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", u.coupon_id);
-    }
-  }
-
-  const { error } = await supabase.from("coupon_usage").delete().eq("order_id", orderId);
-  return error?.message ?? null;
+  const result = await releaseCouponForOrder(orderId);
+  return result.ok ? null : result.error;
 }

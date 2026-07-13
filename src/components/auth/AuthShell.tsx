@@ -145,6 +145,7 @@ export function AuthAlert({
     <div
       id={id}
       role={variant === "error" ? "alert" : "status"}
+      aria-live="polite"
       className={cn("rounded-2xl border px-4 py-3 text-sm font-medium", styles)}
     >
       {message}

@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
   const result = await delhiveryCheckServiceability(parsed.data.pincode);
   if (!result.ok) return jsonError(result.error ?? "Serviceability check failed", 502);
-  return jsonOk({ data: result.data ?? {} });
+  return jsonOk(result.data ?? {});
 }
 
 export async function POST(request: Request) {
@@ -38,5 +38,5 @@ export async function POST(request: Request) {
 
   const result = await delhiveryCheckServiceability(parsed.data.pincode);
   if (!result.ok) return jsonError(result.error ?? "Serviceability check failed", 502);
-  return jsonOk({ data: result.data ?? {} });
+  return jsonOk(result.data ?? {});
 }

@@ -67,6 +67,11 @@ export function checkAdminRateLimit(request: NextRequest): NextResponse | null {
   return checkRateLimit(request, { windowMs: 60_000, max: 60, keyPrefix: "admin" });
 }
 
+/** Stricter limits for /api/admin/* mutation and data APIs. */
+export function checkAdminApiRateLimit(request: NextRequest): NextResponse | null {
+  return checkRateLimit(request, { windowMs: 60_000, max: 60, keyPrefix: "api-admin" });
+}
+
 /** Cleanup stale entries periodically (edge-safe best effort). */
 export function pruneRateLimitStore(): void {
   const now = Date.now();

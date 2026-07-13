@@ -8,7 +8,7 @@ type SectionWaveDividerProps = {
 
 /** Soft wave transition between homepage sections. */
 export default function SectionWaveDivider({
-  fill = "#faf5f0",
+  fill = "var(--brand-cream)",
   className,
   flip = false,
 }: SectionWaveDividerProps) {

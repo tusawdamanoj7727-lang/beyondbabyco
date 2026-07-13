@@ -15,7 +15,7 @@ export default function EarlyAccessSection() {
     "homepage_early_access",
     {
       mapSuccessMessage: (data) =>
-        data.message?.includes("Already")
+        data.data?.message?.includes("Already")
           ? "You're already on the early access list — we'll email your launch offer soon."
           : "You're on the early access list! Watch for your 20% off code at launch.",
     },

@@ -77,6 +77,9 @@ export function getProductionEnvWarnings(): string[] {
   if (!process.env.CRON_SECRET) {
     warnings.push("CRON_SECRET not set (required for secure cron endpoints in production)");
   }
+  if (!process.env.HEALTH_CHECK_SECRET && !process.env.CRON_SECRET) {
+    warnings.push("HEALTH_CHECK_SECRET not set (detailed health probes require Bearer auth in production)");
+  }
   if (!process.env.DELHIVERY_WEBHOOK_SECRET) {
     warnings.push("DELHIVERY_WEBHOOK_SECRET not set (webhook verification disabled)");
   }

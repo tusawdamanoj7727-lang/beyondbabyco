@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildPageMetadata({
@@ -11,12 +13,19 @@ export const metadata = buildPageMetadata({
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#faf5f0] py-16">
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", url: "/" },
+          { name: "About Us" },
+        ])}
+      />
+      <div className="min-h-screen bg-brand-cream py-16">
       <div className="mx-auto max-w-3xl px-4">
-        <h1 className="mb-3 text-4xl font-black text-[#2d5a27]">About BeyondBabyCo</h1>
+        <h1 className="mb-3 text-4xl font-black text-brand-forest">About BeyondBabyCo</h1>
         <p className="mb-10 text-gray-500">Every Baby Deserves The Safest Touch</p>
 
-        <div className="prose prose-green max-w-none rounded-2xl bg-white p-8 shadow-sm prose-headings:text-[#2d5a27]">
+        <div className="prose prose-green max-w-none rounded-2xl bg-white p-8 shadow-sm prose-headings:text-brand-forest">
           <p className="text-lg leading-relaxed text-gray-700">
             Founded in <strong>2021</strong> in <strong>Udaipur, Rajasthan</strong> by{" "}
             <strong>Tusawda Global Private Limited</strong>, BeyondBabyCo was born from a simple belief:
@@ -65,7 +74,7 @@ export default function AboutPage() {
             safety, learning, gentleness, discovery, and joy.
           </p>
           <p>
-            <Link href="/mascots" className="font-semibold text-[#2d5a27] no-underline hover:underline">
+            <Link href="/mascots" className="font-semibold text-brand-forest no-underline hover:underline">
               Meet the mascot family →
             </Link>
           </p>
@@ -78,6 +87,7 @@ export default function AboutPage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

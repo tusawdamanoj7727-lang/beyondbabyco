@@ -23,6 +23,19 @@ export {
   onOrderCancelled,
 } from "./events/orders";
 export {
+  dispatchOrderEmail,
+  dispatchOrderEmailAsync,
+  type DispatchOrderEmailResult,
+} from "./dispatch";
+export {
+  runCodOrderCreatedEmails,
+  runCodOrderCreatedEmailsAsync,
+  runPrepaidPaymentCapturedEmails,
+  runPrepaidPaymentCapturedEmailsAsync,
+  runOrderShippingEmail,
+  runOrderShippingEmailAsync,
+} from "./lifecycle";
+export {
   onNewCustomer,
   onContactFormSubmitted,
   onRefundRequested,

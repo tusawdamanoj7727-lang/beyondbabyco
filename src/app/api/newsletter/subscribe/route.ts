@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
-
+import { parseJsonBody } from "@/lib/api/request";
+import { newsletterSubscribeBodySchema } from "@/lib/api/schemas";
+import { jsonError, jsonOk } from "@/lib/api/route-helpers";
 import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 import { createClient } from "@/lib/supabase/server";
 
@@ -7,43 +8,36 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as { email?: string; name?: string; source?: string };
-    const email = String(body.email ?? "")
-      .trim()
-      .toLowerCase();
-    const source = String(body.source ?? "website").trim() || "website";
-    const name = body.name?.trim() || null;
-
-    if (!email.includes("@")) {
-      return NextResponse.json({ error: NEWSLETTER_MESSAGES.invalid }, { status: 400 });
+    const parsed = await parseJsonBody(req, { schema: newsletterSubscribeBodySchema });
+    if (!parsed.ok) {
+      const error =
+        parsed.status === 413 ? parsed.error : NEWSLETTER_MESSAGES.invalid;
+      return jsonError(error, parsed.status);
     }
+
+    const { email, name, source } = parsed.data;
+    const resolvedSource = source ?? "website";
 
     const supabase = await createClient();
 
     const { error } = await supabase.from("newsletter_subscribers").insert({
       email,
-      name,
-      source,
+      name: name ?? null,
+      source: resolvedSource,
       is_active: true,
       subscribed_at: new Date().toISOString(),
     });
 
     if (error?.code === "23505") {
-      return NextResponse.json({
-        success: true,
-        message: NEWSLETTER_MESSAGES.duplicate,
-      });
+      return jsonOk({ message: NEWSLETTER_MESSAGES.duplicate });
     }
 
     if (error) {
-      return NextResponse.json({ error: NEWSLETTER_MESSAGES.error }, { status: 500 });
+      return jsonError(NEWSLETTER_MESSAGES.error, 500);
     }
 
-    return NextResponse.json({
-      success: true,
-      message: NEWSLETTER_MESSAGES.success,
-    });
+    return jsonOk({ message: NEWSLETTER_MESSAGES.success });
   } catch {
-    return NextResponse.json({ error: NEWSLETTER_MESSAGES.error }, { status: 500 });
+    return jsonError(NEWSLETTER_MESSAGES.error, 500);
   }
 }

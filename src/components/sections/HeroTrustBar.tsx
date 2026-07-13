@@ -17,7 +17,7 @@ export default function HeroTrustBar() {
             <Link
               key={item.text}
               href={item.href}
-              className="flex items-center gap-1.5 text-xs font-medium text-gray-600 transition-colors hover:text-[#2d5a27] md:text-sm"
+              className="flex items-center gap-1.5 text-xs font-medium text-gray-600 transition-colors hover:text-brand-forest md:text-sm"
             >
               <span>{item.icon}</span>
               {item.text}

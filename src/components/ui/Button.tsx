@@ -1,5 +1,6 @@
 "use client";
 
+import { Slot } from "@radix-ui/react-slot";
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 import { focusRing, motionButton } from "@/lib/design/ui";
@@ -16,6 +17,7 @@ export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> 
   rightIcon?: ReactNode;
   fullWidth?: boolean;
   type?: "button" | "submit" | "reset";
+  asChild?: boolean;
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -44,19 +46,46 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     rightIcon,
     fullWidth = false,
     type = "button",
+    asChild = false,
     ...rest
   },
   ref,
 ) {
   const isDisabled = disabled || loading;
+  const Comp = asChild ? Slot : "button";
+
+  const content = (
+    <>
+      {loading ? (
+        <span aria-hidden="true" className="spinner-premium" />
+      ) : (
+        leftIcon && (
+          <span
+            aria-hidden="true"
+            className="inline-flex shrink-0 [&_svg]:h-[1.125rem] [&_svg]:w-[1.125rem]"
+          >
+            {leftIcon}
+          </span>
+        )
+      )}
+      <span>{children}</span>
+      {!loading && rightIcon && (
+        <span
+          aria-hidden="true"
+          className="inline-flex shrink-0 [&_svg]:h-[1.125rem] [&_svg]:w-[1.125rem]"
+        >
+          {rightIcon}
+        </span>
+      )}
+    </>
+  );
 
   return (
-    <button
+    <Comp
       ref={ref}
-      type={type}
-      disabled={isDisabled}
-      aria-disabled={isDisabled}
-      aria-busy={loading}
+      {...(!asChild ? { type, disabled: isDisabled } : {})}
+      aria-disabled={isDisabled || undefined}
+      aria-busy={loading || undefined}
       className={cn(
         "relative inline-flex items-center justify-center gap-2 rounded-full font-body font-semibold",
         motionButton,
@@ -70,16 +99,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       )}
       {...rest}
     >
-      {loading ? (
-        <span aria-hidden="true" className="spinner-premium" />
-      ) : (
-        leftIcon && <span aria-hidden="true" className="inline-flex shrink-0 [&_svg]:h-[1.125rem] [&_svg]:w-[1.125rem]">{leftIcon}</span>
-      )}
-      <span>{children}</span>
-      {!loading && rightIcon && (
-        <span aria-hidden="true" className="inline-flex shrink-0 [&_svg]:h-[1.125rem] [&_svg]:w-[1.125rem]">{rightIcon}</span>
-      )}
-    </button>
+      {asChild ? children : content}
+    </Comp>
   );
 });
 

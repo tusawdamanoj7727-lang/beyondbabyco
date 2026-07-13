@@ -72,16 +72,16 @@ export default function BundleSection({ products }: BundleSectionProps) {
       {BUNDLES.map((bundle) => (
         <div
           key={bundle.id}
-          className="rounded-2xl border border-gray-100 bg-[#faf5f0] p-6"
+          className="rounded-2xl border border-gray-100 bg-brand-cream p-6"
         >
-          <span className="text-xs font-bold uppercase tracking-wide text-[#c4673a]">
+          <span className="text-xs font-bold uppercase tracking-wide text-brand-terra">
             {bundle.label}
           </span>
-          <h3 className="mb-2 mt-1 text-xl font-bold text-[#2d5a27]">{bundle.title}</h3>
+          <h3 className="mb-2 mt-1 text-xl font-bold text-brand-forest">{bundle.title}</h3>
           <p className="mb-4 text-sm text-gray-500">{bundle.description}</p>
           <div className="flex items-center justify-between gap-4">
             <div>
-              <span className="text-2xl font-black text-[#2d5a27]">₹{bundle.price}</span>
+              <span className="text-2xl font-black text-brand-forest">₹{bundle.price}</span>
               <span className="ml-2 text-sm text-gray-400 line-through">₹{bundle.compareAt}</span>
               <span className="ml-2 text-xs font-medium text-green-600">
                 Save ₹{bundle.compareAt - bundle.price}
@@ -92,7 +92,7 @@ export default function BundleSection({ products }: BundleSectionProps) {
               disabled={pending}
               onClick={() => addBundle(bundle)}
               className={cn(
-                "shrink-0 rounded-xl bg-[#2d5a27] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#234821] disabled:opacity-60",
+                "shrink-0 rounded-xl bg-brand-forest px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-green-800 disabled:opacity-60",
               )}
             >
               Add Bundle

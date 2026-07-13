@@ -1,22 +1,19 @@
-import { NextResponse } from "next/server";
-
+import { handleApiError, jsonOk } from "@/lib/api/route-helpers";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireHealthCheckAuth } from "@/lib/security/health-auth";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = requireHealthCheckAuth(request);
+  if (denied) return denied;
+
   try {
     const supabase = await createSupabaseServerClient();
-
-    // Lightweight connectivity probe against a known table. A genuine
-    // network or configuration failure rejects and is handled below.
-    await supabase.from("settings").select("key").limit(1);
-
-    return NextResponse.json({ connected: true });
+    const { error } = await supabase.from("settings").select("key").limit(1);
+    if (error) throw error;
+    return jsonOk({ connected: true });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown error";
-
-    return NextResponse.json({ connected: false, error: message });
+    return handleApiError(error, "health.supabase");
   }
 }

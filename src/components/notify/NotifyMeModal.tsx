@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
 
 import Button from "@/components/ui/Button";
+import { handleFocusTrap, lockBodyScroll } from "@/lib/a11y/dialog-a11y";
 import { NOTIFY_ME_MESSAGES } from "@/lib/notify-me/messages";
 import type { NotifyMeMode } from "@/lib/notify-me/target";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,8 @@ export default function NotifyMeModal({
   onClose,
 }: NotifyMeModalProps) {
   const emailId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -60,11 +63,28 @@ export default function NotifyMeModal({
 
   useEffect(() => {
     if (!open) return;
+    return lockBodyScroll();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const focusTarget = emailRef.current ?? dialogRef.current?.querySelector<HTMLElement>("button");
+    const focusTimer = window.setTimeout(() => focusTarget?.focus(), 0);
+
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (dialogRef.current) handleFocusTrap(dialogRef.current, e);
     }
+
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [open, onClose]);
 
   if (!open && status !== "success") return null;
@@ -93,16 +113,20 @@ export default function NotifyMeModal({
         }),
       });
 
-      const data = (await response.json()) as { message?: string; success?: boolean };
+      const body = (await response.json()) as {
+        ok?: boolean;
+        data?: { message?: string };
+        error?: string;
+      };
 
-      if (!response.ok && response.status !== 409) {
-        setError(data.message ?? NOTIFY_ME_MESSAGES.error);
+      if (!body.ok) {
+        setError(body.error ?? NOTIFY_ME_MESSAGES.error);
         setStatus("error");
         return;
       }
 
       setSuccessMessage(
-        data.message ??
+        body.data?.message ??
           (isRestock
             ? NOTIFY_ME_MESSAGES.restockSuccess(productName ?? productCategory)
             : NOTIFY_ME_MESSAGES.success(productCategory)),
@@ -132,9 +156,11 @@ export default function NotifyMeModal({
       ) : null}
 
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="notify-me-title"
+        aria-describedby={status !== "success" ? "notify-me-subtitle" : undefined}
         className={cn(
           surfaceGlassStrong,
           "relative w-[min(92vw,26rem)] rounded-4xl border border-white/80 p-6 shadow-clay",
@@ -169,7 +195,9 @@ export default function NotifyMeModal({
             <h2 id="notify-me-title" className="mt-2 pr-8 font-heading text-xl font-bold leading-snug text-green-900">
               {title}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-green-700/85">{subtitle}</p>
+            <p id="notify-me-subtitle" className="mt-2 text-sm leading-relaxed text-green-700/85">
+              {subtitle}
+            </p>
 
             {error ? (
               <p role="alert" className="mt-4 rounded-2xl border border-terra-200 bg-terra-50 px-3 py-2 text-xs font-medium text-terra-700">
@@ -182,6 +210,7 @@ export default function NotifyMeModal({
                 Email address
               </label>
               <input
+                ref={emailRef}
                 id={emailId}
                 name="email"
                 type="email"

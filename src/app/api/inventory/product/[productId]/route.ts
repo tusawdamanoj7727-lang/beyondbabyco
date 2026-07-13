@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-
+import { uuidSchema } from "@/lib/api/schemas";
+import { handleApiError, jsonError, jsonOk } from "@/lib/api/route-helpers";
 import { getProductVariantStock } from "@/lib/inventory/storefront-stock";
 
 export async function GET(
@@ -8,14 +8,15 @@ export async function GET(
 ) {
   const { productId } = await context.params;
 
-  if (!productId) {
-    return NextResponse.json({ error: "Product id required" }, { status: 400 });
+  const parsed = uuidSchema.safeParse(productId);
+  if (!parsed.success) {
+    return jsonError("Invalid product id", 400);
   }
 
   try {
-    const stock = await getProductVariantStock(productId);
-    return NextResponse.json(stock);
-  } catch {
-    return NextResponse.json({ error: "Could not load stock" }, { status: 500 });
+    const stock = await getProductVariantStock(parsed.data);
+    return jsonOk(stock);
+  } catch (error) {
+    return handleApiError(error, "inventory.product");
   }
 }

@@ -8,6 +8,7 @@ import {
   generateImage,
   isAiDevEnabled,
 } from "@/lib/ai/generateImage";
+import { isDevApiBlocked } from "@/lib/security/dev-api";
 
 const generateSchema = z.object({
   prompt: z.string().min(1, "Prompt is required").max(4000),
@@ -28,6 +29,9 @@ const generateSchema = z.object({
 });
 
 function devGuard(): NextResponse | null {
+  if (isDevApiBlocked()) {
+    return jsonError("Not found", 404);
+  }
   if (!isAiDevEnabled()) {
     return jsonError("AI dev tools are disabled in this environment", 403);
   }

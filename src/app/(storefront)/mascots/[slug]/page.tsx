@@ -48,7 +48,7 @@ export default async function MascotPage({ params }: PageProps) {
           ]),
         ]}
       />
-      <div className="min-h-screen bg-[#faf5f0]">
+      <div className="min-h-screen bg-brand-cream">
         <div className="mx-auto max-w-4xl px-4 py-16">
           <div className="mb-16 grid items-center gap-12 md:grid-cols-2">
             <div className="text-center">
@@ -64,10 +64,10 @@ export default async function MascotPage({ params }: PageProps) {
               />
             </div>
             <div>
-              <span className="text-sm font-bold uppercase tracking-widest text-[#c4673a]">
+              <span className="text-sm font-bold uppercase tracking-widest text-brand-terra">
                 {mascot.personality}
               </span>
-              <h1 className="mb-3 mt-2 text-5xl font-black text-[#2d5a27]">{mascot.name}</h1>
+              <h1 className="mb-3 mt-2 text-5xl font-black text-brand-forest">{mascot.name}</h1>
               <p className="mb-6 text-xl italic text-gray-600">&ldquo;{mascot.tagline}&rdquo;</p>
               <p className="mb-8 leading-relaxed text-gray-600">{mascot.story}</p>
 
@@ -80,7 +80,7 @@ export default async function MascotPage({ params }: PageProps) {
                     {mascot.products.map((product) => (
                       <span
                         key={product}
-                        className="rounded-full px-4 py-1.5 text-sm font-medium text-[#2d5a27]"
+                        className="rounded-full px-4 py-1.5 text-sm font-medium text-brand-forest"
                         style={{ backgroundColor: `${mascot.color}40` }}
                       >
                         {product}
@@ -92,7 +92,7 @@ export default async function MascotPage({ params }: PageProps) {
 
               <Link
                 href="/products"
-                className="inline-block rounded-2xl bg-[#2d5a27] px-8 py-4 font-bold text-white transition-all hover:bg-[#234821]"
+                className="inline-block rounded-2xl bg-brand-forest px-8 py-4 font-bold text-white transition-all hover:bg-green-800"
               >
                 Shop {firstName}&apos;s Picks →
               </Link>
@@ -101,7 +101,7 @@ export default async function MascotPage({ params }: PageProps) {
 
           <div className="text-center">
             <p className="mb-6 text-sm text-gray-400">Meet the whole family</p>
-            <Link href="/mascots" className="font-semibold text-[#2d5a27] hover:underline">
+            <Link href="/mascots" className="font-semibold text-brand-forest hover:underline">
               View All Mascots →
             </Link>
           </div>

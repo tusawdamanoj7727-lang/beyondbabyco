@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
-
-import { requirePermission } from "@/lib/auth/guards";
+import { logApiAction } from "@/lib/api/audit";
+import { parseJsonBody } from "@/lib/api/request";
+import { tickerUpdateBodySchema } from "@/lib/api/schemas";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { ANNOUNCEMENT_TICKER_ITEMS, getAnnouncementTickerItems } from "@/lib/brand/announcement-ticker";
+import { handleApiError, jsonError, jsonOk, requireStaffApi } from "@/lib/api/route-helpers";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 
@@ -17,21 +18,22 @@ export async function GET() {
     .maybeSingle();
 
   if (error) {
-    return NextResponse.json({ items: [...ANNOUNCEMENT_TICKER_ITEMS] });
+    return jsonOk({ items: [...ANNOUNCEMENT_TICKER_ITEMS] });
   }
 
-  return NextResponse.json({ items: getAnnouncementTickerItems(data?.value) });
+  return jsonOk({ items: getAnnouncementTickerItems(data?.value) });
 }
 
 export async function POST(req: Request) {
-  try {
-    await requirePermission(PERMISSIONS.CMS_MANAGE);
-  } catch {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireStaffApi(PERMISSIONS.CMS_MANAGE);
+  if (!auth.ok) return auth.response;
+
+  const parsed = await parseJsonBody(req, { schema: tickerUpdateBodySchema });
+  if (!parsed.ok) {
+    return jsonError(parsed.error, parsed.status);
   }
 
-  const body = (await req.json()) as { items?: unknown };
-  const items = getAnnouncementTickerItems(body.items);
+  const items = getAnnouncementTickerItems(parsed.data.items);
 
   const supabase = await createClient();
   const { error } = await supabase.from("site_settings").upsert(
@@ -43,9 +45,13 @@ export async function POST(req: Request) {
     { onConflict: "key" },
   );
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  if (error) return handleApiError(error, "settings.ticker");
 
-  return NextResponse.json({ success: true, items });
+  logApiAction({
+    action: "api.settings.ticker.update",
+    entity: "site_settings",
+    metadata: { itemCount: items.length },
+  });
+
+  return jsonOk({ items });
 }

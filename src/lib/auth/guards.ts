@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import {
   getCurrentPermissions,
+  getCurrentProfile,
   getCurrentRole,
   getCurrentUser,
   getAuthContext,
@@ -13,6 +14,12 @@ import { ROLES, isStaffRole, roleAtLeast, type Role } from "./roles";
 import { type Permission } from "./permissions";
 
 const LOGIN_PATH = "/admin/login";
+
+function rejectInactiveStaff(ctx: AuthContext): void {
+  if (ctx.profile && !ctx.profile.isActive) {
+    redirect(LOGIN_PATH);
+  }
+}
 
 /** Does the current user have the given role? */
 export async function hasRole(role: Role): Promise<boolean> {
@@ -43,9 +50,10 @@ export async function requireAuth(): Promise<AuthContext> {
   return getAuthContext();
 }
 
-/** Require any staff role (admin / manager / support). */
+/** Require any staff role (admin / manager / support) with an active profile. */
 export async function requireStaff(): Promise<AuthContext> {
   const ctx = await requireAuth();
+  rejectInactiveStaff(ctx);
   if (!isStaffRole(ctx.role)) redirect(LOGIN_PATH);
   return ctx;
 }
@@ -53,6 +61,7 @@ export async function requireStaff(): Promise<AuthContext> {
 /** Require manager-or-above (manager, admin). */
 export async function requireManager(): Promise<AuthContext> {
   const ctx = await requireAuth();
+  rejectInactiveStaff(ctx);
   if (!roleAtLeast(ctx.role, ROLES.MANAGER)) redirect(LOGIN_PATH);
   return ctx;
 }
@@ -60,15 +69,24 @@ export async function requireManager(): Promise<AuthContext> {
 /** Require the admin role. */
 export async function requireAdmin(): Promise<AuthContext> {
   const ctx = await requireAuth();
+  rejectInactiveStaff(ctx);
   if (ctx.role !== ROLES.ADMIN) redirect(LOGIN_PATH);
   return ctx;
 }
 
 /** Require a specific permission; redirect to login when missing. */
 export async function requirePermission(permission: Permission): Promise<AuthContext> {
-  const ctx = await requireAuth();
+  const ctx = await requireStaff();
   const granted =
     ctx.role === ROLES.ADMIN || ctx.permissions.includes(permission);
   if (!granted) redirect(LOGIN_PATH);
   return ctx;
+}
+
+/** API-oriented: returns false when profile is missing or deactivated. */
+export async function isActiveAuthenticatedUser(): Promise<boolean> {
+  const user = await getCurrentUser();
+  if (!user) return false;
+  const profile = await getCurrentProfile();
+  return profile?.isActive !== false;
 }

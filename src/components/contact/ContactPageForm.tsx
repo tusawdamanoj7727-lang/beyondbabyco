@@ -2,7 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 
+import Button from "@/components/ui/Button";
+import { focusRing } from "@/lib/design/ui";
 import { submitContactQueryAction } from "@/lib/account/support-actions";
+import { cn } from "@/lib/utils";
 
 export default function ContactPageForm() {
   const [name, setName] = useState("");
@@ -47,7 +50,10 @@ export default function ContactPageForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d5a27]"
+          className={cn(
+            "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm",
+            focusRing,
+          )}
         />
       </div>
       <div>
@@ -60,7 +66,10 @@ export default function ContactPageForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d5a27]"
+          className={cn(
+            "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm",
+            focusRing,
+          )}
         />
       </div>
       <div>
@@ -72,7 +81,10 @@ export default function ContactPageForm() {
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           required
-          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d5a27]"
+          className={cn(
+            "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm",
+            focusRing,
+          )}
         />
       </div>
       <div>
@@ -85,7 +97,10 @@ export default function ContactPageForm() {
           onChange={(e) => setMessage(e.target.value)}
           required
           rows={5}
-          className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2d5a27]"
+          className={cn(
+            "w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm",
+            focusRing,
+          )}
         />
       </div>
       {statusMessage ? (
@@ -96,13 +111,9 @@ export default function ContactPageForm() {
           {statusMessage}
         </p>
       ) : null}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-2xl bg-[#2d5a27] py-4 font-bold text-white transition-colors hover:bg-[#234821] disabled:opacity-60"
-      >
-        {loading ? "Sending..." : "Send Message"}
-      </button>
+      <Button type="submit" variant="primary" size="lg" fullWidth loading={loading} disabled={loading}>
+        Send Message
+      </Button>
     </form>
   );
 }

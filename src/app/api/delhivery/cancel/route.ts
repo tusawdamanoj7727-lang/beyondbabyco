@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { parseJsonBody } from "@/lib/api/request";
 import { jsonError, jsonOk, requireStaffApi } from "@/lib/api/route-helpers";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { cancelBodySchema } from "@/lib/delhivery/schemas";
@@ -10,16 +11,9 @@ export async function POST(request: Request) {
   const auth = await requireStaffApi(PERMISSIONS.SHIPPING_MANAGE);
   if (!auth.ok) return auth.response;
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return jsonError("Invalid JSON", 400);
-  }
-
-  const parsed = cancelBodySchema.safeParse(body);
-  if (!parsed.success) {
-    return jsonError(parsed.error.issues[0]?.message ?? "Invalid payload", 422);
+  const parsed = await parseJsonBody(request, { schema: cancelBodySchema });
+  if (!parsed.ok) {
+    return jsonError(parsed.error, parsed.status === 400 ? 400 : 422);
   }
 
   const supabase = await createSupabaseServerClient();
@@ -37,5 +31,5 @@ export async function POST(request: Request) {
   });
 
   if (!result.ok) return jsonError(result.error ?? "Cancel failed", 502);
-  return jsonOk({ data: result.data ?? {} });
+  return jsonOk(result.data ?? {});
 }

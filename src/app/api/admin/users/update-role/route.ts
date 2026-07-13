@@ -1,14 +1,16 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { jsonOk } from "@/lib/api/route-helpers";
+import { logApiAction } from "@/lib/api/audit";
+import { parseJsonBody } from "@/lib/api/request";
+import { uuidSchema } from "@/lib/api/schemas";
+import { jsonOk, jsonError } from "@/lib/api/route-helpers";
 import { handleAdminApiError, requireAdminUserApi } from "@/lib/api/admin-user-api";
 import { isUserPanelRole, syncUserAccess } from "@/lib/admin/user-management-server";
 
 export const dynamic = "force-dynamic";
 
 const updateRoleSchema = z.object({
-  userId: z.string().uuid("Invalid user id"),
+  userId: uuidSchema,
   role: z.string().refine(isUserPanelRole, "Invalid role"),
 });
 
@@ -18,20 +20,16 @@ export async function POST(request: Request) {
   if (!gate.ok) return gate.response;
 
   try {
-    const body = await request.json();
-    const parsed = updateRoleSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid request" },
-        { status: 400 },
-      );
+    const parsed = await parseJsonBody(request, { schema: updateRoleSchema });
+    if (!parsed.ok) {
+      return jsonError(parsed.error, parsed.status);
     }
 
     const { userId, role } = parsed.data;
 
     const { data: existing, error: fetchError } = await gate.admin.auth.admin.getUserById(userId);
     if (fetchError || !existing.user) {
-      return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+      return jsonError("User not found", 404);
     }
 
     const fullName =
@@ -40,6 +38,13 @@ export async function POST(request: Request) {
         : undefined;
 
     await syncUserAccess(gate.admin, userId, role, { fullName, isActive: true });
+
+    logApiAction({
+      action: "api.admin.users.update_role",
+      entity: "profiles",
+      entityId: userId,
+      metadata: { role },
+    });
 
     return jsonOk({ userId, role });
   } catch (error) {

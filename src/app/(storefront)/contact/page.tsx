@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import ContactPageForm from "@/components/contact/ContactPageForm";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildPageMetadata({
@@ -13,24 +15,31 @@ const WHATSAPP_URL = "https://wa.me/917296887936?text=Hi!%20I%20have%20a%20quest
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#faf5f0] py-16">
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", url: "/" },
+          { name: "Contact Us" },
+        ])}
+      />
+      <div className="min-h-screen bg-brand-cream py-16">
       <div className="mx-auto max-w-5xl px-4">
-        <h1 className="mb-3 text-4xl font-black text-[#2d5a27]">Contact Us</h1>
-        <p className="mb-10 text-gray-500">We are here to help — reach out anytime</p>
+        <h1 className="mb-3 font-heading text-4xl font-black text-brand-forest">Contact Us</h1>
+        <p className="mb-10 text-caption text-green-700/70">We are here to help — reach out anytime</p>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl bg-white p-8 shadow-sm">
+          <div className="rounded-[var(--radius-card)] bg-white p-8 shadow-sm">
             <h2 className="mb-6 text-lg font-bold text-gray-900">Send us a message</h2>
             <ContactPageForm />
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-2xl bg-white p-8 shadow-sm">
+            <div className="rounded-[var(--radius-card)] bg-white p-8 shadow-sm">
               <h2 className="mb-4 text-lg font-bold text-gray-900">Get in touch</h2>
               <div className="space-y-4 text-sm text-gray-600">
                 <div>
                   <p className="font-semibold text-gray-900">Email</p>
-                  <a href="mailto:care@beyondbabyco.com" className="text-[#2d5a27] hover:underline">
+                  <a href="mailto:care@beyondbabyco.com" className="text-brand-forest hover:underline">
                     care@beyondbabyco.com
                   </a>
                 </div>
@@ -40,7 +49,7 @@ export default function ContactPage() {
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#2d5a27] hover:underline"
+                    className="text-brand-forest hover:underline"
                   >
                     +91 72968 87936
                   </a>
@@ -57,14 +66,14 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-[#eaf3de] p-6">
-              <p className="font-semibold text-[#2d5a27]">Quick answers?</p>
+            <div className="rounded-[var(--radius-card)] bg-brand-mint p-6">
+              <p className="font-semibold text-brand-forest">Quick answers?</p>
               <p className="mt-2 text-sm text-gray-600">
                 Check our FAQ for instant answers about products, shipping, and returns.
               </p>
               <Link
                 href="/faq"
-                className="mt-4 inline-block text-sm font-semibold text-[#2d5a27] hover:underline"
+                className="mt-4 inline-block text-sm font-semibold text-brand-forest hover:underline"
               >
                 View FAQ →
               </Link>
@@ -72,6 +81,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

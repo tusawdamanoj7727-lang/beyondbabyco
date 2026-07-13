@@ -2,12 +2,20 @@
 
 import { useEffect } from "react";
 
-const REVEAL_SELECTOR =
-  ".scroll-reveal, .scroll-reveal-item, .scroll-reveal-slide-left, .scroll-reveal-slide-right, .scroll-reveal-scale-in, .accent-bar-animated";
+import {
+  SCROLL_REVEAL_SELECTOR,
+  prefersReducedMotion,
+  revealAllScrollElements,
+} from "@/lib/a11y/scroll-reveal";
 
 /** One-shot IntersectionObserver for CSS reveal classes (replaces scroll-linked view timelines). */
 export default function ScrollRevealObserver() {
   useEffect(() => {
+    if (prefersReducedMotion()) {
+      revealAllScrollElements(document);
+      return;
+    }
+
     let observer: IntersectionObserver | undefined;
     let mutation: MutationObserver | undefined;
     let cancelled = false;
@@ -28,7 +36,7 @@ export default function ScrollRevealObserver() {
       );
 
       function observe(root: ParentNode) {
-        root.querySelectorAll<HTMLElement>(REVEAL_SELECTOR).forEach((el) => {
+        root.querySelectorAll<HTMLElement>(SCROLL_REVEAL_SELECTOR).forEach((el) => {
           if (el.classList.contains("is-revealed") || el.dataset.revealObserved === "1") return;
           el.dataset.revealObserved = "1";
           observer!.observe(el);

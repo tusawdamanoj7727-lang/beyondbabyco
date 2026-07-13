@@ -43,7 +43,8 @@ export default function CheckoutOrderSummary({
   }));
   const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
   const gstLines = gstDisplayLines(gstBreakdown, gstLineItems);
-  const total = afterDiscount + shipping + gstBreakdown.total;
+  // MRP-inclusive prices — GST is informational only, not added to payable total.
+  const total = afterDiscount + shipping;
   const totalSavings = productSavings + couponDiscount;
 
   return (
@@ -150,7 +151,7 @@ export function useCheckoutTotals(shippingTotal: number, buyerState: string) {
     gstRate: i.gstRate,
   }));
   const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
-  const total = afterDiscount + shipping + gstBreakdown.total;
+  const total = afterDiscount + shipping;
   return {
     subtotal,
     couponDiscount,

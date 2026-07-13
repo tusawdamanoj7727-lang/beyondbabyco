@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { getImageProps } from "next/image";
 import { notFound } from "next/navigation";
 
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
+import DeferredProductViewTracker from "@/components/catalog/DeferredProductViewTracker";
 import ProductDetailTabs from "@/components/catalog/ProductDetailTabs";
 import ProductGallery from "@/components/catalog/ProductGallery";
 import ProductPurchasePanel from "@/components/catalog/ProductPurchasePanel";
-import ProductViewTracker from "@/components/catalog/ProductViewTracker";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
 import { productUnit } from "@/lib/catalog/product-images";
@@ -14,6 +15,7 @@ import { getProductReviews } from "@/lib/reviews/queries";
 import { buildProductMetadata } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -37,12 +39,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ""
   ).slice(0, 155);
 
+  const keywords = [
+    product.name,
+    product.categoryName ?? "baby care",
+    "BeyondBabyCo",
+    "dermatologically tested",
+  ].filter(Boolean);
+
   return buildProductMetadata({
     title,
     description,
     path: `/products/${slug}`,
     productSlug: slug,
     image: product.imageUrl ?? undefined,
+    keywords,
   });
 }
 
@@ -60,8 +70,36 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const productFaqs = product.faqs.map((f) => ({ question: f.question, answer: f.answer }));
   const faqSchema = productFaqs.length > 0 ? faqJsonLd(productFaqs) : null;
 
+  const sortedImages = [...product.images].sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
+  const primaryImage = sortedImages[0];
+  const lcpImageSrc = primaryImage?.url ?? product.imageUrl;
+
+  const productPreload =
+    lcpImageSrc != null
+      ? getImageProps({
+          src: lcpImageSrc,
+          alt: primaryImage?.alt ?? product.name,
+          fill: true,
+          priority: true,
+          sizes: IMAGE_SIZES.productDetail,
+          quality: IMAGE_QUALITY.product,
+          placeholder: "blur",
+          blurDataURL: resolveImageBlur(primaryImage?.blurDataUrl),
+        })
+      : null;
+
   return (
     <>
+      {productPreload ? (
+        <link
+          rel="preload"
+          as="image"
+          href={productPreload.props.src}
+          imageSrcSet={productPreload.props.srcSet}
+          imageSizes={productPreload.props.sizes}
+          fetchPriority="high"
+        />
+      ) : null}
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -95,7 +133,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           ...(faqSchema ? [faqSchema] : []),
         ]}
       />
-      <ProductViewTracker productId={product.id} />
+      <DeferredProductViewTracker productId={product.id} />
       <CatalogBreadcrumb
         items={[
           { label: "Home", href: "/" },

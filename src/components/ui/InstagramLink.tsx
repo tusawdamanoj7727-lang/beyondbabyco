@@ -20,7 +20,7 @@ export default function InstagramLink({
       rel="noopener noreferrer"
       aria-label={INSTAGRAM_ARIA_LABEL}
       className={cn(
-        "inline-flex items-center gap-2 text-green-700/90 transition-colors duration-200 hover:text-[#2d5a27]",
+        "inline-flex items-center gap-2 text-green-700/90 transition-colors duration-200 hover:text-brand-forest",
         className,
       )}
     >

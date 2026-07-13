@@ -1,5 +1,7 @@
 import "server-only";
 
+import { isProduction } from "@/lib/env.validation";
+
 import type { AiProvider } from "./types";
 
 export interface AiConfig {
@@ -22,7 +24,8 @@ function parseFluxModel(): string {
 export function getAiConfig(): AiConfig {
   const provider = (process.env.AI_PROVIDER?.trim() || "local") as AiProvider;
   const devEnabled =
-    process.env.NODE_ENV !== "production" || process.env.AI_DEV_ENABLED === "true";
+    !isProduction() &&
+    process.env.AI_DEV_ENABLED !== "false";
 
   return {
     provider,
@@ -35,8 +38,9 @@ export function getAiConfig(): AiConfig {
   };
 }
 
-/** Returns true when local ComfyUI generation is configured and dev tools are allowed. */
+/** Returns true when local ComfyUI generation is configured and dev tools are allowed. Never true in production. */
 export function isAiDevEnabled(): boolean {
+  if (isProduction()) return false;
   const config = getAiConfig();
   return config.devEnabled && config.provider === "local";
 }

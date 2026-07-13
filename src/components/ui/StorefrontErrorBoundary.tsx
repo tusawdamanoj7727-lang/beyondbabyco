@@ -24,7 +24,7 @@ function ErrorFallback({
   return (
     <section className="premium-page-bg flex min-h-[50vh] items-center py-16">
       <div className="container w-full">
-        <div className="glass-surface-strong mx-auto flex max-w-lg flex-col items-center rounded-[2rem] px-8 py-12 text-center">
+        <div className="glass-surface-strong mx-auto flex max-w-lg flex-col items-center rounded-4xl px-8 py-12 text-center">
           <Mascot mascot="poppy-panda" pose="peek" size={120} animated floating alt="" />
           <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-terra-600">
             Something went wrong
@@ -39,9 +39,9 @@ function ErrorFallback({
             <Button type="button" variant="primary" onClick={() => resetError()}>
               Try again
             </Button>
-            <Link href="/">
-              <Button variant="secondary">Back to home</Button>
-            </Link>
+            <Button asChild variant="secondary">
+              <Link href="/">Back to home</Link>
+            </Button>
           </div>
           {process.env.NODE_ENV === "development" && error instanceof Error ? (
             <p className="mt-6 max-w-md break-words text-left text-xs text-red-600/80">{error.message}</p>

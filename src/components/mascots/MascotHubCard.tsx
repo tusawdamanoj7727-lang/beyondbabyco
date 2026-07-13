@@ -48,13 +48,13 @@ export default function MascotHubCard({ slug, mascot, delay }: MascotHubCardProp
         />
       </div>
 
-      <h2 className="text-xl font-bold text-[#2d5a27]">{mascot.name}</h2>
-      <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-[#c4673a]">
+      <h2 className="text-xl font-bold text-brand-forest">{mascot.name}</h2>
+      <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-brand-terra">
         {mascot.personality}
       </p>
       <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-gray-500">{mascot.tagline}</p>
       <div className="mt-4 h-1 w-10 rounded-full" style={{ backgroundColor: mascot.color }} />
-      <span className="mt-4 text-sm font-semibold text-[#2d5a27] opacity-0 transition-opacity group-hover:opacity-100">
+      <span className="mt-4 text-sm font-semibold text-brand-forest opacity-0 transition-opacity group-hover:opacity-100">
         Meet {mascot.name.split(" ")[0]} →
       </span>
     </Link>

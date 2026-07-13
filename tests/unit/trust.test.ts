@@ -103,6 +103,15 @@ describe("trust SEO schemas", () => {
       "@type": "Organization",
       foundingDate: "2021",
       areaServed: "IN",
+      contactPoint: {
+        email: "care@beyondbabyco.com",
+        contactType: "customer service",
+      },
+      address: {
+        addressLocality: "Udaipur",
+        addressRegion: "Rajasthan",
+        addressCountry: "IN",
+      },
     });
   });
 

@@ -14,7 +14,7 @@ import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/ToastProvider";
 import type { CheckoutInitialData } from "@/lib/checkout/actions";
 import { lookupPincodeAction, placeCheckoutOrderAction } from "@/lib/checkout/actions";
-import { notifyPaymentFailedAction } from "@/lib/checkout/payment-email-actions";
+import { notifyPaymentFailedAction, abandonCheckoutPaymentAction } from "@/lib/checkout/payment-email-actions";
 import { INDIAN_STATES, type AddressFormValues } from "@/lib/checkout/schema";
 import type { CustomerAddressRow } from "@/lib/checkout/address-actions";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
@@ -103,7 +103,12 @@ async function verifyRazorpayPayment(input: {
     body: JSON.stringify(input),
   });
 
-  return (await res.json()) as { ok: boolean; error?: string; awb?: string | null };
+  const body = (await res.json()) as {
+    ok: boolean;
+    error?: string;
+    data?: { awb?: string | null };
+  };
+  return { ok: body.ok, error: body.error, awb: body.data?.awb };
 }
 
 export default function CheckoutClient({ initial }: { initial: CheckoutInitialData }) {
@@ -267,20 +272,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             productId: i.productId,
             variantId: i.variantId,
             quantity: i.quantity,
-            name: i.name,
-            price: i.price,
-            gstRate: i.gstRate,
-            variantName: i.variantName,
           })),
-          coupon: appliedCoupon
-            ? {
-                code: appliedCoupon.code,
-                couponId: appliedCoupon.couponId,
-                discountAmount: appliedCoupon.discountAmount,
-                freeShipping: appliedCoupon.freeShipping,
-              }
-            : null,
-          shippingTotal: totals.shipping,
+          couponCode: appliedCoupon?.code ?? null,
           saveShippingAddress: saveAddress,
         });
 
@@ -369,6 +362,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           },
           modal: {
             ondismiss: () => {
+              void abandonCheckoutPaymentAction(orderId);
               placingRef.current = false;
               setIsPlacingOrder(false);
               router.push(`/checkout/failure?orderId=${orderId}&reason=cancelled`);

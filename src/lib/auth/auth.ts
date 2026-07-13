@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createSupabaseServerClient } from "../supabase/server";
 import { isSupabaseConfigured } from "../env";
 import { mapSupabaseAuthError } from "./auth-errors";
-import { isStaffRole, resolveEffectiveRole } from "./roles";
+import { isStaffRole, normalizeRole } from "./roles";
 
 export interface AuthActionState {
   error: string | null;
@@ -68,14 +68,24 @@ export async function signInAction(
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Gate the admin area to staff roles only (profile role + metadata fallback).
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("is_active")
+    .eq("id", user?.id ?? "")
+    .maybeSingle();
+
+  if (!user || profile?.is_active === false) {
+    await supabase.auth.signOut();
+    return { error: "This account is deactivated. Contact your administrator." };
+  }
+
   const { data: roleName, error: roleError } = await supabase.rpc("current_user_role");
 
   if (roleError) {
     console.error("[auth] current_user_role RPC failed:", roleError.message);
   }
 
-  const role = roleError ? resolveEffectiveRole(null, user) : resolveEffectiveRole(roleName, user);
+  const role = normalizeRole(roleName);
 
   if (!isStaffRole(role)) {
     await supabase.auth.signOut();

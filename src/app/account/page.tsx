@@ -83,8 +83,8 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#faf5f0]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#2d5a27] border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-brand-cream">
+        <div className="spinner-premium h-10 w-10 border-[3px] border-green-700" role="status" aria-label="Loading account" />
       </div>
     );
   }
@@ -105,15 +105,15 @@ export default function AccountPage() {
       : "BeyondBabyCo Member";
 
   return (
-    <div className="min-h-screen bg-[#faf5f0] px-4 py-8">
+    <div className="min-h-screen bg-brand-cream px-4 py-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-8 text-3xl font-black text-[#2d5a27]">My Account</h1>
+        <h1 className="mb-8 font-heading text-3xl font-black text-brand-forest">My Account</h1>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="h-fit rounded-2xl bg-white p-6 shadow-sm">
+          <div className="h-fit rounded-[var(--radius-card)] bg-white p-6 shadow-sm">
             <div className="mb-6 flex flex-col items-center border-b border-gray-100 pb-6 text-center">
-              <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-[#eaf3de]">
-                <span className="text-2xl font-black text-[#2d5a27]">{initial}</span>
+              <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-mint">
+                <span className="text-2xl font-black text-brand-forest">{initial}</span>
               </div>
               <p className="font-bold text-gray-900">{displayName}</p>
               <p className="mt-1 text-xs text-gray-400">{user.email}</p>
@@ -124,7 +124,7 @@ export default function AccountPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-[#eaf3de]"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-brand-mint"
                 >
                   <span className="text-base">{item.icon}</span>
                   {item.label}
@@ -141,13 +141,13 @@ export default function AccountPage() {
             </nav>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm md:col-span-2">
+          <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-sm md:col-span-2">
             <div className="mb-6 flex items-center justify-between gap-4">
               <h2 className="text-lg font-bold text-gray-900">Recent Orders</h2>
               {recentOrders.length > 0 ? (
                 <Link
                   href="/account/orders"
-                  className="text-sm font-semibold text-[#2d5a27] hover:underline"
+                  className="text-sm font-semibold text-brand-forest hover:underline"
                 >
                   View all →
                 </Link>
@@ -170,7 +170,7 @@ export default function AccountPage() {
                 </p>
                 <Link
                   href="/products"
-                  className="mt-5 inline-block rounded-xl bg-[#2d5a27] px-7 py-3 text-sm font-bold text-white transition-colors hover:bg-[#234821]"
+                  className="mt-5 inline-block rounded-xl bg-brand-forest px-7 py-3 text-sm font-bold text-white transition-colors hover:bg-green-800"
                 >
                   Shop Now →
                 </Link>
@@ -181,7 +181,7 @@ export default function AccountPage() {
                   <li key={order.id}>
                     <Link
                       href={`/account/orders/${order.id}`}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 px-4 py-4 transition-colors hover:bg-[#faf5f0]"
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 px-4 py-4 transition-colors hover:bg-brand-cream"
                     >
                       <div>
                         <p className="font-semibold text-gray-900">{order.orderNumber}</p>
@@ -195,7 +195,7 @@ export default function AccountPage() {
                       </div>
                       <div className="flex flex-wrap items-center gap-3">
                         <OrderStatusBadge status={order.status as OrderStatus} />
-                        <span className="text-sm font-bold text-[#2d5a27]">
+                        <span className="text-sm font-bold text-brand-forest">
                           {formatMoney(order.grandTotal, order.currency)}
                         </span>
                       </div>

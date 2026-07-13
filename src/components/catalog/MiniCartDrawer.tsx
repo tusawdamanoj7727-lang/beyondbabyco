@@ -57,6 +57,9 @@ export default function MiniCartDrawer() {
               Your Cart
               {count > 0 ? <span className={badgeCount}>{count}</span> : null}
             </Dialog.Title>
+            <Dialog.Description className="sr-only">
+              Review items in your cart
+            </Dialog.Description>
             <Dialog.Close asChild>
               <button type="button" aria-label="Close cart" className={cn(iconButton, focusRing)}>
                 <X aria-hidden="true" />
@@ -70,11 +73,11 @@ export default function MiniCartDrawer() {
                 <Mascot mascot="bella-bunny" pose="peek" size={120} animated floating alt="" />
                 <p className="text-subheading mt-4">{MICROCOPY.cart.miniEmpty}</p>
                 <p className="text-body mt-2">Add something lovely for your little one.</p>
-                <Link href="/products" className="mt-6" onClick={() => setMiniCartOpen(false)}>
-                  <Button variant="primary" type="button">
+                <Button asChild variant="primary" className="mt-6">
+                  <Link href="/products" onClick={() => setMiniCartOpen(false)}>
                     Shop Collection
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             ) : (
               <ul className="space-y-3">
@@ -152,15 +155,18 @@ export default function MiniCartDrawer() {
                     required to checkout.
                   </p>
                 ) : null}
-                <Link href="/cart" onClick={() => setMiniCartOpen(false)}>
-                  <Button variant="outline" fullWidth type="button">
+                <Button asChild variant="outline" fullWidth>
+                  <Link href="/cart" onClick={() => setMiniCartOpen(false)}>
                     View Full Cart
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <button
                   type="button"
                   onClick={() => setMiniCartOpen(false)}
-                  className="min-h-[44px] text-sm font-medium text-green-700 transition-colors duration-[var(--duration-button)] hover:text-green-900"
+                  className={cn(
+                    "min-h-[44px] text-sm font-medium text-green-700 transition-colors duration-[var(--duration-button)] hover:text-green-900",
+                    focusRing,
+                  )}
                 >
                   Continue Shopping
                 </button>
