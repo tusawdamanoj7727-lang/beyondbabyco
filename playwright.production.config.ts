@@ -1,26 +1,32 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in";
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? siteUrl;
+import { loadProductionEnv } from "./tests/e2e/helpers/load-production-env";
 
+loadProductionEnv();
+process.env.PLAYWRIGHT_PRODUCTION = "1";
+
+/** Production E2E — targets https://beyondbabyco.in with no local webServer. */
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  timeout: 60_000,
-  expect: { timeout: 15_000 },
+  retries: 0,
+  workers: 2,
+  timeout: 90_000,
+  expect: { timeout: 20_000 },
   outputDir: "test-results/playwright",
   reporter: [
     ["list"],
     ["html", { open: "never", outputFolder: "playwright-report" }],
+    ["json", { outputFile: "test-results/playwright-results.json" }],
   ],
   use: {
-    baseURL,
-    trace: "on-first-retry",
+    baseURL: "https://beyondbabyco.in",
+    trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
+    navigationTimeout: 45_000,
+    actionTimeout: 20_000,
   },
   projects: [
     {
@@ -33,10 +39,4 @@ export default defineConfig({
       testMatch: /mobile\.spec\.ts|accessibility\.spec\.ts/,
     },
   ],
-  webServer: {
-    command: process.env.CI ? "npm run start" : "npm run dev",
-    url: `${baseURL}/api/health/memory`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
 });

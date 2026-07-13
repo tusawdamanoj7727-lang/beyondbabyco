@@ -116,13 +116,9 @@ export function buildProductMetadata(
     imageHeight: ogPath.includes("/real/og/") || ogPath.includes("/images/og/") ? BRAND_OG_HEIGHT : input.imageHeight,
   });
 
-  return {
-    ...base,
-    openGraph: {
-      ...(typeof base.openGraph === "object" ? base.openGraph : {}),
-      type: "product",
-    } as Metadata["openGraph"],
-  };
+  // Next.js Metadata only accepts website | article | book | profile | music.* | video.* —
+  // not "product". Product rich results are emitted via JSON-LD (productJsonLd) on the PDP.
+  return base;
 }
 
 /** Category / catalog OG */

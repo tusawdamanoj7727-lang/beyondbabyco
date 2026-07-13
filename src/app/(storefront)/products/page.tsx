@@ -1,4 +1,5 @@
 import { ProductCard } from "@/components/products/ProductCard";
+import CatalogSearchBar from "@/components/catalog/CatalogSearchBar";
 import JsonLd from "@/components/seo/JsonLd";
 import BundleSection from "@/components/sections/BundleSection";
 import { listSevenStorefrontProducts } from "@/lib/catalog/storefront";
@@ -61,6 +62,7 @@ export default async function ProductsPage() {
 
         {/* ── SECTION 2: Products Grid ── */}
         <section className="mx-auto max-w-6xl px-4 py-12">
+          <CatalogSearchBar />
           <div className="mb-8 flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900">
               All Products

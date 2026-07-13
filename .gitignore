@@ -12,6 +12,24 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
+/tmp/
+tests/e2e/production.env
+
+# Playwright generated artifacts
+*.trace
+*.trace.zip
+*.webm
+test-results/**/*.png
+test-results/**/*.zip
+playwright-report/**/*.png
+playwright-report/**/*.zip
+
+# Lighthouse / performance audit outputs (local only)
+**/lighthouse*.json
+**/lh-*.json
+**/psi-*.json
 
 # next.js
 /.next/

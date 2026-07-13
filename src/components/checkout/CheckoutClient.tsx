@@ -114,7 +114,7 @@ async function verifyRazorpayPayment(input: {
 export default function CheckoutClient({ initial }: { initial: CheckoutInitialData }) {
   const router = useRouter();
   const toast = useToast();
-  const { items, appliedCoupon, clear } = useCart();
+  const { items, appliedCoupon, clear, hydrated } = useCart();
   const [pending, startTransition] = useTransition();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const placingRef = useRef(false);
@@ -195,6 +195,21 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
       setPaymentMethod("cod");
     }
   }, [initial.razorpayAvailable, paymentMethod]);
+
+  if (!hydrated) {
+    return (
+      <div className="animate-pulse space-y-4">
+        <div className="h-10 w-48 rounded-xl bg-brand-forest/10" />
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-4">
+            <div className="h-32 rounded-2xl bg-brand-forest/5" />
+            <div className="h-32 rounded-2xl bg-brand-forest/5" />
+          </div>
+          <div className="h-80 rounded-3xl bg-brand-forest/5" />
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

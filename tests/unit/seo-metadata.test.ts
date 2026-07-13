@@ -48,13 +48,13 @@ describe("buildPageMetadata", () => {
 });
 
 describe("buildProductMetadata", () => {
-  it("sets openGraph type to product", () => {
+  it("uses website openGraph type (Next.js rejects product)", () => {
     const meta = buildProductMetadata({
       title: "Baby Wipes",
       path: "/products/baby-wipes",
       productSlug: "baby-wipes",
     });
-    expect(meta.openGraph).toMatchObject({ type: "product" });
+    expect(meta.openGraph).toMatchObject({ type: "website" });
   });
 });
 

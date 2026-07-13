@@ -36,6 +36,7 @@ import {
   cartLineKey,
   cartSubtotal,
   clampCartQuantity,
+  mergeCartItems,
   productToCartItem,
   type AppliedCoupon,
   type CartItem,
@@ -81,6 +82,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mergedUserIdRef = useRef<string | null>(null);
+  const isLoggedInRef = useRef(false);
 
   const items = useMemo(() => storeItems.map(storeItemToLegacy), [storeItems]);
   const appliedCoupon = useMemo(() => storeCouponToLegacy(storeCoupon), [storeCoupon]);
@@ -88,9 +90,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setSavedItems(readSavedStorage());
     const finish = () => setHydrated(true);
-    const unsub = useCartStore.persist.onFinishHydration(finish);
-    finish();
-    return unsub;
+    if (useCartStore.persist.hasHydrated()) {
+      finish();
+    } else {
+      return useCartStore.persist.onFinishHydration(finish);
+    }
   }, []);
 
   const syncToServer = useCallback(
@@ -120,13 +124,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     (loggedIn: boolean, userId?: string | null) => {
       if (!loggedIn) {
         cancelServerSync();
-        resetClientCart();
-        setSavedItems([]);
-        mergedUserIdRef.current = null;
+        if (isLoggedInRef.current) {
+          resetClientCart();
+          setSavedItems([]);
+          mergedUserIdRef.current = null;
+        }
+        isLoggedInRef.current = false;
         setIsLoggedIn(false);
         return;
       }
 
+      isLoggedInRef.current = true;
       setIsLoggedIn(true);
       const uid = userId?.trim() || null;
       if (!uid || !hydrated) return;
@@ -152,9 +160,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        resetClientCart();
+        if (accountSwap) {
+          resetClientCart();
+        }
+
+        const localItems = accountSwap ? [] : currentLegacyItems();
         const serverItems = await getServerCartItems();
-        useCartStore.getState().replaceItems(legacyItemsToStore(serverItems));
+        const merged = mergeCartItems(localItems, serverItems);
+        useCartStore.getState().replaceItems(legacyItemsToStore(merged));
+
+        if (merged.length > 0 && localItems.length > 0) {
+          void syncServerCartItems(merged);
+        }
       })();
     },
     [cancelServerSync, hydrated],

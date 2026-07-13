@@ -11,6 +11,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { LAUNCH_PRODUCT_SLUGS } from "./availability";
 import { mapRowToStorefrontProduct } from "./format";
+import {
+  logProductLoadFailure,
+  logProductLoadSuccess,
+  supabaseErrorBody,
+} from "./product-load-log";
 import { resolveSevenProductImage } from "./product-images";
 import { getSevenProductContent } from "./seven-product-content";
 import {
@@ -169,6 +174,8 @@ export const searchStorefrontProducts = cache(
 export const getProductBySlug = cache(
   async (slug: string): Promise<StorefrontProductDetail | null> => {
     const supabase = await createSupabaseServerClient();
+    const mainQuery =
+      "products.select(PRODUCT_SELECT).eq(slug).in(status,active|coming_soon).is(deleted_at,null).maybeSingle()";
 
     const { data: row, error } = await supabase
       .from("products")
@@ -178,7 +185,17 @@ export const getProductBySlug = cache(
       .is("deleted_at", null)
       .maybeSingle();
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      logProductLoadFailure({
+        slug,
+        query: mainQuery,
+        httpStatus: (error as { status?: number }).status,
+        responseBody: supabaseErrorBody(error),
+        returnedData: row,
+        errorMessage: error.message,
+      });
+      throw new Error(error.message);
+    }
     if (!row) return null;
 
     const [enriched, imagesRes, ingLinksRes, benLinksRes, varRes, faqsRes] = await Promise.all([
@@ -320,6 +337,8 @@ export const getProductBySlug = cache(
       imageBlurDataUrl: base.imageBlurDataUrl,
     });
 
+    logProductLoadSuccess(slug, base.id);
+
     return {
       ...base,
       stock: totalAvailable,
@@ -355,7 +374,16 @@ export const getRelatedProducts = cache(
     if (categoryId) query = query.eq("category_id", categoryId);
 
     const { data, error } = await query;
-    if (error) throw new Error(error.message);
+    if (error) {
+      logProductLoadFailure({
+        slug: `related:${productId}`,
+        query: "products.select(PRODUCT_SELECT).related",
+        responseBody: supabaseErrorBody(error),
+        returnedData: data,
+        errorMessage: error.message,
+      });
+      throw new Error(error.message);
+    }
     return enrichStorefrontProducts(data ?? []);
   },
 );

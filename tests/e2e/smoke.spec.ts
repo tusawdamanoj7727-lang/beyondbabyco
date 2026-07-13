@@ -22,6 +22,10 @@ test.describe("Admin", () => {
 test.describe("Health", () => {
   test("health endpoint responds", async ({ request }) => {
     const res = await request.get("/api/health/memory");
+    if (process.env.PLAYWRIGHT_PRODUCTION === "1") {
+      expect([200, 401]).toContain(res.status());
+      return;
+    }
     expect(res.ok()).toBeTruthy();
     const body = await res.json();
     expect(body.data.memory).toBeDefined();

@@ -15,14 +15,22 @@ import {
 
 export default function CartSyncEffect() {
   const { user, loading } = useAuth();
-  const setLoggedIn = useCartOptional()?.setLoggedIn;
+  const cart = useCartOptional();
+  const setLoggedIn = cart?.setLoggedIn;
+  const hydrated = cart?.hydrated ?? false;
   const userId = user?.id ?? null;
   const prevItemCountRef = useRef(0);
+  const prevUserIdRef = useRef<string | null | undefined>(undefined);
 
   useEffect(() => {
-    if (loading || !setLoggedIn) return;
-    setLoggedIn(Boolean(userId), userId);
-  }, [userId, loading, setLoggedIn]);
+    if (loading || !setLoggedIn || !hydrated) return;
+    if (userId) {
+      setLoggedIn(true, userId);
+    } else if (prevUserIdRef.current) {
+      setLoggedIn(false);
+    }
+    prevUserIdRef.current = userId;
+  }, [userId, loading, setLoggedIn, hydrated]);
 
   useEffect(() => {
     if (loading || userId) return;
