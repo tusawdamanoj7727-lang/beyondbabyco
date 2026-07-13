@@ -52,7 +52,24 @@ Tests that need a signed-in customer **skip gracefully** when `E2E_CUSTOMER_*` i
 
 ## Razorpay
 
-Online payment tests mock `checkout.razorpay.com/v1/checkout.js` and `/api/verify-payment` — no real charges. Tests skip when Razorpay is disabled in the environment.
+Online payment tests mock `checkout.razorpay.com/v1/checkout.js` and `/api/verify-payment` — no real charges. This works against the production URL via Playwright `page.route` interception. Tests skip when Razorpay is disabled in the environment or when launch SKU stock is unavailable.
+
+**Production note:** Mocked Razorpay tests validate client-side checkout routing (success redirect, dismiss → failure page, `payment.failed` toast). They do **not** exercise live Razorpay signature verification or capture — that remains a manual or staging-gateway concern (Category C).
+
+## Checkout cart setup
+
+Authenticated checkout tests call `prepareAuthenticatedCheckoutCart`: sign in first, clear server/local cart, add the launch SKU, assert `/cart` shows the line item, then wait for debounced server sync. Login must precede `clearCart` so the server cart is actually emptied for the test account.
+
+## Production database prerequisites
+
+Checkout order-placement tests require these migrations on the target Supabase project:
+
+| Migration | Purpose |
+|-----------|---------|
+| `031_order_gst_breakdown.sql` | `buyer_gstin`, CGST/SGST/IGST columns on `orders` |
+| `038_fix_checkout_stock_rpcs.sql` | `sync_product_stock` RPC used by inventory reservation |
+
+Without them, `placeCheckoutOrderAction` fails with schema/RPC errors while the UI correctly shows a toast.
 
 ## Helpers
 

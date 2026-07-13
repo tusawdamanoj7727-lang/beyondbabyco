@@ -5,6 +5,8 @@ import { loadProductionEnv } from "./tests/e2e/helpers/load-production-env";
 loadProductionEnv();
 process.env.PLAYWRIGHT_PRODUCTION = "1";
 
+const productionBaseURL = process.env.PLAYWRIGHT_BASE_URL ?? "https://beyondbabyco.in";
+
 /** Production E2E — targets https://beyondbabyco.in with no local webServer. */
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -21,7 +23,7 @@ export default defineConfig({
     ["json", { outputFile: "test-results/playwright-results.json" }],
   ],
   use: {
-    baseURL: "https://beyondbabyco.in",
+    baseURL: productionBaseURL,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",

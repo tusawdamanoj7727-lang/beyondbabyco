@@ -164,13 +164,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           resetClientCart();
         }
 
-        const localItems = accountSwap ? [] : currentLegacyItems();
         const serverItems = await getServerCartItems();
+        const localItems = accountSwap ? [] : currentLegacyItems();
         const merged = mergeCartItems(localItems, serverItems);
-        useCartStore.getState().replaceItems(legacyItemsToStore(merged));
+        // Re-read client cart at apply time — user may add items while server fetch is in-flight.
+        const latestLocal = accountSwap ? [] : currentLegacyItems();
+        const reconciled =
+          !accountSwap && latestLocal.length > 0
+            ? mergeCartItems(latestLocal, serverItems)
+            : merged;
+        useCartStore.getState().replaceItems(legacyItemsToStore(reconciled));
 
-        if (merged.length > 0 && localItems.length > 0) {
-          void syncServerCartItems(merged);
+        if (reconciled.length > 0 && latestLocal.length > 0) {
+          void syncServerCartItems(reconciled);
         }
       })();
     },

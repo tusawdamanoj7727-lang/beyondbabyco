@@ -1,6 +1,9 @@
 /** Launch product slug — stable across seed migrations. */
 export const LAUNCH_PRODUCT_SLUG = "baby-wipes";
 
+/** Launch product UUID — used for inventory API checks in E2E. */
+export const LAUNCH_PRODUCT_ID = "7f9c7578-1d61-4130-a95a-917d938270db";
+
 export const TEST_COUPON_CODE = "WELCOME10";
 
 export const TEST_CUSTOMER = {
