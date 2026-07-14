@@ -105,7 +105,8 @@ async function main() {
     console.log("existing_gateway", gateway.id);
   }
 
-  const webhookUrl = `${site}/api/webhooks/payments/${gateway.id}`;
+  // Canonical Dashboard URL uses the provider alias (resolves to gateway UUID in app).
+  const webhookUrl = `${site}/api/webhooks/payments/razorpay`;
   const patch = {
     webhook_url: webhookUrl,
     sandbox: false,

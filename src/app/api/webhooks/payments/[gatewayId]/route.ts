@@ -3,11 +3,15 @@ import { NextResponse } from "next/server";
 import { processWebhookPayload } from "@/lib/admin/payment-engine";
 import { resolveRazorpayWebhookGatewayId } from "@/lib/checkout/gateways";
 import { logger } from "@/lib/observability/logger";
-import { captureOperationalFailure } from "@/lib/observability/operational-errors";
 
 /**
  * Public webhook receiver — validates provider signature before storage.
  * Razorpay: X-Razorpay-Signature HMAC SHA256 on raw body.
+ *
+ * Production webhook URL (alias):
+ *   https://beyondbabyco.in/api/webhooks/payments/razorpay
+ * Alias resolves to the enabled Razorpay payment_gateways UUID.
+ * UUID URLs remain supported for backward compatibility.
  */
 export async function POST(
   request: Request,
@@ -50,15 +54,17 @@ export async function POST(
     const status =
       result.error === "Gateway not found."
         ? 404
-        : result.error?.includes("signature") || result.error?.includes("Verification")
+        : result.error?.includes("signature") ||
+            result.error?.includes("Verification") ||
+            result.error?.includes("webhook secret")
           ? 401
           : 500;
 
-    logger.warn("payment.webhook.http_rejected", { gatewayId, status, error: result.error });
-    captureOperationalFailure("webhook", `Payment webhook rejected: ${result.error ?? "unknown"}`, {
-      operation: "payment.webhook",
-      tags: { gatewayId, httpStatus: String(status) },
-      extra: { gatewayId, status, error: result.error },
+    logger.warn("payment.webhook.http_rejected", {
+      gatewayIdParam,
+      gatewayId,
+      status,
+      error: result.error,
     });
     const error =
       status === 404

@@ -94,8 +94,11 @@ function toStorefrontGateway(row: GatewayRow): StorefrontGateway {
   };
 }
 
-function buildWebhookUrl(gatewayId: string): string {
-  return `${publicSiteOrigin()}/api/webhooks/payments/${gatewayId}`;
+/** Canonical production webhook path — alias resolves to the enabled Razorpay UUID. */
+export const RAZORPAY_WEBHOOK_ALIAS = "razorpay";
+
+function buildWebhookUrl(_gatewayId?: string): string {
+  return `${publicSiteOrigin()}/api/webhooks/payments/${RAZORPAY_WEBHOOK_ALIAS}`;
 }
 
 async function findEnabledRazorpayRow(): Promise<GatewayRow | null> {
@@ -271,7 +274,7 @@ export async function resolveRazorpayWebhookGatewayId(
   const trimmed = gatewayIdOrAlias.trim();
   if (!trimmed) return null;
 
-  if (trimmed === "env" || trimmed === "razorpay") {
+  if (trimmed === "env" || trimmed === RAZORPAY_WEBHOOK_ALIAS) {
     const gateway = await ensureEnvBackedRazorpayGateway();
     return gateway?.id ?? null;
   }
