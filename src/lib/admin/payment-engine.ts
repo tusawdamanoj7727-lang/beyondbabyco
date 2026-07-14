@@ -10,7 +10,7 @@ import {
 } from "@/lib/checkout/razorpay-capture";
 import { fetchRazorpayOrderPayments } from "@/lib/checkout/razorpay-verify";
 import { getPaymentGatewayAdapter } from "./gateway-adapters";
-import { decodeGatewaySecret } from "./gateway-adapters/razorpay";
+import { decodeGatewaySecret, resolveRazorpayWebhookSecret } from "./gateway-adapters/razorpay";
 import type { GatewayProvider } from "./payment-types";
 import { isRazorpayCaptureEvent } from "./razorpay-webhook-idempotency";
 import {
@@ -135,7 +135,10 @@ export async function processWebhookPayload(
   if (!gateway) return { ok: false, error: "Gateway not found." };
 
   const provider = gateway.provider as GatewayProvider;
-  const webhookSecret = decodeGatewaySecret(gateway.webhook_secret_encrypted);
+  const webhookSecret =
+    provider === "razorpay"
+      ? resolveRazorpayWebhookSecret(gateway.webhook_secret_encrypted)
+      : decodeGatewaySecret(gateway.webhook_secret_encrypted);
   const eventId = opts?.eventId?.trim() || null;
 
   if (eventId && provider === "razorpay") {
@@ -251,7 +254,10 @@ export async function replayWebhook(webhookId: string): Promise<{ ok: boolean; e
   const verify = await adapter.verifyWebhook({
     payload,
     signature: webhook.signature,
-    secret: decodeGatewaySecret(gateway.webhook_secret_encrypted),
+    secret:
+      gateway.provider === "razorpay"
+        ? resolveRazorpayWebhookSecret(gateway.webhook_secret_encrypted)
+        : decodeGatewaySecret(gateway.webhook_secret_encrypted),
     rawBody: JSON.stringify(payload),
   });
 

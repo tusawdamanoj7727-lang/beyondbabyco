@@ -289,6 +289,14 @@ function mapReconciliation(r: {
 }
 
 export async function listPaymentGateways(): Promise<GatewayListItem[]> {
+  // Ensure env-backed production Razorpay appears in admin when Vercel keys are set.
+  try {
+    const { ensureEnvBackedRazorpayGateway } = await import("@/lib/checkout/gateways");
+    await ensureEnvBackedRazorpayGateway();
+  } catch {
+    /* non-blocking — list still returns whatever rows exist */
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("payment_gateways")

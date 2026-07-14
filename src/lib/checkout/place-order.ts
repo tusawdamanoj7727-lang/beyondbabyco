@@ -255,7 +255,7 @@ export async function placeStorefrontOrder(
       status: "pending",
       provider: input.paymentMethod === "cod" ? "cod" : "razorpay",
       method: input.paymentMethod,
-      gateway_id: gateway?.id !== "env" ? gateway?.id ?? null : null,
+      gateway_id: gateway?.id ?? null,
     })
     .select("id")
     .single();

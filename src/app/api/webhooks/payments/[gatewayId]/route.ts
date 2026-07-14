@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
 import { processWebhookPayload } from "@/lib/admin/payment-engine";
+import { resolveRazorpayWebhookGatewayId } from "@/lib/checkout/gateways";
 import { logger } from "@/lib/observability/logger";
+import { captureOperationalFailure } from "@/lib/observability/operational-errors";
 
 /**
  * Public webhook receiver — validates provider signature before storage.
@@ -11,7 +13,7 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ gatewayId: string }> },
 ) {
-  const { gatewayId } = await context.params;
+  const { gatewayId: gatewayIdParam } = await context.params;
 
   const rawBody = await request.text();
   if (!rawBody.trim()) {
@@ -36,6 +38,9 @@ export async function POST(
 
   const eventId = request.headers.get("x-razorpay-event-id");
 
+  const gatewayId =
+    (await resolveRazorpayWebhookGatewayId(gatewayIdParam)) ?? gatewayIdParam;
+
   const result = await processWebhookPayload(gatewayId, payload, signature, {
     rawBody,
     eventId,
@@ -50,6 +55,11 @@ export async function POST(
           : 500;
 
     logger.warn("payment.webhook.http_rejected", { gatewayId, status, error: result.error });
+    captureOperationalFailure("webhook", `Payment webhook rejected: ${result.error ?? "unknown"}`, {
+      operation: "payment.webhook",
+      tags: { gatewayId, httpStatus: String(status) },
+      extra: { gatewayId, status, error: result.error },
+    });
     const error =
       status === 404
         ? "Gateway not found."
