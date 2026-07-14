@@ -19,18 +19,21 @@ function isHttpsDeploy(): boolean {
 
 const isSecureOrigin = isHttpsDeploy();
 
-/** Content Security Policy — tuned for Next.js + Supabase. */
+/** Content Security Policy — tuned for Next.js + Supabase + Razorpay Checkout. */
 export function buildContentSecurityPolicy(): string {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const supabaseHost = supabaseUrl ? new URL(supabaseUrl).origin : "";
 
+  // checkout.js (+ cdn risk scripts); frames for hosted checkout modal/iframe.
+  // connect-src/img-src already allow https: (covers api.razorpay.com / *.razorpay.com).
   const directives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://cdn.razorpay.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "connect-src 'self' https: wss:" + (supabaseHost ? ` ${supabaseHost}` : ""),
+    "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
