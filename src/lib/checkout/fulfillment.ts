@@ -39,10 +39,8 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
   const isCod = payment?.method?.toLowerCase() === "cod";
   const codAmount = isCod ? Number(payment?.amount ?? 0) : 0;
 
-  await supabase
-    .from("orders")
-    .update({ status: "confirmed", updated_at: new Date().toISOString() })
-    .eq("id", orderId);
+  // Order confirmation (pending → confirmed) is owned by runOrderCompletionEmails /
+  // markOrderConfirmed so COD + Razorpay share one pipeline. Do not confirm here.
 
   const result = await delhiveryCreateOrderShipment({
     orderId,
