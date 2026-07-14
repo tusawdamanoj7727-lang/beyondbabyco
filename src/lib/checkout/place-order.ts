@@ -19,7 +19,7 @@ import {
   logRazorpayCheckout,
   PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE,
 } from "@/lib/checkout/gateways";
-import { onOrderCreated } from "@/lib/email/events/orders";
+import { onCodOrderConfirmed } from "@/lib/email/events/orders";
 import { runOrderShippingEmail } from "@/lib/email/lifecycle";
 
 export interface PlaceOrderResult {
@@ -413,8 +413,6 @@ export async function placeStorefrontOrder(
     metadata: { payment_method: input.paymentMethod } as Json,
   });
 
-  onOrderCreated(order.id, input.paymentMethod);
-
   if (input.paymentMethod === "cod") {
     await supabase
       .from("payments")
@@ -425,6 +423,9 @@ export async function placeStorefrontOrder(
         updated_at: new Date().toISOString(),
       })
       .eq("id", payment.id);
+
+    // Await shared completion pipeline before fulfillment (Vercel freezes detached work).
+    await onCodOrderConfirmed(order.id);
 
     const fulfillment = await fulfillOrderWithDelhivery(order.id);
     const commitResult = await commitOrderStockReservations(order.id);

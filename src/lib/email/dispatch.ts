@@ -15,6 +15,9 @@ const PREPAID_CONFIRMATION_TEMPLATES = new Set([
   "payment-received",
 ]);
 
+/** Skip duplicate sends while another worker owns a fresh pending claim. */
+const PENDING_CLAIM_TTL_MS = 5 * 60 * 1000;
+
 export interface DispatchOrderEmailResult {
   sent: boolean;
   skipped: boolean;
@@ -82,6 +85,12 @@ function passesTemplateGuard(
   return true;
 }
 
+function isFreshPending(sentAt: string | null | undefined): boolean {
+  if (!sentAt) return false;
+  const age = Date.now() - new Date(sentAt).getTime();
+  return Number.isFinite(age) && age >= 0 && age < PENDING_CLAIM_TTL_MS;
+}
+
 export async function dispatchOrderEmail(
   orderId: string,
   templateId: string,
@@ -90,13 +99,24 @@ export async function dispatchOrderEmail(
   const supabase = createSupabaseServiceClient();
 
   const ctx = await getOrderPaymentContext(orderId);
-  if (!ctx) return { sent: false, skipped: true, error: "Order not found." };
+  if (!ctx) {
+    console.info(
+      JSON.stringify({
+        scope: "email.dispatch",
+        step: "early_return",
+        why: "order_not_found",
+        orderId,
+        templateId,
+      }),
+    );
+    return { sent: false, skipped: true, error: "Order not found." };
+  }
 
   if (!passesTemplateGuard(templateId, ctx, options)) {
     console.info(
       JSON.stringify({
-        scope: "email.prepaid",
-        step: "dispatchOrderEmail.early_return",
+        scope: "email.dispatch",
+        step: "early_return",
         why: "template_guard",
         orderId,
         templateId,
@@ -110,12 +130,34 @@ export async function dispatchOrderEmail(
 
   const { data: existing } = await supabase
     .from("order_email_logs")
-    .select("status")
+    .select("status, sent_at, recipient")
     .eq("order_id", orderId)
     .eq("template_id", templateId)
     .maybeSingle();
 
   if (existing?.status === "sent") {
+    console.info(
+      JSON.stringify({
+        scope: "email.dispatch",
+        step: "early_return",
+        why: "already_sent",
+        orderId,
+        templateId,
+      }),
+    );
+    return { sent: false, skipped: true };
+  }
+
+  if (existing?.status === "pending" && isFreshPending(existing.sent_at)) {
+    console.info(
+      JSON.stringify({
+        scope: "email.dispatch",
+        step: "early_return",
+        why: "pending_in_flight",
+        orderId,
+        templateId,
+      }),
+    );
     return { sent: false, skipped: true };
   }
 
@@ -132,6 +174,42 @@ export async function dispatchOrderEmail(
     return { sent: false, skipped: true, error: "Recipient not configured." };
   }
 
+  const claimedAt = new Date().toISOString();
+  const { error: claimError } = await supabase.from("order_email_logs").upsert(
+    {
+      order_id: orderId,
+      template_id: templateId,
+      recipient,
+      status: "pending",
+      error_message: null,
+      sent_at: claimedAt,
+    },
+    { onConflict: "order_id,template_id" },
+  );
+
+  if (claimError) {
+    console.error(
+      JSON.stringify({
+        scope: "email.dispatch",
+        step: "claim_failed",
+        orderId,
+        templateId,
+        error: claimError.message,
+      }),
+    );
+    return { sent: false, skipped: false, error: claimError.message };
+  }
+
+  console.info(
+    JSON.stringify({
+      scope: "email.dispatch",
+      step: "claimed_pending",
+      orderId,
+      templateId,
+      recipient,
+    }),
+  );
+
   const payload = {
     ...data,
     order_id: orderId,
@@ -141,38 +219,30 @@ export async function dispatchOrderEmail(
     admin_inventory_url: absoluteUrl("/admin/inventory"),
   } as Record<string, string>;
 
-  if (options?.admin) {
-    const result = await sendTemplateEmail(templateId, recipient, payload);
-    await supabase.from("order_email_logs").upsert(
-      {
-        order_id: orderId,
-        template_id: templateId,
-        recipient,
-        status: result.ok ? "sent" : "failed",
-        error_message: result.ok ? null : (result.error ?? "Send failed"),
-        sent_at: new Date().toISOString(),
-      },
-      { onConflict: "order_id,template_id" },
-    );
-    return {
-      sent: result.ok,
-      skipped: false,
-      error: result.ok ? undefined : result.error,
-    };
-  }
-
   const result = await sendTemplateEmail(templateId, recipient, payload);
+  const finalStatus = result.ok ? "sent" : "failed";
 
   await supabase.from("order_email_logs").upsert(
     {
       order_id: orderId,
       template_id: templateId,
       recipient,
-      status: result.ok ? "sent" : "failed",
+      status: finalStatus,
       error_message: result.ok ? null : (result.error ?? "Send failed"),
       sent_at: new Date().toISOString(),
     },
     { onConflict: "order_id,template_id" },
+  );
+
+  console.info(
+    JSON.stringify({
+      scope: "email.dispatch",
+      step: "send_complete",
+      orderId,
+      templateId,
+      status: finalStatus,
+      error: result.ok ? null : (result.error ?? "Send failed"),
+    }),
   );
 
   return {
@@ -182,7 +252,7 @@ export async function dispatchOrderEmail(
   };
 }
 
-/** Fire-and-forget wrapper — safe to call from checkout without blocking. */
+/** Fire-and-forget — do NOT use for order completion (COD / Razorpay). */
 export function dispatchOrderEmailAsync(
   orderId: string,
   templateId: string,

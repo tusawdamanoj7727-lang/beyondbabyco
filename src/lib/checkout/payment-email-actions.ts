@@ -43,7 +43,7 @@ export async function abandonCheckoutPaymentAction(orderId: string): Promise<voi
     metadata: { reason: "payment_abandoned" },
   });
 
-  onPaymentFailed(trimmed);
+  await onPaymentFailed(trimmed);
 }
 
 /** Fire-and-forget payment failure notification — does not block checkout UI. */

@@ -14,6 +14,7 @@ export {
 } from "./data-resolvers";
 export {
   onOrderCreated,
+  onCodOrderConfirmed,
   onPaymentSuccess,
   onPaymentFailed,
   onOrderStatusChanged,
@@ -28,6 +29,9 @@ export {
   type DispatchOrderEmailResult,
 } from "./dispatch";
 export {
+  runOrderCompletionEmails,
+  resolveOrderCompletionChannel,
+  markOrderConfirmed,
   runCodOrderCreatedEmails,
   runCodOrderCreatedEmailsAsync,
   runPrepaidPaymentCapturedEmails,

@@ -2,11 +2,8 @@ import "server-only";
 
 import type { OrderStatus } from "@/lib/supabase/database.types";
 
-import { dispatchOrderEmailAsync } from "../dispatch";
-import {
-  runCodOrderCreatedEmailsAsync,
-  runPrepaidPaymentCapturedEmails,
-} from "../lifecycle";
+import { dispatchOrderEmail, dispatchOrderEmailAsync } from "../dispatch";
+import { runOrderCompletionEmails } from "../lifecycle";
 
 const STATUS_TEMPLATE_MAP: Partial<Record<OrderStatus, string>> = {
   processing: "order-packed",
@@ -17,27 +14,48 @@ const STATUS_TEMPLATE_MAP: Partial<Record<OrderStatus, string>> = {
   refunded: "refund-completed",
 };
 
-/** COD: confirmation at create. Prepaid: no customer email until payment capture. */
-export function onOrderCreated(orderId: string, paymentMethod: string): void {
-  if (paymentMethod === "cod") {
-    runCodOrderCreatedEmailsAsync(orderId);
-  }
-  // Prepaid: admin + customer emails deferred to runPrepaidPaymentCapturedEmails.
-}
-
 /**
- * Prepaid only — after verified payment capture. Sends confirmation + invoice.
- * Must be awaited so Vercel does not freeze the isolate before dispatchOrderEmail runs.
+ * @deprecated Prefer awaiting onCodOrderConfirmed / onPaymentSuccess.
+ * Kept as a no-op for prepaid; COD must use awaited onCodOrderConfirmed.
  */
-export async function onPaymentSuccess(orderId: string): Promise<void> {
-  console.info(JSON.stringify({ scope: "email.prepaid", step: "onPaymentSuccess.entered", orderId }));
-  await runPrepaidPaymentCapturedEmails(orderId);
-  console.info(JSON.stringify({ scope: "email.prepaid", step: "onPaymentSuccess.done", orderId }));
+export function onOrderCreated(orderId: string, paymentMethod: string): void {
+  void orderId;
+  if (paymentMethod === "cod") {
+    console.warn(
+      JSON.stringify({
+        scope: "email.order_completion",
+        step: "onOrderCreated.ignored_cod",
+        warning: "call_awaited_onCodOrderConfirmed_instead",
+      }),
+    );
+  }
 }
 
-export function onPaymentFailed(orderId: string): void {
-  dispatchOrderEmailAsync(orderId, "payment-failed");
-  dispatchOrderEmailAsync(orderId, "admin-payment-failure", { admin: true });
+/** COD place-order completion — must be awaited. */
+export async function onCodOrderConfirmed(orderId: string): Promise<void> {
+  console.info(
+    JSON.stringify({ scope: "email.order_completion", step: "onCodOrderConfirmed.entered", orderId }),
+  );
+  await runOrderCompletionEmails(orderId);
+  console.info(
+    JSON.stringify({ scope: "email.order_completion", step: "onCodOrderConfirmed.done", orderId }),
+  );
+}
+
+/** Razorpay capture completion — must be awaited. */
+export async function onPaymentSuccess(orderId: string): Promise<void> {
+  console.info(
+    JSON.stringify({ scope: "email.order_completion", step: "onPaymentSuccess.entered", orderId }),
+  );
+  await runOrderCompletionEmails(orderId);
+  console.info(
+    JSON.stringify({ scope: "email.order_completion", step: "onPaymentSuccess.done", orderId }),
+  );
+}
+
+export async function onPaymentFailed(orderId: string): Promise<void> {
+  await dispatchOrderEmail(orderId, "payment-failed");
+  await dispatchOrderEmail(orderId, "admin-payment-failure", { admin: true });
 }
 
 export function onOrderStatusChanged(orderId: string, status: OrderStatus): void {
