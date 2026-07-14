@@ -83,15 +83,70 @@ type GatewayRow = {
   deleted_at: string | null;
 };
 
+/**
+ * Resolve API credentials for storefront/checkout.
+ * Prefer any complete live (rzp_live_) pair from env or DB over test keys.
+ * Production fallback: env then DB. Non-production: DB then env.
+ */
+function resolveGatewayCredentials(row: GatewayRow): {
+  keyId: string | null;
+  keySecret: string | null;
+} {
+  const dbKeyId = decodeSecret(row.api_key_encrypted);
+  const dbKeySecret = decodeSecret(row.api_secret_encrypted);
+  const envKeyId = envRazorpayKeyId();
+  const envKeySecret = envRazorpayKeySecret();
+
+  const pairs: Array<{ keyId: string; keySecret: string; source: "env" | "db" }> = [];
+  if (envKeyId && envKeySecret) {
+    pairs.push({ keyId: envKeyId, keySecret: envKeySecret, source: "env" });
+  }
+  if (dbKeyId && dbKeySecret) {
+    pairs.push({ keyId: dbKeyId, keySecret: dbKeySecret, source: "db" });
+  }
+
+  const live = pairs.find((p) => p.keyId.startsWith("rzp_live_"));
+  if (live) {
+    return { keyId: live.keyId, keySecret: live.keySecret };
+  }
+
+  if (isProduction()) {
+    const fromEnv = pairs.find((p) => p.source === "env");
+    if (fromEnv) return { keyId: fromEnv.keyId, keySecret: fromEnv.keySecret };
+  }
+
+  return {
+    keyId: dbKeyId ?? envKeyId,
+    keySecret: dbKeySecret ?? envKeySecret,
+  };
+}
+
 function toStorefrontGateway(row: GatewayRow): StorefrontGateway {
+  const { keyId, keySecret } = resolveGatewayCredentials(row);
   return {
     id: row.id,
     provider: row.provider,
     displayName: row.display_name,
-    keyId: decodeSecret(row.api_key_encrypted) ?? envRazorpayKeyId(),
-    keySecret: decodeSecret(row.api_secret_encrypted) ?? envRazorpayKeySecret(),
+    keyId,
+    keySecret,
     sandbox: row.sandbox,
   };
+}
+
+export function logRazorpayCheckout(
+  step: string,
+  extra: Record<string, unknown> = {},
+): void {
+  console.info(
+    JSON.stringify({
+      scope: "checkout.razorpay",
+      step,
+      keyIdExists: typeof extra.keyIdExists === "boolean" ? extra.keyIdExists : undefined,
+      keySecretExists:
+        typeof extra.keySecretExists === "boolean" ? extra.keySecretExists : undefined,
+      ...extra,
+    }),
+  );
 }
 
 /** Canonical production webhook path — alias resolves to the enabled Razorpay UUID. */
@@ -125,6 +180,7 @@ async function syncGatewaySecretsAndWebhookUrl(row: GatewayRow): Promise<Gateway
     webhook_secret_encrypted?: string | null;
     api_key_encrypted?: string | null;
     api_secret_encrypted?: string | null;
+    sandbox?: boolean;
     updated_at: string;
   } = {
     updated_at: new Date().toISOString(),
@@ -141,11 +197,17 @@ async function syncGatewaySecretsAndWebhookUrl(row: GatewayRow): Promise<Gateway
 
   const envKey = envRazorpayKeyId();
   const envSecret = envRazorpayKeySecret();
-  if (envKey && !decodeSecret(row.api_key_encrypted)) {
+  const dbKey = decodeSecret(row.api_key_encrypted);
+  const dbSecret = decodeSecret(row.api_secret_encrypted);
+  // Production: overwrite stale DB keys when env is present (e.g. rzp_test_ left in DB).
+  if (envKey && (!dbKey || (isProduction() && dbKey !== envKey))) {
     patch.api_key_encrypted = encodeSecret(envKey);
   }
-  if (envSecret && !decodeSecret(row.api_secret_encrypted)) {
+  if (envSecret && (!dbSecret || (isProduction() && dbSecret !== envSecret))) {
     patch.api_secret_encrypted = encodeSecret(envSecret);
+  }
+  if (isProduction() && envKey) {
+    patch.sandbox = envKey.startsWith("rzp_test_");
   }
 
   if (Object.keys(patch).length === 1) {
@@ -233,7 +295,16 @@ export async function backfillOrphanRazorpayGatewayIds(gatewayId: string): Promi
 }
 
 export async function getEnabledRazorpayGateway(): Promise<StorefrontGateway | null> {
-  return ensureEnvBackedRazorpayGateway();
+  const gateway = await ensureEnvBackedRazorpayGateway();
+  logRazorpayCheckout("getEnabledRazorpayGateway", {
+    gatewaySelected: gateway?.provider ?? null,
+    gatewayUuid: gateway?.id ?? null,
+    gatewayEnabled: Boolean(gateway),
+    paymentMode: gateway?.sandbox ? "sandbox" : gateway ? "live" : null,
+    keyIdExists: Boolean(gateway?.keyId),
+    keySecretExists: Boolean(gateway?.keySecret),
+  });
+  return gateway;
 }
 
 export async function getStorefrontPaymentOptions(): Promise<{

@@ -16,6 +16,7 @@ import { resolveCheckoutCart } from "@/lib/checkout/resolve-order-cart";
 import { createRazorpayOrder } from "@/lib/checkout/razorpay-client";
 import {
   getEnabledRazorpayGateway,
+  logRazorpayCheckout,
   PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE,
 } from "@/lib/checkout/gateways";
 import { onOrderCreated } from "@/lib/email/events/orders";
@@ -102,12 +103,102 @@ export async function findOrderByIdempotencyKey(
   };
 }
 
+async function ensureRazorpayOrderForExistingPayment(input: {
+  orderId: string;
+  orderNumber: string;
+  grandTotal: number;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
+}): Promise<{
+  ok: boolean;
+  error: string | null;
+  razorpayOrderId?: string;
+  razorpayKeyId?: string;
+}> {
+  logRazorpayCheckout("ensureRazorpayOrderForExistingPayment.entered", {
+    orderId: input.orderId,
+    amount: input.grandTotal,
+    currency: "INR",
+  });
+
+  const gateway = await getEnabledRazorpayGateway();
+  logRazorpayCheckout("ensureRazorpayOrderForExistingPayment.gateway", {
+    orderId: input.orderId,
+    gatewaySelected: gateway?.provider ?? null,
+    gatewayUuid: gateway?.id ?? null,
+    gatewayEnabled: Boolean(gateway),
+    paymentMode: gateway?.sandbox ? "sandbox" : gateway ? "live" : null,
+    amount: input.grandTotal,
+    currency: "INR",
+    keyIdExists: Boolean(gateway?.keyId),
+    keySecretExists: Boolean(gateway?.keySecret),
+  });
+
+  if (!gateway?.keyId || !gateway.keySecret) {
+    logRazorpayCheckout("ensureRazorpayOrderForExistingPayment.early_return", {
+      why: "gateway_missing_credentials",
+      orderId: input.orderId,
+      keyIdExists: Boolean(gateway?.keyId),
+      keySecretExists: Boolean(gateway?.keySecret),
+    });
+    return { ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE };
+  }
+
+  const rz = await createRazorpayOrder({
+    amountInr: input.grandTotal,
+    orderId: input.orderId,
+    orderNumber: input.orderNumber,
+    customerEmail: input.customerEmail,
+    customerPhone: input.customerPhone,
+  });
+
+  if (!rz.ok || !rz.razorpayOrderId) {
+    logRazorpayCheckout("ensureRazorpayOrderForExistingPayment.early_return", {
+      why: "createRazorpayOrder_failed",
+      orderId: input.orderId,
+      error: rz.error,
+      gatewayUuid: gateway.id,
+      keyIdExists: true,
+      keySecretExists: true,
+    });
+    return { ok: false, error: rz.error ?? "Payment initialization failed." };
+  }
+
+  const supabase = createSupabaseServiceClient();
+  await supabase
+    .from("payments")
+    .update({
+      gateway_txn_id: rz.razorpayOrderId,
+      payment_ref: rz.razorpayOrderId,
+      gateway_id: gateway.id,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("order_id", input.orderId)
+    .eq("provider", "razorpay")
+    .eq("status", "pending");
+
+  return {
+    ok: true,
+    error: null,
+    razorpayOrderId: rz.razorpayOrderId,
+    razorpayKeyId: gateway.keyId,
+  };
+}
+
 export async function placeStorefrontOrder(
   customerId: string,
   raw: PlaceOrderInput,
 ): Promise<PlaceOrderResult> {
+  logRazorpayCheckout("placeStorefrontOrder.entered", {
+    paymentMethod: raw.paymentMethod,
+  });
+
   const parsed = placeOrderSchema.safeParse(raw);
   if (!parsed.success) {
+    logRazorpayCheckout("placeStorefrontOrder.early_return", {
+      why: "schema_validation_failed",
+      error: parsed.error.issues[0]?.message ?? "Invalid checkout data.",
+    });
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid checkout data." };
   }
 
@@ -115,13 +206,66 @@ export async function placeStorefrontOrder(
 
   if (input.paymentMethod === "razorpay") {
     const gateway = await getEnabledRazorpayGateway();
+    logRazorpayCheckout("placeStorefrontOrder.gateway_lookup", {
+      gatewaySelected: gateway?.provider ?? null,
+      gatewayUuid: gateway?.id ?? null,
+      gatewayEnabled: Boolean(gateway),
+      paymentMode: gateway?.sandbox ? "sandbox" : gateway ? "live" : null,
+      keyIdExists: Boolean(gateway?.keyId),
+      keySecretExists: Boolean(gateway?.keySecret),
+    });
     if (!gateway?.keyId || !gateway.keySecret) {
+      logRazorpayCheckout("placeStorefrontOrder.early_return", {
+        why: "gateway_not_configured",
+        keyIdExists: Boolean(gateway?.keyId),
+        keySecretExists: Boolean(gateway?.keySecret),
+      });
       return { ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE };
     }
   }
 
   const existing = await findOrderByIdempotencyKey(customerId, input.idempotencyKey);
   if (existing) {
+    const paymentMethod = existing.paymentMethod ?? input.paymentMethod;
+    logRazorpayCheckout("placeStorefrontOrder.idempotency_hit", {
+      orderId: existing.id,
+      paymentMethod,
+      razorpayOrderId: existing.razorpayOrderId ?? null,
+      keyIdExists: Boolean(existing.razorpayKeyId),
+      keySecretExists: Boolean(existing.razorpayKeyId),
+      amount: existing.grand_total,
+      currency: "INR",
+    });
+
+    if (paymentMethod === "razorpay" && !existing.razorpayOrderId) {
+      logRazorpayCheckout("placeStorefrontOrder.idempotency_reinit", {
+        why: "pending_payment_missing_gateway_txn_id",
+        orderId: existing.id,
+        amount: existing.grand_total,
+        currency: "INR",
+      });
+      const reinited = await ensureRazorpayOrderForExistingPayment({
+        orderId: existing.id,
+        orderNumber: existing.order_number,
+        grandTotal: existing.grand_total,
+        customerEmail: input.customer.email,
+        customerPhone: input.customer.phone,
+      });
+      if (!reinited.ok) {
+        return { ok: false, error: reinited.error };
+      }
+      return {
+        ok: true,
+        error: null,
+        orderId: existing.id,
+        orderNumber: existing.order_number,
+        grandTotal: Number(existing.grand_total),
+        razorpayOrderId: reinited.razorpayOrderId,
+        razorpayKeyId: reinited.razorpayKeyId,
+        paymentMethod: "razorpay",
+      };
+    }
+
     return {
       ok: true,
       error: null,
@@ -130,7 +274,7 @@ export async function placeStorefrontOrder(
       grandTotal: Number(existing.grand_total),
       razorpayOrderId: existing.razorpayOrderId,
       razorpayKeyId: existing.razorpayKeyId,
-      paymentMethod: existing.paymentMethod ?? input.paymentMethod,
+      paymentMethod,
     };
   }
 
@@ -313,6 +457,18 @@ export async function placeStorefrontOrder(
     };
   }
 
+  logRazorpayCheckout("placeStorefrontOrder.payment_initialization", {
+    orderId: order.id,
+    amount: totals.grandTotal,
+    currency: "INR",
+    gatewaySelected: gateway?.provider ?? null,
+    gatewayUuid: gateway?.id ?? null,
+    gatewayEnabled: Boolean(gateway),
+    paymentMode: gateway?.sandbox ? "sandbox" : gateway ? "live" : null,
+    keyIdExists: Boolean(gateway?.keyId),
+    keySecretExists: Boolean(gateway?.keySecret),
+  });
+
   const rz = await createRazorpayOrder({
     amountInr: totals.grandTotal,
     orderId: order.id,
@@ -322,6 +478,16 @@ export async function placeStorefrontOrder(
   });
 
   if (!rz.ok || !rz.razorpayOrderId) {
+    logRazorpayCheckout("placeStorefrontOrder.early_return", {
+      why: "createRazorpayOrder_failed",
+      orderId: order.id,
+      amount: totals.grandTotal,
+      currency: "INR",
+      error: rz.error,
+      gatewayUuid: gateway?.id ?? null,
+      keyIdExists: Boolean(gateway?.keyId),
+      keySecretExists: Boolean(gateway?.keySecret),
+    });
     return { ok: false, error: rz.error ?? "Payment initialization failed." };
   }
 
@@ -335,6 +501,15 @@ export async function placeStorefrontOrder(
     .eq("id", payment.id);
 
   keepReservation = true;
+  logRazorpayCheckout("placeStorefrontOrder.success", {
+    orderId: order.id,
+    razorpayOrderId: rz.razorpayOrderId,
+    amount: totals.grandTotal,
+    currency: "INR",
+    gatewayUuid: gateway?.id ?? null,
+    keyIdExists: Boolean(gateway?.keyId),
+    keySecretExists: Boolean(gateway?.keySecret),
+  });
   return {
     ok: true,
     error: null,

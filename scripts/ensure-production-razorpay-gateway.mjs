@@ -113,11 +113,14 @@ async function main() {
     is_enabled: true,
     updated_at: new Date().toISOString(),
   };
-  if (webhookSecret && !gateway.webhook_secret_encrypted) {
+  if (webhookSecret) {
     patch.webhook_secret_encrypted = enc(webhookSecret);
   }
-  if (!gateway.api_key_encrypted) patch.api_key_encrypted = enc(keyId);
-  if (!gateway.api_secret_encrypted) patch.api_secret_encrypted = enc(keySecret);
+  // Always sync API credentials from env (overwrite stale test keys in DB).
+  patch.api_key_encrypted = enc(keyId);
+  patch.api_secret_encrypted = enc(keySecret);
+  patch.display_name = "Razorpay (Production)";
+  patch.sandbox = keyId.startsWith("rzp_test_");
 
   const updated = await rest(`payment_gateways?id=eq.${gateway.id}`, {
     method: "PATCH",
