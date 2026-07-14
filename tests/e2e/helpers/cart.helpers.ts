@@ -20,9 +20,41 @@ async function waitForPersistedCartItems(page: Page, minCount = 1): Promise<void
   );
 }
 
+async function closeMiniCartIfOpen(page: Page): Promise<void> {
+  const dialog = page.getByRole("dialog", { name: /Your Cart/i });
+  if (await dialog.isVisible().catch(() => false)) {
+    await page.getByRole("button", { name: "Close cart" }).click();
+    await dialog.waitFor({ state: "hidden", timeout: 5_000 }).catch(() => {});
+  }
+}
+
+async function removeAllLineItemsFromCartPage(page: Page): Promise<void> {
+  const removeButtons = page.getByRole("button", { name: /Remove .+ from cart/i });
+  for (let i = 0; i < 20 && (await removeButtons.count()) > 0; i += 1) {
+    await removeButtons.first().click();
+    await page.waitForTimeout(400);
+  }
+}
+
+async function clearClientCartStorage(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    localStorage.removeItem("bbc-cart");
+    localStorage.removeItem("beyondbabyco-cart");
+    sessionStorage.removeItem("bbc-guest-cart-session");
+  });
+}
+
 /** Allow debounced server cart sync to finish for logged-in sessions. */
 export async function waitForCartServerSync(page: Page): Promise<void> {
   await page.waitForTimeout(2_000);
+}
+
+export async function verifyEmptyCart(page: Page): Promise<void> {
+  await page
+    .getByText(/Your cart is empty|Your bag is waiting|Nothing to checkout yet/i)
+    .first()
+    .waitFor({ state: "visible", timeout: 10_000 });
+  await waitForPersistedCartItems(page, 0);
 }
 
 export async function assertLaunchProductInCart(page: Page): Promise<void> {
@@ -31,32 +63,30 @@ export async function assertLaunchProductInCart(page: Page): Promise<void> {
   await page.getByText(/Baby Wipes/i).first().waitFor({ state: "visible", timeout: 30_000 });
 }
 
-/** Clears guest localStorage and removes all line items (including server-synced cart). */
+/** Clears client cart, server-synced cart (when logged in), reloads, and verifies empty state. */
 export async function clearCart(page: Page): Promise<void> {
+  await closeMiniCartIfOpen(page);
   await page.goto("/cart");
-  await page.getByRole("heading", { name: /My Cart|Your Cart|Your bag/i }).waitFor({ state: "visible", timeout: 15_000 }).catch(() => {});
-
-  const removeButtons = page.getByRole("button", { name: /Remove .+ from cart/i });
-  for (let i = 0; i < 20 && (await removeButtons.count()) > 0; i += 1) {
-    await removeButtons.first().click();
-    await page.waitForTimeout(400);
-  }
-
-  await page.evaluate(() => {
-    localStorage.removeItem("bbc-cart");
-    localStorage.removeItem("beyondbabyco-cart");
-    sessionStorage.removeItem("bbc-guest-cart-session");
-  });
-
-  // Re-hydrate zustand from cleared storage so persist middleware cannot restore stale items.
-  await page.reload({ waitUntil: "domcontentloaded" });
-
   await page
-    .getByText(/Your cart is empty|Your bag is waiting|Nothing to checkout yet/i)
-    .first()
-    .waitFor({ state: "visible", timeout: 10_000 })
+    .getByRole("heading", { name: /My Cart|Your Cart|Your bag/i })
+    .waitFor({ state: "visible", timeout: 15_000 })
     .catch(() => {});
 
+  await removeAllLineItemsFromCartPage(page);
+  await waitForCartServerSync(page);
+
+  await clearClientCartStorage(page);
+  await page.reload({ waitUntil: "domcontentloaded" });
+
+  // Logged-in sessions rehydrate from server — repeat if items came back.
+  if ((await page.getByRole("button", { name: /Remove .+ from cart/i }).count()) > 0) {
+    await removeAllLineItemsFromCartPage(page);
+    await waitForCartServerSync(page);
+    await clearClientCartStorage(page);
+    await page.reload({ waitUntil: "domcontentloaded" });
+  }
+
+  await verifyEmptyCart(page).catch(() => {});
   await waitForPersistedCartItems(page, 0);
   await waitForCartServerSync(page);
 }
@@ -74,7 +104,8 @@ export async function addLaunchProductFromPdp(page: Page, slug = LAUNCH_PRODUCT_
   await addBtn.waitFor({ state: "visible", timeout: 30_000 });
   await addBtn.scrollIntoViewIfNeeded();
   await addBtn.click();
-  await page.getByRole("link", { name: /Cart,\s*[1-9]/i }).waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByRole("dialog", { name: /Your Cart/i }).waitFor({ state: "visible", timeout: 30_000 });
+  await waitForPersistedCartItems(page, 1);
   await waitForCartServerSync(page);
 }
 
@@ -88,6 +119,7 @@ export async function readCartItemCount(page: Page): Promise<number> {
 }
 
 export async function openCartPage(page: Page): Promise<void> {
+  await closeMiniCartIfOpen(page);
   await page.goto("/cart");
   await page.getByRole("heading", { name: /My Cart|Your Cart/i }).waitFor({ state: "visible" });
 }

@@ -1,3 +1,9 @@
+/** Playwright base URL — mirrors playwright.config.ts resolution. */
+export function getPlaywrightBaseUrl(): string {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://beyondbabyco.in";
+  return process.env.PLAYWRIGHT_BASE_URL ?? siteUrl;
+}
+
 /** Launch product slug — stable across seed migrations. */
 export const LAUNCH_PRODUCT_SLUG = "baby-wipes";
 
@@ -8,8 +14,12 @@ export const TEST_COUPON_CODE = "WELCOME10";
 
 export const TEST_CUSTOMER = {
   fullName: "E2E Test User",
-  email: process.env.E2E_CUSTOMER_EMAIL ?? "",
-  password: process.env.E2E_CUSTOMER_PASSWORD ?? "",
+  get email() {
+    return process.env.E2E_CUSTOMER_EMAIL ?? "";
+  },
+  get password() {
+    return process.env.E2E_CUSTOMER_PASSWORD ?? "";
+  },
   phone: "9876543210",
 };
 

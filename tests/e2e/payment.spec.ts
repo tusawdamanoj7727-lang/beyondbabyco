@@ -9,7 +9,7 @@ import {
   placeOrderFromReview,
   selectPaymentMethod,
 } from "./helpers/checkout.helpers";
-import { FAKE_ORDER_ID } from "./helpers/constants";
+import { FAKE_ORDER_ID, getPlaywrightBaseUrl } from "./helpers/constants";
 import { installRazorpayMock, skipIfRazorpayOrderUnavailable } from "./helpers/razorpay.mock";
 import { launchProductHasStock, LAUNCH_PRODUCT_OUT_OF_STOCK_MESSAGE } from "./helpers/stock.helpers";
 
@@ -19,8 +19,7 @@ import { launchProductHasStock, LAUNCH_PRODUCT_OUT_OF_STOCK_MESSAGE } from "./he
  * signature verification or capture (Category C: environment / mock limitation on production).
  */
 test.describe("Razorpay checkout", () => {
-  const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "https://beyondbabyco.in";
-  const isLocalTarget = /localhost|127\.0\.0\.1/.test(baseURL);
+  const isLocalTarget = /localhost|127\.0\.0\.1/.test(getPlaywrightBaseUrl());
 
   test.beforeEach(async ({ page }) => {
     test.skip(!hasCustomerCredentials(), "Set E2E_CUSTOMER_EMAIL and E2E_CUSTOMER_PASSWORD");

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 import { hasCustomerCredentials, loginViaLoginPage } from "./helpers/auth.helpers";
-import { clearCart, prepareAuthenticatedCheckoutCart } from "./helpers/cart.helpers";
+import { clearCart, prepareAuthenticatedCheckoutCart, verifyEmptyCart } from "./helpers/cart.helpers";
 import {
   expectCheckoutSuccess,
   fillCheckoutForm,
@@ -49,6 +49,7 @@ test.describe("Checkout empty state", () => {
 
   test("empty cart redirects or shows empty state at checkout", async ({ page }) => {
     await clearCart(page);
+    await verifyEmptyCart(page);
     await page.goto("/checkout");
     const onCheckout = page.url().includes("/checkout");
     if (onCheckout) {

@@ -12,7 +12,7 @@ test.describe("cart quantity visibility repro", () => {
       if (text.includes("[cart-qty]")) cartLogs.push(text);
     });
 
-    await page.goto("http://localhost:3000/products");
+    await page.goto("/products");
     await page.evaluate(() => {
       localStorage.removeItem("bbc-cart");
       sessionStorage.removeItem("bbc-guest-cart-session");
@@ -66,7 +66,7 @@ test.describe("cart quantity visibility repro", () => {
     });
 
     // Seed persisted cart + guest session like a user who added before/during login hydration.
-    await page.goto("http://localhost:3000/");
+    await page.goto("/");
     await page.evaluate(() => {
       sessionStorage.setItem("bbc-guest-cart-session", "1");
       localStorage.setItem(

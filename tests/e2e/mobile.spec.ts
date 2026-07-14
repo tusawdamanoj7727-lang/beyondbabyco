@@ -26,7 +26,7 @@ test.describe("Mobile viewport", () => {
   test("product page add to cart works on mobile", async ({ page }) => {
     await clearCart(page);
     await addLaunchProductFromPdp(page, LAUNCH_PRODUCT_SLUG);
-    await expect(page.getByRole("dialog", { name: "Shopping cart" })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: /Your Cart/i })).toBeVisible();
   });
 
   test("cart page is usable on mobile", async ({ page }) => {

@@ -54,8 +54,8 @@ test.describe("Inventory reservation", () => {
 
     const beforeAvailable = before[0].available;
 
-    await clearCart(page);
     await loginViaLoginPage(page);
+    await clearCart(page);
     await addLaunchProductFromPdp(page);
     await page.goto("/checkout");
     await fillCheckoutForm(page);

@@ -26,7 +26,7 @@ test.describe("Cart", () => {
 
   test("mini cart drawer opens after add", async ({ page }) => {
     await addLaunchProductFromPdp(page);
-    await expect(page.getByRole("dialog", { name: "Shopping cart" })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: /Your Cart/i })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Your Cart" })).toBeVisible();
   });
 
