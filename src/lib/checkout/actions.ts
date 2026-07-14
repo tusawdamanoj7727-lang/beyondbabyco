@@ -114,7 +114,15 @@ export async function placeCheckoutOrderAction(input: PlaceOrderInput): Promise<
   }
 
   const result = await placeStorefrontOrder(customerId, input);
-  if (!result.ok) return { ok: false, error: result.error };
+  if (!result.ok) {
+    const { captureOperationalFailure } = await import("@/lib/observability/operational-errors");
+    const message = result.error || "Checkout order failed";
+    captureOperationalFailure("checkout", message, {
+      operation: "placeCheckoutOrder",
+      extra: { paymentMethod: input.paymentMethod },
+    });
+    return { ok: false, error: result.error };
+  }
 
   revalidatePath("/account/orders");
   return result;
@@ -140,7 +148,15 @@ export async function verifyRazorpayCheckoutAction(input: {
     customerId,
   });
 
-  if (!result.ok) return { ok: false, error: result.error };
+  if (!result.ok) {
+    const { captureOperationalFailure } = await import("@/lib/observability/operational-errors");
+    const message = result.error || "Razorpay checkout failed";
+    captureOperationalFailure("razorpay", message, {
+      operation: "verifyRazorpayCheckout",
+      extra: { orderId: input.orderId },
+    });
+    return { ok: false, error: result.error };
+  }
 
   revalidatePath("/account/orders");
   return { ok: true, error: null, orderId: input.orderId, awb: result.awb };

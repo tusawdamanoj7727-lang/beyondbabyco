@@ -29,7 +29,11 @@ export default async function CheckoutSuccessPage({
 
   return (
     <>
-      <OrderSuccessNotifier orderNumber={order.orderNumber} orderId={orderId} />
+      <OrderSuccessNotifier
+        orderNumber={order.orderNumber}
+        orderId={orderId}
+        grandTotal={order.grandTotal}
+      />
       <CatalogBreadcrumb
         items={[
           { label: "Home", href: "/" },

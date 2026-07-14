@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
-import * as Sentry from "@sentry/nextjs";
+import { captureOperationalError } from "@/lib/observability/operational-errors";
 import { Loader2, MapPin, ShieldCheck } from "lucide-react";
 
 import CheckoutOrderSummary, { useCheckoutTotals } from "@/components/checkout/CheckoutOrderSummary";
@@ -20,7 +20,7 @@ import type { CustomerAddressRow } from "@/lib/checkout/address-actions";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
 import { useCart } from "@/lib/storefront/cart-context";
 import { estimateShippingFee } from "@/lib/storefront/shipping";
-import { trackBeginCheckout, trackPurchase } from "@/lib/analytics/events";
+import { trackCheckout, trackCod, trackPaymentFailure, trackPaymentSuccess } from "@/lib/analytics/events";
 import { dialogContentCentered, dialogOverlay, formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -118,6 +118,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   const [pending, startTransition] = useTransition();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const placingRef = useRef(false);
+  const checkoutTrackedRef = useRef(false);
   const idempotencyKey = useMemo(() => crypto.randomUUID(), []);
 
   const [customer, setCustomer] = useState({
@@ -196,6 +197,12 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     }
   }, [initial.razorpayAvailable, paymentMethod]);
 
+  useEffect(() => {
+    if (!hydrated || items.length === 0 || checkoutTrackedRef.current) return;
+    checkoutTrackedRef.current = true;
+    trackCheckout({ value: totals.total, itemCount: items.length });
+  }, [hydrated, items.length, totals.total]);
+
   if (!hydrated) {
     return (
       <div className="animate-pulse space-y-4">
@@ -253,8 +260,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   }
 
   function capturePaymentError(error: unknown, extra: { orderId?: string | null; cartTotal: number }) {
-    Sentry.captureException(error, {
-      tags: { flow: "checkout_payment" },
+    captureOperationalError("checkout", error, {
+      operation: "checkout_payment",
       extra: {
         orderId: extra.orderId ?? null,
         cartTotal: extra.cartTotal,
@@ -303,8 +310,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         const orderId = result.orderId;
 
         if (result.paymentMethod === "cod") {
-          trackPurchase({
-            transactionId: orderId,
+          trackCod({
+            orderId,
             value: result.grandTotal ?? totals.total,
             itemCount: items.length,
           });
@@ -312,11 +319,6 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           router.push(`/checkout/success?orderId=${orderId}`);
           return;
         }
-
-        trackBeginCheckout({
-          value: result.grandTotal ?? totals.total,
-          itemCount: items.length,
-        });
 
         if (!result.razorpayOrderId || !result.razorpayKeyId) {
           capturePaymentError(new Error("Payment could not be initialized"), {
@@ -367,8 +369,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
               router.push(`/checkout/failure?orderId=${orderId}&reason=verify`);
               return;
             }
-            trackPurchase({
-              transactionId: orderId,
+            trackPaymentSuccess({
+              orderId,
               value: result.grandTotal ?? totals.total,
               itemCount: items.length,
             });
@@ -386,6 +388,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         });
         rzp.on("payment.failed", (response: unknown) => {
           capturePaymentError(response, { orderId, cartTotal: totals.total });
+          trackPaymentFailure({ orderId, reason: "failed", value: totals.total });
           void notifyPaymentFailedAction(orderId);
           toast.error("Payment failed. Please try again.");
           placingRef.current = false;

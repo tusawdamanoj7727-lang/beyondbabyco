@@ -4,6 +4,7 @@ import { handleApiError, jsonError, jsonOk } from "@/lib/api/route-helpers";
 import { getCurrentUser } from "@/lib/auth/session";
 import { captureRazorpayPayment } from "@/lib/checkout/razorpay-capture";
 import { getCustomerIdForUser } from "@/lib/orders/customer-auth";
+import { captureOperationalFailure } from "@/lib/observability/operational-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,10 @@ export async function POST(req: Request) {
     });
 
     if (!result.ok) {
+      captureOperationalFailure("razorpay", result.error ?? "Payment verification failed.", {
+        operation: "verify-payment",
+        extra: { orderId, razorpayOrderId: razorpay_order_id },
+      });
       return jsonError(result.error ?? "Payment verification failed.", 400);
     }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
+import CheckoutFailureAnalytics from "@/components/analytics/CheckoutFailureAnalytics";
 import Button from "@/components/ui/Button";
 import { Mascot } from "@/components/mascots";
 
@@ -30,6 +31,7 @@ export default async function CheckoutFailurePage({
 
   return (
     <>
+      <CheckoutFailureAnalytics orderId={orderId} reason={reason} />
       <CatalogBreadcrumb
         items={[
           { label: "Home", href: "/" },
