@@ -120,8 +120,27 @@ export async function captureRazorpayPayment(
 
   if (PAID_STATUSES.has(payment.status)) {
     if (payment.payment_ref && payment.payment_ref !== input.razorpayPaymentId) {
+      console.info(
+        JSON.stringify({
+          scope: "email.prepaid",
+          step: "captureRazorpayPayment.early_return",
+          why: "already_paid_different_payment_ref",
+          orderId: input.orderId,
+        }),
+      );
       return { ok: false, error: "Order already paid with a different payment." };
     }
+
+    console.info(
+      JSON.stringify({
+        scope: "email.prepaid",
+        step: "captureRazorpayPayment.already_captured",
+        orderId: input.orderId,
+        source: input.source,
+      }),
+    );
+    // Idempotent: recover emails if a prior fire-and-forget was frozen on Vercel.
+    await onPaymentSuccess(input.orderId);
 
     const fulfillment = await ensureFulfillment(input.orderId);
     if (!fulfillment.ok) {
@@ -174,6 +193,15 @@ export async function captureRazorpayPayment(
       PAID_STATUSES.has(current.status) &&
       (!current.payment_ref || current.payment_ref === input.razorpayPaymentId)
     ) {
+      console.info(
+        JSON.stringify({
+          scope: "email.prepaid",
+          step: "captureRazorpayPayment.race_already_paid",
+          orderId: input.orderId,
+          source: input.source,
+        }),
+      );
+      await onPaymentSuccess(input.orderId);
       const fulfillment = await ensureFulfillment(input.orderId);
       if (!fulfillment.ok) {
         return { ok: false, error: fulfillment.error };
@@ -195,7 +223,24 @@ export async function captureRazorpayPayment(
     } as Json,
   });
 
-  onPaymentSuccess(input.orderId);
+  // Await emails inside this request — fire-and-forget is frozen by Vercel after response.
+  console.info(
+    JSON.stringify({
+      scope: "email.prepaid",
+      step: "captureRazorpayPayment.before_onPaymentSuccess",
+      orderId: input.orderId,
+      source: input.source,
+    }),
+  );
+  await onPaymentSuccess(input.orderId);
+  console.info(
+    JSON.stringify({
+      scope: "email.prepaid",
+      step: "captureRazorpayPayment.after_onPaymentSuccess",
+      orderId: input.orderId,
+      source: input.source,
+    }),
+  );
 
   const fulfillment = await ensureFulfillment(input.orderId);
   if (!fulfillment.ok) {

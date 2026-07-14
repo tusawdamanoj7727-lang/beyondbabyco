@@ -93,6 +93,18 @@ export async function dispatchOrderEmail(
   if (!ctx) return { sent: false, skipped: true, error: "Order not found." };
 
   if (!passesTemplateGuard(templateId, ctx, options)) {
+    console.info(
+      JSON.stringify({
+        scope: "email.prepaid",
+        step: "dispatchOrderEmail.early_return",
+        why: "template_guard",
+        orderId,
+        templateId,
+        paymentMethod: ctx.paymentMethod,
+        paymentStatus: ctx.paymentStatus,
+        orderStatus: ctx.orderStatus,
+      }),
+    );
     return { sent: false, skipped: true };
   }
 

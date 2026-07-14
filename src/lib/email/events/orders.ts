@@ -5,7 +5,7 @@ import type { OrderStatus } from "@/lib/supabase/database.types";
 import { dispatchOrderEmailAsync } from "../dispatch";
 import {
   runCodOrderCreatedEmailsAsync,
-  runPrepaidPaymentCapturedEmailsAsync,
+  runPrepaidPaymentCapturedEmails,
 } from "../lifecycle";
 
 const STATUS_TEMPLATE_MAP: Partial<Record<OrderStatus, string>> = {
@@ -25,9 +25,14 @@ export function onOrderCreated(orderId: string, paymentMethod: string): void {
   // Prepaid: admin + customer emails deferred to runPrepaidPaymentCapturedEmails.
 }
 
-/** Prepaid only — after verified payment capture. Sends confirmation + invoice. */
-export function onPaymentSuccess(orderId: string): void {
-  runPrepaidPaymentCapturedEmailsAsync(orderId);
+/**
+ * Prepaid only — after verified payment capture. Sends confirmation + invoice.
+ * Must be awaited so Vercel does not freeze the isolate before dispatchOrderEmail runs.
+ */
+export async function onPaymentSuccess(orderId: string): Promise<void> {
+  console.info(JSON.stringify({ scope: "email.prepaid", step: "onPaymentSuccess.entered", orderId }));
+  await runPrepaidPaymentCapturedEmails(orderId);
+  console.info(JSON.stringify({ scope: "email.prepaid", step: "onPaymentSuccess.done", orderId }));
 }
 
 export function onPaymentFailed(orderId: string): void {
