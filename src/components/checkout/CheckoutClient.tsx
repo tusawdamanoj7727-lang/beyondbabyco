@@ -204,6 +204,16 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           city: lookup.city ?? prev.city,
           state: lookup.state ?? prev.state,
         }));
+        setFieldErrors((prev) => {
+          if (!prev["shipping.city"] && !prev["shipping.state"] && !prev["shipping.pincode"]) {
+            return prev;
+          }
+          const next = { ...prev };
+          delete next["shipping.city"];
+          delete next["shipping.state"];
+          delete next["shipping.pincode"];
+          return next;
+        });
       }
     } finally {
       setCheckingPin(false);
