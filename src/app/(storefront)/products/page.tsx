@@ -1,11 +1,17 @@
 import { ProductCard } from "@/components/products/ProductCard";
 import CatalogSearchBar from "@/components/catalog/CatalogSearchBar";
 import JsonLd from "@/components/seo/JsonLd";
-import BundleSection from "@/components/sections/BundleSection";
+import dynamic from "next/dynamic";
 import { listSevenStorefrontProducts } from "@/lib/catalog/storefront";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo/json-ld";
 import { buildProductsMetadata } from "@/lib/seo/metadata";
 import { PRODUCTS_PAGE } from "@/lib/brand/copy";
+
+export const revalidate = 60;
+
+const BundleSection = dynamic(() => import("@/components/sections/BundleSection"), {
+  loading: () => null,
+});
 
 export const metadata = buildProductsMetadata({
   title: PRODUCTS_PAGE.metaTitle,
@@ -72,7 +78,7 @@ export default async function ProductsPage() {
 
           <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
             {products.map((product, index) => (
-              <ProductCard key={product.id} product={product} priority={index < 4} />
+              <ProductCard key={product.id} product={product} priority={index < 2} />
             ))}
           </div>
         </section>

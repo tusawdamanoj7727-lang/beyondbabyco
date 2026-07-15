@@ -58,10 +58,12 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
 
   useEffect(() => {
     let cancelled = false;
+    let timeoutId = 0;
+    let idleId = 0;
 
     async function refreshStock() {
       try {
-        const res = await fetch(`/api/inventory/product/${product.id}`, { cache: "no-store" });
+        const res = await fetch(`/api/inventory/product/${product.id}`);
         if (!res.ok || cancelled) return;
         const body = (await res.json()) as {
           ok?: boolean;
@@ -74,9 +76,21 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       }
     }
 
-    void refreshStock();
+    // Defer stock refresh past LCP/first input to improve INP + TBT.
+    const g = globalThis as typeof globalThis & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (typeof g.requestIdleCallback === "function") {
+      idleId = g.requestIdleCallback(() => void refreshStock(), { timeout: 2500 });
+    } else {
+      timeoutId = window.setTimeout(() => void refreshStock(), 1500);
+    }
+
     return () => {
       cancelled = true;
+      if (idleId && typeof g.cancelIdleCallback === "function") g.cancelIdleCallback(idleId);
+      if (timeoutId) window.clearTimeout(timeoutId);
     };
   }, [product.id]);
 

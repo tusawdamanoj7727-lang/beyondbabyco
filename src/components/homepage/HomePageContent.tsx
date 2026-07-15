@@ -3,9 +3,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import HeroSection from "@/components/sections/HeroSection";
-import StatsBar from "@/components/sections/StatsBar";
-import BrandPromise from "@/components/sections/BrandPromise";
-import ScienceSection from "@/components/sections/ScienceSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import SectionWaveDivider from "@/components/ui/SectionWaveDivider";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
@@ -18,6 +15,9 @@ const MeetOurFriends = dynamic(() => import("@/components/sections/MeetOurFriend
 const ResearchTimeline = dynamic(() => import("@/components/sections/ResearchTimeline"));
 const LifestyleSection = dynamic(() => import("@/components/sections/LifestyleSection"));
 const TestimonialShowcase = dynamic(() => import("@/components/trust/TestimonialShowcase"));
+const BrandPromise = dynamic(() => import("@/components/sections/BrandPromise"));
+const ScienceSection = dynamic(() => import("@/components/sections/ScienceSection"));
+const StatsBar = dynamic(() => import("@/components/sections/StatsBar"));
 
 // <NewsletterSection /> — removed (duplicate; footer captures email)
 // <EarlyAccessSection /> — removed (duplicate)

@@ -32,37 +32,24 @@ export function AuthProvider({
   initialSession?: Session | null;
 }) {
   const [session, setSession] = useState<Session | null>(initialSession);
-  const [loading, setLoading] = useState(!initialSession);
+  // Trust SSR: do not block paint with getUser(). onAuthStateChange restores local session.
+  const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      const { data: sessionData } = await supabase.auth.getSession();
-      setSession(sessionData.session);
-    } else {
-      setSession(null);
-    }
+    const { data: sessionData } = await supabase.auth.getSession();
+    setSession(sessionData.session);
     setLoading(false);
   }, []);
 
   useEffect(() => {
     let active = true;
 
-    if (!initialSession) {
-      supabase.auth.getUser().then(({ data }) => {
-        if (!active) return;
-        if (data.user) {
-          supabase.auth.getSession().then(({ data: sessionData }) => {
-            if (!active) return;
-            setSession(sessionData.session);
-            setLoading(false);
-          });
-        } else {
-          setSession(null);
-          setLoading(false);
-        }
-      });
-    }
+    // Prefer local session read (no Auth network) for first paint INP/TBT.
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      setSession(data.session);
+      setLoading(false);
+    });
 
     const {
       data: { subscription },
@@ -75,7 +62,7 @@ export function AuthProvider({
       active = false;
       subscription.unsubscribe();
     };
-  }, [initialSession]);
+  }, []);
 
   const signOut = useCallback(() => {
     resetClientCart();

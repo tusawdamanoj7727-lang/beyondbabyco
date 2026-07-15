@@ -20,7 +20,6 @@ import { getSearchConsoleVerificationMeta } from "@/lib/analytics/integrations";
 import { getCanonicalSiteUrl } from "@/lib/seo/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { getServerSession } from "@/lib/auth/session";
 import { BRAND } from "@/lib/brand/copy";
 import {
   BRAND_APPLE_TOUCH_ICON,
@@ -76,15 +75,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialSession = await getServerSession();
-
+  // Do not await Auth here — cookies()/getUser() would force dynamic HTML for every visitor
+  // and add Auth TTFB. Client AuthProvider hydrates from local session via onAuthStateChange.
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <head>
         <ResourceHints />
       </head>
       <body className="overflow-x-hidden font-body antialiased bg-background text-foreground">
-        <AppProviders initialSession={initialSession}>
+        <AppProviders initialSession={null}>
           <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
           <AnalyticsRoot />
           <ScrollRevealObserver />

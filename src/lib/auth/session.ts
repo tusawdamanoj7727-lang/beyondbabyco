@@ -1,11 +1,20 @@
 import "server-only";
 
+import { cookies } from "next/headers";
 import type { User } from "@supabase/supabase-js";
 
 import { isSupabaseConfigured } from "../env";
 import { createSupabaseServerClient } from "../supabase/server";
 import { normalizeRole, type Role } from "./roles";
 import { isPermission, type Permission } from "./permissions";
+
+/** True when a Supabase auth session cookie is present — skip Auth API otherwise. */
+export async function hasAuthSessionCookie(): Promise<boolean> {
+  const jar = await cookies();
+  return jar.getAll().some(
+    (cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("auth"),
+  );
+}
 
 export interface Profile {
   id: string;
@@ -26,6 +35,7 @@ export interface AuthContext {
 /** The authenticated Supabase user, validated against the auth server. */
 export async function getCurrentUser(): Promise<User | null> {
   if (!isSupabaseConfigured()) return null;
+  if (!(await hasAuthSessionCookie())) return null;
 
   const supabase = await createSupabaseServerClient();
   const {
@@ -34,9 +44,13 @@ export async function getCurrentUser(): Promise<User | null> {
   return user;
 }
 
-/** Session for client hydration — validated via getUser first. */
+/**
+ * Session for client hydration — validated via getUser first.
+ * Anonymous visitors skip the Auth network round-trip entirely.
+ */
 export async function getServerSession() {
   if (!isSupabaseConfigured()) return null;
+  if (!(await hasAuthSessionCookie())) return null;
 
   const supabase = await createSupabaseServerClient();
   const {
@@ -53,6 +67,7 @@ export async function getServerSession() {
 /** The signed-in user's profile row, or null when unauthenticated. */
 export async function getCurrentProfile(): Promise<Profile | null> {
   if (!isSupabaseConfigured()) return null;
+  if (!(await hasAuthSessionCookie())) return null;
 
   const supabase = await createSupabaseServerClient();
   const {

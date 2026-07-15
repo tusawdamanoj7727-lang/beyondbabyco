@@ -1,5 +1,7 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
+
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 
 export type VariantStockRow = {
@@ -7,18 +9,22 @@ export type VariantStockRow = {
   available: number;
 };
 
-async function defaultWarehouseId(): Promise<string | null> {
-  const supabase = createSupabaseServiceClient();
-  const { data } = await supabase
-    .from("warehouses")
-    .select("id")
-    .eq("is_active", true)
-    .order("is_default", { ascending: false })
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-  return data?.id ?? null;
-}
+const getDefaultWarehouseId = unstable_cache(
+  async (): Promise<string | null> => {
+    const supabase = createSupabaseServiceClient();
+    const { data } = await supabase
+      .from("warehouses")
+      .select("id")
+      .eq("is_active", true)
+      .order("is_default", { ascending: false })
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    return data?.id ?? null;
+  },
+  ["default-warehouse-id"],
+  { revalidate: 300, tags: ["inventory"] },
+);
 
 /** Sellable quantity (quantity - reserved) per variant at the default warehouse. */
 export async function getVariantAvailableStock(
@@ -27,7 +33,7 @@ export async function getVariantAvailableStock(
   const map = new Map<string, number>();
   if (variantIds.length === 0) return map;
 
-  const warehouseId = await defaultWarehouseId();
+  const warehouseId = await getDefaultWarehouseId();
   if (!warehouseId) {
     for (const id of variantIds) map.set(id, 0);
     return map;

@@ -1,18 +1,16 @@
 import StorefrontProviders from "@/components/layout/StorefrontProviders";
-import { getWishlistProductIds } from "@/lib/storefront/wishlist-actions";
 
 /**
- * Storefront-only chrome — cart, wishlist, and footer (navbar lives in root layout).
+ * Storefront chrome — cart/wishlist hydrate on the client.
+ * Avoid server wishlist/auth lookups here so public catalog pages stay ISR-eligible.
  */
-export default async function StorefrontLayout({
+export default function StorefrontLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const wishlistIds = await getWishlistProductIds();
-
   return (
-    <StorefrontProviders wishlistIds={wishlistIds}>
+    <StorefrontProviders wishlistIds={[]}>
       <a href="#main-content" className="a11y-skip-link">
         Skip to main content
       </a>

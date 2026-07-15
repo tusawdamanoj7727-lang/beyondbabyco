@@ -2,7 +2,7 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { DEFAULTS, type PublishStatus } from "@/lib/admin/homepage-schema";
 
 export interface HomepageSection {
@@ -53,7 +53,7 @@ function merge<T extends object>(fallback: T, value: unknown): T {
 
 /** Enabled homepage sections, ordered by position. */
 export async function getHomepageSections(): Promise<HomepageSection[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   const { data } = await supabase
     .from("homepage_sections")
     .select("key, title, position, is_enabled, config")
@@ -71,7 +71,7 @@ export async function getHomepageSections(): Promise<HomepageSection[]> {
 
 /** Active hero slides, ordered by position. */
 export async function getHero(): Promise<HomepageHeroSlide[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   const { data } = await supabase
     .from("hero_slides")
     .select("*")
@@ -95,7 +95,7 @@ export async function getHero(): Promise<HomepageHeroSlide[]> {
 
 /** Published testimonials, ordered by position. */
 export async function getHomepageTestimonials(): Promise<HomepageTestimonial[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   const { data } = await supabase
     .from("testimonials")
     .select("*")
@@ -114,7 +114,7 @@ export async function getHomepageTestimonials(): Promise<HomepageTestimonial[]> 
 
 /** Full homepage payload — settings, sections, hero and testimonials. */
 async function fetchHomepage(): Promise<Homepage> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
 
   const [settingsRes, sections, hero, testimonials] = await Promise.all([
     supabase.from("homepage_settings").select("key, value"),

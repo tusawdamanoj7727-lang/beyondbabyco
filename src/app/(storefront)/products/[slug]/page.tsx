@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { getImageProps } from "next/image";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
 import DeferredProductViewTracker from "@/components/catalog/DeferredProductViewTracker";
-import ProductDetailTabs from "@/components/catalog/ProductDetailTabs";
 import ProductGallery from "@/components/catalog/ProductGallery";
 import ProductPurchasePanel from "@/components/catalog/ProductPurchasePanel";
 import JsonLd from "@/components/seo/JsonLd";
+import { LAUNCH_PRODUCT_SLUGS } from "@/lib/catalog/availability";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
 import { productUnit } from "@/lib/catalog/product-images";
 import { computeReviewSummary } from "@/lib/reviews/helpers";
@@ -16,6 +17,16 @@ import { buildProductMetadata } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
+
+export const revalidate = 60;
+
+export function generateStaticParams() {
+  return [...LAUNCH_PRODUCT_SLUGS].map((slug) => ({ slug }));
+}
+
+const ProductDetailTabs = dynamic(() => import("@/components/catalog/ProductDetailTabs"), {
+  loading: () => <div className="mt-20 min-h-[240px]" aria-hidden="true" />,
+});
 
 type PageProps = {
   params: Promise<{ slug: string }>;

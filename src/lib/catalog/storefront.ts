@@ -2,12 +2,15 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import type { Database } from "@/lib/supabase/types";
+
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
 import { PRODUCTS_PAGE } from "@/lib/brand/copy";
 import { resolveProductGalleryImages, resolveProductVisual } from "@/lib/brand/generated-assets";
 import { getHero } from "@/lib/homepage/queries";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 import { LAUNCH_PRODUCT_SLUGS } from "./availability";
 import { mapRowToStorefrontProduct } from "./format";
@@ -39,10 +42,16 @@ const PRODUCT_SELECT =
   "id,slug,name,short_description,description,price,compare_at_price,sale_price,status,stock,gst_rate,rating_avg,rating_count,category_id,subcategory_id,brand_id,is_featured,is_best_seller,is_new_arrival,is_trending,sku,seo_title,seo_description,created_at,launch_date";
 
 const PER_PAGE = 12;
+const CATALOG_REVALIDATE_SEC = 60;
+
+/** Public catalog client — no request cookies → ISR / unstable_cache friendly. */
+function catalogClient() {
+  return createSupabasePublicClient();
+}
 
 export const listStorefrontProducts = cache(
   async (params: CatalogSearchParams): Promise<CatalogListResult> => {
-    const supabase = await createSupabaseServerClient();
+    const supabase = catalogClient();
     const page = params.page ?? 1;
     const from = (page - 1) * PER_PAGE;
     const to = from + PER_PAGE - 1;
@@ -173,7 +182,12 @@ export const searchStorefrontProducts = cache(
 
 export const getProductBySlug = cache(
   async (slug: string): Promise<StorefrontProductDetail | null> => {
-    const supabase = await createSupabaseServerClient();
+    return getCachedProductBySlug(slug);
+  },
+);
+
+async function loadProductBySlug(slug: string): Promise<StorefrontProductDetail | null> {
+    const supabase = catalogClient();
     const mainQuery =
       "products.select(PRODUCT_SELECT).eq(slug).in(status,active|coming_soon).is(deleted_at,null).maybeSingle()";
 
@@ -355,12 +369,17 @@ export const getProductBySlug = cache(
       variants,
       faqs: mergedFaqs,
     };
-  },
+}
+
+const getCachedProductBySlug = unstable_cache(
+  async (slug: string) => loadProductBySlug(slug),
+  ["storefront-product-by-slug"],
+  { revalidate: CATALOG_REVALIDATE_SEC, tags: ["catalog"] },
 );
 
 export const getRelatedProducts = cache(
   async (productId: string, categoryId: string | null, limit = 4): Promise<StorefrontProduct[]> => {
-    const supabase = await createSupabaseServerClient();
+    const supabase = catalogClient();
 
     let query = supabase
       .from("products")
@@ -389,7 +408,7 @@ export const getRelatedProducts = cache(
 );
 
 export const getCatalogFilterOptions = cache(async (): Promise<CatalogFilterOptions> => {
-  const supabase = await createSupabaseServerClient();
+  const supabase = catalogClient();
 
   const [categoriesRes, subcategoriesRes, brandsRes, priceRes] = await Promise.all([
     supabase
@@ -468,7 +487,7 @@ export const getCatalogBanner = cache(async (): Promise<CatalogBanner> => {
 });
 
 async function fetchBlurMapByUrls(
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  supabase: SupabaseClient<Database>,
   urls: string[],
 ): Promise<Map<string, string>> {
   const unique = [...new Set(urls.filter(Boolean))];
@@ -506,7 +525,7 @@ async function enrichStorefrontProducts(
 ): Promise<StorefrontProduct[]> {
   if (rows.length === 0) return [];
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = catalogClient();
   const productIds = rows.map((r) => r.id);
   const categoryIds = [...new Set(rows.map((r) => r.category_id).filter(Boolean))] as string[];
   const subcategoryIds = [...new Set(rows.map((r) => r.subcategory_id).filter(Boolean))] as string[];
@@ -624,7 +643,7 @@ async function enrichStorefrontProducts(
 }
 
 export const getFeaturedStorefrontProducts = cache(async (limit = 4): Promise<StorefrontProduct[]> => {
-  const supabase = await createSupabaseServerClient();
+  const supabase = catalogClient();
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -641,7 +660,7 @@ export const getFeaturedStorefrontProducts = cache(async (limit = 4): Promise<St
 export async function getStorefrontProductsBySlugs(slugs: string[]): Promise<StorefrontProduct[]> {
   if (slugs.length === 0) return [];
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = catalogClient();
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -659,7 +678,7 @@ export async function getStorefrontProductsBySlugs(slugs: string[]): Promise<Sto
 export async function getStorefrontProductsByIds(ids: string[]): Promise<StorefrontProduct[]> {
   if (ids.length === 0) return [];
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = catalogClient();
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
@@ -674,9 +693,13 @@ export async function getStorefrontProductsByIds(ids: string[]): Promise<Storefr
   return ids.map((id) => byId.get(id)).filter((p): p is StorefrontProduct => !!p);
 }
 
-/** Fixed-order catalog of the 7 active launch products. */
+/** Fixed-order catalog of the launch products — cross-request cached. */
 export const listSevenStorefrontProducts = cache(async (): Promise<StorefrontProduct[]> => {
-  const supabase = await createSupabaseServerClient();
+  return getCachedSevenProducts();
+});
+
+async function loadSevenStorefrontProducts(): Promise<StorefrontProduct[]> {
+  const supabase = catalogClient();
   const slugs = [...LAUNCH_PRODUCT_SLUGS];
 
   const { data, error } = await supabase
@@ -697,10 +720,16 @@ export const listSevenStorefrontProducts = cache(async (): Promise<StorefrontPro
     ...product,
     imageUrl: resolveSevenProductImage(product.slug, product.imageUrl),
   }));
-});
+}
+
+const getCachedSevenProducts = unstable_cache(
+  loadSevenStorefrontProducts,
+  ["storefront-seven-products"],
+  { revalidate: CATALOG_REVALIDATE_SEC, tags: ["catalog"] },
+);
 
 async function fetchPublishedFaqs(
-  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  supabase: SupabaseClient<Database>,
 ): Promise<StorefrontFaq[]> {
   const client = supabase as unknown as SupabaseClient;
   const { data, error } = await client
