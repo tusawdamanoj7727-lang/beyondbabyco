@@ -33,9 +33,10 @@ test.describe("Login", () => {
     await expect(page).not.toHaveURL(/\/login/);
   });
 
-  test("checkout redirect sends unauthenticated users to login", async ({ page }) => {
+  test("guest can open checkout without login", async ({ page }) => {
     await page.goto("/checkout");
-    await expect(page).toHaveURL(/\/login\?redirectTo=%2Fcheckout/);
+    await expect(page).not.toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/checkout/);
   });
 });
 

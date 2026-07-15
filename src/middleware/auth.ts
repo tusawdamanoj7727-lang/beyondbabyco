@@ -17,10 +17,8 @@ const AUTH_SENSITIVE_PREFIXES = [
   "/auth/",
 ] as const;
 
-const CUSTOMER_PROTECTED_PREFIXES = ["/account", "/checkout"] as const;
-
-/** Post-payment recovery — public without login; order details stay behind /account. */
-const PUBLIC_CHECKOUT_PATHS = new Set(["/checkout/failure"]);
+/** Account requires login. Checkout is public for guest checkout. */
+const CUSTOMER_PROTECTED_PREFIXES = ["/account"] as const;
 
 function isAuthSensitivePath(pathname: string): boolean {
   return (
@@ -32,7 +30,6 @@ function isAuthSensitivePath(pathname: string): boolean {
 }
 
 function isCustomerProtectedPath(pathname: string): boolean {
-  if (PUBLIC_CHECKOUT_PATHS.has(pathname)) return false;
   return CUSTOMER_PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
