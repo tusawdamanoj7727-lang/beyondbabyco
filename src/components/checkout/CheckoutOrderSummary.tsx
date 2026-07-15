@@ -22,13 +22,14 @@ type CheckoutOrderSummaryProps = {
 
 export default function CheckoutOrderSummary({
   shippingTotal,
-  buyerState = SELLER_STATE,
+  buyerState,
   deliveryEstimate,
   serviceable,
   codAvailable,
   compact = false,
 }: CheckoutOrderSummaryProps) {
   const { items, subtotal, appliedCoupon } = useCart();
+  const resolvedBuyerState = buyerState?.trim() || SELLER_STATE;
 
   const mrpTotal = cartMrpTotal(items);
   const productSavings = Math.max(0, mrpTotal - subtotal);
@@ -41,7 +42,7 @@ export default function CheckoutOrderSummary({
     quantity: i.quantity,
     gstRate: i.gstRate,
   }));
-  const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
+  const gstBreakdown = calculateGSTFromCart(gstLineItems, resolvedBuyerState, couponDiscount);
   const gstLines = gstDisplayLines(gstBreakdown, gstLineItems);
   // MRP-inclusive prices — GST is informational only, not added to payable total.
   const total = afterDiscount + shipping;
@@ -98,11 +99,18 @@ export default function CheckoutOrderSummary({
         </div>
         {gstLines.map((line) => (
           <div key={line.label} className="flex justify-between text-green-700">
-            <dt>{line.label}</dt>
+            <dt>{line.label} (incl.)</dt>
             <dd>{formatInr(line.amount)}</dd>
           </div>
         ))}
+        {gstLines.length === 0 && gstBreakdown.total <= 0 ? (
+          <div className="flex justify-between text-green-700/70">
+            <dt>GST (incl.)</dt>
+            <dd>Included in price</dd>
+          </div>
+        ) : null}
       </dl>
+      <p className="mt-1 text-xs text-green-700/70">Prices include applicable GST</p>
 
       {subtotal < FREE_SHIPPING_THRESHOLD && !freeShipping ? (
         <p className="mt-2 text-xs text-green-600/80">
@@ -150,7 +158,11 @@ export function useCheckoutTotals(shippingTotal: number, buyerState: string) {
     quantity: i.quantity,
     gstRate: i.gstRate,
   }));
-  const gstBreakdown = calculateGSTFromCart(gstLineItems, buyerState, couponDiscount);
+  const gstBreakdown = calculateGSTFromCart(
+    gstLineItems,
+    buyerState.trim() || SELLER_STATE,
+    couponDiscount,
+  );
   const total = afterDiscount + shipping;
   return {
     subtotal,
