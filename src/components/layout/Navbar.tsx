@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Heart, Menu, ShoppingBag, UserCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-import StaticSvgImage from "@/components/media/StaticSvgImage";
 import { lockBodyScroll } from "@/lib/a11y/dialog-a11y";
 import { useAuth } from "@/lib/auth/hooks";
+import { BRAND_LOGO_ALT, BRAND_LOGO_PATH } from "@/lib/brand/logo";
 import { HEADER_ACCOUNT_HREF, PRIMARY_NAV_LINKS } from "@/lib/brand/navigation";
 import { INSTAGRAM_URL } from "@/lib/brand/social";
 import { focusRing } from "@/lib/design/ui";
@@ -116,12 +117,14 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="site-navbar-grid h-16 md:h-20">
           <Link href="/" className={cn("site-navbar-logo shrink-0", focusRing)} aria-label="BeyondBabyCo home">
-            <StaticSvgImage
-              src="/images/brand/logo.svg"
-              alt="BeyondBabyCo"
+            <Image
+              src={BRAND_LOGO_PATH}
+              alt={BRAND_LOGO_ALT}
               width={160}
               height={52}
-              loading="eager"
+              priority
+              sizes="160px"
+              quality={75}
               className="h-10 w-auto md:h-12"
             />
           </Link>

@@ -10,14 +10,14 @@ import type { StorefrontHomepage } from "@/lib/homepage/storefront";
 import { fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
 import { mergeTestimonials } from "@/lib/trust";
 
-/** Below-fold sections — lazy-loaded to keep them off the initial homepage bundle. */
-const MeetOurFriends = dynamic(() => import("@/components/sections/MeetOurFriends"));
-const ResearchTimeline = dynamic(() => import("@/components/sections/ResearchTimeline"));
-const LifestyleSection = dynamic(() => import("@/components/sections/LifestyleSection"));
-const TestimonialShowcase = dynamic(() => import("@/components/trust/TestimonialShowcase"));
-const BrandPromise = dynamic(() => import("@/components/sections/BrandPromise"));
-const ScienceSection = dynamic(() => import("@/components/sections/ScienceSection"));
-const StatsBar = dynamic(() => import("@/components/sections/StatsBar"));
+/** Below-fold — client-only load shrinks initial RSC HTML (~500KB+) and main-thread parse cost. */
+const MeetOurFriends = dynamic(() => import("@/components/sections/MeetOurFriends"), { ssr: false });
+const ResearchTimeline = dynamic(() => import("@/components/sections/ResearchTimeline"), { ssr: false });
+const LifestyleSection = dynamic(() => import("@/components/sections/LifestyleSection"), { ssr: false });
+const TestimonialShowcase = dynamic(() => import("@/components/trust/TestimonialShowcase"), { ssr: false });
+const BrandPromise = dynamic(() => import("@/components/sections/BrandPromise"), { ssr: false });
+const ScienceSection = dynamic(() => import("@/components/sections/ScienceSection"), { ssr: false });
+const StatsBar = dynamic(() => import("@/components/sections/StatsBar"), { ssr: false });
 
 // <NewsletterSection /> — removed (duplicate; footer captures email)
 // <EarlyAccessSection /> — removed (duplicate)

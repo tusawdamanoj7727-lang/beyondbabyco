@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
 import DeferredProductViewTracker from "@/components/catalog/DeferredProductViewTracker";
 import ProductGallery from "@/components/catalog/ProductGallery";
-import ProductPurchasePanel from "@/components/catalog/ProductPurchasePanel";
 import JsonLd from "@/components/seo/JsonLd";
 import { LAUNCH_PRODUCT_SLUGS } from "@/lib/catalog/availability";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
@@ -26,6 +25,10 @@ export function generateStaticParams() {
 
 const ProductDetailTabs = dynamic(() => import("@/components/catalog/ProductDetailTabs"), {
   loading: () => <div className="mt-20 min-h-[240px]" aria-hidden="true" />,
+});
+
+const ProductPurchasePanel = dynamic(() => import("@/components/catalog/ProductPurchasePanel"), {
+  loading: () => <div className="min-h-[420px] animate-pulse rounded-2xl bg-green-50/60" aria-hidden="true" />,
 });
 
 type PageProps = {

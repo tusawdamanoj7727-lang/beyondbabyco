@@ -26,7 +26,6 @@ import {
   BRAND_FAVICON_16,
   BRAND_FAVICON_32,
   BRAND_FAVICON_48,
-  BRAND_FAVICON_SVG,
   BRAND_ICON_192,
   BRAND_ICON_512,
 } from "@/lib/brand/logo";
@@ -52,7 +51,6 @@ export const metadata: Metadata = {
     : {}),
   icons: {
     icon: [
-      { url: BRAND_FAVICON_SVG, type: "image/svg+xml" },
       { url: BRAND_FAVICON_16, sizes: "16x16", type: "image/png" },
       { url: BRAND_FAVICON_32, sizes: "32x32", type: "image/png" },
       { url: BRAND_FAVICON_48, sizes: "48x48", type: "image/png" },
