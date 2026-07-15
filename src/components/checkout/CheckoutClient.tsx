@@ -135,7 +135,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>(
     initial.razorpayAvailable ? "razorpay" : "cod",
   );
-  const [saveAddress, setSaveAddress] = useState(true);
+  const [saveAddress, setSaveAddress] = useState(!initial.isGuest);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [delivery, setDelivery] = useState<{
     serviceable: boolean;
@@ -289,7 +289,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             quantity: i.quantity,
           })),
           couponCode: appliedCoupon?.code ?? null,
-          saveShippingAddress: saveAddress,
+          saveShippingAddress: initial.isGuest ? false : saveAddress,
         });
 
         if (!result.ok || !result.orderId) {
@@ -410,7 +410,14 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     <>
       <div className="grid gap-8 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px]">
         <div className="space-y-8">
-          <CheckoutSection title="1. Customer Information" description="We'll send order updates here.">
+          <CheckoutSection
+            title="1. Customer Information"
+            description={
+              initial.isGuest
+                ? "Checkout as a guest — enter your email for order updates. No account required."
+                : "We'll send order updates here."
+            }
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Full name" id="cust-name">
                 <input
@@ -466,10 +473,16 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
               </div>
             ) : null}
             <AddressFields idPrefix="shipping" values={shipping} onChange={updateShipping} checkingPin={checkingPin} />
-            <label className="mt-4 flex items-center gap-2 text-sm text-green-800">
-              <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} />
-              Save this address for next time
-            </label>
+            {!initial.isGuest ? (
+              <label className="mt-4 flex items-center gap-2 text-sm text-green-800">
+                <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} />
+                Save this address for next time
+              </label>
+            ) : (
+              <p className="mt-4 text-xs text-green-700/70">
+                Want saved addresses next time? You can create an account after placing this order.
+              </p>
+            )}
           </CheckoutSection>
 
           <CheckoutSection title="3. Billing Address">

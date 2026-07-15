@@ -2,8 +2,7 @@
 
 import { releaseOrderStockReservations } from "@/lib/inventory/order-reservations";
 import { releaseCouponForOrder } from "@/lib/coupons/redemption";
-import { getCurrentUser } from "@/lib/auth/session";
-import { getCustomerIdForUser } from "@/lib/orders/customer-auth";
+import { resolveCheckoutCustomerIdForOrder } from "@/lib/checkout/guest-customer";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { onPaymentFailed } from "@/lib/email/events/orders";
 
@@ -12,8 +11,7 @@ export async function abandonCheckoutPaymentAction(orderId: string): Promise<voi
   const trimmed = orderId?.trim();
   if (!trimmed) return;
 
-  const user = await getCurrentUser();
-  const customerId = user ? await getCustomerIdForUser(user.id) : null;
+  const { customerId } = await resolveCheckoutCustomerIdForOrder(trimmed);
   if (!customerId) return;
 
   const supabase = createSupabaseServiceClient();

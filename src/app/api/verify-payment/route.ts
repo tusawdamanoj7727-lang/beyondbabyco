@@ -1,16 +1,14 @@
 import { parseJsonBody } from "@/lib/api/request";
 import { verifyPaymentBodySchema } from "@/lib/api/schemas";
 import { handleApiError, jsonError, jsonOk } from "@/lib/api/route-helpers";
-import { getCurrentUser } from "@/lib/auth/session";
 import { captureRazorpayPayment } from "@/lib/checkout/razorpay-capture";
-import { getCustomerIdForUser } from "@/lib/orders/customer-auth";
+import { resolveCheckoutCustomerIdForOrder, writeGuestCheckoutSession } from "@/lib/checkout/guest-customer";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Client fast-path after Razorpay checkout success.
- * Webhook (payment.captured) is the authoritative capture path; this route uses
- * the same idempotent captureRazorpayPayment with API verification for UX.
+ * Supports authenticated customers and signed guest checkout cookies.
  */
 export async function POST(req: Request) {
   try {
@@ -26,8 +24,7 @@ export async function POST(req: Request) {
       razorpay_signature,
     } = parsed.data;
 
-    const user = await getCurrentUser();
-    const customerId = user ? await getCustomerIdForUser(user.id) : null;
+    const { customerId, via } = await resolveCheckoutCustomerIdForOrder(orderId);
     if (!customerId) {
       return jsonError("Not signed in.", 401);
     }
@@ -43,6 +40,10 @@ export async function POST(req: Request) {
 
     if (!result.ok) {
       return jsonError(result.error ?? "Payment verification failed.", 400);
+    }
+
+    if (via === "guest") {
+      await writeGuestCheckoutSession(customerId, orderId);
     }
 
     return jsonOk({

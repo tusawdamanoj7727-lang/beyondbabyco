@@ -145,14 +145,15 @@ export default function MiniCartDrawer() {
                 </Button>
                 {!authLoading && !isLoggedIn ? (
                   <p className="text-center text-xs text-green-700/80">
+                    Guest checkout available —{" "}
                     <Link
                       href="/login?redirectTo=/checkout"
                       className="font-semibold text-terra-600 hover:underline"
                       onClick={() => setMiniCartOpen(false)}
                     >
-                      Sign in
+                      sign in
                     </Link>{" "}
-                    required to checkout.
+                    to use saved addresses.
                   </p>
                 ) : null}
                 <Button asChild variant="outline" fullWidth>

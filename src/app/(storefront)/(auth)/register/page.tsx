@@ -15,11 +15,12 @@ export const metadata: Metadata = buildPageMetadata({
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirectTo?: string }>;
+  searchParams: Promise<{ redirectTo?: string; email?: string }>;
 }) {
   const user = await getCurrentUser();
   if (user) redirect("/account");
 
-  const { redirectTo } = await searchParams;
-  return <RegisterForm redirectTo={redirectTo} />;
+  const { redirectTo, email } = await searchParams;
+  const defaultEmail = email?.trim().toLowerCase() || undefined;
+  return <RegisterForm redirectTo={redirectTo} defaultEmail={defaultEmail} />;
 }

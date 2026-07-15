@@ -188,6 +188,7 @@ async function ensureRazorpayOrderForExistingPayment(input: {
 export async function placeStorefrontOrder(
   customerId: string,
   raw: PlaceOrderInput,
+  options?: { isLoggedIn?: boolean },
 ): Promise<PlaceOrderResult> {
   logRazorpayCheckout("placeStorefrontOrder.entered", {
     paymentMethod: raw.paymentMethod,
@@ -284,6 +285,7 @@ export async function placeStorefrontOrder(
     cartItems: input.cartItems,
     couponCode: input.couponCode,
     buyerState: input.shipping.state,
+    isLoggedIn: options?.isLoggedIn !== false,
   });
   if (!resolved.ok) {
     return { ok: false, error: resolved.error };
@@ -561,11 +563,14 @@ export async function getCheckoutOrderSummary(orderId: string, customerId: strin
 
   if (!order) return null;
 
-  const { data: shipment } = await supabase
-    .from("shipments")
-    .select("tracking_number, estimated_delivery")
-    .eq("order_id", orderId)
-    .maybeSingle();
+  const [{ data: shipment }, { data: customer }] = await Promise.all([
+    supabase
+      .from("shipments")
+      .select("tracking_number, estimated_delivery")
+      .eq("order_id", orderId)
+      .maybeSingle(),
+    supabase.from("customers").select("email, full_name, profile_id").eq("id", customerId).maybeSingle(),
+  ]);
 
   return {
     orderNumber: order.order_number,
@@ -573,5 +578,8 @@ export async function getCheckoutOrderSummary(orderId: string, customerId: strin
     status: order.status,
     trackingNumber: shipment?.tracking_number ?? null,
     estimatedDelivery: shipment?.estimated_delivery ?? null,
+    email: customer?.email ?? null,
+    customerName: customer?.full_name ?? null,
+    isGuestCustomer: customer?.profile_id == null,
   };
 }

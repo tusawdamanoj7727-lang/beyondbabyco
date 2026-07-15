@@ -96,6 +96,8 @@ export async function resolveCheckoutCart(input: {
   cartItems: CheckoutCartLineInput[];
   couponCode?: string | null;
   buyerState: string;
+  /** Guests cannot redeem logged_in_only coupons. Defaults to true for backwards compatibility. */
+  isLoggedIn?: boolean;
 }): Promise<ResolveCheckoutCartResult> {
   if (input.cartItems.length === 0) {
     return { ok: false, error: "Your cart is empty." };
@@ -195,7 +197,7 @@ export async function resolveCheckoutCart(input: {
     const shippingForCoupon = estimateShippingFee(subtotal, false);
     const couponResult = await validateCoupon(code, {
       customerId: input.customerId,
-      isLoggedIn: true,
+      isLoggedIn: input.isLoggedIn !== false,
       isFirstOrder: await isFirstOrder(input.customerId),
       subtotal,
       shippingTotal: shippingForCoupon,

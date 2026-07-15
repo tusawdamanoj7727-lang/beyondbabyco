@@ -3,6 +3,7 @@ import "server-only";
 import type { User } from "@supabase/supabase-js";
 
 import { isServiceRoleConfigured } from "@/lib/env";
+import { claimGuestCustomerForUser } from "@/lib/checkout/guest-customer";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isStaffRole, normalizeRole } from "@/lib/auth/roles";
@@ -86,6 +87,9 @@ async function ensureViaServiceRole(user: User): Promise<string | null> {
     .maybeSingle();
 
   if (!existingCustomer) {
+    const claimed = await claimGuestCustomerForUser(user);
+    if (claimed) return claimed;
+
     const { data: created } = await service
       .from("customers")
       .insert({
@@ -98,18 +102,35 @@ async function ensureViaServiceRole(user: User): Promise<string | null> {
     return created?.id ?? null;
   }
 
+  // Profile already linked — still merge any orphan guest rows with the same email.
+  await claimGuestCustomerForUser(user);
   return existingCustomer.id;
 }
 
 /**
  * Ensures profile + customer rows exist for a signed-in user.
+ * Claims guest checkout customers (same email, profile_id null) first.
  * Primary path: authenticated RPC (no service role required).
  * Falls back to service role when configured and RPC is unavailable.
  * Never overwrites an existing staff role_id.
  */
 export async function ensureCustomerRecordsForUser(user: User): Promise<string | null> {
+  if (isServiceRoleConfigured()) {
+    const claimed = await claimGuestCustomerForUser(user);
+    if (claimed) {
+      // Ensure profile exists via service path without inserting a second customer.
+      await ensureViaServiceRole(user);
+      return claimed;
+    }
+  }
+
   const viaRpc = await ensureViaRpc(user);
-  if (viaRpc) return viaRpc;
+  if (viaRpc) {
+    if (isServiceRoleConfigured()) {
+      await claimGuestCustomerForUser(user);
+    }
+    return viaRpc;
+  }
 
   if (isServiceRoleConfigured()) {
     return ensureViaServiceRole(user);

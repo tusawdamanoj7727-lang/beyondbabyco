@@ -23,7 +23,13 @@ import { cn } from "@/lib/utils";
 
 const initialState: CustomerAuthState = { error: null, success: null };
 
-export default function RegisterForm({ redirectTo }: { redirectTo?: string }) {
+export default function RegisterForm({
+  redirectTo,
+  defaultEmail,
+}: {
+  redirectTo?: string;
+  defaultEmail?: string;
+}) {
   const [state, formAction, isPending] = useActionState(customerSignUpAction, initialState);
   const [showPassword, setShowPassword] = useState(false);
   const loginHref = redirectTo
@@ -41,8 +47,12 @@ export default function RegisterForm({ redirectTo }: { redirectTo?: string }) {
   return (
     <AuthShell
       mascotPose="wave"
-      title="Create your account"
-      subtitle="Join BeyondBabyCo for a safer, smarter baby care journey"
+      title="Create your BeyondBabyCo account"
+      subtitle={
+        defaultEmail
+          ? "We'll link your guest orders to this email automatically."
+          : "Join BeyondBabyCo for a safer, smarter baby care journey"
+      }
       footer={
         state.success ? null : (
           <AuthFooterLink prompt="Already have an account?" href={loginHref} label="Sign in" />
@@ -106,7 +116,9 @@ export default function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                 type="email"
                 autoComplete="email"
                 required
+                defaultValue={defaultEmail ?? ""}
                 placeholder="you@beyondbabyco.com"
+                aria-describedby={fieldError("email") ? `${emailId}-error` : undefined}
                 className={cn(authInputClasses, fieldError("email") && "border-terra-400")}
               />
             </div>
