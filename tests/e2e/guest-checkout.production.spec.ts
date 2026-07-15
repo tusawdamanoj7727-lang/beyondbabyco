@@ -39,6 +39,19 @@ test.describe("Guest checkout (production)", () => {
     });
   });
 
+  test("guest can select Razorpay at checkout", async ({ page, request }) => {
+    test.skip(!(await launchProductHasStock(request)), LAUNCH_PRODUCT_OUT_OF_STOCK_MESSAGE);
+    await prepareGuestCart(page);
+    await gotoCheckoutWithItems(page);
+    await expect(page).not.toHaveURL(/\/login/);
+    const razorpayRadio = page.getByRole("radio", { name: /Pay Online/ });
+    await expect(razorpayRadio).toBeVisible();
+    if (!(await razorpayRadio.isDisabled())) {
+      await selectPaymentMethod(page, "razorpay");
+      await expect(razorpayRadio).toBeChecked();
+    }
+  });
+
   test("guest COD: cart → email → ship → COD → success + create-account CTA", async ({
     page,
     request,
