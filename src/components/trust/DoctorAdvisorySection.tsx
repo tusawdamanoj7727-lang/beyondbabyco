@@ -31,7 +31,7 @@ export default function DoctorAdvisorySection({ id = "advisory", compact = false
               {compact ? "Guided by Science" : "Pediatric & Dermatology Guidance"}
             </h2>
             <AccentBar width="md" align="left" className="mt-4" />
-            <p className="mt-4 font-body text-base leading-relaxed text-green-700/90">
+            <p className="mt-4 font-body text-base leading-relaxed text-green-800">
               BeyondBabyCo integrates professional health guidance into our development process — ensuring
               formulations reflect current best practices in infant skin care, without claiming individual
               endorsements.
@@ -49,14 +49,14 @@ export default function DoctorAdvisorySection({ id = "advisory", compact = false
                   </span>
                   <div>
                     <h3 className="font-heading font-bold text-green-900">{block.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-green-700/90">{block.description}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-green-800">{block.description}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {!compact ? (
-              <p className="mt-6 rounded-xl border border-green-100 bg-cream-50/80 p-4 text-xs leading-relaxed text-green-700/80">
+              <p className="mt-6 rounded-xl border border-green-100 bg-cream-50/80 p-4 text-xs leading-relaxed text-green-700">
                 {DOCTOR_ADVISORY_DISCLAIMER}
               </p>
             ) : null}

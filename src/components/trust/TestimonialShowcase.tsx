@@ -87,7 +87,7 @@ function TestimonialMeta({ testimonial }: { testimonial: TrustTestimonial }) {
         {[testimonial.role, testimonial.city].filter(Boolean).join(" · ")}
       </p>
       {(testimonial.productUsed || testimonial.babyAge || testimonial.date) ? (
-        <p className="mt-1 font-body text-xs text-green-700/65">
+        <p className="mt-1 font-body text-xs text-green-700">
           {[testimonial.productUsed, testimonial.babyAge ? `Baby ${testimonial.babyAge}` : null, testimonial.date]
             .filter(Boolean)
             .join(" · ")}
@@ -133,7 +133,7 @@ function TestimonialCard({
 
       <blockquote
         className={cn(
-          "mt-5 flex-1 font-body text-green-700/90",
+          "mt-5 flex-1 font-body text-green-800",
           featured ? "leading-[1.72]" : "text-base leading-[1.75]",
         )}
       >
@@ -240,7 +240,7 @@ export default function TestimonialShowcase({
           >
             {reviews.length} Review{reviews.length === 1 ? "" : "s"}
           </p>
-          <p className="mt-1 font-body text-sm text-green-700/80">
+          <p className="mt-1 font-body text-sm text-green-700">
             <span aria-hidden="true">★ {avgRating}</span> average rating
           </p>
         </header>
@@ -301,7 +301,7 @@ export default function TestimonialShowcase({
         ) : (
           <div className="py-12 text-center">
             <p className="text-gray-500">No {emptyTabLabel(activeCategory)} yet</p>
-            <p className="mt-1 text-sm text-gray-400">Be the first to share your story!</p>
+            <p className="mt-1 text-sm text-gray-600">Be the first to share your story!</p>
             {activeCategory === "all" ? (
               <div className="mx-auto mt-8 max-w-2xl text-left">
                 <WriteReviewCta />

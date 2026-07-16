@@ -35,11 +35,11 @@ function IngredientCard({ ingredient }: { ingredient: IngredientProfile }) {
       <dl className="mt-3 space-y-2 text-sm">
         <div>
           <dt className="font-semibold text-green-800">Origin</dt>
-          <dd className="text-green-700/90">{ingredient.origin}</dd>
+          <dd className="text-green-800">{ingredient.origin}</dd>
         </div>
         <div>
           <dt className="font-semibold text-green-800">Purpose</dt>
-          <dd className="text-green-700/90">{ingredient.purpose}</dd>
+          <dd className="text-green-800">{ingredient.purpose}</dd>
         </div>
       </dl>
 
@@ -57,7 +57,7 @@ function IngredientCard({ ingredient }: { ingredient: IngredientProfile }) {
         <div className="mt-3 space-y-3 border-t border-green-100 pt-3 text-sm">
           <div>
             <p className="font-semibold text-green-800">Benefits</p>
-            <ul className="mt-1 list-inside list-disc text-green-700/90">
+            <ul className="mt-1 list-inside list-disc text-green-800">
               {ingredient.benefits.map((b) => (
                 <li key={b}>{b}</li>
               ))}
@@ -65,19 +65,19 @@ function IngredientCard({ ingredient }: { ingredient: IngredientProfile }) {
           </div>
           <div>
             <p className="font-semibold text-green-800">Safety Profile</p>
-            <p className="text-green-700/90">{ingredient.safetyProfile}</p>
+            <p className="text-green-800">{ingredient.safetyProfile}</p>
           </div>
           <div>
             <p className="font-semibold text-green-800">Skin Compatibility</p>
-            <p className="text-green-700/90">{ingredient.skinCompatibility}</p>
+            <p className="text-green-800">{ingredient.skinCompatibility}</p>
           </div>
           <div>
             <p className="font-semibold text-green-800">Suitable Age</p>
-            <p className="text-green-700/90">{ingredient.suitableAge}</p>
+            <p className="text-green-800">{ingredient.suitableAge}</p>
           </div>
           <div>
             <p className="font-semibold text-green-800">Research Summary</p>
-            <p className="text-green-700/90">{ingredient.researchSummary}</p>
+            <p className="text-green-800">{ingredient.researchSummary}</p>
           </div>
           <div>
             <p className="font-semibold text-green-800">Related Products</p>

@@ -11,7 +11,7 @@ export default function ModuleLoading({ label = MICROCOPY.loading }: { label?: s
     >
       <Logo href={null} size="loading" priority />
       <span aria-hidden="true" className="spinner-premium text-green-700" />
-      <span className="text-sm font-medium text-green-700/80">{label}</span>
+      <span className="text-sm font-medium text-green-700">{label}</span>
     </div>
   );
 }

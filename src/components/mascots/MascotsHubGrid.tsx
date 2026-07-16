@@ -24,7 +24,7 @@ export default function MascotsHubGrid() {
           <h1 className="font-heading text-[clamp(2rem,4vw,3rem)] font-bold leading-tight text-green-900">
             Meet the BeyondBabyCo family
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-green-700/90 md:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-green-800 md:text-lg">
             {MASCOTS.intro}
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function MascotsHubGrid() {
 
                 <p className={cn("mt-2 text-sm font-medium", styles.accent)}>{mascot.categoryLabel}</p>
 
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-green-700/85">{mascot.tagline}</p>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-green-800">{mascot.tagline}</p>
 
                 <span className="mt-5 text-sm font-semibold text-terra-600 transition group-hover:underline">
                   Meet {mascot.fullName.split(" ")[0]} →

@@ -32,7 +32,7 @@ function ErrorFallback({
           <h1 className="mt-2 font-heading text-3xl font-extrabold text-green-900">
             {context === "checkout" ? "Checkout error" : "Cart error"}
           </h1>
-          <p className="mt-3 max-w-md text-base text-green-700/80">
+          <p className="mt-3 max-w-md text-base text-green-700">
             Please try again. If the problem continues, our care team is happy to help.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">

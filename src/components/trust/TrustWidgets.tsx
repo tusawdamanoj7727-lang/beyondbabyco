@@ -27,7 +27,7 @@ export default function TrustWidgets({ variant = "strip", className = "" }: Trus
                   </span>
                   <div className="min-w-0">
                     <p className="font-heading text-xs font-bold text-green-900 sm:text-sm">{widget.label}</p>
-                    <p className="mt-0.5 hidden font-body text-xs text-green-700/80 sm:block">{widget.description}</p>
+                    <p className="mt-0.5 hidden font-body text-xs text-green-700 sm:block">{widget.description}</p>
                   </div>
                 </>
               );

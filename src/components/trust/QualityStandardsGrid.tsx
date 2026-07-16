@@ -75,7 +75,7 @@ export default function QualityStandardsGrid({ id = "quality", compact = false }
                   {standard.title}
                 </h3>
                 {!compact ? (
-                  <p className="mt-2 font-body text-xs leading-[1.65] text-green-700/85">{standard.description}</p>
+                  <p className="mt-2 font-body text-xs leading-[1.65] text-green-800">{standard.description}</p>
                 ) : null}
               </div>
             </div>

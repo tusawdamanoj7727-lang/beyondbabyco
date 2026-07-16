@@ -68,7 +68,7 @@ export default function ResearchProcessSection({ id = "research", compact = fals
                             Step {step.phase}
                           </Badge>
                           <h3 className="mt-2 font-heading text-xl font-bold text-green-900">{step.title}</h3>
-                          <p className="mt-2 font-body text-base leading-relaxed text-green-700/90">
+                          <p className="mt-2 font-body text-base leading-relaxed text-green-800">
                             {step.description}
                           </p>
                           <Link

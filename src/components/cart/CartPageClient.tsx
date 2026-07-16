@@ -18,7 +18,7 @@ import {
 } from "@/lib/storefront/shipping";
 import { clampCartQuantity } from "@/lib/storefront/cart-types";
 import { cn } from "@/lib/utils";
-import { focusRing, formControl, surfaceCard } from "@/lib/design/ui";
+import { formControl, surfaceCard } from "@/lib/design/ui";
 
 function CartSkeleton() {
   return (

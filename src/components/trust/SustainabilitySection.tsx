@@ -57,7 +57,7 @@ export default function SustainabilitySection({ id = "sustainability" }: Sustain
                 </span>
               )}
               <h3 className="font-heading text-lg font-bold text-green-900">{item.title}</h3>
-              <p className="mt-2 font-body text-sm leading-relaxed text-green-700/90">{item.description}</p>
+              <p className="mt-2 font-body text-sm leading-relaxed text-green-800">{item.description}</p>
             </div>
           ))}
         </div>
@@ -68,7 +68,7 @@ export default function SustainabilitySection({ id = "sustainability" }: Sustain
             {SUSTAINABILITY_GOALS.map((goal) => (
               <li
                 key={goal}
-                className="flex items-start gap-2 rounded-xl border border-green-100 bg-white/90 px-4 py-3 text-sm text-green-700/90"
+                className="flex items-start gap-2 rounded-xl border border-green-100 bg-white/90 px-4 py-3 text-sm text-green-800"
               >
                 <span aria-hidden="true" className="mt-0.5 text-terra-500">
                   ◆

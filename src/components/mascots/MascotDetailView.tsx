@@ -56,7 +56,7 @@ export default function MascotDetailView({
             <h1 className="font-heading text-[clamp(2.25rem,4vw,3.25rem)] font-bold leading-tight text-green-900">
               {mascot.fullName}
             </h1>
-            <p className="mt-4 text-lg leading-relaxed text-green-700/90 md:text-xl">{mascot.tagline}</p>
+            <p className="mt-4 text-lg leading-relaxed text-green-800 md:text-xl">{mascot.tagline}</p>
             <p className={cn("mt-3 text-sm font-semibold uppercase tracking-wide", styles.accent)}>
               {mascot.categoryLabel}
             </p>
@@ -76,7 +76,7 @@ export default function MascotDetailView({
         <h2 className="font-heading text-2xl font-bold text-green-900 md:text-3xl">
           {mascot.fullName.split(" ")[0]}&apos;s favourite products
         </h2>
-        <p className="mt-2 max-w-2xl text-green-700/85">
+        <p className="mt-2 max-w-2xl text-green-800">
           Hand-picked formulas that match {mascot.fullName.split(" ")[0]}&apos;s care philosophy.
         </p>
         <div className="mt-8">
@@ -127,7 +127,7 @@ export default function MascotDetailView({
                   />
                   <div className="min-w-0 text-left">
                     <p className="font-heading text-lg font-bold text-green-900">{friend.fullName}</p>
-                    <p className="text-sm text-green-700/80">{friend.personality}</p>
+                    <p className="text-sm text-green-700">{friend.personality}</p>
                   </div>
                 </Link>
               );

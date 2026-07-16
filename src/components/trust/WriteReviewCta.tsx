@@ -23,7 +23,7 @@ export default function WriteReviewCta({ className }: { className?: string }) {
       <h3 className="font-heading text-xl font-bold text-green-900">
         Love BeyondBabyCo? Share your experience
       </h3>
-      <p className="mt-2 text-sm text-green-700/80">
+      <p className="mt-2 text-sm text-green-700">
         Tap a star rating, then tell us what gentle care means for your family.
       </p>
 
