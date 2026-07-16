@@ -381,29 +381,47 @@ export const getRelatedProducts = cache(
   async (productId: string, categoryId: string | null, limit = 4): Promise<StorefrontProduct[]> => {
     const supabase = catalogClient();
 
-    let query = supabase
-      .from("products")
-      .select(PRODUCT_SELECT)
-      .in("status", ["active", "coming_soon"])
-      .is("deleted_at", null)
-      .neq("id", productId)
-      .order("is_featured", { ascending: false })
-      .limit(limit);
+    async function fetchRelated(categoryFilter: string | null) {
+      let query = supabase
+        .from("products")
+        .select(PRODUCT_SELECT)
+        .in("status", ["active", "coming_soon"])
+        .is("deleted_at", null)
+        .neq("id", productId)
+        .order("is_featured", { ascending: false })
+        .limit(limit);
 
-    if (categoryId) query = query.eq("category_id", categoryId);
+      if (categoryFilter) query = query.eq("category_id", categoryFilter);
 
-    const { data, error } = await query;
-    if (error) {
-      logProductLoadFailure({
-        slug: `related:${productId}`,
-        query: "products.select(PRODUCT_SELECT).related",
-        responseBody: supabaseErrorBody(error),
-        returnedData: data,
-        errorMessage: error.message,
-      });
-      throw new Error(error.message);
+      const { data, error } = await query;
+      if (error) {
+        logProductLoadFailure({
+          slug: `related:${productId}`,
+          query: "products.select(PRODUCT_SELECT).related",
+          responseBody: supabaseErrorBody(error),
+          returnedData: data,
+          errorMessage: error.message,
+        });
+        throw new Error(error.message);
+      }
+      return enrichStorefrontProducts(data ?? []);
     }
-    return enrichStorefrontProducts(data ?? []);
+
+    const sameCategory = await fetchRelated(categoryId);
+    if (sameCategory.length >= Math.min(2, limit) || !categoryId) {
+      return sameCategory;
+    }
+
+    // Single-product categories would otherwise show no cross-sell — fill from catalog.
+    const fallback = await fetchRelated(null);
+    const seen = new Set(sameCategory.map((p) => p.id));
+    const merged = [...sameCategory];
+    for (const product of fallback) {
+      if (seen.has(product.id)) continue;
+      merged.push(product);
+      if (merged.length >= limit) break;
+    }
+    return merged;
   },
 );
 
