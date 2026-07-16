@@ -38,7 +38,7 @@ function cardPurchaseAction(product: StorefrontProduct, fullWidth = true) {
         showIcon={false}
         label="Add to Cart"
         className={cn(
-          "h-auto rounded-xl px-3 py-2.5 text-xs font-bold active:scale-95",
+          "min-h-11 rounded-xl px-3 py-2.5 text-xs font-bold active:scale-95",
           fullWidth && "w-full",
         )}
       />
@@ -55,7 +55,7 @@ function cardPurchaseAction(product: StorefrontProduct, fullWidth = true) {
         product.status,
       )}
       className={cn(
-        "h-auto rounded-xl border border-brand-forest bg-transparent px-3 py-2.5 text-xs font-bold text-brand-forest hover:bg-brand-mint",
+        "min-h-11 rounded-xl border border-brand-forest bg-transparent px-3 py-2.5 text-xs font-bold text-brand-forest hover:bg-brand-mint",
         fullWidth && "w-full",
       )}
     />
@@ -150,7 +150,7 @@ export default function ProductCard({
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
           className={cn(
-            "absolute right-3 top-12 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-brand-forest",
+            "absolute right-3 top-12 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-brand-forest",
             focusRing,
           )}
         >

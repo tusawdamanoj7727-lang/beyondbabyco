@@ -151,7 +151,7 @@ function FooterEmailCapture() {
             autoComplete="email"
             disabled={status === "loading"}
             className={cn(
-              "flex-1 rounded-lg px-4 py-2 text-sm text-gray-900 sm:w-64",
+              "min-h-11 flex-1 rounded-lg px-4 py-2.5 text-base text-gray-900 sm:w-64",
               focusRing,
             )}
           />
@@ -159,7 +159,7 @@ function FooterEmailCapture() {
             type="submit"
             disabled={status === "loading"}
             className={cn(
-              "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-terra px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-terra-700 disabled:opacity-60 motion-button",
+              "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-terra px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-terra-700 disabled:opacity-60 motion-button",
               focusRing,
             )}
           >

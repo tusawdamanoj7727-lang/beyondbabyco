@@ -120,7 +120,7 @@ function focusField(fieldId: string) {
 }
 
 function inputClass() {
-  return cn(formControl, "text-sm");
+  return formControl;
 }
 
 export default function CheckoutClient({ initial }: { initial: CheckoutInitialData }) {
@@ -712,11 +712,12 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
               errors={fieldErrors}
             />
             {!initial.isGuest ? (
-              <label className="mt-3 flex items-center gap-2 text-sm text-green-800">
+              <label className="mt-3 flex min-h-11 items-center gap-3 text-sm text-green-800">
                 <input
                   type="checkbox"
                   checked={saveAddress}
                   onChange={(e) => setSaveAddress(e.target.checked)}
+                  className="h-5 w-5 shrink-0"
                 />
                 Save this address for next time
               </label>
@@ -728,11 +729,12 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           </CheckoutSection>
 
           <CheckoutSection title="3. Billing Address">
-            <label className="flex items-center gap-2 text-sm text-green-800">
+            <label className="flex min-h-11 items-center gap-3 text-sm text-green-800">
               <input
                 type="checkbox"
                 checked={billingSame}
                 onChange={(e) => setBillingSame(e.target.checked)}
+                className="h-5 w-5 shrink-0"
               />
               Same as shipping address
             </label>
@@ -844,7 +846,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         </div>
       </form>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-green-100 bg-white/95 p-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm lg:hidden pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="checkout-mobile-bar fixed inset-x-0 bottom-0 z-40 border-t border-green-100 bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm lg:hidden pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xs text-green-700/80">Total payable</p>
@@ -1034,7 +1036,7 @@ function CheckoutCouponBlock({
               disabled={applying || disabled}
               autoComplete="off"
               enterKeyHint="go"
-              className={cn(formControl, "flex-1 text-sm")}
+              className={formControl}
             />
             <Button
               type="button"

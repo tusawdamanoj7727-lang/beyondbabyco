@@ -17,7 +17,7 @@ export default function CatalogBreadcrumb({ items }: { items: Crumb[] }) {
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="rounded font-medium transition-colors hover:text-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500"
+                  className="inline-flex min-h-11 items-center rounded px-1 font-medium transition-colors hover:text-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500"
                 >
                   {item.label}
                 </Link>

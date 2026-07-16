@@ -436,7 +436,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
 
       <div
         className={cn(
-          "pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-3 shadow-lg transition-transform duration-200 md:hidden",
+          "pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white shadow-lg transition-transform duration-200 md:hidden",
           showStickyBar ? "translate-y-0" : "pointer-events-none translate-y-full",
         )}
         aria-hidden={!showStickyBar}
@@ -457,7 +457,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   disabled={pending || !showStickyBar}
                   aria-busy={pending}
                   className={cn(
-                    "flex-1 rounded-xl bg-brand-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-green-800 disabled:opacity-70",
+                    "min-h-11 flex-1 rounded-xl bg-brand-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-green-800 disabled:opacity-70",
                     focusRing,
                   )}
                 >
@@ -469,7 +469,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   disabled={pending || !showStickyBar}
                   aria-busy={pending}
                   className={cn(
-                    "shrink-0 rounded-xl border-2 border-brand-forest px-4 py-3 text-sm font-bold text-brand-forest transition hover:bg-brand-mint disabled:opacity-70",
+                    "min-h-11 shrink-0 rounded-xl border-2 border-brand-forest px-4 py-3 text-sm font-bold text-brand-forest transition hover:bg-brand-mint disabled:opacity-70",
                     focusRing,
                   )}
                 >

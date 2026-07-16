@@ -1094,6 +1094,7 @@
 .site-header {
   contain: layout style;
   isolation: isolate;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .site-navbar {
@@ -1103,6 +1104,35 @@
 .whatsapp-fab {
   contain: layout style paint;
   isolation: isolate;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* Clear mobile sticky CTAs (PDP / checkout / compare) without covering the FAB. */
+@media (max-width: 767px) {
+  .whatsapp-fab {
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has(.pdp-sticky-bar.translate-y-0) .whatsapp-fab,
+  body:has(.checkout-mobile-bar) .whatsapp-fab,
+  body:has(.collection-compare-bar) .whatsapp-fab {
+    bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 768px) {
+  .whatsapp-fab {
+    right: max(1.5rem, env(safe-area-inset-right, 0px));
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Landscape short screens: sticky + FAB eat too much vertical space. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .whatsapp-fab {
+    display: none;
+  }
 }
 
 .homepage-section {
@@ -1131,7 +1161,7 @@
 }
 
 .site-main-offset {
-  padding-top: var(--site-header-h);
+  padding-top: calc(var(--site-header-h) + env(safe-area-inset-top, 0px));
 }
 
 @media (min-width: 768px) {
@@ -1945,11 +1975,7 @@ body {
 
 @media (max-width: 390px) {
   .container {
-    padding-inline: max(1rem, env(safe-area-inset-left));
-  }
-
-  .site-main-offset {
-    padding-top: calc(var(--site-header-h) + env(safe-area-inset-top, 0px));
+    padding-inline: max(1rem, env(safe-area-inset-left, 0px));
   }
 }
 
@@ -2981,11 +3007,12 @@ body {
   width: 100%;
   height: 3.25rem;
   min-height: 3.25rem;
+  /* 16px minimum — prevents iOS focus zoom on mobile */
   padding-inline: 3rem 1.25rem;
   border-radius: 9999px;
   border: 1px solid color-mix(in srgb, var(--cream-300) 90%, transparent);
   background: white;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: var(--green-900);
   box-shadow: var(--shadow-soft);
   transition:
@@ -3287,8 +3314,8 @@ body {
 .collection-compare-toggle {
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 9999px;
   border: 1px solid color-mix(in srgb, var(--green-200) 85%, transparent);
   background: color-mix(in srgb, white 92%, var(--cream-50));

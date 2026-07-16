@@ -109,7 +109,7 @@ export default function ProductGallery({
               type="button"
               onClick={() => setLightboxOpen(true)}
               className={cn(
-                "absolute right-4 top-4 z-[2] grid h-10 w-10 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm opacity-100 transition-opacity duration-[var(--duration-button)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
+                "absolute right-4 top-4 z-[2] grid h-11 w-11 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm opacity-100 transition-opacity duration-[var(--duration-button)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
                 focusRing,
               )}
               aria-label="Zoom image"
@@ -133,7 +133,7 @@ export default function ProductGallery({
               onClick={() => goTo(-1)}
               aria-label="Previous image"
               className={cn(
-                "absolute left-3 top-1/2 z-[2] grid -translate-y-1/2 rounded-full bg-white/92 p-2.5 shadow-[var(--shadow-soft)] backdrop-blur-sm",
+                "absolute left-3 top-1/2 z-[2] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-sm",
                 focusRing,
               )}
             >
@@ -144,7 +144,7 @@ export default function ProductGallery({
               onClick={() => goTo(1)}
               aria-label="Next image"
               className={cn(
-                "absolute right-3 top-1/2 z-[2] grid -translate-y-1/2 rounded-full bg-white/92 p-2.5 shadow-[var(--shadow-soft)] backdrop-blur-sm",
+                "absolute right-3 top-1/2 z-[2] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-sm",
                 focusRing,
               )}
             >

@@ -253,7 +253,7 @@ export default function CartPageClient() {
                       autoComplete="off"
                       enterKeyHint="go"
                       className={cn(
-                        "flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm",
+                        "min-h-11 flex-1 rounded-xl border border-gray-200 px-3 py-2.5 text-base",
                         focusRing,
                       )}
                     />
@@ -262,7 +262,7 @@ export default function CartPageClient() {
                       onClick={() => void handleApplyCoupon()}
                       disabled={applying || !couponInput.trim()}
                       className={cn(
-                        "rounded-xl bg-brand-forest px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-60",
+                        "min-h-11 rounded-xl bg-brand-forest px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-60",
                         focusRing,
                       )}
                       aria-busy={applying}

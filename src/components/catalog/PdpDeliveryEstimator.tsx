@@ -76,7 +76,7 @@ export default function PdpDeliveryEstimator() {
               check();
             }
           }}
-          className={cn(formControl, "flex-1 text-sm")}
+          className={cn(formControl, "flex-1")}
         />
         <button
           type="button"
@@ -84,7 +84,7 @@ export default function PdpDeliveryEstimator() {
           disabled={pending || pin.length !== 6}
           aria-busy={pending}
           className={cn(
-            "shrink-0 rounded-xl bg-brand-forest px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-green-800 disabled:opacity-60",
+            "min-h-12 shrink-0 rounded-xl bg-brand-forest px-3.5 text-sm font-semibold text-white transition hover:bg-green-800 disabled:opacity-60",
             focusRing,
           )}
         >

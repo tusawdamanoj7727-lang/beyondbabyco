@@ -116,7 +116,7 @@ export function Navbar() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="site-navbar-grid h-16 md:h-20">
-          <Link href="/" className={cn("site-navbar-logo shrink-0", focusRing)} aria-label="BeyondBabyCo home">
+          <Link href="/" className={cn("site-navbar-logo flex h-11 min-w-11 shrink-0 items-center", focusRing)} aria-label="BeyondBabyCo home">
             <Image
               src={BRAND_LOGO_PATH}
               alt={BRAND_LOGO_ALT}
