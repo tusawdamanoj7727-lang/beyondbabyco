@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
+import PdpDeliveryEstimator from "@/components/catalog/PdpDeliveryEstimator";
 import PricingTaxNote from "@/components/catalog/PricingTaxNote";
 import QuantitySelector from "@/components/catalog/QuantitySelector";
 import StarRating from "@/components/catalog/StarRating";
@@ -40,6 +41,14 @@ function variantInStock(
   return canPurchaseVariant(product, variantAvailableStock(variant, stockMap));
 }
 
+function jumpToReviews() {
+  if (typeof window === "undefined") return;
+  window.location.hash = "reviews";
+  const tab = document.getElementById("tab-Reviews");
+  tab?.click();
+  tab?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 export default function ProductPurchasePanel({ product }: { product: StorefrontProductDetail }) {
   const addStoreItem = useCartStore((s) => s.addItem);
   const updateStoreQuantity = useCartStore((s) => s.updateQuantity);
@@ -55,6 +64,8 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   const [variantStock, setVariantStock] = useState<Map<string, number>>(
     () => new Map(product.variants.map((v) => [v.id, v.stockQuantity])),
   );
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,7 +87,6 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       }
     }
 
-    // Defer stock refresh past LCP/first input to improve INP + TBT.
     const g = globalThis as typeof globalThis & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
       cancelIdleCallback?: (id: number) => void;
@@ -93,6 +103,19 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       if (timeoutId) window.clearTimeout(timeoutId);
     };
   }, [product.id]);
+
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry?.isIntersecting);
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const variantsWithStock = useMemo(
     () =>
@@ -169,7 +192,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       if (qty > 1) {
         updateStoreQuantity(legacyVariantKey(variantId), Math.min(qty, maxQty));
       }
-      window.location.href = "/cart";
+      window.location.href = "/checkout";
     });
   }
 
@@ -205,16 +228,24 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       <button
         type="button"
         disabled={pending}
+        aria-busy={pending}
         onClick={buyNow}
         className={cn(
-          "w-full rounded-2xl border-2 border-brand-forest py-4 text-base font-bold text-brand-forest transition-all hover:bg-brand-mint",
+          "w-full rounded-2xl border-2 border-brand-forest py-4 text-base font-bold text-brand-forest transition-all hover:bg-brand-mint disabled:cursor-wait disabled:opacity-80",
           focusRing,
         )}
       >
-        Buy Now ⚡
+        {pending ? "Redirecting…" : "Buy Now ⚡"}
       </button>
       <p className="text-center text-xs text-gray-400">
-        Free delivery on orders ₹999+ · 7-day returns
+        Free delivery on orders {formatInr(FREE_SHIPPING_THRESHOLD)}+ ·{" "}
+        <Link href="/shipping-policy" className="underline underline-offset-2 hover:text-green-700">
+          Shipping
+        </Link>
+        {" · "}
+        <Link href="/refund-policy" className="underline underline-offset-2 hover:text-green-700">
+          7-day returns
+        </Link>
       </p>
     </div>
   ) : (
@@ -262,7 +293,14 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         </div>
 
         {showRating ? (
-          <StarRating rating={product.ratingAvg} count={product.ratingCount} size="md" />
+          <button
+            type="button"
+            onClick={jumpToReviews}
+            className={cn("inline-flex rounded-lg text-left", focusRing)}
+            aria-label={`Rated ${product.ratingAvg} out of 5 from ${product.ratingCount} reviews. Jump to reviews.`}
+          >
+            <StarRating rating={product.ratingAvg} count={product.ratingCount} size="md" />
+          </button>
         ) : null}
 
         <hr className="pdp-purchase-divider" />
@@ -341,6 +379,12 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
           </div>
         ) : null}
 
+        {!isComingSoon ? (
+          <div className="mt-5">
+            <PdpDeliveryEstimator />
+          </div>
+        ) : null}
+
         <div className="relative mt-6">
           <HomepageMascotGuide
             mascot="bella-bunny"
@@ -351,7 +395,9 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
             floating={false}
           />
 
-          <div className="relative mt-6 flex flex-col gap-3">{purchaseButtons}</div>
+          <div ref={ctaRef} className="relative mt-6 flex flex-col gap-3">
+            {purchaseButtons}
+          </div>
 
           <button
             type="button"
@@ -374,13 +420,27 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
 
         <p className="text-xs leading-[1.7] text-green-700/75">
           Secure checkout with Razorpay &amp; COD. Free shipping on orders over {formatInr(FREE_SHIPPING_THRESHOLD)}.{" "}
+          <Link href="/shipping-policy" className="font-semibold text-terra-600 hover:underline">
+            Shipping
+          </Link>
+          {" · "}
+          <Link href="/refund-policy" className="font-semibold text-terra-600 hover:underline">
+            Returns
+          </Link>
+          {" · "}
           <Link href="/trust-center" className="font-semibold text-terra-600 hover:underline">
             Trust center
           </Link>
         </p>
       </div>
 
-      <div className="pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-3 shadow-lg md:hidden">
+      <div
+        className={cn(
+          "pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white p-3 shadow-lg transition-transform duration-200 md:hidden",
+          showStickyBar ? "translate-y-0" : "pointer-events-none translate-y-full",
+        )}
+        aria-hidden={!showStickyBar}
+      >
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           {!isComingSoon ? (
             <div className="min-w-0 flex-1">
@@ -394,28 +454,33 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                 <button
                   type="button"
                   onClick={addToCart}
+                  disabled={pending || !showStickyBar}
+                  aria-busy={pending}
                   className={cn(
-                    "flex-1 rounded-xl bg-brand-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-green-800",
+                    "flex-1 rounded-xl bg-brand-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-green-800 disabled:opacity-70",
                     focusRing,
                   )}
                 >
-                  Add to Cart
+                  {pending ? "Adding…" : "Add to Cart"}
                 </button>
                 <button
                   type="button"
                   onClick={buyNow}
+                  disabled={pending || !showStickyBar}
+                  aria-busy={pending}
                   className={cn(
-                    "shrink-0 rounded-xl border-2 border-brand-forest px-4 py-3 text-sm font-bold text-brand-forest transition hover:bg-brand-mint",
+                    "shrink-0 rounded-xl border-2 border-brand-forest px-4 py-3 text-sm font-bold text-brand-forest transition hover:bg-brand-mint disabled:opacity-70",
                     focusRing,
                   )}
                 >
-                  Buy
+                  {pending ? "…" : "Buy"}
                 </button>
               </>
             ) : (
               <button
                 type="button"
                 onClick={handleNotifyMe}
+                disabled={!showStickyBar}
                 className={cn(
                   "w-full rounded-xl border-2 border-brand-terra py-3.5 text-sm font-bold text-brand-terra transition hover:bg-terra-50",
                   focusRing,

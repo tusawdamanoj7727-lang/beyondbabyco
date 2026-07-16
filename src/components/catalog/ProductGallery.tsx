@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
@@ -22,9 +22,11 @@ export default function ProductGallery({
   const [activeIndex, setActiveIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const thumbRailRef = useRef<HTMLDivElement>(null);
 
   const current = sorted[activeIndex];
   const isLcpSlide = activeIndex === 0;
+  const multi = sorted.length > 1;
 
   const goTo = useCallback(
     (delta: number) => {
@@ -33,6 +35,32 @@ export default function ProductGallery({
     },
     [sorted.length],
   );
+
+  const setIndex = useCallback((index: number) => {
+    setActiveIndex(index);
+  }, []);
+
+  useEffect(() => {
+    const rail = thumbRailRef.current;
+    if (!rail) return;
+    const active = rail.querySelector<HTMLElement>(`[data-thumb-index="${activeIndex}"]`);
+    active?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [activeIndex]);
+
+  useEffect(() => {
+    if (!lightboxOpen || !multi) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goTo(-1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goTo(1);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen, multi, goTo]);
 
   function onTouchStart(e: React.TouchEvent) {
     setTouchStartX(e.touches[0]?.clientX ?? null);
@@ -55,6 +83,14 @@ export default function ProductGallery({
       >
         {current ? (
           <>
+            <button
+              type="button"
+              className="absolute inset-0 z-[1] cursor-zoom-in"
+              onClick={() => setLightboxOpen(true)}
+              aria-label={`Zoom ${current.alt ?? productName}`}
+            >
+              <span className="sr-only">Open enlarged image</span>
+            </button>
             <Image
               key={current.id}
               src={current.url}
@@ -67,36 +103,37 @@ export default function ProductGallery({
               quality={IMAGE_QUALITY.product}
               placeholder="blur"
               blurDataURL={resolveImageBlur(current.blurDataUrl)}
-              className={cn(
-                "cursor-zoom-in object-cover object-center",
-                imageHoverZoom,
-              )}
-              onClick={() => setLightboxOpen(true)}
+              className={cn("object-cover object-center", imageHoverZoom)}
             />
             <button
               type="button"
               onClick={() => setLightboxOpen(true)}
               className={cn(
-                "absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm opacity-0 transition-opacity duration-[var(--duration-button)] group-hover:opacity-100 group-focus-within:opacity-100",
+                "absolute right-4 top-4 z-[2] grid h-10 w-10 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm opacity-100 transition-opacity duration-[var(--duration-button)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
                 focusRing,
               )}
               aria-label="Zoom image"
             >
               <ZoomIn className="h-4 w-4" />
             </button>
+            {multi ? (
+              <p className="absolute bottom-3 left-3 z-[2] rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-green-900 shadow-[var(--shadow-soft)]">
+                {activeIndex + 1} / {sorted.length}
+              </p>
+            ) : null}
           </>
         ) : (
           <ProductImageFallback />
         )}
 
-        {sorted.length > 1 ? (
+        {multi ? (
           <>
             <button
               type="button"
               onClick={() => goTo(-1)}
               aria-label="Previous image"
               className={cn(
-                "absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/92 p-2.5 shadow-[var(--shadow-soft)] backdrop-blur-sm sm:grid",
+                "absolute left-3 top-1/2 z-[2] grid -translate-y-1/2 rounded-full bg-white/92 p-2.5 shadow-[var(--shadow-soft)] backdrop-blur-sm",
                 focusRing,
               )}
             >
@@ -107,7 +144,7 @@ export default function ProductGallery({
               onClick={() => goTo(1)}
               aria-label="Next image"
               className={cn(
-                "absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/92 p-2.5 shadow-[var(--shadow-soft)] backdrop-blur-sm sm:grid",
+                "absolute right-3 top-1/2 z-[2] grid -translate-y-1/2 rounded-full bg-white/92 p-2.5 shadow-[var(--shadow-soft)] backdrop-blur-sm",
                 focusRing,
               )}
             >
@@ -117,9 +154,10 @@ export default function ProductGallery({
         ) : null}
       </div>
 
-      {sorted.length > 1 ? (
+      {multi ? (
         <>
           <div
+            ref={thumbRailRef}
             className="pdp-gallery-thumb-rail"
             role="tablist"
             aria-label="Product images"
@@ -129,9 +167,10 @@ export default function ProductGallery({
                 key={img.id}
                 type="button"
                 role="tab"
+                data-thumb-index={index}
                 aria-selected={activeIndex === index}
                 data-active={activeIndex === index ? "true" : "false"}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => setIndex(index)}
                 aria-label={`View image ${index + 1} of ${sorted.length}`}
                 className={cn("pdp-gallery-thumb", focusRing)}
               >
@@ -148,13 +187,18 @@ export default function ProductGallery({
               </button>
             ))}
           </div>
-          <div className="flex justify-center gap-1.5 sm:hidden" aria-hidden="true">
+          <div className="flex justify-center gap-1.5 sm:hidden" role="group" aria-label="Image position">
             {sorted.map((img, index) => (
-              <span
+              <button
                 key={`dot-${img.id}`}
+                type="button"
+                onClick={() => setIndex(index)}
+                aria-label={`Go to image ${index + 1}`}
+                aria-current={activeIndex === index ? "true" : undefined}
                 className={cn(
-                  "h-1.5 rounded-full transition-all duration-[var(--duration-button)]",
-                  activeIndex === index ? "w-4 bg-green-600" : "w-1.5 bg-green-200",
+                  "h-2 rounded-full transition-all duration-[var(--duration-button)]",
+                  focusRing,
+                  activeIndex === index ? "w-4 bg-green-600" : "w-2 bg-green-200",
                 )}
               />
             ))}
@@ -168,10 +212,14 @@ export default function ProductGallery({
           <Dialog.Content className="fixed inset-4 z-[130] flex items-center justify-center outline-none sm:inset-8">
             <Dialog.Title className="sr-only">{productName} — enlarged view</Dialog.Title>
             <Dialog.Description className="sr-only">
-              Enlarged product image. Use arrow keys or swipe to navigate between images.
+              Enlarged product image. Use arrow keys or buttons to navigate between images. Press Escape to close.
             </Dialog.Description>
             {current ? (
-              <div className="relative h-full max-h-[85vh] w-full max-w-4xl">
+              <div
+                className="relative h-full max-h-[85vh] w-full max-w-4xl"
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+              >
                 <Image
                   src={current.url}
                   alt={current.alt ?? productName}
@@ -182,12 +230,41 @@ export default function ProductGallery({
                 />
               </div>
             ) : null}
+            {multi ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => goTo(-1)}
+                  aria-label="Previous image"
+                  className={cn(
+                    "absolute left-3 top-1/2 z-[140] grid -translate-y-1/2 rounded-full bg-white/92 p-3 text-green-900 shadow-[var(--shadow-soft)] sm:left-6",
+                    focusRing,
+                  )}
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(1)}
+                  aria-label="Next image"
+                  className={cn(
+                    "absolute right-3 top-1/2 z-[140] grid -translate-y-1/2 rounded-full bg-white/92 p-3 text-green-900 shadow-[var(--shadow-soft)] sm:right-6",
+                    focusRing,
+                  )}
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+                <p className="absolute bottom-4 left-1/2 z-[140] -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-green-900">
+                  {activeIndex + 1} / {sorted.length}
+                </p>
+              </>
+            ) : null}
             <Dialog.Close asChild>
               <button
                 type="button"
                 aria-label="Close zoom"
                 className={cn(
-                  "absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/92 text-green-900 shadow-[var(--shadow-soft)]",
+                  "absolute right-4 top-4 z-[140] grid h-11 w-11 place-items-center rounded-full bg-white/92 text-green-900 shadow-[var(--shadow-soft)]",
                   focusRing,
                 )}
               >

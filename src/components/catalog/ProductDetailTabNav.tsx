@@ -21,10 +21,16 @@ export type ProductDetailTab = (typeof PDP_TABS)[number];
 type ProductDetailTabNavProps = {
   activeTab: ProductDetailTab;
   onTabChange: (tab: ProductDetailTab) => void;
+  showQa?: boolean;
 };
 
-export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductDetailTabNavProps) {
+export default function ProductDetailTabNav({
+  activeTab,
+  onTabChange,
+  showQa = true,
+}: ProductDetailTabNavProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const tabs = showQa ? PDP_TABS : PDP_TABS.filter((t) => t !== "Q&A");
 
   useEffect(() => {
     const activeButton = scrollRef.current?.querySelector<HTMLButtonElement>(
@@ -44,7 +50,7 @@ export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductD
       aria-label="Product information"
       className="sticky top-16 z-10 flex gap-1 overflow-x-auto border-b border-gray-100 bg-white scrollbar-hide"
     >
-      {PDP_TABS.map((tab) => (
+      {tabs.map((tab) => (
         <button
           key={tab}
           type="button"
@@ -53,7 +59,13 @@ export default function ProductDetailTabNav({ activeTab, onTabChange }: ProductD
           id={`tab-${tab}`}
           aria-selected={activeTab === tab}
           aria-controls={`panel-${tab}`}
-          onClick={() => onTabChange(tab)}
+          onClick={() => {
+            onTabChange(tab);
+            if (typeof window !== "undefined") {
+              const hash = tab.toLowerCase();
+              window.history.replaceState(null, "", `#${hash}`);
+            }
+          }}
           className={cn(
             "flex-shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors",
             activeTab === tab

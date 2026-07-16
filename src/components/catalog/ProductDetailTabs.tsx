@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import ProductDetailTabNav, { type ProductDetailTab } from "@/components/catalog/ProductDetailTabNav";
+import CatalogBundleRecommendations from "@/components/catalog/CatalogBundleRecommendations";
+import ProductDetailTabNav, {
+  PDP_TABS,
+  type ProductDetailTab,
+} from "@/components/catalog/ProductDetailTabNav";
 import RelatedProductCard from "@/components/catalog/RelatedProductCard";
 import RecentlyViewed from "@/components/catalog/RecentlyViewed";
 import { MICROCOPY } from "@/lib/brand/copy";
@@ -17,6 +21,14 @@ import type { EnrichedPublicReview, ProductQuestion } from "@/lib/reviews/types"
 import { cn } from "@/lib/utils";
 
 type Tab = ProductDetailTab;
+
+function tabFromHash(): Tab | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.location.hash.replace(/^#/, "").toLowerCase();
+  if (!raw) return null;
+  const match = PDP_TABS.find((t) => t.toLowerCase() === raw || t.toLowerCase().replace("&", "") === raw);
+  return match ?? null;
+}
 
 export default function ProductDetailTabs({
   product,
@@ -33,10 +45,23 @@ export default function ProductDetailTabs({
   related: StorefrontProduct[];
 }) {
   const [tab, setTab] = useState<Tab>("Benefits");
+  const showQa = questions.length > 0;
+
+  useEffect(() => {
+    function applyHash() {
+      const fromHash = tabFromHash();
+      if (!fromHash) return;
+      if (fromHash === "Q&A" && !showQa) return;
+      setTab(fromHash);
+    }
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, [showQa]);
 
   return (
     <div className="mt-20 space-y-14 lg:mt-24">
-      <ProductDetailTabNav activeTab={tab} onTabChange={setTab} />
+      <ProductDetailTabNav activeTab={tab} onTabChange={setTab} showQa={showQa} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         <div className="pdp-tab-panel">
           {tab === "Benefits" ? <BenefitsPanel benefits={product.benefits} /> : null}
@@ -53,11 +78,13 @@ export default function ProductDetailTabs({
               productSlug={product.slug}
             />
           ) : null}
-          {tab === "Q&A" ? (
+          {tab === "Q&A" && showQa ? (
             <ProductQASection questions={questions} productName={product.name} />
           ) : null}
         </div>
       </div>
+
+      {related.length >= 2 ? <CatalogBundleRecommendations products={related} /> : null}
 
       {related.length > 0 ? (
         <section aria-labelledby="related-products-heading">

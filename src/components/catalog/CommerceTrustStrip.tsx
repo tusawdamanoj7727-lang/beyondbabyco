@@ -17,6 +17,8 @@ const PANEL_ITEMS = [
   { icon: "factory", label: "Made in India" },
   { icon: "leaf", label: "Natural Ingredients" },
   { icon: "beaker", label: "Research Backed" },
+  { icon: "truck", label: "Fast Shipping" },
+  { icon: "rotate-ccw", label: "Easy Returns" },
 ] as const;
 
 type CommerceTrustStripProps = {
