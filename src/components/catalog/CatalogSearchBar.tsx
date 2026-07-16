@@ -1,20 +1,41 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { MICROCOPY } from "@/lib/brand/copy";
 
-export default function CatalogSearchBar() {
+type CatalogSearchBarProps = {
+  /** Where search submits. Defaults to filtering /products in place. */
+  actionPath?: "/products" | "/search";
+  defaultValue?: string;
+};
+
+export default function CatalogSearchBar({
+  actionPath = "/products",
+  defaultValue = "",
+}: CatalogSearchBarProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const input = form.elements.namedItem("catalog-q") as HTMLInputElement;
     const q = input.value.trim();
-    if (!q) return;
-    router.push(`/search?q=${encodeURIComponent(q)}`);
+
+    if (actionPath === "/search") {
+      if (!q) return;
+      router.push(`/search?q=${encodeURIComponent(q)}`);
+      return;
+    }
+
+    const sp = new URLSearchParams(searchParams.toString());
+    if (q) sp.set("q", q);
+    else sp.delete("q");
+    sp.delete("page");
+    const qs = sp.toString();
+    router.push(qs ? `/products?${qs}` : "/products");
   }
 
   return (
@@ -29,6 +50,8 @@ export default function CatalogSearchBar() {
         type="search"
         placeholder={MICROCOPY.search.placeholder}
         autoComplete="off"
+        defaultValue={defaultValue || searchParams.get("q") || ""}
+        enterKeyHint="search"
       />
     </form>
   );

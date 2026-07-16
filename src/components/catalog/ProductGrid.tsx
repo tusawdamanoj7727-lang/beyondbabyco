@@ -55,6 +55,7 @@ export default function ProductGrid({
             onQuickView={enableQuickView ? setQuickView : undefined}
             enableCompare={enableCompare}
             showListingCta
+            hideHoverActions={false}
             imagePriority={index < 2}
           />
         ))}

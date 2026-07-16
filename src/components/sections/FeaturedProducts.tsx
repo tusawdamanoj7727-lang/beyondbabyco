@@ -1,32 +1,56 @@
-import Link from "next/link";
+"use client";
 
 import HomeSection from "@/components/homepage/HomeSection";
 import HomeSectionHeader from "@/components/homepage/HomeSectionHeader";
-import NotifyMeButton from "@/components/homepage/NotifyMeButton";
-import Card from "../ui/Card";
-import Badge from "../ui/Badge";
-import BrandSceneImage from "@/components/brand/BrandSceneImage";
+import ProductCard from "@/components/catalog/ProductCard";
 import { FEATURED_PRODUCTS as FEATURED_COPY } from "@/lib/brand/copy";
-import { FEATURED_PRODUCTS } from "../../lib/data";
 import type { StorefrontFeaturedProduct } from "@/lib/homepage/storefront";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
-import { ctaHeight, editorialImageCrop, focusRing, homepageGridGap, imageHoverZoom, motionButton } from "@/lib/design/ui";
+import type { StorefrontProduct } from "@/lib/catalog/types";
+import { GST_RATE_BABY } from "@/lib/catalog/gst-rates";
+import { homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
-type BadgeVariant = "default" | "success" | "warning" | "info" | "comingSoon";
-
-const STATUS_BADGE_VARIANT: Record<string, BadgeVariant> = {
-  "Available now": "success",
-  "Available Now": "success",
-  "In Stock": "success",
-  "Best Seller": "success",
-  Featured: "success",
-  New: "info",
-  "Coming 2026": "comingSoon",
-  "Coming Soon": "comingSoon",
-};
-
 const LAUNCH_PRODUCT_COUNT = 8;
+
+function featuredToStorefront(product: StorefrontFeaturedProduct): StorefrontProduct | null {
+  if (!product.slug) return null;
+  const priceNum = Number(String(product.price).replace(/[^\d.]/g, "")) || 0;
+  const comingSoon = /coming/i.test(product.badge);
+  const inStock = /stock|available|best|new|featured/i.test(product.badge) && !comingSoon;
+  return {
+    id: String(product.id),
+    slug: product.slug,
+    name: product.name,
+    shortDescription: product.description || null,
+    price: priceNum,
+    compareAtPrice: null,
+    salePrice: null,
+    effectivePrice: priceNum,
+    discountPercent: null,
+    status: comingSoon ? "coming_soon" : "active",
+    stock: inStock ? 10 : 0,
+    inStock,
+    ratingAvg: 0,
+    ratingCount: 0,
+    categoryId: null,
+    categoryName: product.category,
+    categorySlug: null,
+    ageGroupName: null,
+    ageGroupSlug: null,
+    subcategoryId: null,
+    subcategoryName: null,
+    brandId: null,
+    brandName: null,
+    brandSlug: null,
+    imageUrl: product.imageUrl ?? null,
+    isFeatured: true,
+    isBestSeller: /best/i.test(product.badge),
+    isNewArrival: /new/i.test(product.badge),
+    isTrending: false,
+    badge: product.badge,
+    gstRate: GST_RATE_BABY,
+  };
+}
 
 export default function FeaturedProducts({
   heading,
@@ -36,18 +60,12 @@ export default function FeaturedProducts({
   products?: StorefrontFeaturedProduct[];
 }) {
   const sectionHeading = heading?.trim() || FEATURED_COPY.heading;
-  const items: StorefrontFeaturedProduct[] = (
-    products?.length ? products : FEATURED_PRODUCTS.map((p) => ({
-      id: p.id,
-      name: p.name,
-      category: p.category,
-      badge: p.badge,
-      description: p.description,
-      price: p.price,
-      imageUrl: p.imageUrl,
-      slug: "slug" in p ? p.slug : undefined,
-    }))
-  ).slice(0, LAUNCH_PRODUCT_COUNT);
+  const cards = (products ?? [])
+    .map(featuredToStorefront)
+    .filter((p): p is StorefrontProduct => p != null)
+    .slice(0, LAUNCH_PRODUCT_COUNT);
+
+  if (cards.length === 0) return null;
 
   return (
     <HomeSection id="products" tone="white">
@@ -58,78 +76,19 @@ export default function FeaturedProducts({
       />
 
       <div className={cn("homepage-section-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4", homepageGridGap)}>
-        {items.map((product, index) => (
+        {cards.map((product, index) => (
           <div
             key={product.id}
             className="scroll-reveal-item h-full"
             style={{ animationDelay: `${index * 50}ms` }}
           >
-            <Card
-              as="div"
-              variant="elevated"
-              radius="3xl"
-              padding="none"
-              hover
-              fullHeight
-              className="homepage-product-card group flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-            >
-              <div className="product-pedestal-stage product-image-stage relative w-full overflow-hidden">
-                <BrandSceneImage
-                  variant="product"
-                  imageUrl={product.imageUrl}
-                  alt={product.name}
-                  sizes={IMAGE_SIZES.productCard}
-                  quality={IMAGE_QUALITY.product}
-                  imageClassName={cn("product-pedestal-image", editorialImageCrop, imageHoverZoom)}
-                />
-                <div aria-hidden="true" className="product-pedestal-reflection" />
-              </div>
-
-              <div className="flex flex-1 flex-col p-6">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="default" size="sm" className="shrink-0">
-                    {product.category}
-                  </Badge>
-                  <Badge
-                    variant={STATUS_BADGE_VARIANT[product.badge] ?? "default"}
-                    size="sm"
-                    className="shrink-0"
-                  >
-                    {product.badge}
-                  </Badge>
-                </div>
-
-                <h3 className="text-card-title mt-4">{product.name}</h3>
-
-                <p className="prose-measure mt-2 line-clamp-3 text-sm leading-[1.75] text-green-700/85">
-                  {product.description}
-                </p>
-
-                <p className="product-price">{product.price}</p>
-
-                <div className="pt-4">
-                  {product.slug ? (
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className={cn(
-                        "btn-primary-premium inline-flex w-full items-center justify-center rounded-full px-5 text-base font-semibold",
-                        ctaHeight,
-                        motionButton,
-                        focusRing,
-                      )}
-                    >
-                      {FEATURED_COPY.viewProduct}
-                    </Link>
-                  ) : (
-                    <NotifyMeButton
-                      productCategory={product.category}
-                      label={FEATURED_COPY.notifyMe}
-                      className={cn(ctaHeight, "text-base")}
-                    />
-                  )}
-                </div>
-              </div>
-            </Card>
+            <ProductCard
+              product={product}
+              showListingCta
+              hideHoverActions
+              imagePriority={index < 2}
+              className="homepage-product-card h-full"
+            />
           </div>
         ))}
       </div>

@@ -25,20 +25,21 @@ type ProductCardProps = {
   enableCompare?: boolean;
   showListingCta?: boolean;
   imagePriority?: boolean;
+  density?: "default" | "related";
 };
 
-function cardPurchaseAction(product: StorefrontProduct, compact = true) {
+function cardPurchaseAction(product: StorefrontProduct, fullWidth = true) {
   if (canPurchaseProduct(product)) {
     return (
       <AddToCartButton
         product={product}
         size="sm"
-        fullWidth={false}
+        fullWidth={fullWidth}
         showIcon={false}
         label="Add to Cart"
         className={cn(
-          "h-auto rounded-lg px-3 py-1.5 text-xs font-semibold active:scale-95",
-          compact && "shrink-0",
+          "h-auto rounded-xl px-3 py-2.5 text-xs font-bold active:scale-95",
+          fullWidth && "w-full",
         )}
       />
     );
@@ -48,14 +49,14 @@ function cardPurchaseAction(product: StorefrontProduct, compact = true) {
     <NotifyMeButton
       product={product}
       size="sm"
-      fullWidth={false}
+      fullWidth={fullWidth}
       label={notifyMeButtonLabel(
         product.status === "coming_soon" ? "launch" : "restock",
         product.status,
       )}
       className={cn(
-        "h-auto rounded-lg border border-brand-forest bg-transparent px-3 py-1.5 text-xs font-semibold text-brand-forest hover:bg-brand-mint",
-        compact && "shrink-0",
+        "h-auto rounded-xl border border-brand-forest bg-transparent px-3 py-2.5 text-xs font-bold text-brand-forest hover:bg-brand-mint",
+        fullWidth && "w-full",
       )}
     />
   );
@@ -70,6 +71,7 @@ export default function ProductCard({
   enableCompare = false,
   showListingCta = false,
   imagePriority = false,
+  density = "default",
 }: ProductCardProps) {
   const toast = useToast();
   const { isWishlisted, toggle } = useWishlist();
@@ -110,8 +112,8 @@ export default function ProductCard({
         </button>
       ) : null}
       {!hideHoverActions ? (
-        <div className="absolute inset-x-0 bottom-0 flex translate-y-0 gap-2 p-3 transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] lg:translate-y-full lg:group-hover:translate-y-0 lg:group-focus-within:translate-y-0">
-          {cardPurchaseAction(product, false)}
+        <div className="absolute inset-x-0 bottom-0 z-[2] flex translate-y-0 gap-2 p-3 transition-transform duration-[var(--duration-card)] ease-[var(--ease-out)] lg:translate-y-full lg:group-hover:translate-y-0 lg:group-focus-within:translate-y-0">
+          {cardPurchaseAction(product, true)}
           {onQuickView ? (
             <button
               type="button"
@@ -120,7 +122,7 @@ export default function ProductCard({
                 e.stopPropagation();
                 onQuickView(product);
               }}
-              className={cn("icon-btn bg-white/95 shadow-sm backdrop-blur-sm", focusRing)}
+              className={cn("icon-btn shrink-0 bg-white/95 shadow-sm backdrop-blur-sm", focusRing)}
               aria-label={`Quick view ${product.name}`}
             >
               <Eye aria-hidden="true" />
@@ -136,7 +138,8 @@ export default function ProductCard({
       <ProductCardLayout
         product={product}
         priority={imagePriority}
-        actions={showListingCta ? undefined : cardPurchaseAction(product)}
+        density={density}
+        actions={showListingCta || hideHoverActions ? cardPurchaseAction(product, true) : undefined}
         imageOverlay={imageOverlay}
       />
       {!hideWishlistButton ? (
@@ -147,15 +150,12 @@ export default function ProductCard({
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
           className={cn(
-            "absolute left-3 top-[calc(100%-4.5rem)] z-10 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-brand-forest sm:top-[13.5rem]",
+            "absolute right-3 top-12 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-600 shadow-sm backdrop-blur-sm transition hover:text-brand-forest",
             focusRing,
           )}
         >
           <Heart className={cn("h-3.5 w-3.5", wishlisted && "fill-current text-brand-terra")} aria-hidden="true" />
         </button>
-      ) : null}
-      {showListingCta ? (
-        <div className="mt-3">{cardPurchaseAction(product, false)}</div>
       ) : null}
     </article>
   );

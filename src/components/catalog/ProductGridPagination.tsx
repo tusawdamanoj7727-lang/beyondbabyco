@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import Button from "@/components/ui/Button";
 import { focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -17,33 +18,41 @@ export default function ProductGridPagination({
   if (pageCount <= 1) return null;
 
   const pages = buildPageList(page, pageCount);
+  const nextHref = page < pageCount ? `${basePath}${patchPage(search, page + 1)}` : null;
 
   return (
-    <nav aria-label="Pagination" className="collection-pagination">
-      {page > 1 ? (
-        <PageLink href={`${basePath}${patchPage(search, page - 1)}`} label="Previous" active={false} />
+    <div className="mt-10 flex flex-col items-center gap-4">
+      {nextHref ? (
+        <Button asChild variant="secondary" className="min-w-[12rem]">
+          <Link href={nextHref}>Load more products</Link>
+        </Button>
       ) : null}
-      {pages.map((p, i) =>
-        p === "…" ? (
-          <span key={`ellipsis-${i}`} className="px-2 text-green-700/50" aria-hidden="true">
-            …
-          </span>
-        ) : (
-          <Link
-            key={p}
-            href={`${basePath}${patchPage(search, p)}`}
-            aria-current={p === page ? "page" : undefined}
-            data-active={p === page ? "true" : "false"}
-            className={cn("collection-page-link", focusRing)}
-          >
-            {p}
-          </Link>
-        ),
-      )}
-      {page < pageCount ? (
-        <PageLink href={`${basePath}${patchPage(search, page + 1)}`} label="Next" active={false} />
-      ) : null}
-    </nav>
+      <nav aria-label="Pagination" className="collection-pagination">
+        {page > 1 ? (
+          <PageLink href={`${basePath}${patchPage(search, page - 1)}`} label="Previous" active={false} />
+        ) : null}
+        {pages.map((p, i) =>
+          p === "…" ? (
+            <span key={`ellipsis-${i}`} className="px-2 text-green-700/50" aria-hidden="true">
+              …
+            </span>
+          ) : (
+            <Link
+              key={p}
+              href={`${basePath}${patchPage(search, p)}`}
+              aria-current={p === page ? "page" : undefined}
+              data-active={p === page ? "true" : "false"}
+              className={cn("collection-page-link", focusRing)}
+            >
+              {p}
+            </Link>
+          ),
+        )}
+        {page < pageCount ? (
+          <PageLink href={`${basePath}${patchPage(search, page + 1)}`} label="Next" active={false} />
+        ) : null}
+      </nav>
+    </div>
   );
 }
 

@@ -1,21 +1,29 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 import ProductCardImage from "@/components/catalog/ProductCardImage";
 import { formatInr } from "@/lib/catalog/format";
-import { IMAGES } from "@/lib/images";
+import { productUnit } from "@/lib/catalog/product-images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/storefront/shipping";
 import { cn } from "@/lib/utils";
 
 function isResearchBacked(product: StorefrontProduct): boolean {
   return (
     product.secondaryBadge === "Research Backed" ||
     product.secondaryBadge === "Research Complete" ||
-    product.status === "active" ||
-    product.status === "coming_soon"
+    product.badge === "Research Backed"
   );
+}
+
+function stockBadge(product: StorefrontProduct): { label: string; className: string } | null {
+  if (product.status === "coming_soon") {
+    return { label: "Coming Soon", className: "bg-orange-50 text-orange-600" };
+  }
+  if (product.inStock) {
+    return { label: "In Stock", className: "bg-green-100 text-green-700" };
+  }
+  return { label: "Out of Stock", className: "bg-gray-100 text-gray-600" };
 }
 
 type ProductCardLayoutProps = {
@@ -24,7 +32,8 @@ type ProductCardLayoutProps = {
   className?: string;
   actions?: ReactNode;
   imageOverlay?: ReactNode;
-  useProductCardImage?: boolean;
+  /** Compact related/cross-sell density */
+  density?: "default" | "related";
 };
 
 export function ProductCardLayout({
@@ -33,14 +42,21 @@ export function ProductCardLayout({
   className,
   actions,
   imageOverlay,
-  useProductCardImage = true,
+  density = "default",
 }: ProductCardLayoutProps) {
   const isComingSoon = product.status === "coming_soon";
   const showPrice = !isComingSoon && product.effectivePrice > 0;
   const showCompare =
     product.compareAtPrice != null &&
     product.compareAtPrice > product.effectivePrice &&
-    product.inStock;
+    (product.inStock || isComingSoon);
+  const savings =
+    showCompare && product.compareAtPrice != null
+      ? Math.round(product.compareAtPrice - product.effectivePrice)
+      : 0;
+  const unit = productUnit(product.slug);
+  const badge = stockBadge(product);
+  const related = density === "related";
 
   return (
     <div
@@ -51,48 +67,42 @@ export function ProductCardLayout({
     >
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-brand-cream">
-          {useProductCardImage ? (
-            <ProductCardImage
-              src={product.imageUrl}
-              alt={product.name}
-              productName={product.name}
-              productSlug={product.slug}
-              categorySlug={product.categorySlug}
-              blurDataUrl={product.imageBlurDataUrl}
-              priority={priority}
-              className="h-full w-full"
-              imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-110"
-              sizes={IMAGE_SIZES.productCard}
-            />
-          ) : (
-            <Image
-              src={product.imageUrl || IMAGES.products.placeholder}
-              alt={product.name}
-              width={IMAGE_DIMENSIONS.productCard.width}
-              height={IMAGE_DIMENSIONS.productCard.height}
-              priority={priority}
-              sizes={IMAGE_SIZES.productCard}
-              quality={IMAGE_QUALITY.product}
-              className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-110"
-            />
-          )}
+          <ProductCardImage
+            src={product.imageUrl}
+            alt={product.name}
+            productName={product.name}
+            productSlug={product.slug}
+            categorySlug={product.categorySlug}
+            blurDataUrl={product.imageBlurDataUrl}
+            priority={priority}
+            className="h-full w-full"
+            imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-110"
+          />
 
-          <div className="absolute right-3 top-3">
-            {product.inStock ? (
-              <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
-                In Stock
+          {badge ? (
+            <div className="absolute right-3 top-3 z-[1]">
+              <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", badge.className)}>
+                {badge.label}
               </span>
-            ) : (
-              <span className="rounded-full bg-orange-50 px-2.5 py-1 text-xs font-semibold text-orange-600">
-                Coming Soon
-              </span>
-            )}
-          </div>
+            </div>
+          ) : null}
 
           {isResearchBacked(product) ? (
-            <div className="absolute left-3 top-3">
+            <div className="absolute left-3 top-3 z-[1]">
               <span className="rounded-full bg-brand-forest/10 px-2 py-0.5 text-[10px] font-semibold text-brand-forest">
                 Research Backed
+              </span>
+            </div>
+          ) : product.isBestSeller ? (
+            <div className="absolute left-3 top-3 z-[1]">
+              <span className="rounded-full bg-terra-100 px-2 py-0.5 text-[10px] font-semibold text-terra-700">
+                Best Seller
+              </span>
+            </div>
+          ) : product.isNewArrival ? (
+            <div className="absolute left-3 top-3 z-[1]">
+              <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold text-sky-700">
+                New
               </span>
             </div>
           ) : null}
@@ -100,59 +110,56 @@ export function ProductCardLayout({
           {imageOverlay}
         </div>
 
-        <div className={cn("p-4", actions ? "pb-3" : "pb-4")}>
+        <div className={cn("p-4", actions ? "pb-3" : "pb-4", related && "p-3")}>
           {product.categoryName ? (
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               {product.categoryName}
+              {unit ? ` · ${unit}` : ""}
             </p>
+          ) : unit ? (
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{unit}</p>
           ) : null}
-          <h3 className="mb-1 mt-1 line-clamp-2 text-sm font-semibold leading-snug text-gray-900">
+          <h3
+            className={cn(
+              "mb-1 mt-1 line-clamp-2 font-semibold leading-snug text-gray-900",
+              related ? "text-sm" : "text-sm",
+            )}
+          >
             {product.name}
           </h3>
-          {product.shortDescription ? (
+          {!related && product.shortDescription ? (
             <p className="line-clamp-2 text-xs text-gray-500">{product.shortDescription}</p>
           ) : null}
         </div>
       </Link>
 
-      {actions ? (
-        <div className="flex items-center justify-between gap-2 px-4 pb-4">
-          <div className="min-w-0">
-            {showPrice ? (
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-base font-bold text-brand-forest">
-                  {formatInr(product.effectivePrice)}
-                </span>
-                {showCompare ? (
-                  <span className="text-xs text-gray-400 line-through">
-                    {formatInr(product.compareAtPrice!)}
-                  </span>
-                ) : null}
-              </div>
-            ) : (
-              <span className="text-sm font-medium text-gray-400">Launching 2026</span>
-            )}
-          </div>
-          {actions}
-        </div>
-      ) : (
-        <div className="px-4 pb-4">
-          {showPrice ? (
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-base font-bold text-brand-forest">
-                {formatInr(product.effectivePrice)}
+      <div className={cn("px-4 pb-4", related && "px-3 pb-3")}>
+        {showPrice ? (
+          <div className="mb-2 flex flex-wrap items-baseline gap-1.5">
+            <span className={cn("font-bold text-brand-forest", related ? "text-base" : "text-lg")}>
+              {formatInr(product.effectivePrice)}
+            </span>
+            {showCompare ? (
+              <span className="text-xs text-gray-400 line-through">
+                {formatInr(product.compareAtPrice!)}
               </span>
-              {showCompare ? (
-                <span className="text-xs text-gray-400 line-through">
-                  {formatInr(product.compareAtPrice!)}
-                </span>
-              ) : null}
-            </div>
-          ) : (
-            <span className="text-sm font-medium text-gray-400">Launching 2026</span>
-          )}
-        </div>
-      )}
+            ) : null}
+            {savings > 0 ? (
+              <span className="text-xs font-semibold text-green-600">Save {formatInr(savings)}</span>
+            ) : null}
+          </div>
+        ) : (
+          <p className="mb-2 text-sm font-medium text-gray-400">Launching 2026</p>
+        )}
+
+        {actions ? <div className="flex items-center justify-between gap-2">{actions}</div> : null}
+
+        {!related ? (
+          <p className="mt-2 text-center text-[10px] text-gray-400">
+            Incl. of all taxes · Free ship {formatInr(FREE_SHIPPING_THRESHOLD)}+
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }
