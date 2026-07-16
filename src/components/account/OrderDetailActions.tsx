@@ -50,7 +50,7 @@ function OrderTimelinePanel({
             />
             <div>
               <p className="text-sm font-semibold capitalize text-green-900">{e.type.replace("_", " ")}</p>
-              <p className="text-sm text-green-700/80">{e.message}</p>
+              <p className="text-sm text-green-700">{e.message}</p>
               <p className="text-xs text-green-600/60">{new Date(e.createdAt).toLocaleString("en-IN")}</p>
             </div>
           </li>

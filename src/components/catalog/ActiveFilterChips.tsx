@@ -76,7 +76,7 @@ export default function ActiveFilterChips({
 
   return (
     <div className={cn("mt-3 flex flex-wrap items-center gap-2", className)}>
-      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-green-700/55">Active</span>
+      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-green-700">Active</span>
       {chips.map((chip) => (
         <button
           key={chip.key}

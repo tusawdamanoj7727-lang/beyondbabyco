@@ -117,7 +117,7 @@ export default async function AccountOrderDetailPage({
             </p>
           ) : null}
           {shipment?.expectedDelivery ? (
-            <p className="text-sm text-green-700/70">
+            <p className="text-sm text-green-700">
               Estimated delivery: {new Date(shipment.expectedDelivery).toLocaleDateString("en-IN")}
             </p>
           ) : null}
@@ -125,7 +125,7 @@ export default async function AccountOrderDetailPage({
           {shipment ? (
             <ShipmentTimeline events={shipment.timeline} />
           ) : (
-            <p className="text-sm text-green-700/60">Shipment will appear here once dispatched.</p>
+            <p className="text-sm text-green-700">Shipment will appear here once dispatched.</p>
           )}
         </section>
       </div>

@@ -87,7 +87,7 @@ export default function Testimonials({
                   <span aria-hidden="true">{"★".repeat(testimonial.rating)}</span>
                 </div>
 
-                <p className="mt-4 font-body text-base leading-[1.75] text-green-700/90">
+                <p className="mt-4 font-body text-base leading-[1.75] text-green-800">
                   &ldquo;{testimonial.text}&rdquo;
                 </p>
 

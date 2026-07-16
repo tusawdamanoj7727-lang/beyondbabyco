@@ -162,7 +162,7 @@ export default function AiDevClient() {
       <div className="space-y-5">
         <section className="rounded-3xl border border-green-100 bg-white p-6 shadow-card">
           <h2 className="font-heading text-lg font-bold text-green-900">Catalog asset presets</h2>
-          <p className="mt-1 text-sm text-green-700/80">
+          <p className="mt-1 text-sm text-green-700">
             One-click placeholders for hero, lifestyle, category, and marketing assets.
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -175,7 +175,7 @@ export default function AiDevClient() {
                 className="rounded-2xl border border-cream-200 bg-cream-50/50 px-4 py-3 text-left transition-colors hover:border-green-300 hover:bg-green-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500"
               >
                 <span className="font-semibold text-green-900">{preset.label}</span>
-                <span className="mt-1 block text-xs text-green-700/70">{preset.description}</span>
+                <span className="mt-1 block text-xs text-green-700">{preset.description}</span>
               </button>
             ))}
           </div>
@@ -314,7 +314,7 @@ export default function AiDevClient() {
       <aside className="space-y-6">
         <div className="rounded-3xl border border-green-100 bg-white p-5 shadow-card">
           <h2 className="font-heading text-lg font-bold text-green-900">ComfyUI status</h2>
-          <p className="mt-2 text-sm text-green-700/80">
+          <p className="mt-2 text-sm text-green-700">
             {health?.available ? (
               <>
                 <span className="font-semibold text-green-600">Online</span>
@@ -345,7 +345,7 @@ export default function AiDevClient() {
                 unoptimized
               />
             </div>
-            <p className="mt-3 text-xs text-green-700/70">
+            <p className="mt-3 text-xs text-green-700">
               Seed {preview.seed} · {(preview.durationMs / 1000).toFixed(1)}s
             </p>
             <a

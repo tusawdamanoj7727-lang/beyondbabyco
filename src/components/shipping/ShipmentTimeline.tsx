@@ -12,7 +12,7 @@ export interface TimelineEvent {
 
 export default function ShipmentTimeline({ events }: { events: TimelineEvent[] }) {
   if (events.length === 0) {
-    return <p className="text-sm text-green-700/60">No tracking updates yet.</p>;
+    return <p className="text-sm text-green-700">No tracking updates yet.</p>;
   }
 
   return (
@@ -37,7 +37,7 @@ export default function ShipmentTimeline({ events }: { events: TimelineEvent[] }
             <div className="min-w-0 flex-1">
               <p className="font-semibold text-green-900">{event.status}</p>
               {event.message && <p className="text-sm text-green-800/80">{event.message}</p>}
-              <p className="mt-1 text-xs text-green-700/60">
+              <p className="mt-1 text-xs text-green-700">
                 {[event.location, new Date(event.eventTime).toLocaleString("en-IN")].filter(Boolean).join(" · ")}
               </p>
             </div>

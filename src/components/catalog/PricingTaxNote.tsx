@@ -21,7 +21,7 @@ export default function PricingTaxNote({
       {showMrpLabel ? (
         <>
           <span className="font-medium text-gray-600">{MRP_INCLUSIVE_TAX_LABEL}</span>
-          <span className="text-gray-400"> · </span>
+          <span className="text-gray-600"> · </span>
         </>
       ) : null}
       Inclusive of {roundedRate}% GST
@@ -31,7 +31,7 @@ export default function PricingTaxNote({
 
 export function MrpInclusiveLabel({ className }: { className?: string }) {
   return (
-    <span className={cn("text-[11px] font-medium text-green-700/70", className)}>
+    <span className={cn("text-[11px] font-medium text-green-700", className)}>
       {MRP_INCLUSIVE_TAX_LABEL}
     </span>
   );

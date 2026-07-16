@@ -27,7 +27,7 @@ export default function FaqPage() {
       <div className="min-h-screen bg-brand-cream py-16">
         <div className="mx-auto max-w-3xl px-4">
           <h1 className="mb-3 font-heading text-4xl font-black text-brand-forest">Frequently Asked Questions</h1>
-          <p className="mb-10 text-caption text-green-700/70">Answers to common questions from parents like you</p>
+          <p className="mb-10 text-caption text-green-700">Answers to common questions from parents like you</p>
           <div role="region" aria-label="Frequently asked questions" className="space-y-4">
             {STOREFRONT_FAQ_ITEMS.map((faq) => (
               <details

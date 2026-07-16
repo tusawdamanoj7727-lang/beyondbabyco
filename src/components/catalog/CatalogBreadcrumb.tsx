@@ -6,7 +6,7 @@ type Crumb = { label: string; href?: string };
 export default function CatalogBreadcrumb({ items }: { items: Crumb[] }) {
   return (
     <nav aria-label="Breadcrumb" className="container py-4">
-      <ol className="flex flex-wrap items-center gap-1 text-sm text-green-700/80">
+      <ol className="flex flex-wrap items-center gap-1 text-sm text-green-700">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (

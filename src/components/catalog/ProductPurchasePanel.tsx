@@ -237,7 +237,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
       >
         {pending ? "Redirecting…" : "Buy Now ⚡"}
       </button>
-      <p className="text-center text-xs text-gray-400">
+      <p className="text-center text-xs text-gray-600">
         Free delivery on orders {formatInr(FREE_SHIPPING_THRESHOLD)}+ ·{" "}
         <Link href="/shipping-policy" className="underline underline-offset-2 hover:text-green-700">
           Shipping
@@ -287,7 +287,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
           ) : null}
           <h1 className="pdp-product-title mt-2">{product.name}</h1>
           {product.shortDescription ? (
-            <p className="mt-4 max-w-prose text-base leading-[1.75] text-green-700/90">{product.shortDescription}</p>
+            <p className="mt-4 max-w-prose text-base leading-[1.75] text-green-800">{product.shortDescription}</p>
           ) : null}
           {displaySku ? <p className="pdp-product-sku mt-3">SKU · {displaySku}</p> : null}
         </div>
@@ -339,7 +339,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
               <>
                 <span className="text-4xl font-black text-brand-forest">{formatInr(displayPrice)}</span>
                 {showCompare ? (
-                  <span className="text-xl text-gray-400 line-through">{formatInr(displayCompare!)}</span>
+                  <span className="text-xl text-gray-600 line-through">{formatInr(displayCompare!)}</span>
                 ) : null}
                 {product.discountPercent && showCompare ? (
                   <span className="rounded-full bg-terra-100 px-3 py-1 text-sm font-bold text-terra-700">
@@ -412,13 +412,13 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
               focusRing,
             )}
           >
-            <Heart className={cn("h-5 w-5", wishlisted && "fill-current")} />
+            <Heart className={cn("h-5 w-5", wishlisted && "fill-current")} aria-hidden="true" />
           </button>
         </div>
 
         <CommerceTrustStrip variant="panel" />
 
-        <p className="text-xs leading-[1.7] text-green-700/75">
+        <p className="text-xs leading-[1.7] text-green-700">
           Secure checkout with Razorpay &amp; COD. Free shipping on orders over {formatInr(FREE_SHIPPING_THRESHOLD)}.{" "}
           <Link href="/shipping-policy" className="font-semibold text-terra-600 hover:underline">
             Shipping
@@ -440,6 +440,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
           showStickyBar ? "translate-y-0" : "pointer-events-none translate-y-full",
         )}
         aria-hidden={!showStickyBar}
+        {...(!showStickyBar ? { inert: true } : {})}
       >
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           {!isComingSoon ? (

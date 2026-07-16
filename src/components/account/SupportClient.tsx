@@ -56,7 +56,7 @@ export default function SupportClient({
       <div className="flex flex-wrap items-center gap-6">
         <div className="flex-1">
           <h1 className="font-heading text-2xl font-bold text-green-900">Support Center</h1>
-          <p className="mt-1 text-green-700/70">We&apos;re here to help you and your little one.</p>
+          <p className="mt-1 text-green-700">We&apos;re here to help you and your little one.</p>
         </div>
         <Mascot mascot="bella-bunny" pose="peek" size={120} animated alt="" />
       </div>
@@ -90,7 +90,7 @@ export default function SupportClient({
           <div className="mt-4 rounded-2xl border border-green-100 bg-gradient-to-b from-cream-50 to-white px-6 py-10 text-center">
             <Mascot mascot="gigi-giraffe" pose="reading" size={96} animated floating alt="" />
             <p className="mt-4 font-heading font-semibold text-green-900">We&apos;re preparing answers</p>
-            <p className="mt-2 text-sm text-green-700/70">
+            <p className="mt-2 text-sm text-green-700">
               Browse products or contact us — our team responds within one business day.
             </p>
           </div>
@@ -110,7 +110,7 @@ export default function SupportClient({
                   />
                 </button>
                 {openFaq === faq.id ? (
-                  <p className="border-t border-green-50 px-4 py-3 text-sm text-green-700/90">{faq.answer}</p>
+                  <p className="border-t border-green-50 px-4 py-3 text-sm text-green-800">{faq.answer}</p>
                 ) : null}
               </li>
             ))}
@@ -120,7 +120,7 @@ export default function SupportClient({
 
       <section id="returns" className="rounded-3xl border border-green-100 bg-gradient-to-br from-green-50/70 to-cream-50 p-6">
         <h2 className="font-heading text-lg font-bold text-green-900">Return requests</h2>
-        <p className="mt-2 text-sm text-green-700/80">
+        <p className="mt-2 text-sm text-green-700">
           Contact our care team with your order number and we&apos;ll guide you through returns and exchanges.
         </p>
       </section>
@@ -197,7 +197,7 @@ function SupportCard({
     >
       <Icon className="h-6 w-6 text-green-600" aria-hidden="true" />
       <p className="mt-3 font-heading font-semibold text-green-900">{title}</p>
-      <p className="mt-1 text-sm text-green-700/70">{description}</p>
+      <p className="mt-1 text-sm text-green-700">{description}</p>
     </Link>
   );
 }

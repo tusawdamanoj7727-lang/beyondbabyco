@@ -102,7 +102,7 @@ export default function PdpDeliveryEstimator() {
           {result.message}
         </p>
       ) : (
-        <p className="mt-2 text-xs text-green-700/70">See if we deliver to your area before you buy.</p>
+        <p className="mt-2 text-xs text-green-700">See if we deliver to your area before you buy.</p>
       )}
     </div>
   );

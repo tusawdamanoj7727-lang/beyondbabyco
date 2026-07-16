@@ -86,7 +86,7 @@ export default function CampaignCalendar({
 
       <ul className="space-y-2" aria-label="Calendar events">
         {displayed.length === 0 ? (
-          <li className="rounded-2xl border border-dashed border-cream-300 px-4 py-8 text-center text-sm text-green-700/60">
+          <li className="rounded-2xl border border-dashed border-cream-300 px-4 py-8 text-center text-sm text-green-700">
             No events in this {view}.
           </li>
         ) : (
@@ -120,9 +120,9 @@ function CalendarEventRow({ event }: { event: CalendarEvent }) {
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-semibold text-green-900">{event.title}</p>
-        <span className="text-xs font-medium text-green-700/60">{formatCampaignDate(event.date)}</span>
+        <span className="text-xs font-medium text-green-700">{formatCampaignDate(event.date)}</span>
       </div>
-      <p className="mt-1 text-xs text-green-700/60">
+      <p className="mt-1 text-xs text-green-700">
         {typeLabel} · {event.category}
       </p>
     </li>

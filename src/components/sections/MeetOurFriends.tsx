@@ -91,7 +91,7 @@ function MascotCard({ mascot, delay }: { mascot: MascotCardData; delay: number }
         />
       </div>
       <h3 className="text-base font-bold text-brand-forest">{mascot.name}</h3>
-      <p className="mt-1 text-xs text-gray-400">{mascot.role}</p>
+      <p className="mt-1 text-xs text-gray-600">{mascot.role}</p>
       <div className="mt-2 h-1 w-8 rounded-full" style={{ backgroundColor: mascot.color }} />
     </Link>
   );

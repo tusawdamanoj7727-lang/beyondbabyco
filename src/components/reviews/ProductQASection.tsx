@@ -119,7 +119,7 @@ export default function ProductQASection({
       ) : null}
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-green-700/70" role="status">
+        <p className="text-sm text-green-700" role="status">
           No questions match your search. Try another keyword or category.
         </p>
       ) : null}

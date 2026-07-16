@@ -27,7 +27,7 @@ export default function Error({
           <Mascot mascot="poppy-panda" pose="peek" size={120} animated floating alt="" />
           <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-terra-600">Something went wrong</p>
           <h1 className="mt-2 font-heading text-3xl font-extrabold text-green-900">Unexpected error</h1>
-          <p className="mt-3 max-w-md text-base text-green-700/80">
+          <p className="mt-3 max-w-md text-base text-green-700">
             Please try again. If the problem continues, our care team is happy to help.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">

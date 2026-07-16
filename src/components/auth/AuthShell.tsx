@@ -72,7 +72,7 @@ export default function AuthShell({
                 duration={5}
               />
               <h1 className="mt-4 font-heading text-2xl font-bold text-green-900">{title}</h1>
-              <p className="mt-1 text-sm leading-relaxed text-green-700/70">{subtitle}</p>
+              <p className="mt-1 text-sm leading-relaxed text-green-700">{subtitle}</p>
             </div>
 
             <div className="mt-7">{children}</div>
@@ -80,7 +80,7 @@ export default function AuthShell({
 
           {footer ? <div className="mt-5 text-center lg:text-left">{footer}</div> : null}
 
-          <p className="mt-5 text-center text-xs text-green-700/60 lg:text-left">
+          <p className="mt-5 text-center text-xs text-green-700 lg:text-left">
             BeyondBabyCo, a unit of Tusawda Global Private Limited
           </p>
         </div>
@@ -115,7 +115,7 @@ export function AuthFooterLink({
   label: string;
 }) {
   return (
-    <p className="text-sm text-green-700/70">
+    <p className="text-sm text-green-700">
       {prompt}{" "}
       <Link
         href={href}

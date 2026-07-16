@@ -56,7 +56,7 @@ function OverviewStat({ label, value, highlight }: { label: string; value: numbe
     <div
       className={`rounded-2xl border p-4 ${highlight ? "border-green-300 bg-green-50/60" : "border-cream-200 bg-white"}`}
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-green-700/60">{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-green-700">{label}</p>
       <p className="mt-1 font-heading text-2xl font-extrabold text-green-900">{value}</p>
     </div>
   );
@@ -78,7 +78,7 @@ function CampaignMiniCard({ campaign }: { campaign: CampaignCenterItem }) {
       </div>
       <p className="mt-2 font-heading font-bold text-green-900">{campaign.name}</p>
       {campaign.config.headline ? (
-        <p className="mt-1 line-clamp-1 text-sm text-green-700/70">{campaign.config.headline}</p>
+        <p className="mt-1 line-clamp-1 text-sm text-green-700">{campaign.config.headline}</p>
       ) : null}
       <p className="mt-2 text-xs text-green-700/50">
         {formatCampaignDate(campaign.config.startDate)} → {formatCampaignDate(campaign.config.endDate)}

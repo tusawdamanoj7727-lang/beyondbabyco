@@ -115,7 +115,7 @@ export default function CampaignBuilderClient({
               onClick={() => setTab(t.id)}
               className={cn(
                 "rounded-t-2xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-terra-400",
-                tab === t.id ? "bg-white text-green-900 shadow-card" : "text-green-700/70 hover:text-green-900",
+                tab === t.id ? "bg-white text-green-900 shadow-card" : "text-green-700 hover:text-green-900",
               )}
             >
               {t.label}
@@ -239,7 +239,7 @@ export default function CampaignBuilderClient({
 
           {tab === "placement" && (
             <>
-              <p className="text-sm text-green-700/70">Only one active campaign per slot. Higher priority wins when dates overlap.</p>
+              <p className="text-sm text-green-700">Only one active campaign per slot. Higher priority wins when dates overlap.</p>
               <FormField label="Homepage slot">
                 <Select
                   value={config.homepageSlot ?? ""}

@@ -20,7 +20,7 @@ export default function CatalogBundleRecommendations({
         <h2 id="bundle-recommendations-heading" className="collection-section-heading mt-2">
           Bundle recommendations
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-[1.75] text-green-700/88">
+        <p className="mt-2 max-w-2xl text-sm leading-[1.75] text-green-800">
           Pair gentle essentials that work together — curated from our research-backed collection.
         </p>
 

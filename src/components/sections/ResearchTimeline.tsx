@@ -80,7 +80,7 @@ export default function ResearchTimeline({ config }: { config?: ResearchTimeline
                       <h3 className="mt-3 font-heading text-[clamp(1.2rem,2vw,1.5rem)] font-semibold leading-tight text-green-800">
                         {item.title}
                       </h3>
-                      <p className="prose-measure mt-3 font-body text-base leading-[1.75] text-green-700/88">
+                      <p className="prose-measure mt-3 font-body text-base leading-[1.75] text-green-800">
                         {item.description}
                       </p>
                     </Card>

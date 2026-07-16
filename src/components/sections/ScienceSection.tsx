@@ -128,7 +128,7 @@ export default function ScienceSection({ config }: { config?: ScienceConfig }) {
                     </span>
                     <div>
                       <h3 className="text-card-title">{feature.title}</h3>
-                      <p className="prose-measure mt-2 text-sm leading-[1.75] text-green-700/85">
+                      <p className="prose-measure mt-2 text-sm leading-[1.75] text-green-800">
                         {feature.description}
                       </p>
                     </div>

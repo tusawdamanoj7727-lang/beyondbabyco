@@ -81,7 +81,7 @@ export default function LifestyleSection({ config }: { config?: LifestyleConfig 
                   ) : null}
                 </span>
                 <h3 className="text-card-title mt-4">{feature.title}</h3>
-                <p className="prose-measure mt-2.5 text-sm leading-[1.75] text-green-700/85">
+                <p className="prose-measure mt-2.5 text-sm leading-[1.75] text-green-800">
                   {feature.description}
                 </p>
               </Card>

@@ -21,7 +21,7 @@ export default function CommunityHighlight({
         <p className="font-heading text-2xl font-extrabold text-green-900">{item.stat}</p>
       ) : null}
       <h3 className="mt-1 font-heading text-base font-bold text-green-900">{item.title}</h3>
-      <p className="mt-1 text-sm leading-relaxed text-green-700/80">{item.description}</p>
+      <p className="mt-1 text-sm leading-relaxed text-green-700">{item.description}</p>
       {item.href ? (
         <span className="mt-3 inline-block text-sm font-semibold text-terra-600">Learn more →</span>
       ) : null}

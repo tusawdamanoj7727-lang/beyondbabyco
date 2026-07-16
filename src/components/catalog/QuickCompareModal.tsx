@@ -33,7 +33,7 @@ export default function QuickCompareModal({
               <Dialog.Title className="font-heading text-xl font-bold text-green-900 sm:text-2xl">
                 Quick compare
               </Dialog.Title>
-              <Dialog.Description className="mt-1 text-sm text-green-700/80">
+              <Dialog.Description className="mt-1 text-sm text-green-700">
                 Side-by-side view of selected products — no checkout changes.
               </Dialog.Description>
             </div>
@@ -52,7 +52,7 @@ export default function QuickCompareModal({
           </div>
 
           {products.length === 0 ? (
-            <p className="text-sm text-green-700/75">Select up to two products to compare.</p>
+            <p className="text-sm text-green-700">Select up to two products to compare.</p>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {products.map((product) => (
@@ -93,7 +93,7 @@ function CompareColumn({ product }: { product: StorefrontProduct }) {
         ) : null}
         <h3 className="mt-2 font-heading text-lg font-bold text-green-900">{product.name}</h3>
         {product.shortDescription ? (
-          <p className="mt-2 line-clamp-3 text-sm leading-[1.7] text-green-700/88">{product.shortDescription}</p>
+          <p className="mt-2 line-clamp-3 text-sm leading-[1.7] text-green-800">{product.shortDescription}</p>
         ) : null}
         {product.ratingCount > 0 ? (
           <div className="mt-3">
@@ -102,20 +102,20 @@ function CompareColumn({ product }: { product: StorefrontProduct }) {
         ) : null}
         <dl className="mt-4 space-y-2 border-t border-green-50 pt-4 text-sm">
           <div className="flex justify-between gap-3">
-            <dt className="text-green-700/70">Price</dt>
+            <dt className="text-green-700">Price</dt>
             <dd className="font-semibold text-green-900">
               {isComingSoon ? "Launching 2026" : formatInr(product.effectivePrice)}
             </dd>
           </div>
           <div className="flex justify-between gap-3">
-            <dt className="text-green-700/70">Availability</dt>
+            <dt className="text-green-700">Availability</dt>
             <dd className="font-semibold text-green-900">
               {isComingSoon ? "Coming soon" : canPurchase ? "In stock" : "Waitlist open"}
             </dd>
           </div>
           {product.ageGroupName ? (
             <div className="flex justify-between gap-3">
-              <dt className="text-green-700/70">Age</dt>
+              <dt className="text-green-700">Age</dt>
               <dd className="font-semibold text-green-900">{product.ageGroupName}</dd>
             </div>
           ) : null}

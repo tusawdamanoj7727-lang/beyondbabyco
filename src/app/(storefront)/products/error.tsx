@@ -17,7 +17,7 @@ export default function ProductsError({
         <h2 className="mt-3 font-heading text-2xl font-bold text-green-900">
           Couldn&apos;t load products. Please refresh.
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-green-700/80">
+        <p className="mt-3 text-sm leading-relaxed text-green-700">
           Something went wrong while fetching the catalog. Try again in a moment.
         </p>
         <Button

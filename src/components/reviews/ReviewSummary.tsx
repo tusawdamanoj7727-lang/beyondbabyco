@@ -35,7 +35,7 @@ export default function ReviewSummary({
             detailed
             className="mt-2 justify-center lg:justify-start"
           />
-          <p className="mt-2 text-sm text-green-700/70">
+          <p className="mt-2 text-sm text-green-700">
             Based on {summary.reviewCount.toLocaleString("en-IN")} review{summary.reviewCount === 1 ? "" : "s"}
           </p>
         </div>
@@ -59,7 +59,7 @@ export default function ReviewSummary({
                       aria-label={`${stars} star reviews: ${pct}%`}
                     />
                   </div>
-                  <span className="text-right text-green-700/70">{count}</span>
+                  <span className="text-right text-green-700">{count}</span>
                 </li>
               );
             })}
@@ -72,7 +72,7 @@ export default function ReviewSummary({
           {pros.length > 0 ? (
             <div className="rounded-2xl border border-green-100 bg-green-50/50 p-4">
               <h4 className="font-heading text-sm font-bold text-green-900">What parents love</h4>
-              <ul className="mt-2 space-y-1.5 text-sm text-green-700/90">
+              <ul className="mt-2 space-y-1.5 text-sm text-green-800">
                 {pros.map((p) => (
                   <li key={p} className="flex gap-2">
                     <span aria-hidden="true" className="text-green-600">
@@ -87,7 +87,7 @@ export default function ReviewSummary({
           {cons.length > 0 ? (
             <div className="rounded-2xl border border-cream-200 bg-cream-50/50 p-4">
               <h4 className="font-heading text-sm font-bold text-green-900">Room to improve</h4>
-              <ul className="mt-2 space-y-1.5 text-sm text-green-700/90">
+              <ul className="mt-2 space-y-1.5 text-sm text-green-800">
                 {cons.map((c) => (
                   <li key={c} className="flex gap-2">
                     <span aria-hidden="true" className="text-terra-500">

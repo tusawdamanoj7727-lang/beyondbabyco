@@ -171,7 +171,7 @@ export default function NotifyMeModal({
           onClick={onClose}
           aria-label="Close"
           className={cn(
-            "absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-green-700/60 transition-colors hover:bg-green-50 hover:text-green-900",
+            "absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-green-700 transition-colors hover:bg-green-50 hover:text-green-900",
             focusRing,
           )}
         >
@@ -195,7 +195,7 @@ export default function NotifyMeModal({
             <h2 id="notify-me-title" className="mt-2 pr-8 font-heading text-xl font-bold leading-snug text-green-900">
               {title}
             </h2>
-            <p id="notify-me-subtitle" className="mt-2 text-sm leading-relaxed text-green-700/85">
+            <p id="notify-me-subtitle" className="mt-2 text-sm leading-relaxed text-green-800">
               {subtitle}
             </p>
 

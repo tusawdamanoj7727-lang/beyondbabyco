@@ -55,7 +55,7 @@ export default function CampaignPreviewPanel({
       </div>
 
       {config.description ? (
-        <div className="border-t border-cream-100 px-6 py-4 text-sm leading-relaxed text-green-700/90">
+        <div className="border-t border-cream-100 px-6 py-4 text-sm leading-relaxed text-green-800">
           {config.description}
         </div>
       ) : null}

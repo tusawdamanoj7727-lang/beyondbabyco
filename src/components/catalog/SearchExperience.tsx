@@ -136,7 +136,7 @@ export default function SearchExperience({
                 >
                   <span className="font-semibold text-green-900">{item.name}</span>
                   {item.categoryName ? (
-                    <span className="ml-2 text-green-700/75">{item.categoryName}</span>
+                    <span className="ml-2 text-green-700">{item.categoryName}</span>
                   ) : null}
                 </Link>
               </li>
@@ -147,7 +147,7 @@ export default function SearchExperience({
 
       {!initialQuery && recent.length > 0 ? (
         <div className="mx-auto mt-6 max-w-2xl">
-          <p className="text-eyebrow text-green-700/70">{MICROCOPY.search.recentLabel}</p>
+          <p className="text-eyebrow text-green-700">{MICROCOPY.search.recentLabel}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {recent.map((term) => (
               <button

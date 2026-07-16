@@ -169,7 +169,7 @@ export default function NotificationCenter() {
                   <p className="mt-4 text-sm font-semibold text-green-900">
                     {tab === "archived" ? "No archived notifications" : "All caught up"}
                   </p>
-                  <p className="mt-1 text-xs text-green-700/70">
+                  <p className="mt-1 text-xs text-green-700">
                     {tab === "archived"
                       ? "Archived notifications will appear here."
                       : "Order, delivery, and offer updates will show here."}
@@ -237,7 +237,7 @@ function NotificationRow({
       <div className="min-w-0 flex-1">
         <button type="button" className="w-full text-left" onClick={onRead}>
           <p className="text-sm font-semibold text-green-900">{item.title}</p>
-          <p className="mt-0.5 text-xs text-green-700/80">{item.message}</p>
+          <p className="mt-0.5 text-xs text-green-700">{item.message}</p>
           <p className="mt-1 text-[10px] text-green-600/60">
             {NOTIFICATION_CATEGORY_LABELS[item.category]} · {new Date(item.createdAt).toLocaleString("en-IN")}
           </p>

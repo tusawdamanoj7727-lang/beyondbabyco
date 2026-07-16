@@ -22,7 +22,7 @@ export default async function AccountDownloadsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="font-heading text-2xl font-bold text-green-900">Downloads</h1>
-        <p className="mt-1 text-sm text-green-700/70">Invoices and shipping labels for your orders.</p>
+        <p className="mt-1 text-sm text-green-700">Invoices and shipping labels for your orders.</p>
       </div>
 
       {orders.length === 0 ? (
@@ -48,7 +48,7 @@ export default async function AccountDownloadsPage() {
                 </span>
                 <div>
                   <p className="font-semibold text-green-900">{order.orderNumber}</p>
-                  <p className="text-xs text-green-700/70">{formatDate(order.createdAt)}</p>
+                  <p className="text-xs text-green-700">{formatDate(order.createdAt)}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">

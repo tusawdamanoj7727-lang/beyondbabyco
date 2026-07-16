@@ -77,7 +77,7 @@ export default function ProfileClient({ initial }: { initial: ProfileData }) {
     <div className="mx-auto max-w-2xl space-y-8">
       <div>
         <h1 className="font-heading text-2xl font-bold text-green-900">Profile</h1>
-        <p className="text-sm text-green-700/70">Manage your personal information and preferences.</p>
+        <p className="text-sm text-green-700">Manage your personal information and preferences.</p>
       </div>
 
       <div className="flex items-center gap-4 rounded-3xl border border-green-100 bg-white/90 p-5">
@@ -92,7 +92,7 @@ export default function ProfileClient({ initial }: { initial: ProfileData }) {
         </div>
         <div>
           <p className="font-heading font-semibold text-green-900">{form.full_name || "Your name"}</p>
-          <p className="text-sm text-green-700/70">{initial.email}</p>
+          <p className="text-sm text-green-700">{initial.email}</p>
         </div>
       </div>
 
@@ -197,10 +197,10 @@ function Field({
         {label}
       </label>
       {children}
-      {hint ? <p className="mt-1 text-xs text-green-700/70">{hint}</p> : null}
+      {hint ? <p className="mt-1 text-xs text-green-700">{hint}</p> : null}
     </div>
   );
 }
 
 const inputClass = cn(formControl, "text-sm");
-const inputClassDisabled = cn(formControl, "cursor-not-allowed bg-cream-50 text-green-700/70");
+const inputClassDisabled = cn(formControl, "cursor-not-allowed bg-cream-50 text-green-700");

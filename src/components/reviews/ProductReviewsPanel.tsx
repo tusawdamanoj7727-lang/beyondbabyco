@@ -199,7 +199,7 @@ export default function ProductReviewsPanel({
         </div>
 
         {paginated.items.length === 0 ? (
-          <p className="mt-6 text-sm text-green-700/70" role="status">
+          <p className="mt-6 text-sm text-green-700" role="status">
             No reviews match your filters. Try clearing search or filters.
           </p>
         ) : (
@@ -222,7 +222,7 @@ export default function ProductReviewsPanel({
             >
               Previous
             </button>
-            <span className="text-sm text-green-700/70">
+            <span className="text-sm text-green-700">
               Page {paginated.page} of {paginated.pageCount}
             </span>
             <button

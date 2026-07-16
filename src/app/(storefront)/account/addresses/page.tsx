@@ -15,7 +15,7 @@ export default async function AccountAddressesPage() {
   return (
     <div>
       <h1 className="font-heading text-2xl font-bold text-green-900">Addresses</h1>
-      <p className="mt-2 text-green-700/70">Manage delivery addresses for faster checkout.</p>
+      <p className="mt-2 text-green-700">Manage delivery addresses for faster checkout.</p>
       <div className="mt-8">
         <AddressesClient initial={addresses} />
       </div>

@@ -37,7 +37,7 @@ export default function FaqAccordion({ items, title }: { items: ContentFaqItem[]
                 />
               </button>
               {openIndex === index ? (
-                <p className="border-t border-green-50 px-5 py-4 font-body text-base leading-relaxed text-green-700/90">
+                <p className="border-t border-green-50 px-5 py-4 font-body text-base leading-relaxed text-green-800">
                   {faq.answer}
                 </p>
               ) : null}

@@ -17,7 +17,7 @@ export default function ProductsPageHero() {
         <h1 className="mb-4 mt-3 font-heading text-4xl font-black text-brand-forest sm:text-5xl">
           {PRODUCTS_PAGE.heroTitle}
         </h1>
-        <p className="mx-auto max-w-xl text-body text-green-700/80 sm:text-lg">
+        <p className="mx-auto max-w-xl text-body text-green-700 sm:text-lg">
           {PRODUCTS_PAGE.heroDescription}
         </p>
       </div>

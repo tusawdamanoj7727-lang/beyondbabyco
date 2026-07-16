@@ -179,7 +179,7 @@ export default function WishlistClient({
           </div>
         ))}
       </div>
-      <p className="mt-8 text-center text-sm text-green-700/70">
+      <p className="mt-8 text-center text-sm text-green-700">
         <Link href="/products" className="font-semibold text-terra-600 hover:underline">
           Continue shopping
         </Link>

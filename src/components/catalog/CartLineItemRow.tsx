@@ -70,7 +70,7 @@ export default function CartLineItemRow({
               {item.name}
             </Link>
             {item.variantName ? (
-              <p className="mt-0.5 text-sm text-green-700/70">{item.variantName}</p>
+              <p className="mt-0.5 text-sm text-green-700">{item.variantName}</p>
             ) : null}
           </div>
           {!compact ? (

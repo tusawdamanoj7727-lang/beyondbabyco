@@ -25,7 +25,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
         <div className="relative mx-auto max-w-6xl px-4 pb-6 pt-10">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">My Account</p>
           <h1 className="mt-2 font-heading text-3xl font-bold text-green-900">Welcome back</h1>
-          <p className="mt-1 text-sm text-green-700/70">Manage orders, addresses, and your profile.</p>
+          <p className="mt-1 text-sm text-green-700">Manage orders, addresses, and your profile.</p>
         </div>
       </div>
       <div className="mx-auto max-w-6xl px-4">

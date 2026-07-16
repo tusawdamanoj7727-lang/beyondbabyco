@@ -6,7 +6,7 @@ import { Heart, Menu, ShoppingBag, UserCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-import { lockBodyScroll } from "@/lib/a11y/dialog-a11y";
+import { handleFocusTrap, lockBodyScroll } from "@/lib/a11y/dialog-a11y";
 import { useAuth } from "@/lib/auth/hooks";
 import { BRAND_LOGO_ALT, BRAND_LOGO_PATH } from "@/lib/brand/logo";
 import { HEADER_ACCOUNT_HREF, PRIMARY_NAV_LINKS } from "@/lib/brand/navigation";
@@ -56,6 +56,9 @@ export function Navbar() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const scrolledRef = useRef(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const hydrated = useCartHydrated();
   const itemCount = useCartStore((s) => s.itemCount());
   const count = hydrated ? itemCount : 0;
@@ -95,11 +98,21 @@ export function Navbar() {
 
   useEffect(() => {
     if (!mobileOpen) return;
+    const panel = panelRef.current;
+    closeButtonRef.current?.focus();
+
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setMobileOpen(false);
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        return;
+      }
+      if (panel) handleFocusTrap(panel, e);
     }
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      menuButtonRef.current?.focus();
+    };
   }, [mobileOpen]);
 
   if (pathname?.startsWith("/admin") || isCustomerAuthPath(pathname)) {
@@ -186,6 +199,7 @@ export function Navbar() {
             </Link>
 
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
               className={cn(ICON_LINK, "lg:hidden")}
@@ -209,81 +223,88 @@ export function Navbar() {
       ) : null}
 
       <div
+        ref={panelRef}
         id="mobile-nav-panel"
         role="dialog"
-        aria-modal={mobileOpen ? true : undefined}
+        aria-modal={mobileOpen || undefined}
         aria-label="Mobile navigation menu"
-        aria-hidden={!mobileOpen}
-        inert={mobileOpen ? undefined : true}
+        hidden={!mobileOpen}
         className={cn(
           "fixed inset-y-0 right-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-300 lg:hidden",
-          mobileOpen ? "translate-x-0" : "translate-x-full",
+          mobileOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
         )}
       >
-        <div className="flex h-16 items-center justify-between border-b border-gray-100 px-4">
-          <span className="text-sm font-semibold text-gray-900">Menu</span>
-          <button
-            type="button"
-            onClick={() => setMobileOpen(false)}
-            className={cn(ICON_LINK, "hover:text-brand-forest")}
-            aria-label="Close menu"
-          >
-            <X size={24} aria-hidden="true" />
-          </button>
-        </div>
-        <nav className="space-y-1 px-4 py-4" aria-label="Mobile navigation">
-          {PRIMARY_NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className={MOBILE_NAV_LINK}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-4">
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Instagram"
-              className={cn(ICON_LINK, "hover:text-brand-terra")}
-            >
-              <InstagramIcon />
-            </a>
-            <Link
-              href="/wishlist"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Wishlist"
-              className={cn(ICON_LINK, "hover:text-brand-forest")}
-            >
-              <Heart size={20} strokeWidth={1.5} aria-hidden="true" />
-            </Link>
-            <Link
-              href={HEADER_ACCOUNT_HREF}
-              onClick={() => setMobileOpen(false)}
-              aria-label="My Account"
-              className={cn(ICON_LINK, "hover:text-brand-forest")}
-            >
-              <UserCircle size={22} strokeWidth={1.5} aria-hidden="true" />
-            </Link>
-            <Link
-              href="/cart"
-              onClick={() => setMobileOpen(false)}
-              aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
-              className={cn(ICON_LINK, "hover:text-brand-forest")}
-            >
-              <ShoppingBag size={22} strokeWidth={1.5} aria-hidden="true" />
-              {count > 0 ? (
-                <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-brand-terra text-[10px] font-bold text-white">
-                  {count > 9 ? "9+" : count}
-                </span>
-              ) : null}
-            </Link>
-          </div>
-        </nav>
+        {mobileOpen ? (
+          <>
+            <div className="flex h-16 items-center justify-between border-b border-gray-100 px-4">
+              <span className="text-sm font-semibold text-gray-900" id="mobile-nav-title">
+                Menu
+              </span>
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className={cn(ICON_LINK, "hover:text-brand-forest")}
+                aria-label="Close menu"
+              >
+                <X size={24} aria-hidden="true" />
+              </button>
+            </div>
+            <nav className="space-y-1 px-4 py-4" aria-label="Mobile navigation">
+              {PRIMARY_NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={MOBILE_NAV_LINK}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-4">
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Instagram"
+                  className={cn(ICON_LINK, "hover:text-brand-terra")}
+                >
+                  <InstagramIcon />
+                </a>
+                <Link
+                  href="/wishlist"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Wishlist"
+                  className={cn(ICON_LINK, "hover:text-brand-forest")}
+                >
+                  <Heart size={20} strokeWidth={1.5} aria-hidden="true" />
+                </Link>
+                <Link
+                  href={HEADER_ACCOUNT_HREF}
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="My Account"
+                  className={cn(ICON_LINK, "hover:text-brand-forest")}
+                >
+                  <UserCircle size={22} strokeWidth={1.5} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/cart"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
+                  className={cn(ICON_LINK, "hover:text-brand-forest")}
+                >
+                  <ShoppingBag size={22} strokeWidth={1.5} aria-hidden="true" />
+                  {count > 0 ? (
+                    <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-brand-terra text-[10px] font-bold text-white">
+                      {count > 9 ? "9+" : count}
+                    </span>
+                  ) : null}
+                </Link>
+              </div>
+            </nav>
+          </>
+        ) : null}
       </div>
     </nav>
   );

@@ -69,7 +69,7 @@ export default function AccountDashboard({
       <header>
         <p className="text-sm font-semibold uppercase tracking-wider text-green-600">Dashboard</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-green-900">Hello, {name}</h1>
-        <p className="mt-1 text-green-700/70">Your BeyondBabyCo account at a glance.</p>
+        <p className="mt-1 text-green-700">Your BeyondBabyCo account at a glance.</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -88,7 +88,7 @@ export default function AccountDashboard({
             <h2 className="mt-2 font-heading text-xl font-bold text-green-900">
               Earn on every order
             </h2>
-            <p className="mt-1 max-w-md text-sm text-green-700/80">
+            <p className="mt-1 max-w-md text-sm text-green-700">
               Shop research-backed care — loyalty rewards will be available in a future update.
             </p>
           </div>
@@ -150,7 +150,7 @@ export default function AccountDashboard({
                 >
                   <div>
                     <p className="font-semibold text-green-900">{order.orderNumber}</p>
-                    <p className="text-xs text-green-700/70">
+                    <p className="text-xs text-green-700">
                       {new Date(order.createdAt).toLocaleDateString("en-IN")}
                       {order.trackingNumber ? ` · AWB ${order.trackingNumber}` : ""}
                     </p>
@@ -207,7 +207,7 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-green-100 bg-white/90 p-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-green-700/70">{label}</p>
+        <p className="text-sm text-green-700">{label}</p>
         <Icon className="h-5 w-5 text-green-600/70" aria-hidden="true" />
       </div>
       <p className="mt-2 font-heading text-3xl font-bold text-green-900">{value}</p>

@@ -73,7 +73,7 @@ export default async function MascotPage({ params }: PageProps) {
 
               {mascot.products.length > 0 ? (
                 <div className="mb-8">
-                  <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gray-400">
+                  <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gray-600">
                     {firstName}&apos;s picks
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -100,7 +100,7 @@ export default async function MascotPage({ params }: PageProps) {
           </div>
 
           <div className="text-center">
-            <p className="mb-6 text-sm text-gray-400">Meet the whole family</p>
+            <p className="mb-6 text-sm text-gray-600">Meet the whole family</p>
             <Link href="/mascots" className="font-semibold text-brand-forest hover:underline">
               View All Mascots →
             </Link>

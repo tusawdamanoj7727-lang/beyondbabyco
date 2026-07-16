@@ -221,7 +221,7 @@ function LightboxContent({ item, titleId }: { item: GalleryMediaItem; titleId: s
       )}
       <figcaption className="space-y-1 bg-white px-4 py-3 text-sm text-green-800">
         {item.caption ? <p className="font-medium">{item.caption}</p> : null}
-        <p className="text-green-700/70">
+        <p className="text-green-700">
           {item.customerName ? `Shared by ${item.customerName}` : null}
           {item.productName && item.productSlug ? (
             <>

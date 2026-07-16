@@ -25,7 +25,7 @@ export default function ContactPage() {
       <div className="min-h-screen bg-brand-cream py-16">
       <div className="mx-auto max-w-5xl px-4">
         <h1 className="mb-3 font-heading text-4xl font-black text-brand-forest">Contact Us</h1>
-        <p className="mb-10 text-caption text-green-700/70">We are here to help — reach out anytime</p>
+        <p className="mb-10 text-caption text-green-700">We are here to help — reach out anytime</p>
 
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="rounded-[var(--radius-card)] bg-white p-8 shadow-sm">
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 <div>
                   <p className="font-semibold text-gray-900">Location</p>
                   <p>Udaipur, Rajasthan, India</p>
-                  <p className="mt-1 text-xs text-gray-400">Tusawda Global Private Limited</p>
+                  <p className="mt-1 text-xs text-gray-600">Tusawda Global Private Limited</p>
                 </div>
               </div>
             </div>

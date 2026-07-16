@@ -39,7 +39,7 @@ export default async function CheckoutFailurePage({
       <div className="container mx-auto flex min-h-[60vh] max-w-lg flex-col items-center px-4 pb-16 text-center">
         <Mascot mascot="poppy-panda" pose="peek" size={140} animated floating alt="" />
         <h1 className="mt-6 font-heading text-3xl font-bold text-green-900">Payment not completed</h1>
-        <p className="mt-3 text-green-700/80">{message}</p>
+        <p className="mt-3 text-green-700">{message}</p>
         {orderId ? (
           <p className="mt-2 text-sm text-green-600/80">Order reference: {orderId.slice(0, 8)}…</p>
         ) : null}

@@ -285,7 +285,7 @@ export function CatalogFiltersSidebar({
     <aside className="hidden w-72 shrink-0 lg:block">
       <div className="sticky top-32 collection-filters-panel">
         <h2 className="font-heading text-base font-bold text-green-900">Refine</h2>
-        <p className="mt-1 text-xs leading-relaxed text-green-700/70">Filter by category, age, price, and more.</p>
+        <p className="mt-1 text-xs leading-relaxed text-green-700">Filter by category, age, price, and more.</p>
         <div className="mt-5">
           <FilterPanel filters={filters} params={current} onChange={pushParams} />
         </div>

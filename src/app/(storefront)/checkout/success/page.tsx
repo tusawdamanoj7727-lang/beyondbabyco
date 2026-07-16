@@ -46,7 +46,7 @@ export default async function CheckoutSuccessPage({
       <div className="container mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center px-4 pb-16 text-center">
         <Mascot mascot="bella-bunny" pose="celebration" size={160} animated floating alt="" />
         <h1 className="mt-6 font-heading text-3xl font-bold text-green-900">Thank you!</h1>
-        <p className="mt-3 text-green-700/80">
+        <p className="mt-3 text-green-700">
           Your order is confirmed. We&apos;ve sent a confirmation email
           {order.email ? (
             <>
@@ -85,7 +85,7 @@ export default async function CheckoutSuccessPage({
             <h2 className="font-heading text-lg font-bold text-green-900">
               Create your BeyondBabyCo account
             </h2>
-            <p className="mt-2 text-sm text-green-700/80">
+            <p className="mt-2 text-sm text-green-700">
               Save addresses, track orders, and see this purchase in your account. We&apos;ll link
               this guest order to your email automatically when you register.
             </p>

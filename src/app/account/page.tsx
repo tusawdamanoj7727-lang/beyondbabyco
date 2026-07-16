@@ -116,7 +116,7 @@ export default function AccountPage() {
                 <span className="text-2xl font-black text-brand-forest">{initial}</span>
               </div>
               <p className="font-bold text-gray-900">{displayName}</p>
-              <p className="mt-1 text-xs text-gray-400">{user.email}</p>
+              <p className="mt-1 text-xs text-gray-600">{user.email}</p>
             </div>
 
             <nav className="space-y-1">
@@ -165,7 +165,7 @@ export default function AccountPage() {
                   className="mx-auto mb-4 object-contain opacity-80"
                 />
                 <p className="text-lg font-medium text-gray-500">No orders yet</p>
-                <p className="mt-1 text-sm text-gray-400">
+                <p className="mt-1 text-sm text-gray-600">
                   Your orders will appear here after you shop
                 </p>
                 <Link

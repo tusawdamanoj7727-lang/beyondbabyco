@@ -86,7 +86,7 @@ export default function QuickViewModal({
               </div>
               <h2 className="mt-3 font-heading text-2xl font-bold text-green-900">{product.name}</h2>
               {product.shortDescription ? (
-                <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-green-700/88">{product.shortDescription}</p>
+                <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-green-800">{product.shortDescription}</p>
               ) : null}
               <p className="mt-4 font-heading text-2xl font-extrabold text-green-900">
                 {isComingSoon ? "Launching 2026" : formatInr(product.effectivePrice)}

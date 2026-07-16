@@ -66,7 +66,7 @@ export default function FreeShippingProgress({
           {message}
           {progressBar}
           {!isUnlocked ? (
-            <p className="text-xs text-green-700/70">
+            <p className="text-xs text-green-700">
               Standard delivery {formatInr(STANDARD_SHIPPING_FEE)} · Free on {formatInr(FREE_SHIPPING_THRESHOLD)}+
             </p>
           ) : null}

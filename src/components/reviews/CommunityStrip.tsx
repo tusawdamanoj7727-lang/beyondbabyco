@@ -65,7 +65,7 @@ export default function CommunityStrip({
                 />
               </div>
             ) : null}
-            <p className="mt-3 text-sm leading-relaxed text-green-700/80">
+            <p className="mt-3 text-sm leading-relaxed text-green-700">
               Every rating reflects verified experiences from parents who choose gentle, research-backed care.
               Explore our community gallery and parent stories.
             </p>

@@ -17,7 +17,7 @@ export default function AiDevPage() {
       <header className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-green-600">Developer utility</p>
         <h1 className="mt-2 font-heading text-3xl font-bold text-green-900">Local AI Image Generator</h1>
-        <p className="mt-2 max-w-2xl text-green-700/80">
+        <p className="mt-2 max-w-2xl text-green-700">
           Generate images with FLUX.1 Schnell via ComfyUI. Outputs save to{" "}
           <code className="rounded bg-white px-1.5 py-0.5 text-sm">public/images/generated/</code>.
         </p>

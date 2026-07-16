@@ -97,7 +97,7 @@ export default function BrandPromise({ config }: { config?: BrandPromiseConfig }
                 ) : null}
               </span>
               <h3 className="text-card-title mt-5">{card.title}</h3>
-              <p className="prose-measure mx-auto mt-3 text-sm leading-[1.75] text-green-700/85">
+              <p className="prose-measure mx-auto mt-3 text-sm leading-[1.75] text-green-800">
                 {card.description}
               </p>
             </Card>

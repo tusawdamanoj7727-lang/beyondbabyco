@@ -114,7 +114,7 @@ export default function ProductGallery({
               )}
               aria-label="Zoom image"
             >
-              <ZoomIn className="h-4 w-4" />
+              <ZoomIn className="h-4 w-4" aria-hidden="true" />
             </button>
             {multi ? (
               <p className="absolute bottom-3 left-3 z-[2] rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-green-900 shadow-[var(--shadow-soft)]">
@@ -137,7 +137,7 @@ export default function ProductGallery({
                 focusRing,
               )}
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -148,7 +148,7 @@ export default function ProductGallery({
                 focusRing,
               )}
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </button>
           </>
         ) : null}
@@ -241,7 +241,7 @@ export default function ProductGallery({
                     focusRing,
                   )}
                 >
-                  <ChevronLeft className="h-5 w-5" />
+                  <ChevronLeft className="h-5 w-5" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
@@ -252,7 +252,7 @@ export default function ProductGallery({
                     focusRing,
                   )}
                 >
-                  <ChevronRight className="h-5 w-5" />
+                  <ChevronRight className="h-5 w-5" aria-hidden="true" />
                 </button>
                 <p className="absolute bottom-4 left-1/2 z-[140] -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-green-900">
                   {activeIndex + 1} / {sorted.length}

@@ -95,7 +95,7 @@ export default function QuantitySelector({
   return (
     <div className="flex flex-col gap-1.5">
       {control}
-      <p className="text-xs font-medium text-green-700/75">{maxHintText}</p>
+      <p className="text-xs font-medium text-green-700">{maxHintText}</p>
     </div>
   );
 }

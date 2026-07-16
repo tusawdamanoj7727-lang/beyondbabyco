@@ -35,7 +35,7 @@ export default function ReviewCard({
             </p>
             {review.verifiedPurchase && !review.isSample ? <VerifiedPurchaseBadge /> : null}
             {review.isSample ? (
-              <span className="rounded-full bg-cream-100 px-2 py-0.5 text-xs font-semibold text-green-700/70">
+              <span className="rounded-full bg-cream-100 px-2 py-0.5 text-xs font-semibold text-green-700">
                 Sample
               </span>
             ) : null}
@@ -45,7 +45,7 @@ export default function ReviewCard({
               </span>
             ) : null}
           </div>
-          <time className="mt-0.5 block text-xs text-green-700/75" dateTime={review.createdAt}>
+          <time className="mt-0.5 block text-xs text-green-700" dateTime={review.createdAt}>
             {formatReviewDate(review.createdAt)}
           </time>
         </div>
@@ -57,7 +57,7 @@ export default function ReviewCard({
       ) : null}
 
       {review.body ? (
-        <p className={cn("mt-2 text-sm leading-relaxed text-green-700/90", compact && "line-clamp-4")}>
+        <p className={cn("mt-2 text-sm leading-relaxed text-green-800", compact && "line-clamp-4")}>
           {review.body}
         </p>
       ) : null}
@@ -67,13 +67,13 @@ export default function ReviewCard({
           {review.pros ? (
             <div className="rounded-xl bg-green-50/80 px-3 py-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-green-800">Pros</p>
-              <p className="mt-1 text-sm text-green-700/90">{review.pros}</p>
+              <p className="mt-1 text-sm text-green-800">{review.pros}</p>
             </div>
           ) : null}
           {review.cons ? (
             <div className="rounded-xl bg-cream-50 px-3 py-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-green-800">Cons</p>
-              <p className="mt-1 text-sm text-green-700/90">{review.cons}</p>
+              <p className="mt-1 text-sm text-green-800">{review.cons}</p>
             </div>
           ) : null}
         </div>

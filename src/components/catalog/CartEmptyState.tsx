@@ -45,7 +45,7 @@ export default function CartEmptyState({ className }: CartEmptyStateProps) {
       <h2 className="mt-6 font-heading text-[clamp(1.375rem,2.5vw,1.75rem)] font-bold text-green-900">
         Your cart is empty
       </h2>
-      <p className="mx-auto mt-3 max-w-md text-base leading-[1.75] text-green-700/88">
+      <p className="mx-auto mt-3 max-w-md text-base leading-[1.75] text-green-800">
         When you find something gentle for your little one, it will appear here.
       </p>
 

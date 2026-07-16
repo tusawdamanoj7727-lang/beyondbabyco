@@ -43,7 +43,7 @@ export default function CommunitySection({
           {hasRealRatings ? (
             <RatingStars rating={avgRating} count={totalReviews || undefined} size="md" showValue detailed />
           ) : (
-            <p className="text-sm font-medium text-green-700/75">Verified reviews will appear as families share their experience.</p>
+            <p className="text-sm font-medium text-green-700">Verified reviews will appear as families share their experience.</p>
           )}
         </div>
         <p className="text-body prose-width mx-auto mt-3">
@@ -108,7 +108,7 @@ export default function CommunitySection({
         <h3 id="parent-stories-heading" className="font-heading text-2xl font-bold text-green-900">
           Parent stories
         </h3>
-        <p className="mt-2 text-sm text-green-700/70">Illustrative stories from our community — real submissions welcome after launch.</p>
+        <p className="mt-2 text-sm text-green-700">Illustrative stories from our community — real submissions welcome after launch.</p>
         <ul className="mt-6 grid gap-6 md:grid-cols-3">
           {PARENT_STORIES.map((story) => (
             <li key={story.id}>
@@ -120,8 +120,8 @@ export default function CommunitySection({
                 ) : null}
                 <div className="flex flex-1 flex-col p-5">
                   <h4 className="font-heading text-lg font-bold text-green-900">{story.title}</h4>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-green-700/90">{story.excerpt}</p>
-                  <p className="mt-3 text-xs font-semibold text-green-700/60">{story.author}</p>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-green-800">{story.excerpt}</p>
+                  <p className="mt-3 text-xs font-semibold text-green-700">{story.author}</p>
                 </div>
               </article>
             </li>
@@ -142,7 +142,7 @@ export default function CommunitySection({
                 </span>
               ) : null}
               <h4 className="mt-2 font-heading text-base font-bold text-green-900">{tip.title}</h4>
-              <p className="mt-1 text-sm text-green-700/90">{tip.body}</p>
+              <p className="mt-1 text-sm text-green-800">{tip.body}</p>
             </li>
           ))}
         </ul>
@@ -154,7 +154,7 @@ export default function CommunitySection({
             Featured reviews
           </h3>
           {featuredAreSample ? (
-            <p className="mt-2 text-sm text-green-700/70">Sample reviews shown until verified customer reviews are published.</p>
+            <p className="mt-2 text-sm text-green-700">Sample reviews shown until verified customer reviews are published.</p>
           ) : null}
           <ul className="mt-6 grid gap-4 lg:grid-cols-2">
             {featuredReviews.slice(0, 4).map((r) => (

@@ -25,7 +25,7 @@ export default function QuestionCard({ question, className }: { question: Produc
             <h4 id={`question-${question.id}`} className="font-heading text-base font-bold text-green-900">
               {question.question}
             </h4>
-            <p className="mt-1 text-xs text-green-700/60">
+            <p className="mt-1 text-xs text-green-700">
               Asked by {question.askedBy} ·{" "}
               <time dateTime={question.createdAt}>{formatReviewDate(question.createdAt)}</time>
             </p>
@@ -68,7 +68,7 @@ export default function QuestionCard({ question, className }: { question: Produc
           aria-pressed={helpful}
           className={cn(
             "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-terra-400",
-            helpful ? "bg-terra-100 text-terra-800" : "text-green-700/80 hover:bg-cream-100",
+            helpful ? "bg-terra-100 text-terra-800" : "text-green-700 hover:bg-cream-100",
           )}
         >
           <ThumbsUp className="h-3.5 w-3.5" aria-hidden="true" />

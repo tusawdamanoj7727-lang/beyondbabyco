@@ -696,7 +696,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                         aria-pressed={selected}
                       >
                         <span className="font-semibold text-green-900">{addr.full_name}</span>
-                        <span className="block text-green-700/70">
+                        <span className="block text-green-700">
                           {addr.city}, {addr.pincode}
                         </span>
                       </button>
@@ -722,7 +722,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                 Save this address for next time
               </label>
             ) : (
-              <p className="mt-3 text-xs text-green-700/70">
+              <p className="mt-3 text-xs text-green-700">
                 Want saved addresses next time? You can create an account after placing this order.
               </p>
             )}
@@ -773,7 +773,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   delivery.serviceable ? (
                     <>
                       <p className="font-semibold">Delivery available to {shipping.pincode}</p>
-                      <p className="mt-1 text-green-700/80">
+                      <p className="mt-1 text-green-700">
                         Estimated {delivery.estimatedDelivery ?? "3–5 business days"} · Shipping{" "}
                         {totals.shipping === 0 ? "free" : formatInr(totals.shipping)}
                       </p>
@@ -849,7 +849,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
       <div className="checkout-mobile-bar fixed inset-x-0 bottom-0 z-40 border-t border-green-100 bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm lg:hidden pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-xs text-green-700/80">Total payable</p>
+            <p className="text-xs text-green-700">Total payable</p>
             <p className="font-heading text-lg font-bold text-green-900">{formatInr(totals.total)}</p>
           </div>
           <Button
@@ -882,7 +882,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             <Dialog.Title className="font-heading text-xl font-bold text-green-900">
               Review your order
             </Dialog.Title>
-            <Dialog.Description id="review-desc" className="mt-1 text-sm text-green-700/80">
+            <Dialog.Description id="review-desc" className="mt-1 text-sm text-green-700">
               Confirm details before placing your order.
             </Dialog.Description>
 
@@ -928,7 +928,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                     Coupon {appliedCoupon.code} (−{formatInr(appliedCoupon.discountAmount)})
                   </p>
                 ) : null}
-                <p className="mt-1 text-xs text-green-700/70">
+                <p className="mt-1 text-xs text-green-700">
                   Shipping {totals.shipping === 0 ? "free" : formatInr(totals.shipping)} · Prices include GST
                 </p>
               </ReviewBlock>
@@ -1059,7 +1059,7 @@ function CheckoutCouponBlock({
               {couponMsg.text}
             </p>
           ) : (
-            <p className="mt-1.5 text-xs text-green-700/70">
+            <p className="mt-1.5 text-xs text-green-700">
               Have a code? Apply it here before placing your order.
             </p>
           )}
@@ -1081,7 +1081,7 @@ function CheckoutSection({
   return (
     <section className="rounded-3xl border border-green-100/80 bg-white/90 p-4 shadow-sm sm:p-5">
       <h2 className="font-heading text-lg font-bold text-green-900">{title}</h2>
-      {description ? <p className="mt-1 text-sm text-green-700/70">{description}</p> : null}
+      {description ? <p className="mt-1 text-sm text-green-700">{description}</p> : null}
       <div className="mt-3 sm:mt-4">{children}</div>
     </section>
   );

@@ -1194,7 +1194,7 @@
 }
 
 .form-control::placeholder {
-  color: color-mix(in srgb, var(--green-700) 40%, transparent);
+  color: color-mix(in srgb, var(--green-700) 55%, transparent);
 }
 
 .form-control:focus-visible {
@@ -3135,7 +3135,7 @@ body {
 
 .collection-toolbar-count {
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--green-700) 80%, transparent);
+  color: var(--green-700);
 }
 
 .collection-toolbar-count strong {

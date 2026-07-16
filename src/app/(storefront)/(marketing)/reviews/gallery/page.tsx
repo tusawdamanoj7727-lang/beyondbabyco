@@ -40,7 +40,7 @@ export default async function ReviewGalleryPage({ searchParams }: PageProps) {
       />
       <div className="premium-page-bg relative min-h-[60vh] py-10 md:py-14">
         <div className="container relative z-10">
-        <nav aria-label="Breadcrumb" className="text-sm text-green-700/70">
+        <nav aria-label="Breadcrumb" className="text-sm text-green-700">
           <Link href="/" className="hover:text-terra-600">
             Home
           </Link>
@@ -56,7 +56,7 @@ export default async function ReviewGalleryPage({ searchParams }: PageProps) {
           <h1 className="font-heading text-3xl font-extrabold text-green-900 md:text-4xl">
             Customer review gallery
           </h1>
-          <p className="mt-3 text-body text-green-700/80">
+          <p className="mt-3 text-body text-green-700">
             Real moments from families who choose gentle, research-backed care.
             {productSlug ? " Showing photos linked to this product." : ""}
           </p>

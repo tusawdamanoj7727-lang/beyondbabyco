@@ -42,7 +42,7 @@ export default async function CampaignLandingPage({ params }: PageProps) {
         ])}
       />
       <div className="container py-10 md:py-14">
-        <nav className="text-sm text-green-700/70">
+        <nav className="text-sm text-green-700">
           <Link href="/" className="hover:text-terra-600">Home</Link>
           <span className="mx-2">/</span>
           <span className="text-green-900">{campaign.name}</span>
@@ -74,7 +74,7 @@ export default async function CampaignLandingPage({ params }: PageProps) {
         {s.showFaq && campaign.config.description ? (
           <section className="mt-12 max-w-2xl">
             <h2 className="font-heading text-2xl font-bold text-green-900">About this campaign</h2>
-            <p className="mt-4 text-body leading-relaxed text-green-700/90">{campaign.config.description}</p>
+            <p className="mt-4 text-body leading-relaxed text-green-800">{campaign.config.description}</p>
           </section>
         ) : null}
 

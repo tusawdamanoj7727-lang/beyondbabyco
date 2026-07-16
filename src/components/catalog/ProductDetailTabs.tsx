@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import CatalogBundleRecommendations from "@/components/catalog/CatalogBundleRecommendations";
 import ProductDetailTabNav, {
   PDP_TABS,
+  pdpTabId,
   type ProductDetailTab,
 } from "@/components/catalog/ProductDetailTabNav";
 import RelatedProductCard from "@/components/catalog/RelatedProductCard";
@@ -26,7 +27,9 @@ function tabFromHash(): Tab | null {
   if (typeof window === "undefined") return null;
   const raw = window.location.hash.replace(/^#/, "").toLowerCase();
   if (!raw) return null;
-  const match = PDP_TABS.find((t) => t.toLowerCase() === raw || t.toLowerCase().replace("&", "") === raw);
+  const match = PDP_TABS.find(
+    (t) => pdpTabId(t) === raw || t.toLowerCase() === raw || t.toLowerCase().replace("&", "") === raw,
+  );
   return match ?? null;
 }
 
@@ -62,7 +65,7 @@ export default function ProductDetailTabs({
   return (
     <div className="mt-20 space-y-14 lg:mt-24">
       <ProductDetailTabNav activeTab={tab} onTabChange={setTab} showQa={showQa} />
-      <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
+      <div role="tabpanel" id={`panel-${pdpTabId(tab)}`} aria-labelledby={`tab-${pdpTabId(tab)}`}>
         <div className="pdp-tab-panel">
           {tab === "Benefits" ? <BenefitsPanel benefits={product.benefits} /> : null}
           {tab === "Ingredients" ? <IngredientsPanel ingredients={product.ingredients} /> : null}
@@ -113,7 +116,7 @@ function BenefitsPanel({ benefits }: { benefits: StorefrontBenefit[] }) {
       {benefits.map((b) => (
         <li key={b.id} className="rounded-2xl border border-green-100/80 bg-cream-50/80 p-5 shadow-[var(--shadow-soft)]">
           <p className="font-heading text-base font-bold text-green-900">{b.icon ? `${b.icon} ` : ""}{b.name}</p>
-          {b.description ? <p className="mt-2.5 text-sm leading-[1.75] text-green-700/90">{b.description}</p> : null}
+          {b.description ? <p className="mt-2.5 text-sm leading-[1.75] text-green-800">{b.description}</p> : null}
         </li>
       ))}
     </ul>
@@ -134,10 +137,10 @@ function IngredientsPanel({ ingredients }: { ingredients: StorefrontIngredient[]
     <ul className="pdp-ingredient-grid">
       {ingredients.map((ing) => (
         <li key={ing.id} className="pdp-ingredient-card">
-          <h4>{ing.name}</h4>
+          <h3 className="font-semibold text-green-900">{ing.name}</h3>
           {ing.inciName ? <p className="pdp-ingredient-inci">{ing.inciName}</p> : null}
-          {ing.description ? <p className="mt-3 text-sm leading-[1.75] text-green-700/90">{ing.description}</p> : null}
-          {ing.notes ? <p className="mt-2 text-xs leading-relaxed text-green-700/70">{ing.notes}</p> : null}
+          {ing.description ? <p className="mt-3 text-sm leading-[1.75] text-green-800">{ing.description}</p> : null}
+          {ing.notes ? <p className="mt-2 text-xs leading-relaxed text-green-700">{ing.notes}</p> : null}
         </li>
       ))}
     </ul>
@@ -179,7 +182,7 @@ function HowToUsePanel({ description, short }: { description: string | null; sho
   const steps = parseHowToSteps(text);
 
   if (steps.length === 1) {
-    return <div className="max-w-prose whitespace-pre-line text-base leading-[1.75] text-green-700/90">{text}</div>;
+    return <div className="max-w-prose whitespace-pre-line text-base leading-[1.75] text-green-800">{text}</div>;
   }
 
   return (
@@ -189,7 +192,7 @@ function HowToUsePanel({ description, short }: { description: string | null; sho
           <span className="pdp-step-number" aria-hidden="true">
             {index + 1}
           </span>
-          <p className="text-sm leading-[1.75] text-green-700/90 sm:text-base">{step}</p>
+          <p className="text-sm leading-[1.75] text-green-800 sm:text-base">{step}</p>
         </li>
       ))}
     </ol>
@@ -204,7 +207,7 @@ function SafetyPanel({
   ingredients: StorefrontIngredient[];
 }) {
   return (
-    <div className="max-w-prose space-y-5 text-base leading-[1.75] text-green-700/90">
+    <div className="max-w-prose space-y-5 text-base leading-[1.75] text-green-800">
       <p>
         Every BeyondBabyCo formula is dermatologically tested and developed for delicate skin.
         Patch test on a small area before first use. Discontinue use if irritation occurs.
@@ -219,7 +222,7 @@ function SafetyPanel({
         </ul>
       ) : null}
       {ingredients.length ? (
-        <p className="text-sm text-green-700/70">
+        <p className="text-sm text-green-700">
           Review the full ingredient list if your child has known sensitivities or allergies.
         </p>
       ) : null}
@@ -251,7 +254,7 @@ function FaqPanel({ faqs }: { faqs: StorefrontFaq[] }) {
 
 function ResearchPanel({ description }: { description: string | null }) {
   return (
-    <div className="max-w-prose space-y-4 text-base leading-[1.75] text-green-700/90">
+    <div className="max-w-prose space-y-4 text-base leading-[1.75] text-green-800">
       <p>
         BeyondBabyCo products are developed through years of formulation research, ingredient screening,
         and safety testing before launch.
@@ -279,7 +282,7 @@ function TabEmptyState({
     <div className="flex flex-col items-center rounded-2xl bg-gradient-to-b from-cream-50/80 to-white px-6 py-12 text-center">
       <Mascot mascot={mascot} pose="welcome" size={96} animated floating alt="" />
       <p className="mt-4 font-heading text-lg font-bold text-green-900">{title}</p>
-      <p className="mt-2 max-w-md text-sm leading-[1.75] text-green-700/80">{description}</p>
+      <p className="mt-2 max-w-md text-sm leading-[1.75] text-green-700">{description}</p>
     </div>
   );
 }

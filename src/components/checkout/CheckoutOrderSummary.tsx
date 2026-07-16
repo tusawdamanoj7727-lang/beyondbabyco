@@ -67,7 +67,7 @@ export default function CheckoutOrderSummary({
             <div className="min-w-0 flex-1">
               <p className="font-medium text-green-900 line-clamp-2">{item.name}</p>
               {item.variantName ? (
-                <p className="text-xs text-green-700/70">{item.variantName}</p>
+                <p className="text-xs text-green-700">{item.variantName}</p>
               ) : null}
               <p className="text-xs text-green-600/80">Qty {item.quantity}</p>
             </div>
@@ -104,13 +104,13 @@ export default function CheckoutOrderSummary({
           </div>
         ))}
         {gstLines.length === 0 && gstBreakdown.total <= 0 ? (
-          <div className="flex justify-between text-green-700/70">
+          <div className="flex justify-between text-green-700">
             <dt>GST (incl.)</dt>
             <dd>Included in price</dd>
           </div>
         ) : null}
       </dl>
-      <p className="mt-1 text-xs text-green-700/70">Prices include applicable GST</p>
+      <p className="mt-1 text-xs text-green-700">Prices include applicable GST</p>
 
       {subtotal < FREE_SHIPPING_THRESHOLD && !freeShipping ? (
         <p className="mt-2 text-xs text-green-600/80">
@@ -123,7 +123,7 @@ export default function CheckoutOrderSummary({
           {serviceable ? (
             <>
               <p className="font-medium">Delivery available</p>
-              <p className="text-green-700/80">Est. {deliveryEstimate ?? ESTIMATED_DELIVERY_DAYS}</p>
+              <p className="text-green-700">Est. {deliveryEstimate ?? ESTIMATED_DELIVERY_DAYS}</p>
               {codAvailable ? (
                 <p className="mt-0.5 text-xs text-green-600/80">Cash on Delivery available</p>
               ) : null}

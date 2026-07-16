@@ -68,7 +68,7 @@ export default function RatingStars({
           <span className={cn("font-semibold text-green-900", countSizeClass(size))}>{clamped.toFixed(1)}</span>
         ) : null}
         {count != null ? (
-          <span className={cn("text-green-700/70", countSizeClass(size))}>({count.toLocaleString("en-IN")})</span>
+          <span className={cn("text-green-700", countSizeClass(size))}>({count.toLocaleString("en-IN")})</span>
         ) : null}
       </div>
     );
@@ -85,7 +85,7 @@ export default function RatingStars({
         <span className={cn("font-semibold text-green-900", countSizeClass(size))}>{clamped.toFixed(1)}</span>
       ) : null}
       {count != null ? (
-        <span className={cn("text-green-700/70", countSizeClass(size))}>({count.toLocaleString("en-IN")})</span>
+        <span className={cn("text-green-700", countSizeClass(size))}>({count.toLocaleString("en-IN")})</span>
       ) : null}
     </div>
   );

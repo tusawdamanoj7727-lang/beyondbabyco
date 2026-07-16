@@ -151,7 +151,7 @@ export default function CartPageClient() {
                         onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                         className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-gray-50"
                       >
-                        <Minus size={14} />
+                        <Minus size={14} aria-hidden="true" />
                       </button>
                       <span className="border-x border-gray-200 px-4 py-2 font-semibold text-gray-900">
                         {item.quantity}
@@ -163,7 +163,7 @@ export default function CartPageClient() {
                         onClick={() => updateQuantity(item.variantId, clampCartQuantity(item.quantity + 1))}
                         className="flex h-11 w-11 items-center justify-center transition-colors hover:bg-gray-50 disabled:opacity-40"
                       >
-                        <Plus size={14} />
+                        <Plus size={14} aria-hidden="true" />
                       </button>
                     </div>
 
@@ -175,9 +175,9 @@ export default function CartPageClient() {
                         type="button"
                         aria-label={`Remove ${item.name}`}
                         onClick={() => removeItem(item.variantId)}
-                        className="flex h-11 w-11 items-center justify-center text-gray-400 transition-colors hover:text-red-500"
+                        className="flex h-11 w-11 items-center justify-center text-gray-600 transition-colors hover:text-red-700"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={16} aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -227,7 +227,7 @@ export default function CartPageClient() {
                       removeCoupon();
                       setCouponMsg({ text: "", type: "" });
                     }}
-                    className="text-xs font-medium text-gray-400 hover:text-red-500"
+                    className="text-xs font-medium text-gray-600 hover:text-red-700"
                   >
                     Remove
                   </button>
@@ -274,7 +274,7 @@ export default function CartPageClient() {
                     <p
                       className={cn(
                         "mt-1 text-xs",
-                        couponMsg.type === "success" ? "text-green-600" : "text-red-500",
+                        couponMsg.type === "success" ? "text-green-600" : "text-red-700",
                       )}
                     >
                       {couponMsg.text}
@@ -313,11 +313,11 @@ export default function CartPageClient() {
               <Button asChild variant="primary" size="lg" fullWidth className="mt-6">
                 <Link href="/checkout">Proceed to Checkout →</Link>
               </Button>
-              <p className="mt-3 text-center text-xs text-gray-400">
+              <p className="mt-3 text-center text-xs text-gray-600">
                 🔒 Secure checkout powered by Razorpay
               </p>
               {subtotal < FREE_SHIPPING_THRESHOLD && shippingCharge > 0 ? (
-                <p className="mt-2 text-center text-xs text-gray-400">
+                <p className="mt-2 text-center text-xs text-gray-600">
                   Standard delivery {formatInr(STANDARD_SHIPPING_FEE)} · Free on{" "}
                   {formatInr(FREE_SHIPPING_THRESHOLD)}+
                 </p>

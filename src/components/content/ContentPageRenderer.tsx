@@ -123,7 +123,7 @@ function SectionCards({
                   </span>
                 ) : null}
                 <h3 className="mt-4 font-heading text-xl font-bold text-green-800">{item.title}</h3>
-                <p className="mt-2 font-body text-sm leading-relaxed text-green-700/90">{item.description}</p>
+                <p className="mt-2 font-body text-sm leading-relaxed text-green-800">{item.description}</p>
               </Card>
             );
             return item.href ? (
@@ -158,7 +158,7 @@ function SectionImageSplit({
             <AccentBar width="md" align="left" className="mt-4" />
             <div className="mt-6 space-y-4">
               {paragraphs.map((p) => (
-                <p key={p.slice(0, 40)} className="font-body text-base leading-relaxed text-green-700/90">
+                <p key={p.slice(0, 40)} className="font-body text-base leading-relaxed text-green-800">
                   {p}
                 </p>
               ))}
@@ -196,7 +196,7 @@ function SectionTimeline({ title, description, items }: Extract<ContentSection, 
                 {item.year}
               </Badge>
               <h3 className="mt-2 font-heading text-lg font-bold text-green-900">{item.title}</h3>
-              <p className="mt-1 font-body text-sm leading-relaxed text-green-700/90">{item.description}</p>
+              <p className="mt-1 font-body text-sm leading-relaxed text-green-800">{item.description}</p>
             </li>
           ))}
         </ol>
@@ -250,7 +250,7 @@ function SectionTrustBadges({
                 {badge.title}
               </p>
               {badge.description ? (
-                <p className="mt-1 font-body text-xs text-green-700/80">{badge.description}</p>
+                <p className="mt-1 font-body text-xs text-green-700">{badge.description}</p>
               ) : null}
             </div>
           ))}
@@ -281,14 +281,14 @@ function SectionLegal({ lastUpdated, sections }: Extract<ContentSection, { type:
   return (
     <section className="section-padding bg-white">
       <div className="container max-w-3xl">
-        <p className="font-body text-sm text-green-700/70">Last updated: {lastUpdated}</p>
+        <p className="font-body text-sm text-green-700">Last updated: {lastUpdated}</p>
         <div className="mt-8 space-y-10">
           {sections.map((section) => (
             <div key={section.title}>
               <h2 className="font-heading text-xl font-bold text-green-900">{section.title}</h2>
               <div className="mt-3 space-y-3">
                 {section.paragraphs.map((p) => (
-                  <p key={p.slice(0, 40)} className="font-body text-base leading-relaxed text-green-700/90">
+                  <p key={p.slice(0, 40)} className="font-body text-base leading-relaxed text-green-800">
                     {p}
                   </p>
                 ))}

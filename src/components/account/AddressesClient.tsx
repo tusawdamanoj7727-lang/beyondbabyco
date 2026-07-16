@@ -101,7 +101,7 @@ export default function AddressesClient({ initial }: { initial: CustomerAddressR
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-green-700/70">{addresses.length} saved address{addresses.length === 1 ? "" : "es"}</p>
+        <p className="text-sm text-green-700">{addresses.length} saved address{addresses.length === 1 ? "" : "es"}</p>
         <Button variant="primary" size="sm" type="button" onClick={startAdd}>
           <Plus className="h-4 w-4" aria-hidden="true" />
           Add address
@@ -109,7 +109,7 @@ export default function AddressesClient({ initial }: { initial: CustomerAddressR
       </div>
 
       {addresses.length === 0 && !editing ? (
-        <p className="rounded-2xl border border-dashed border-green-200 bg-white/60 p-8 text-center text-green-700/80">
+        <p className="rounded-2xl border border-dashed border-green-200 bg-white/60 p-8 text-center text-green-700">
           No saved addresses yet. Add one for faster checkout.
         </p>
       ) : (
@@ -125,7 +125,7 @@ export default function AddressesClient({ initial }: { initial: CustomerAddressR
                 </span>
               ) : null}
               <p className="font-heading font-semibold text-green-900">{addr.full_name}</p>
-              <p className="mt-1 text-sm text-green-700/80">
+              <p className="mt-1 text-sm text-green-700">
                 {addr.line1}
                 {addr.line2 ? `, ${addr.line2}` : ""}
                 <br />

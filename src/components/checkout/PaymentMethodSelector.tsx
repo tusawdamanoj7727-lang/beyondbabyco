@@ -76,7 +76,7 @@ export default function PaymentMethodSelector({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-heading font-semibold text-green-900">{method.label}</p>
-                <p className="text-xs text-green-700/70">{method.description}</p>
+                <p className="text-xs text-green-700">{method.description}</p>
               </div>
             </div>
             {method.id === "razorpay" ? (

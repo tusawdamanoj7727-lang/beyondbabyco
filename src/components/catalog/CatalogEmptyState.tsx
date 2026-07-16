@@ -33,7 +33,7 @@ export default function CatalogEmptyState({
           <Mascot mascot={mascot} pose="peek" size={128} animated floating alt="" />
         </div>
         <h2 className="mt-6 font-heading text-[clamp(1.375rem,2.5vw,1.75rem)] font-bold text-green-900">{title}</h2>
-        <p className="mx-auto mt-3 max-w-md text-base leading-[1.75] text-green-700/88">{description}</p>
+        <p className="mx-auto mt-3 max-w-md text-base leading-[1.75] text-green-800">{description}</p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           {actionHref ? (
             <Button asChild variant="primary" className={cn(ctaHeight, "font-semibold")}>

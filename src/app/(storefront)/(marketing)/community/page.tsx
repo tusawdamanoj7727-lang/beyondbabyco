@@ -65,7 +65,7 @@ export default async function CommunityPage() {
         ]}
       />
       <div className="container py-10 md:py-14">
-        <nav aria-label="Breadcrumb" className="text-sm text-green-700/70">
+        <nav aria-label="Breadcrumb" className="text-sm text-green-700">
           <Link href="/" className="hover:text-terra-600">
             Home
           </Link>
@@ -80,7 +80,7 @@ export default async function CommunityPage() {
           className="mt-8"
         />
 
-        <p className="mt-12 text-center text-sm text-green-700/70">
+        <p className="mt-12 text-center text-sm text-green-700">
           Browse the{" "}
           <Link href="/reviews/gallery" className="font-semibold text-terra-600 hover:underline">
             review gallery

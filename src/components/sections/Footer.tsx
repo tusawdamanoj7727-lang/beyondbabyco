@@ -62,7 +62,7 @@ const FOOTER_COMPANY_ACTIVE_LINKS = FOOTER_COMPANY_LINKS.filter(
 );
 
 const linkClass =
-  "motion-link font-body text-sm text-green-700/90 transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-50 rounded";
+  "motion-link font-body text-sm text-green-800 transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-green-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-50 rounded";
 
 const socialLinkClass = cn(
   linkClass,
@@ -360,7 +360,7 @@ export default function Footer({ cms }: { cms?: FooterConfig }) {
 
           {/* ── Mascot family ── */}
           <Reveal as="div" variant="fadeUp" delay={0.35} className="footer-mascot-section mt-14 w-full lg:mt-16">
-            <p className="mb-6 text-center font-heading text-xs font-semibold uppercase tracking-[0.14em] text-green-700/65 lg:text-left">
+            <p className="mb-6 text-center font-heading text-xs font-semibold uppercase tracking-[0.14em] text-green-700 lg:text-left">
               Our Mascot Family
             </p>
             <div

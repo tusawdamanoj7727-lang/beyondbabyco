@@ -114,13 +114,13 @@ export default function MiniCartDrawer() {
                   <span>{shipping === 0 ? "Free" : formatInr(shipping)}</span>
                 </div>
                 {gstBreakdown.lines.length === 1 ? (
-                  <div className="flex items-center justify-between text-sm text-green-700/80">
+                  <div className="flex items-center justify-between text-sm text-green-700">
                     <span>{formatGstRateLabel(gstBreakdown.lines[0]!.rate)}</span>
                     <span>{formatInr(gstBreakdown.lines[0]!.amount)}</span>
                   </div>
                 ) : (
                   gstBreakdown.lines.map((line) => (
-                    <div key={line.rate} className="flex items-center justify-between text-sm text-green-700/80">
+                    <div key={line.rate} className="flex items-center justify-between text-sm text-green-700">
                       <span>{formatGstRateLabel(line.rate)}</span>
                       <span>{formatInr(line.amount)}</span>
                     </div>
@@ -144,7 +144,7 @@ export default function MiniCartDrawer() {
                   Quick Checkout
                 </Button>
                 {!authLoading && !isLoggedIn ? (
-                  <p className="text-center text-xs text-green-700/80">
+                  <p className="text-center text-xs text-green-700">
                     Guest checkout available —{" "}
                     <Link
                       href="/login?redirectTo=/checkout"

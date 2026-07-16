@@ -30,7 +30,7 @@ export default function CouponCampaignPanel({
           Manage coupons →
         </Link>
       </div>
-      <p className="text-xs text-green-700/60">Visual association only — no changes to the coupon engine.</p>
+      <p className="text-xs text-green-700">Visual association only — no changes to the coupon engine.</p>
 
       <label className="block">
         <span className="sr-only">Select coupon</span>
@@ -51,7 +51,7 @@ export default function CouponCampaignPanel({
       {selected ? (
         <div className="rounded-2xl border border-terra-200 bg-terra-50/40 p-4">
           <p className="font-heading text-lg font-bold text-green-900">{selected.code}</p>
-          <p className="mt-1 text-sm text-green-700/80">{selected.name ?? "Promotion"}</p>
+          <p className="mt-1 text-sm text-green-700">{selected.name ?? "Promotion"}</p>
           <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-xs font-semibold uppercase text-green-700/50">Discount</dt>
@@ -66,7 +66,7 @@ export default function CouponCampaignPanel({
               </dd>
             </div>
           </dl>
-          <p className="mt-2 text-xs text-green-700/60">Uses: {selected.usageCount}{selected.maxUses ? ` / ${selected.maxUses}` : ""}</p>
+          <p className="mt-2 text-xs text-green-700">Uses: {selected.usageCount}{selected.maxUses ? ` / ${selected.maxUses}` : ""}</p>
           <p className="mt-3 text-xs font-semibold text-terra-700">
             CTA: {config.cta.label} → {config.cta.url}
           </p>

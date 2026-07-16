@@ -35,7 +35,7 @@ export default function AICreativeLibrary({
     <div className={cn("space-y-6", className)}>
       <header>
         <h3 className="font-heading text-lg font-bold text-green-900">AI Creative Library</h3>
-        <p className="mt-1 text-sm text-green-700/70">
+        <p className="mt-1 text-sm text-green-700">
           Generate campaign assets via ComfyUI. Outputs save to{" "}
           <code className="rounded bg-cream-100 px-1.5 py-0.5 text-xs">public/images/generated/marketing/</code> (
           {MARKETING_MEDIA_FOLDER} folder).

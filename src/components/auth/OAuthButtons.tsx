@@ -91,7 +91,7 @@ export function OAuthDivider() {
       <div className="absolute inset-0 flex items-center" aria-hidden="true">
         <div className="w-full border-t border-green-100" />
       </div>
-      <p className="relative mx-auto w-fit bg-white/80 px-3 text-xs font-medium text-green-700/60 backdrop-blur-sm">
+      <p className="relative mx-auto w-fit bg-white/80 px-3 text-xs font-medium text-green-700 backdrop-blur-sm">
         or continue with email
       </p>
     </div>

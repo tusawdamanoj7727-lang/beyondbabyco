@@ -82,7 +82,7 @@ export default function BundleSection({ products }: BundleSectionProps) {
           <div className="flex items-center justify-between gap-4">
             <div>
               <span className="text-2xl font-black text-brand-forest">₹{bundle.price}</span>
-              <span className="ml-2 text-sm text-gray-400 line-through">₹{bundle.compareAt}</span>
+              <span className="ml-2 text-sm text-gray-600 line-through">₹{bundle.compareAt}</span>
               <span className="ml-2 text-xs font-medium text-green-600">
                 Save ₹{bundle.compareAt - bundle.price}
               </span>

@@ -100,7 +100,7 @@ export default function EarlyAccessSection() {
                 {msg}
               </p>
             ) : (
-              <p id="early-access-note" className="mt-4 font-body text-xs text-green-700/70">
+              <p id="early-access-note" className="mt-4 font-body text-xs text-green-700">
                 No spam. Unsubscribe anytime.
               </p>
             )}
