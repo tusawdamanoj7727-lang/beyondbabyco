@@ -48,7 +48,7 @@ export default function CommerceTrustStrip({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-3xl border border-green-100/80 bg-white/85 backdrop-blur-sm",
+        "overflow-hidden rounded-[var(--radius-card)] border border-green-100/80 bg-white/85 backdrop-blur-sm",
         variant === "compact" ? "py-3" : "py-4",
         className,
       )}
@@ -64,12 +64,12 @@ export default function CommerceTrustStrip({
           <li
             key={item.label}
             className={cn(
-              "inline-flex shrink-0 items-center gap-2 rounded-full border border-green-100 bg-cream-50/90 px-3 py-1.5",
+              "trust-badge-pill inline-flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5",
               variant === "compact" && "snap-start",
             )}
           >
             <TrustIcon name={item.icon} className={cn(trustIconSize, "text-green-700")} />
-            <span className="whitespace-nowrap text-[11px] font-semibold text-green-800 sm:text-xs">
+            <span className="whitespace-nowrap text-xs font-semibold text-green-800">
               {item.label}
             </span>
           </li>

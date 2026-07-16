@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import HomepageMascotGuide from "@/components/mascots/HomepageMascotGuide";
 import PdpDeliveryEstimator from "@/components/catalog/PdpDeliveryEstimator";
@@ -23,7 +24,7 @@ import { buildCartItemInput, legacyVariantKey } from "@/lib/store/cart-mappers";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
-import { ctaHeight, focusRing, wishlistButton } from "@/lib/design/ui";
+import { ctaHeight, focusRing, productPrice, textCaption, wishlistButton } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 function variantAvailableStock(
@@ -213,53 +214,43 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
 
   const purchaseButtons = selectedInStock ? (
     <div className="flex flex-col gap-3">
-      <button
+      <Button
         type="button"
+        variant="primary"
+        size="lg"
+        fullWidth
         disabled={pending}
-        aria-busy={pending}
+        loading={pending}
         onClick={addToCart}
-        className={cn(
-          "w-full rounded-2xl bg-brand-forest py-4 text-base font-bold text-white transition-all hover:bg-green-800 active:scale-95 disabled:cursor-wait disabled:opacity-80",
-          focusRing,
-        )}
       >
-        {pending ? "Adding…" : "Add to Cart 🛒"}
-      </button>
-      <button
+        {pending ? "Adding…" : "Add to Cart"}
+      </Button>
+      <Button
         type="button"
+        variant="outline"
+        size="lg"
+        fullWidth
         disabled={pending}
-        aria-busy={pending}
         onClick={buyNow}
-        className={cn(
-          "w-full rounded-2xl border-2 border-brand-forest py-4 text-base font-bold text-brand-forest transition-all hover:bg-brand-mint disabled:cursor-wait disabled:opacity-80",
-          focusRing,
-        )}
       >
-        {pending ? "Redirecting…" : "Buy Now ⚡"}
-      </button>
-      <p className="text-center text-xs text-gray-600">
+        {pending ? "Redirecting…" : "Buy Now"}
+      </Button>
+      <p className={cn(textCaption, "text-center")}>
         Free delivery on orders {formatInr(FREE_SHIPPING_THRESHOLD)}+ ·{" "}
-        <Link href="/shipping-policy" className="underline underline-offset-2 hover:text-green-700">
+        <Link href="/shipping-policy" className="font-semibold text-terra-600 underline underline-offset-2 hover:text-terra-700">
           Shipping
         </Link>
         {" · "}
-        <Link href="/refund-policy" className="underline underline-offset-2 hover:text-green-700">
+        <Link href="/refund-policy" className="font-semibold text-terra-600 underline underline-offset-2 hover:text-terra-700">
           7-day returns
         </Link>
       </p>
     </div>
   ) : (
     <div className="flex flex-col gap-3">
-      <button
-        type="button"
-        onClick={handleNotifyMe}
-        className={cn(
-          "w-full rounded-2xl border-2 border-brand-terra py-4 text-base font-bold text-brand-terra transition-all hover:bg-terra-50",
-          focusRing,
-        )}
-      >
-        🔔 Notify Me When Available
-      </button>
+      <Button type="button" variant="cta" size="lg" fullWidth onClick={handleNotifyMe}>
+        Notify Me When Available
+      </Button>
     </div>
   );
 
@@ -436,7 +427,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
 
       <div
         className={cn(
-          "pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white shadow-lg transition-transform duration-200 md:hidden",
+          "pdp-sticky-bar fixed bottom-0 left-0 right-0 z-40 transition-transform duration-[var(--duration-drawer)] md:hidden",
           showStickyBar ? "translate-y-0" : "pointer-events-none translate-y-full",
         )}
         aria-hidden={!showStickyBar}
@@ -445,50 +436,45 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         <div className="mx-auto flex max-w-7xl items-center gap-3">
           {!isComingSoon ? (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-gray-900">{product.name}</p>
-              <p className="text-base font-black text-brand-forest">{formatInr(displayPrice)}</p>
+              <p className="truncate text-sm font-semibold text-green-900">{product.name}</p>
+              <p className={productPrice}>{formatInr(displayPrice)}</p>
             </div>
           ) : null}
           <div className={cn("flex shrink-0 gap-2", isComingSoon && "w-full")}>
             {selectedInStock ? (
               <>
-                <button
+                <Button
                   type="button"
+                  variant="primary"
+                  size="sm"
                   onClick={addToCart}
                   disabled={pending || !showStickyBar}
-                  aria-busy={pending}
-                  className={cn(
-                    "min-h-11 flex-1 rounded-xl bg-brand-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-green-800 disabled:opacity-70",
-                    focusRing,
-                  )}
+                  loading={pending}
+                  className="flex-1"
                 >
                   {pending ? "Adding…" : "Add to Cart"}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={buyNow}
                   disabled={pending || !showStickyBar}
-                  aria-busy={pending}
-                  className={cn(
-                    "min-h-11 shrink-0 rounded-xl border-2 border-brand-forest px-4 py-3 text-sm font-bold text-brand-forest transition hover:bg-brand-mint disabled:opacity-70",
-                    focusRing,
-                  )}
                 >
                   {pending ? "…" : "Buy"}
-                </button>
+                </Button>
               </>
             ) : (
-              <button
+              <Button
                 type="button"
+                variant="cta"
+                size="sm"
+                fullWidth
                 onClick={handleNotifyMe}
                 disabled={!showStickyBar}
-                className={cn(
-                  "w-full rounded-xl border-2 border-brand-terra py-3.5 text-sm font-bold text-brand-terra transition hover:bg-terra-50",
-                  focusRing,
-                )}
               >
                 {notifyLabel}
-              </button>
+              </Button>
             )}
           </div>
         </div>

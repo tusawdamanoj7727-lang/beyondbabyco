@@ -1,10 +1,11 @@
 "use client";
 
 import { useId, useState, useTransition } from "react";
-import { Loader2, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 
+import Button from "@/components/ui/Button";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
-import { focusRing, formControl } from "@/lib/design/ui";
+import { formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 export default function PdpDeliveryEstimator() {
@@ -47,8 +48,8 @@ export default function PdpDeliveryEstimator() {
   }
 
   return (
-    <div className="rounded-2xl border border-green-100/80 bg-green-50/50 p-3.5">
-      <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-green-900">
+    <div className="rounded-[var(--radius-card)] border border-green-100 bg-green-50/50 p-4">
+      <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-green-900">
         <MapPin className="h-4 w-4 text-terra-600" aria-hidden="true" />
         Check delivery
       </p>
@@ -78,18 +79,17 @@ export default function PdpDeliveryEstimator() {
           }}
           className={cn(formControl, "flex-1")}
         />
-        <button
+        <Button
           type="button"
+          variant="primary"
+          size="md"
           onClick={check}
           disabled={pending || pin.length !== 6}
-          aria-busy={pending}
-          className={cn(
-            "min-h-12 shrink-0 rounded-xl bg-brand-forest px-3.5 text-sm font-semibold text-white transition hover:bg-green-800 disabled:opacity-60",
-            focusRing,
-          )}
+          loading={pending}
+          className="shrink-0 px-4"
         >
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : "Check"}
-        </button>
+          Check
+        </Button>
       </div>
       {result ? (
         <p

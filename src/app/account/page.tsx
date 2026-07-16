@@ -16,10 +16,10 @@ import { resetClientCart } from "@/lib/storefront/cart-reset";
 import type { OrderStatus } from "@/lib/supabase/database.types";
 
 const NAV_ITEMS = [
-  { icon: "📦", label: "My Orders", href: "/account/orders" },
-  { icon: "❤️", label: "Wishlist", href: "/wishlist" },
-  { icon: "📍", label: "Addresses", href: "/account/addresses" },
-  { icon: "⚙️", label: "Profile Settings", href: "/account/profile" },
+  { label: "My Orders", href: "/account/orders" },
+  { label: "Wishlist", href: "/wishlist" },
+  { label: "Addresses", href: "/account/addresses" },
+  { label: "Profile Settings", href: "/account/profile" },
 ] as const;
 
 function formatMoney(amount: number, currency = "INR") {
@@ -107,16 +107,16 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen bg-brand-cream px-4 py-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-8 font-heading text-3xl font-black text-brand-forest">My Account</h1>
+        <h1 className="mb-8 font-heading text-3xl font-black text-green-800">My Account</h1>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="h-fit rounded-[var(--radius-card)] bg-white p-6 shadow-sm">
-            <div className="mb-6 flex flex-col items-center border-b border-gray-100 pb-6 text-center">
-              <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-mint">
-                <span className="text-2xl font-black text-brand-forest">{initial}</span>
+          <div className="h-fit rounded-[var(--radius-card)] bg-white p-6 shadow-[var(--shadow-soft)]">
+            <div className="mb-6 flex flex-col items-center border-b border-green-100 pb-6 text-center">
+              <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                <span className="text-2xl font-black text-green-800">{initial}</span>
               </div>
-              <p className="font-bold text-gray-900">{displayName}</p>
-              <p className="mt-1 text-xs text-gray-600">{user.email}</p>
+              <p className="font-bold text-green-900">{displayName}</p>
+              <p className="mt-1 text-xs text-green-700">{user.email}</p>
             </div>
 
             <nav className="space-y-1">
@@ -124,30 +124,28 @@ export default function AccountPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-brand-mint"
+                  className="flex items-center gap-3 rounded-[var(--radius-input)] px-3 py-2.5 text-sm font-medium text-green-800 transition-colors hover:bg-green-50"
                 >
-                  <span className="text-base">{item.icon}</span>
                   {item.label}
                 </Link>
               ))}
               <button
                 type="button"
                 onClick={signOut}
-                className="mt-2 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+                className="mt-2 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-terra-700 transition-colors hover:bg-red-50"
               >
-                <span className="text-base">🚪</span>
                 Sign Out
               </button>
             </nav>
           </div>
 
-          <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-sm md:col-span-2">
+          <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-[var(--shadow-soft)] md:col-span-2">
             <div className="mb-6 flex items-center justify-between gap-4">
-              <h2 className="text-lg font-bold text-gray-900">Recent Orders</h2>
+              <h2 className="text-lg font-bold text-green-900">Recent Orders</h2>
               {recentOrders.length > 0 ? (
                 <Link
                   href="/account/orders"
-                  className="text-sm font-semibold text-brand-forest hover:underline"
+                  className="text-sm font-semibold text-green-800 hover:underline"
                 >
                   View all →
                 </Link>
@@ -164,13 +162,13 @@ export default function AccountPage() {
                   sizes="160px"
                   className="mx-auto mb-4 object-contain opacity-80"
                 />
-                <p className="text-lg font-medium text-gray-500">No orders yet</p>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="text-lg font-medium text-green-700">No orders yet</p>
+                <p className="mt-1 text-sm text-green-700">
                   Your orders will appear here after you shop
                 </p>
                 <Link
                   href="/products"
-                  className="mt-5 inline-block rounded-xl bg-brand-forest px-7 py-3 text-sm font-bold text-white transition-colors hover:bg-green-800"
+                  className="mt-5 inline-block rounded-full bg-green-600 px-7 py-3 text-sm font-bold text-white transition-colors hover:bg-green-800"
                 >
                   Shop Now →
                 </Link>
@@ -181,11 +179,11 @@ export default function AccountPage() {
                   <li key={order.id}>
                     <Link
                       href={`/account/orders/${order.id}`}
-                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 px-4 py-4 transition-colors hover:bg-brand-cream"
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-green-100 px-4 py-4 transition-colors hover:bg-brand-cream"
                     >
                       <div>
-                        <p className="font-semibold text-gray-900">{order.orderNumber}</p>
-                        <p className="mt-0.5 text-xs text-gray-500">
+                        <p className="font-semibold text-green-900">{order.orderNumber}</p>
+                        <p className="mt-0.5 text-xs text-green-700">
                           {new Date(order.createdAt).toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "short",
@@ -195,7 +193,7 @@ export default function AccountPage() {
                       </div>
                       <div className="flex flex-wrap items-center gap-3">
                         <OrderStatusBadge status={order.status as OrderStatus} />
-                        <span className="text-sm font-bold text-brand-forest">
+                        <span className="text-sm font-bold text-green-800">
                           {formatMoney(order.grandTotal, order.currency)}
                         </span>
                       </div>

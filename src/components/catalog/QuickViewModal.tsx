@@ -14,7 +14,7 @@ import { canPurchaseProduct } from "@/lib/catalog/availability";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
-import { focusRing } from "@/lib/design/ui";
+import { dialogOverlay, dialogContentCentered, focusRing, iconButton } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 export default function QuickViewModal({
@@ -34,22 +34,20 @@ export default function QuickViewModal({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-[100] bg-green-900/50 backdrop-blur-sm" />
+        <Dialog.Overlay className={cn("fixed inset-0 z-[100]", dialogOverlay)} />
         <Dialog.Content
           className={cn(
-            "fixed left-1/2 top-1/2 z-[110] w-[min(94vw,56rem)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-4xl border border-white/80 bg-cream-50 shadow-clay outline-none",
+            dialogContentCentered,
+            "w-[min(94vw,56rem)] max-w-none overflow-hidden p-0",
           )}
         >
           <Dialog.Close asChild>
             <button
               type="button"
               aria-label="Close quick view"
-              className={cn(
-                "absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/95 text-green-800 shadow-sm",
-                focusRing,
-              )}
+              className={cn(iconButton, "absolute right-4 top-4 z-10 bg-white/95 text-green-800", focusRing)}
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </Dialog.Close>
           <Dialog.Title className="sr-only">Quick view: {product.name}</Dialog.Title>

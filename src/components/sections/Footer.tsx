@@ -36,7 +36,7 @@ import {
 } from "@/lib/brand/navigation";
 import { useNewsletterSubscribe } from "@/lib/newsletter/use-newsletter-subscribe";
 import type { FooterConfig } from "@/lib/admin/homepage-schema";
-import { focusRing, trustIconSize } from "@/lib/design/ui";
+import { focusRing, formControl, trustIconSize } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 const FOOTER_TRUST = [
@@ -150,16 +150,13 @@ function FooterEmailCapture() {
             placeholder="your@email.com"
             autoComplete="email"
             disabled={status === "loading"}
-            className={cn(
-              "min-h-11 flex-1 rounded-lg px-4 py-2.5 text-base text-gray-900 sm:w-64",
-              focusRing,
-            )}
+            className={cn(formControl, "min-h-11 flex-1 sm:w-64")}
           />
           <button
             type="submit"
             disabled={status === "loading"}
             className={cn(
-              "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand-terra px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-terra-700 disabled:opacity-60 motion-button",
+              "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-terra-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-soft)] transition-colors duration-[var(--duration-button)] hover:bg-terra-600 disabled:opacity-60 motion-button",
               focusRing,
             )}
           >
