@@ -90,10 +90,8 @@ function sendGoogleAdsConversion(label: string | null, payload: { value?: number
     currency: payload.currency ?? "INR",
     transaction_id: payload.transaction_id,
   };
-  // GTM mode: push for a GTM conversion tag; direct mode: gtag conversion.
   if (isGtmEnabled()) {
     safeDataLayerPush({ event: "ads_conversion", ...conversion });
-    return;
   }
   safeGtag("event", "conversion", conversion);
 }
@@ -107,7 +105,12 @@ function sendEvent(
   },
 ) {
   const { ecommerce, ...rest } = payload;
+  const eventParams = {
+    ...rest,
+    ...(ecommerce ? { ...ecommerce } : {}),
+  };
 
+  // GTM dataLayer for container tags; gtag for GA4/Ads (send_page_view disabled at config).
   if (isGtmEnabled()) {
     safeDataLayerPush({
       event: name,
@@ -115,12 +118,8 @@ function sendEvent(
       ...rest,
       ...(ecommerce ? { ecommerce } : {}),
     });
-  } else {
-    safeGtag("event", name, {
-      ...rest,
-      ...(ecommerce ? { ...ecommerce } : {}),
-    });
   }
+  safeGtag("event", name, eventParams);
 
   if (options?.metaStandardEvent) {
     const metaPayload = options.metaStandardEvent.payload ?? {};
@@ -139,12 +138,11 @@ export function trackPageView(path: string, title?: string) {
       page_path: path,
       page_title: title,
     });
-  } else {
-    safeGtag("event", "page_view", {
-      page_path: path,
-      page_title: title,
-    });
   }
+  safeGtag("event", "page_view", {
+    page_path: path,
+    page_title: title,
+  });
   if (getMetaPixelId()) safeFbq("track", "PageView");
   safeClarityEvent("page_view");
 }

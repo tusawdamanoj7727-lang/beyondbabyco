@@ -6,11 +6,14 @@ import {
   getGoogleAdsId,
   getGtmContainerId,
   getMetaPixelId,
-  isGtmEnabled,
+  isAnalyticsConfigured,
+  isProductionAnalyticsRuntime,
 } from "@/lib/analytics/config";
 
-/** Server-rendered third-party analytics scripts (env-driven). */
+/** Server-rendered third-party analytics scripts (env-driven, production only). */
 export default function ProductionAnalyticsScripts() {
+  if (!isProductionAnalyticsRuntime() || !isAnalyticsConfigured()) return null;
+
   const gtmId = getGtmContainerId();
   const ga4Id = getGa4MeasurementId();
   const adsId = getGoogleAdsId();
@@ -39,7 +42,8 @@ export default function ProductionAnalyticsScripts() {
           </Script>
         </>
       ) : null}
-      {!isGtmEnabled() && directGoogleTagId ? (
+      {/* GA4/Ads via gtag even when GTM is present — send_page_view false (SPA listener owns pageviews). */}
+      {directGoogleTagId ? (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${directGoogleTagId}`}
