@@ -101,8 +101,13 @@ export function getProductionEnvWarnings(): string[] {
   if (!process.env.SMTP_HOST?.trim() || !process.env.SMTP_USER?.trim() || !process.env.SMTP_PASS?.trim()) {
     warnings.push("SMTP not configured (transactional email disabled)");
   }
-  if (!process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID && !process.env.NEXT_PUBLIC_META_PIXEL_ID) {
-    warnings.push("No analytics providers configured (GA4 or Meta Pixel)");
+  if (
+    !process.env.NEXT_PUBLIC_GTM_CONTAINER_ID &&
+    !process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID &&
+    !process.env.NEXT_PUBLIC_META_PIXEL_ID &&
+    !process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID
+  ) {
+    warnings.push("No analytics providers configured (GTM, GA4, Meta Pixel, or Clarity)");
   }
 
   return warnings;

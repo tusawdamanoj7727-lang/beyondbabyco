@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
+import { trackNewsletterSubscribe } from "@/lib/analytics/events";
 import { NEWSLETTER_MESSAGES } from "@/lib/newsletter/messages";
 
 export type NewsletterStatus = "idle" | "loading" | "success" | "error";
@@ -56,6 +57,7 @@ export function useNewsletterSubscribe(
             data.data?.message ??
             NEWSLETTER_MESSAGES.success,
         );
+        trackNewsletterSubscribe({ location: source });
         setEmail("");
       } catch {
         setStatus("error");

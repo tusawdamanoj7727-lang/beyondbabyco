@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
 import CatalogBreadcrumb from "@/components/catalog/CatalogBreadcrumb";
+import ProductAnalyticsTracker from "@/components/analytics/ProductAnalyticsTracker";
 import DeferredProductViewTracker from "@/components/catalog/DeferredProductViewTracker";
 import ProductGallery from "@/components/catalog/ProductGallery";
 import JsonLd from "@/components/seo/JsonLd";
@@ -147,6 +148,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           ...(faqSchema ? [faqSchema] : []),
         ]}
       />
+      <ProductAnalyticsTracker product={product} />
       <DeferredProductViewTracker productId={product.id} />
       <CatalogBreadcrumb
         items={[

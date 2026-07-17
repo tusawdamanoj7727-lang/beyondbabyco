@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 
+import { trackLogout } from "@/lib/analytics/events";
 import { supabase } from "@/lib/supabase/client";
 import { resetClientCart } from "@/lib/storefront/cart-reset";
 
@@ -65,6 +66,7 @@ export function AuthProvider({
   }, []);
 
   const signOut = useCallback(() => {
+    trackLogout({ method: "password" });
     resetClientCart();
     setSession(null);
     window.location.replace("/");

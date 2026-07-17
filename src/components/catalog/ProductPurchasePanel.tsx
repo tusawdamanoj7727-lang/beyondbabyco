@@ -13,6 +13,7 @@ import PricingTaxNote from "@/components/catalog/PricingTaxNote";
 import QuantitySelector from "@/components/catalog/QuantitySelector";
 import StarRating from "@/components/catalog/StarRating";
 import { useToast } from "@/components/ui/ToastProvider";
+import { trackWishlistAdd, trackWishlistRemove } from "@/lib/analytics/events";
 import { canPurchaseVariant } from "@/lib/catalog/availability";
 import { buildProductNotifyTarget, notifyMeButtonLabel } from "@/lib/notify-me/target";
 import { useNotifyMe } from "@/lib/homepage/notify-me-context";
@@ -205,7 +206,11 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
     startTransition(async () => {
       const result = await toggle(product.id);
       if (!result.ok && result.error) toast.error(result.error);
-      else toast.success(wishlisted ? "Removed from wishlist" : "Saved to wishlist");
+      else {
+        if (wishlisted) trackWishlistRemove({ productId: product.id, productName: product.name });
+        else trackWishlistAdd({ productId: product.id, productName: product.name });
+        toast.success(wishlisted ? "Removed from wishlist" : "Saved to wishlist");
+      }
     });
   }
 

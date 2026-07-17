@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { analyticsItemFromCartItem } from "@/lib/analytics/items";
+import { trackAddToCart, trackCouponApplied, trackRemoveFromCart } from "@/lib/analytics/events";
 import { gstFromInclusiveLine } from "@/lib/catalog/gst-rates";
 import { clampCartQuantity, CART_MIN_QUANTITY } from "@/lib/storefront/cart-types";
 
@@ -89,6 +91,18 @@ export const useCartStore = create<CartStore>()(
         set((state) => {
           const qty = clampCartQuantity(quantity);
           const exists = state.items.find((i) => i.variantId === newItem.variantId);
+          const trackedItem = {
+            ...newItem,
+            quantity: qty,
+            unit: newItem.unit || newItem.variantName || "",
+            variantName: newItem.variantName || newItem.unit || "",
+          };
+          if (typeof window !== "undefined") {
+            trackAddToCart({
+              value: newItem.price * qty,
+              items: [analyticsItemFromCartItem(trackedItem)],
+            });
+          }
           if (exists) {
             return {
               items: state.items.map((i) =>
@@ -102,7 +116,16 @@ export const useCartStore = create<CartStore>()(
         }),
 
       removeItem: (variantId) =>
-        set((s) => ({ items: s.items.filter((i) => i.variantId !== variantId) })),
+        set((s) => {
+          const removed = s.items.find((i) => i.variantId === variantId);
+          if (removed && typeof window !== "undefined") {
+            trackRemoveFromCart({
+              value: removed.price * removed.quantity,
+              items: [analyticsItemFromCartItem(removed, s.coupon?.code ?? undefined)],
+            });
+          }
+          return { items: s.items.filter((i) => i.variantId !== variantId) };
+        }),
 
       updateQuantity: (variantId, qty) =>
         set((s) => ({
@@ -119,14 +142,22 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [], coupon: null }),
 
       applyCoupon: (coupon) =>
-        set({
-          coupon: {
+        set((state) => {
+          const normalized = {
             ...coupon,
             discountType: couponType(coupon),
             discountValue: couponValue(coupon),
             type: couponType(coupon),
             value: couponValue(coupon),
-          },
+          };
+          if (typeof window !== "undefined") {
+            trackCouponApplied({
+              coupon: normalized.code,
+              value: normalized.savings,
+              items: state.items.map((item) => analyticsItemFromCartItem(item, normalized.code)),
+            });
+          }
+          return { coupon: normalized };
         }),
 
       removeCoupon: () => set({ coupon: null }),

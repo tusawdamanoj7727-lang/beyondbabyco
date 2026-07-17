@@ -7,6 +7,7 @@ import AddToCartButton from "@/components/catalog/AddToCartButton";
 import NotifyMeButton from "@/components/catalog/NotifyMeButton";
 import { ProductCardLayout } from "@/components/catalog/ProductCardLayout";
 import { useQuickCompareOptional } from "@/components/catalog/QuickCompareContext";
+import { trackWishlistAdd, trackWishlistRemove } from "@/lib/analytics/events";
 import { MICROCOPY } from "@/lib/brand/copy";
 import { useToast } from "@/components/ui/ToastProvider";
 import { canPurchaseProduct } from "@/lib/catalog/availability";
@@ -87,7 +88,11 @@ export default function ProductCard({
     startWishTransition(async () => {
       const result = await toggle(product.id);
       if (!result.ok && result.error) toast.error(result.error);
-      else if (result.ok) toast.success(wishlisted ? MICROCOPY.removedFromWishlist : MICROCOPY.savedToWishlist);
+      else if (result.ok) {
+        if (wishlisted) trackWishlistRemove({ productId: product.id, productName: product.name });
+        else trackWishlistAdd({ productId: product.id, productName: product.name });
+        toast.success(wishlisted ? MICROCOPY.removedFromWishlist : MICROCOPY.savedToWishlist);
+      }
     });
   }
 

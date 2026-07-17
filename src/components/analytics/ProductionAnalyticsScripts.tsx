@@ -1,32 +1,64 @@
 import Script from "next/script";
 
-import { getClarityProjectId, getGa4MeasurementId, getMetaPixelId } from "@/lib/analytics/config";
+import {
+  getClarityProjectId,
+  getGa4MeasurementId,
+  getGoogleAdsId,
+  getGtmContainerId,
+  getMetaPixelId,
+  isGtmEnabled,
+} from "@/lib/analytics/config";
 
 /** Server-rendered third-party analytics scripts (env-driven). */
 export default function ProductionAnalyticsScripts() {
+  const gtmId = getGtmContainerId();
   const ga4Id = getGa4MeasurementId();
+  const adsId = getGoogleAdsId();
   const metaPixelId = getMetaPixelId();
   const clarityId = getClarityProjectId();
+  const directGoogleTagId = ga4Id ?? adsId;
 
-  if (!ga4Id && !metaPixelId && !clarityId) return null;
+  if (!gtmId && !ga4Id && !adsId && !metaPixelId && !clarityId) return null;
 
   return (
     <>
-      {ga4Id && (
+      {gtmId ? (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="lazyOnload" />
-          <Script id="ga4-init" strategy="lazyOnload">
+          <Script
+            src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="gtm-init" strategy="afterInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${ga4Id}', { send_page_view: false });
+              window.dataLayer.push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+              });
             `}
           </Script>
         </>
-      )}
+      ) : null}
+      {!isGtmEnabled() && directGoogleTagId ? (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${directGoogleTagId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-tag-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              window.gtag = gtag;
+              gtag('js', new Date());
+              ${ga4Id ? `gtag('config', '${ga4Id}', { send_page_view: false });` : ""}
+              ${adsId ? `gtag('config', '${adsId}');` : ""}
+            `}
+          </Script>
+        </>
+      ) : null}
       {metaPixelId && (
-        <Script id="meta-pixel" strategy="lazyOnload">
+        <Script id="meta-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -41,7 +73,7 @@ export default function ProductionAnalyticsScripts() {
         </Script>
       )}
       {clarityId && (
-        <Script id="ms-clarity" strategy="lazyOnload">
+        <Script id="ms-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};

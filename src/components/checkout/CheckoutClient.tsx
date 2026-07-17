@@ -18,12 +18,20 @@ import { lookupPincodeAction, placeCheckoutOrderAction } from "@/lib/checkout/ac
 import { notifyPaymentFailedAction, abandonCheckoutPaymentAction } from "@/lib/checkout/payment-email-actions";
 import { INDIAN_STATES, type AddressFormValues } from "@/lib/checkout/schema";
 import type { CustomerAddressRow } from "@/lib/checkout/address-actions";
+import { analyticsItemFromCartItem } from "@/lib/analytics/items";
+import {
+  trackAddPayment,
+  trackAddShipping,
+  trackBeginCheckout,
+  trackCouponApplied,
+  trackPurchase,
+  trackViewCart,
+} from "@/lib/analytics/events";
 import { formatInr } from "@/lib/catalog/format";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
 import { applyCouponViaApi } from "@/lib/storefront/cart-coupons";
 import { useCart } from "@/lib/storefront/cart-context";
 import { estimateShippingFee } from "@/lib/storefront/shipping";
-import { trackBeginCheckout, trackPurchase } from "@/lib/analytics/events";
 import { dialogContentCentered, dialogOverlay, focusRing, formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
@@ -176,6 +184,12 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     appliedCoupon?.freeShipping ?? false,
   );
   const totals = useCheckoutTotals(shippingFee, shipping.state || "");
+  const analyticsItems = useMemo(
+    () => items.map((item) => analyticsItemFromCartItem(item, appliedCoupon?.code ?? undefined)),
+    [items, appliedCoupon?.code],
+  );
+  const beginCheckoutTrackedRef = useRef(false);
+  const checkoutStepSignatureRef = useRef("");
 
   const checkPin = useCallback(async (pincode: string) => {
     if (pincode.length !== 6) return;
@@ -238,6 +252,17 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
       phone: prev.phone.trim() ? prev.phone : customer.phone,
     }));
   }, [customer.full_name, customer.phone]);
+
+  useEffect(() => {
+    if (!hydrated || items.length === 0 || beginCheckoutTrackedRef.current) return;
+    beginCheckoutTrackedRef.current = true;
+    trackViewCart({ value: totals.total, items: analyticsItems });
+    trackBeginCheckout({
+      value: totals.total,
+      items: analyticsItems,
+      coupon: appliedCoupon?.code ?? undefined,
+    });
+  }, [hydrated, items.length, totals.total, analyticsItems, appliedCoupon?.code]);
 
   if (!hydrated) {
     return (
@@ -391,6 +416,29 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
       }
       return;
     }
+    const checkoutSignature = JSON.stringify({
+      pincode: shipping.pincode,
+      state: shipping.state,
+      paymentMethod,
+      shippingFee: totals.shipping,
+      total: totals.total,
+      coupon: appliedCoupon?.code ?? null,
+    });
+    if (checkoutStepSignatureRef.current !== checkoutSignature) {
+      checkoutStepSignatureRef.current = checkoutSignature;
+      trackAddShipping({
+        value: totals.total,
+        items: analyticsItems,
+        coupon: appliedCoupon?.code ?? undefined,
+        shippingTier: totals.shipping === 0 ? "free_shipping" : "standard",
+      });
+      trackAddPayment({
+        value: totals.total,
+        items: analyticsItems,
+        coupon: appliedCoupon?.code ?? undefined,
+        paymentType: paymentMethod,
+      });
+    }
     setReviewOpen(true);
   }
 
@@ -421,6 +469,11 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           couponId: data.couponId,
           discountAmount: data.savings,
           freeShipping: false,
+        });
+        trackCouponApplied({
+          coupon: data.code,
+          value: data.savings,
+          items: analyticsItems,
         });
         setCouponMsg({ text: data.message, type: "success" });
         setCouponInput("");
@@ -484,17 +537,14 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           trackPurchase({
             transactionId: orderId,
             value: placeResult.grandTotal ?? totals.total,
-            itemCount: items.length,
+            items: analyticsItems,
+            coupon: appliedCoupon?.code ?? undefined,
+            paymentType: "cod",
           });
           clear();
           router.push(`/checkout/success?orderId=${orderId}`);
           return;
         }
-
-        trackBeginCheckout({
-          value: placeResult.grandTotal ?? totals.total,
-          itemCount: items.length,
-        });
 
         if (!placeResult.razorpayOrderId || !placeResult.razorpayKeyId) {
           capturePaymentError(new Error("Payment could not be initialized"), {
@@ -549,7 +599,9 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             trackPurchase({
               transactionId: orderId,
               value: placeResult.grandTotal ?? totals.total,
-              itemCount: items.length,
+              items: analyticsItems,
+              coupon: appliedCoupon?.code ?? undefined,
+              paymentType: "razorpay",
             });
             clear();
             router.push(`/checkout/success?orderId=${orderId}`);

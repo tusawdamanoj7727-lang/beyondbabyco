@@ -14,6 +14,7 @@ import {
   ensureCustomerBootstrapAction,
 } from "@/lib/auth/customer-auth-actions";
 import { callbackErrorMessage, mapSupabaseAuthError } from "@/lib/auth/auth-errors";
+import { trackAccountCreated, trackLogin, trackSignup } from "@/lib/analytics/events";
 import { authCallbackUrl } from "@/lib/auth/auth-urls";
 import { resolveCustomerRedirect } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/client";
@@ -134,6 +135,7 @@ export default function LoginPageClient() {
       if (tab === "login") {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
+        trackLogin({ method: "password" });
         await ensureCustomerBootstrapAction();
         router.push(redirectTo);
         router.refresh();
@@ -151,6 +153,8 @@ export default function LoginPageClient() {
           },
         });
         if (signUpError) throw signUpError;
+        trackSignup({ method: "password" });
+        trackAccountCreated({ method: "password" });
         setMessage("Account created! Check your email to verify.");
       }
     } catch (err) {

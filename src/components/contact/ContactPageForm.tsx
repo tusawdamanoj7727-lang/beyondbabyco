@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 
 import Button from "@/components/ui/Button";
+import { trackContactForm } from "@/lib/analytics/events";
 import { focusRing } from "@/lib/design/ui";
 import { submitContactQueryAction } from "@/lib/account/support-actions";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ export default function ContactPageForm() {
     if (result.ok) {
       setStatus("success");
       setStatusMessage("Thank you! We will get back to you within one business day.");
+      trackContactForm({ subject });
       setName("");
       setEmail("");
       setSubject("");
