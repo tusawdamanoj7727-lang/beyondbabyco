@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { OrderStatus } from "@/lib/supabase/database.types";
+import { trackServerRefund } from "@/lib/analytics/measurement-protocol";
 
 import { dispatchOrderEmail, dispatchOrderEmailAsync } from "../dispatch";
 import { runOrderCompletionEmails } from "../lifecycle";
@@ -62,6 +63,9 @@ export function onOrderStatusChanged(orderId: string, status: OrderStatus): void
   const templateId = STATUS_TEMPLATE_MAP[status];
   if (!templateId) return;
   dispatchOrderEmailAsync(orderId, templateId);
+  if (status === "refunded") {
+    trackServerRefund({ transactionId: orderId });
+  }
 }
 
 export function onShipmentStatusChanged(
@@ -85,8 +89,12 @@ export function onRefundInitiated(orderId: string, amount?: string): void {
 }
 
 export function onRefundCompleted(orderId: string, amount?: string): void {
-  void amount;
+  const value = amount ? Number(amount) : undefined;
   dispatchOrderEmailAsync(orderId, "refund-completed");
+  trackServerRefund({
+    transactionId: orderId,
+    value: Number.isFinite(value) ? value : undefined,
+  });
 }
 
 export function onOrderCancelled(orderId: string): void {

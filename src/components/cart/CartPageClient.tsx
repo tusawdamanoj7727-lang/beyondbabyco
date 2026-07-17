@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Tag, Trash2 } from "lucide-react";
@@ -11,6 +11,8 @@ import CartUpsellRail from "@/components/cart/CartUpsellRail";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import Button from "@/components/ui/Button";
+import { trackViewCart } from "@/lib/analytics/events";
+import { analyticsItemFromCartItem } from "@/lib/analytics/items";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { applyCouponViaApi } from "@/lib/storefront/cart-coupons";
@@ -65,6 +67,17 @@ export default function CartPageClient({
   const [couponMsg, setCouponMsg] = useState({ text: "", type: "" as "" | "success" | "error" });
   const [applying, setApplying] = useState(false);
   const couponId = useId();
+  const viewCartTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (!hydrated || items.length === 0 || viewCartTrackedRef.current) return;
+    viewCartTrackedRef.current = true;
+    trackViewCart({
+      value: total,
+      items: items.map((item) => analyticsItemFromCartItem(item, coupon?.code)),
+      currency: "INR",
+    });
+  }, [hydrated, items, total, coupon?.code]);
 
   async function handleApplyCoupon() {
     const code = couponInput.trim().toUpperCase();

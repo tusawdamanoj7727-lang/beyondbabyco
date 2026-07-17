@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { isAnalyticsConfigured } from "@/lib/analytics/config";
 import { trackPageTypeView, trackPageView, trackSearch, type AnalyticsPageType } from "@/lib/analytics/events";
 
-/** Fires page_view on App Router navigations (GA4 + Meta). */
+/** Fires page_view on App Router navigations (GA4 + Meta). Deduped per path. */
 export default function AnalyticsPageViewListener() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,10 +33,14 @@ export default function AnalyticsPageViewListener() {
               : "other";
 
     const searchTerm = searchParams.get("q")?.trim() || undefined;
-    trackPageTypeView({ type: pageType, path, title: document.title, searchTerm });
-    if (pageType === "search" && searchTerm) {
-      trackSearch({ searchTerm });
+
+    // Search uses GA4 `search` once (via trackSearch). Other page types use *_view events.
+    if (pageType === "search") {
+      if (searchTerm) trackSearch({ searchTerm });
+      return;
     }
+
+    trackPageTypeView({ type: pageType, path, title: document.title, searchTerm });
   }, [pathname, searchParams]);
 
   return null;

@@ -84,12 +84,18 @@ function safeClarityEvent(name: string) {
 function sendGoogleAdsConversion(label: string | null, payload: { value?: number; currency?: string; transaction_id?: string }) {
   const adsId = getGoogleAdsId();
   if (!adsId || !label) return;
-  safeGtag("event", "conversion", {
+  const conversion = {
     send_to: `${adsId}/${label}`,
     value: payload.value,
     currency: payload.currency ?? "INR",
     transaction_id: payload.transaction_id,
-  });
+  };
+  // GTM mode: push for a GTM conversion tag; direct mode: gtag conversion.
+  if (isGtmEnabled()) {
+    safeDataLayerPush({ event: "ads_conversion", ...conversion });
+    return;
+  }
+  safeGtag("event", "conversion", conversion);
 }
 
 function sendEvent(
