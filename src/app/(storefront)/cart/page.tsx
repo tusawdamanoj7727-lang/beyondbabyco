@@ -1,5 +1,6 @@
 import CartPageClient from "@/components/cart/CartPageClient";
 import StorefrontErrorBoundary from "@/components/ui/StorefrontErrorBoundary";
+import { listSevenStorefrontProducts } from "@/lib/catalog/storefront";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildPageMetadata({
@@ -10,10 +11,17 @@ export const metadata = buildPageMetadata({
 
 export const dynamic = "force-dynamic";
 
-export default function CartPage() {
+export default async function CartPage() {
+  let upsellProducts: Awaited<ReturnType<typeof listSevenStorefrontProducts>> = [];
+  try {
+    upsellProducts = await listSevenStorefrontProducts();
+  } catch {
+    upsellProducts = [];
+  }
+
   return (
     <StorefrontErrorBoundary context="cart">
-      <CartPageClient />
+      <CartPageClient upsellProducts={upsellProducts} />
     </StorefrontErrorBoundary>
   );
 }

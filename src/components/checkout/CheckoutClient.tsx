@@ -9,6 +9,7 @@ import { Loader2, MapPin, ShieldCheck, Tag } from "lucide-react";
 import CheckoutOrderSummary, { useCheckoutTotals } from "@/components/checkout/CheckoutOrderSummary";
 import PaymentMethodSelector, { type PaymentMethodId } from "@/components/checkout/PaymentMethodSelector";
 import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
+import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import { MICROCOPY } from "@/lib/brand/copy";
 import Button from "@/components/ui/Button";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -802,6 +803,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             <ShieldCheck className="h-5 w-5 shrink-0 text-green-600" aria-hidden="true" />
             Secure checkout · Your payment info is never stored on our servers
           </div>
+
+          <CommerceTrustStrip variant="compact" />
 
           <div className="hidden lg:block">
             <Button variant="primary" fullWidth type="submit" disabled={busy} aria-busy={busy}>

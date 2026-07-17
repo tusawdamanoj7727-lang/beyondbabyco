@@ -32,6 +32,8 @@ export type StorefrontFeaturedProduct = {
   description: string;
   price: string;
   imageUrl?: string | null;
+  ratingAvg?: number;
+  ratingCount?: number;
 };
 
 export type StorefrontTestimonial = {
@@ -108,6 +110,8 @@ function mapLaunchProduct(product: StorefrontProduct): StorefrontFeaturedProduct
     description: product.shortDescription ?? "",
     price: `₹${Math.round(product.effectivePrice).toLocaleString("en-IN")}`,
     imageUrl: product.imageUrl,
+    ratingAvg: product.ratingAvg,
+    ratingCount: product.ratingCount,
   };
 }
 

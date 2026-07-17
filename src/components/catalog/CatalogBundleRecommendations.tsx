@@ -1,17 +1,44 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTransition } from "react";
 
+import Button from "@/components/ui/Button";
+import { useToast } from "@/components/ui/ToastProvider";
 import { formatInr } from "@/lib/catalog/format";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { IMAGE_DIMENSIONS, IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { buildCartItemInput } from "@/lib/store/cart-mappers";
+import { useCartStore } from "@/lib/store/cart-store";
+import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
 
 export default function CatalogBundleRecommendations({
   products,
 }: {
   products: StorefrontProduct[];
 }) {
-  const bundleItems = products.slice(0, 3);
+  const bundleItems = products
+    .filter((p) => p.inStock && p.status === "active" && p.effectivePrice > 0)
+    .slice(0, 3);
+  const addItem = useCartStore((s) => s.addItem);
+  const cartUi = useCartUiOptional();
+  const toast = useToast();
+  const [pending, startTransition] = useTransition();
+
   if (bundleItems.length < 2) return null;
+
+  const bundleTotal = bundleItems.reduce((sum, p) => sum + p.effectivePrice, 0);
+
+  function addAll() {
+    startTransition(() => {
+      for (const product of bundleItems) {
+        addItem(buildCartItemInput(product));
+      }
+      cartUi?.openMiniCart();
+      toast.success("Bundle added to cart");
+    });
+  }
 
   return (
     <section aria-labelledby="bundle-recommendations-heading" className="mb-12">
@@ -48,16 +75,28 @@ export default function CatalogBundleRecommendations({
               <div>
                 <p className="font-heading text-sm font-bold text-green-900">{product.name}</p>
                 <p className="mt-1 text-sm font-semibold text-green-800">
-                  {product.status === "coming_soon" ? "Launching 2026" : formatInr(product.effectivePrice)}
+                  {formatInr(product.effectivePrice)}
                 </p>
               </div>
             </Link>
           ))}
         </div>
 
-        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-terra-600">
-          Pair essentials from our daily care range — gentle formulas designed to work together
-        </p>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-green-800">
+            Set total · {formatInr(bundleTotal)}
+          </p>
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            disabled={pending}
+            loading={pending}
+            onClick={addAll}
+          >
+            {pending ? "Adding…" : "Add all to cart"}
+          </Button>
+        </div>
       </div>
     </section>
   );

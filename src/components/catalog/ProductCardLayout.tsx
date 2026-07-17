@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import ProductCardImage from "@/components/catalog/ProductCardImage";
+import RatingStars from "@/components/reviews/RatingStars";
 import { formatInr } from "@/lib/catalog/format";
 import { productUnit } from "@/lib/catalog/product-images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
@@ -17,6 +18,8 @@ import {
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/storefront/shipping";
 import { cn } from "@/lib/utils";
 
+const LOW_STOCK_THRESHOLD = 5;
+
 function isResearchBacked(product: StorefrontProduct): boolean {
   return (
     product.secondaryBadge === "Research Backed" ||
@@ -28,6 +31,9 @@ function isResearchBacked(product: StorefrontProduct): boolean {
 function stockBadge(product: StorefrontProduct): { label: string; className: string } | null {
   if (product.status === "coming_soon") {
     return { label: "Coming Soon", className: "bg-orange-50 text-orange-800" };
+  }
+  if (product.inStock && product.stock > 0 && product.stock <= LOW_STOCK_THRESHOLD) {
+    return { label: `Only ${product.stock} left`, className: "bg-terra-100 text-terra-800" };
   }
   if (product.inStock) {
     return { label: "In Stock", className: "bg-green-100 text-green-800" };
@@ -137,6 +143,11 @@ export function ProductCardLayout({
         </h3>
         {!related && product.shortDescription ? (
           <p className={cn(textCaption, "line-clamp-2")}>{product.shortDescription}</p>
+        ) : null}
+        {product.ratingCount > 0 ? (
+          <div className="mt-2">
+            <RatingStars rating={product.ratingAvg} count={product.ratingCount} size="sm" />
+          </div>
         ) : null}
       </div>
 

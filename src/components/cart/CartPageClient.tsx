@@ -7,8 +7,12 @@ import { Minus, Plus, ShoppingBag, Tag, Trash2 } from "lucide-react";
 
 import ProductImageFallback from "@/components/brand/ProductImageFallback";
 import CartEmptyState from "@/components/catalog/CartEmptyState";
+import CartUpsellRail from "@/components/cart/CartUpsellRail";
+import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
+import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import Button from "@/components/ui/Button";
 import { formatInr } from "@/lib/catalog/format";
+import type { StorefrontProduct } from "@/lib/catalog/types";
 import { applyCouponViaApi } from "@/lib/storefront/cart-coupons";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
@@ -37,7 +41,11 @@ function CartSkeleton() {
   );
 }
 
-export default function CartPageClient() {
+export default function CartPageClient({
+  upsellProducts = [],
+}: {
+  upsellProducts?: StorefrontProduct[];
+}) {
   const hydrated = useCartHydrated();
 
   const items = useCartStore((s) => s.items);
@@ -95,13 +103,10 @@ export default function CartPageClient() {
   if (items.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-brand-cream px-4 py-16">
-        <CartEmptyState />
+        <CartEmptyState recoveryProducts={upsellProducts} />
       </div>
     );
   }
-
-  const toFreeShip = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
-  const shipProgress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
     <div className="min-h-screen bg-brand-cream py-8">
@@ -163,7 +168,9 @@ export default function CartPageClient() {
                         type="button"
                         aria-label="Increase quantity"
                         disabled={item.quantity >= 10}
-                        onClick={() => updateQuantity(item.variantId, clampCartQuantity(item.quantity + 1))}
+                        onClick={() =>
+                          updateQuantity(item.variantId, clampCartQuantity(item.quantity + 1))
+                        }
                         className="flex h-11 w-11 items-center justify-center text-green-800 transition-colors hover:bg-green-50 disabled:opacity-40"
                       >
                         <Plus size={14} aria-hidden="true" />
@@ -188,6 +195,8 @@ export default function CartPageClient() {
               </div>
             ))}
 
+            <CartUpsellRail products={upsellProducts} />
+
             <Link
               href="/products"
               className="flex items-center gap-2 text-sm font-medium text-brand-forest hover:underline"
@@ -201,22 +210,7 @@ export default function CartPageClient() {
             <div className={cn(surfaceCard, "sticky top-24 p-6")}>
               <h2 className="mb-4 font-heading text-lg font-bold text-green-900">Order Summary</h2>
 
-              <div className="mb-4">
-                {toFreeShip > 0 ? (
-                  <p className="mb-2 text-sm text-green-700">
-                    Add <span className="font-bold text-green-900">{formatInr(toFreeShip)}</span> more
-                    for FREE delivery!
-                  </p>
-                ) : (
-                  <p className="mb-2 text-sm font-semibold text-green-700">You get FREE delivery!</p>
-                )}
-                <div className="h-2 w-full rounded-full bg-green-100">
-                  <div
-                    className="h-2 rounded-full bg-green-600 transition-all duration-[var(--duration-slow)]"
-                    style={{ width: `${shipProgress}%` }}
-                  />
-                </div>
-              </div>
+              <FreeShippingProgress subtotal={subtotal} className="mb-4" />
 
               {coupon ? (
                 <div className="mb-4 flex items-center justify-between rounded-[var(--radius-input)] border border-green-200 bg-green-50 px-3 py-2">
@@ -312,6 +306,7 @@ export default function CartPageClient() {
               <Button asChild variant="primary" size="lg" fullWidth className="mt-6">
                 <Link href="/checkout">Proceed to Checkout →</Link>
               </Button>
+              <CommerceTrustStrip variant="compact" className="mt-4" />
               <p className="mt-3 text-center text-xs text-green-700">
                 Secure checkout powered by Razorpay
               </p>

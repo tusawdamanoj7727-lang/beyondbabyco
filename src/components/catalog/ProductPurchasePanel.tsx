@@ -212,6 +212,8 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   const primaryBadge =
     product.badge ?? (isComingSoon ? "Coming Soon" : selectedInStock ? "In Stock" : null);
 
+  const isLowStock = selectedInStock && selectedStock > 0 && selectedStock <= 5;
+
   const purchaseButtons = selectedInStock ? (
     <div className="flex flex-col gap-3">
       <Button
@@ -221,9 +223,9 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         fullWidth
         disabled={pending}
         loading={pending}
-        onClick={addToCart}
+        onClick={buyNow}
       >
-        {pending ? "Adding…" : "Add to Cart"}
+        {pending ? "Redirecting…" : "Buy Now"}
       </Button>
       <Button
         type="button"
@@ -231,9 +233,9 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         size="lg"
         fullWidth
         disabled={pending}
-        onClick={buyNow}
+        onClick={addToCart}
       >
-        {pending ? "Redirecting…" : "Buy Now"}
+        {pending ? "Adding…" : "Add to Cart"}
       </Button>
       <p className={cn(textCaption, "text-center")}>
         Free delivery on orders {formatInr(FREE_SHIPPING_THRESHOLD)}+ ·{" "}
@@ -346,14 +348,22 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
           <p
             className={cn(
               "mt-3 text-sm font-semibold",
-              isComingSoon ? "text-terra-600" : selectedInStock ? "text-green-700" : "text-gray-500",
+              isComingSoon
+                ? "text-terra-600"
+                : isLowStock
+                  ? "text-terra-700"
+                  : selectedInStock
+                    ? "text-green-700"
+                    : "text-gray-500",
             )}
           >
             {isComingSoon
               ? "Research complete — be first to know when we launch."
-              : selectedInStock
-                ? `${selectedStock} in stock · ready to ship`
-                : "Currently unavailable — join the waitlist below."}
+              : isLowStock
+                ? `Only ${selectedStock} left · order soon`
+                : selectedInStock
+                  ? `${selectedStock} in stock · ready to ship`
+                  : "Currently unavailable — join the waitlist below."}
           </p>
         </div>
 
@@ -447,21 +457,21 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   type="button"
                   variant="primary"
                   size="sm"
-                  onClick={addToCart}
+                  onClick={buyNow}
                   disabled={pending || !showStickyBar}
                   loading={pending}
                   className="flex-1"
                 >
-                  {pending ? "Adding…" : "Add to Cart"}
+                  {pending ? "…" : "Buy Now"}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={buyNow}
+                  onClick={addToCart}
                   disabled={pending || !showStickyBar}
                 >
-                  {pending ? "…" : "Buy"}
+                  {pending ? "…" : "Cart"}
                 </Button>
               </>
             ) : (

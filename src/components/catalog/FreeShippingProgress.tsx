@@ -27,7 +27,7 @@ export default function FreeShippingProgress({
   const isUnlocked = unlocked ?? hasFreeShipping;
 
   const message = isUnlocked ? (
-    <p className="text-sm font-semibold text-green-700">🎉 You got FREE delivery!</p>
+    <p className="text-sm font-semibold text-green-700">You got FREE delivery!</p>
   ) : (
     <p className="text-sm font-medium text-green-800">
       Add {formatInr(amountToFreeShipping)} more for FREE delivery!

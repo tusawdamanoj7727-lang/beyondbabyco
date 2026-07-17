@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ShoppingBag, X } from "lucide-react";
 
 import CartLineItemRow from "@/components/catalog/CartLineItemRow";
+import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import { MICROCOPY } from "@/lib/brand/copy";
 import Button from "@/components/ui/Button";
 import { Mascot } from "@/components/mascots";
@@ -98,6 +99,11 @@ export default function MiniCartDrawer() {
 
           {items.length > 0 ? (
             <div className="glass-surface border-t border-green-100 px-5 py-4">
+              <FreeShippingProgress
+                subtotal={subtotal}
+                unlocked={freeShipping}
+                className="mb-4"
+              />
               <div className="mb-4 space-y-1">
                 <div className="flex items-center justify-between text-sm text-green-700">
                   <span>Subtotal</span>
