@@ -99,21 +99,20 @@ export default async function CheckoutSuccessPage({
 
         <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
           {!isGuest ? (
-            <>
-              <Button asChild variant="primary">
-                <Link href={`/account/orders/${orderId}`}>Track Order</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href={`/account/orders/${orderId}/documents/invoice`} target="_blank">
-                  Download Invoice
-                </Link>
-              </Button>
-            </>
-          ) : (
-            <Button asChild variant="secondary">
-              <Link href={registerHref}>Sign up to track &amp; download invoice</Link>
+            <Button asChild variant="primary">
+              <Link href={`/account/orders/${orderId}`}>Track Order</Link>
             </Button>
-          )}
+          ) : null}
+          <Button asChild variant={isGuest ? "primary" : "secondary"}>
+            <Link href={`/account/orders/${orderId}/documents/invoice`} target="_blank">
+              Download Invoice
+            </Link>
+          </Button>
+          {isGuest ? (
+            <Button asChild variant="secondary">
+              <Link href={registerHref}>Create account to track orders</Link>
+            </Button>
+          ) : null}
           <Button asChild variant="secondary">
             <Link href="/products">Continue Shopping</Link>
           </Button>
