@@ -5,11 +5,12 @@ import { PERMISSIONS } from "@/lib/auth/permissions";
 import { getOrderDetail } from "@/lib/admin/orders";
 import { recordDocumentGenerated } from "@/lib/admin/order-actions";
 import type { DocumentType } from "@/lib/admin/order-types";
+import { buildOrderInvoicePdf } from "@/lib/invoices/build-order-invoice-pdf";
 
 const LABELS: Record<DocumentType, string> = {
-  invoice: "Invoice",
-  packing_slip: "Packing Slip",
-  shipping_label: "Shipping Label",
+  invoice: "TAX INVOICE",
+  packing_slip: "PACKING SLIP",
+  shipping_label: "SHIPPING LABEL",
 };
 
 export async function GET(
@@ -29,29 +30,42 @@ export async function GET(
 
   await recordDocumentGenerated(id, docType);
 
-  const title = `${LABELS[docType]} — ${order.orderNumber}`;
-  const lines = [
-    `%PDF-1.4`,
-    `1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj`,
-    `2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj`,
-    `3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj`,
-    `4 0 obj << /Length 120 >> stream`,
-    `BT /F1 18 Tf 72 720 Td (${title.replace(/[()\\]/g, "")}) Tj ET`,
-    `BT /F1 12 Tf 72 680 Td (Customer: ${order.customerName.replace(/[()\\]/g, "")}) Tj ET`,
-    `BT /F1 12 Tf 72 660 Td (Total: ${order.grandTotal} ${order.currency}) Tj ET`,
-    `BT /F1 10 Tf 72 640 Td (Placeholder PDF - replace with production template) Tj ET`,
-    `endstream endobj`,
-    `5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj`,
-    `xref`,
-    `0 6`,
-    `0000000000 65535 f `,
-    `trailer << /Size 6 /Root 1 0 R >>`,
-    `startxref`,
-    `0`,
-    `%%EOF`,
-  ];
+  const orderDate = new Date(order.placedAt ?? order.createdAt).toLocaleDateString("en-IN");
+  const pdf = buildOrderInvoicePdf({
+    title: `${LABELS[docType]} — ${order.orderNumber}`,
+    orderNumber: order.orderNumber,
+    orderDate,
+    customerName: order.customerName,
+    customerEmail: order.customerEmail,
+    customerPhone: order.customerPhone,
+    shippingAddress: order.shippingAddress
+      ? {
+          fullName: order.shippingAddress.fullName,
+          line1: order.shippingAddress.line1,
+          line2: order.shippingAddress.line2,
+          city: order.shippingAddress.city,
+          state: order.shippingAddress.state,
+          pincode: order.shippingAddress.pincode,
+        }
+      : null,
+    items: order.items.map((item) => ({
+      name: item.name,
+      sku: item.sku,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      total: item.total,
+    })),
+    subtotal: order.subtotal,
+    discountTotal: order.discountTotal,
+    shippingTotal: order.shippingTotal,
+    taxTotal: order.taxTotal,
+    grandTotal: order.grandTotal,
+    currency: order.currency,
+    paymentMethod: order.payment?.method ?? order.payment?.provider ?? null,
+    docLabel: LABELS[docType],
+  });
 
-  return new NextResponse(lines.join("\n"), {
+  return new NextResponse(Buffer.from(pdf), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${order.orderNumber}-${docType}.pdf"`,
