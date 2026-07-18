@@ -57,6 +57,15 @@ async function checkQueues(): Promise<HealthCheck> {
 async function checkOpsSignals(): Promise<HealthCheck> {
   const start = Date.now();
   try {
+    const { isServiceRoleConfigured } = await import("@/lib/env");
+    if (!isServiceRoleConfigured()) {
+      return {
+        name: "ops",
+        status: "degraded",
+        latencyMs: Date.now() - start,
+        detail: "Service role unavailable for ops signals",
+      };
+    }
     // Service role — ops counters must not be masked by anon/authenticated RLS.
     const { createSupabaseServiceClient } = await import("@/lib/supabase/service");
     const supabase = createSupabaseServiceClient();
