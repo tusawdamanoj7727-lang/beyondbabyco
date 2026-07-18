@@ -75,13 +75,15 @@ async function buildCreatePayload(
   },
 ): Promise<DelhiveryCreateShipmentPayload> {
   const config = requireDelhiveryConfig();
-  const supabase = await createSupabaseServerClient();
+  // Service role: checkout writes shipping_addresses under service RLS; webhook/auto-fulfill
+  // often has no customer session, so the cookie client cannot read the address.
+  const supabase = createSupabaseServiceClient();
 
   const [{ data: order }, { data: address }, { data: items }] = await Promise.all([
     supabase.from("orders").select("id, order_number, grand_total").eq("id", orderId).single(),
     supabase
       .from("shipping_addresses")
-      .select("full_name, phone, line1, line2, city, state, pincode")
+      .select("full_name, phone, line1, line2, city, state, pincode, country")
       .eq("order_id", orderId)
       .maybeSingle(),
     supabase.from("order_items").select("name, quantity").eq("order_id", orderId),
@@ -89,8 +91,18 @@ async function buildCreatePayload(
 
   if (!order || !address) throw new Error("Order or shipping address not found.");
 
-  const phone = (address.phone ?? "9999999999").replace(/\D/g, "").slice(-10);
-  const line = [address.line1, address.line2].filter(Boolean).join(", ");
+  const phone = (address.phone ?? "").replace(/\D/g, "").slice(-10);
+  if (phone.length !== 10) {
+    throw new Error("Shipping phone must be a valid 10-digit Indian mobile number.");
+  }
+  const pin = String(address.pincode ?? "").replace(/\D/g, "");
+  if (pin.length !== 6) {
+    throw new Error("Shipping pincode must be a valid 6-digit PIN.");
+  }
+  const line = [address.line1, address.line2].filter(Boolean).join(", ").trim();
+  if (!address.full_name?.trim() || !line || !address.city?.trim() || !address.state?.trim()) {
+    throw new Error("Shipping address is incomplete for Delhivery.");
+  }
   const paymentMode = opts?.paymentMode ?? (opts?.codAmount && opts.codAmount > 0 ? "COD" : "Prepaid");
   const productsDesc = (items ?? []).map((i) => i.name).join(", ").slice(0, 200);
 
@@ -98,14 +110,14 @@ async function buildCreatePayload(
     pickup_location: { name: config.pickupLocation },
     shipments: [
       {
-        name: address.full_name,
+        name: address.full_name.trim(),
         order: order.order_number,
         phone,
         add: line,
-        pin: address.pincode,
-        city: address.city,
-        state: address.state,
-        country: "India",
+        pin,
+        city: address.city.trim(),
+        state: address.state.trim(),
+        country: (address.country?.trim() || "India"),
         payment_mode: paymentMode,
         cod_amount: paymentMode === "COD" ? (opts?.codAmount ?? order.grand_total) : 0,
         total_amount: order.grand_total,
@@ -155,7 +167,7 @@ export async function delhiveryCreateOrderShipment(input: {
 }): Promise<DelhiveryActionResult> {
   try {
     requireDelhiveryConfig();
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabaseServiceClient();
 
     let waybill = input.waybill;
     if (!waybill) {

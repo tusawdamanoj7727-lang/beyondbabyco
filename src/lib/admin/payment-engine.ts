@@ -141,11 +141,31 @@ export async function processWebhookPayload(
       : decodeGatewaySecret(gateway.webhook_secret_encrypted);
   const eventId = opts?.eventId?.trim() || null;
 
-  if (eventId && provider === "razorpay") {
-    const alreadyComplete = await isRazorpayCaptureCompleted(gatewayId, eventId);
-    if (alreadyComplete) {
-      logger.info("razorpay.webhook.duplicate", { gatewayId, eventId });
-      return { ok: true, error: null, duplicate: true };
+  // Idempotency before insert: any prior row for this provider event → HTTP 200, no reprocess.
+  if (eventId) {
+    const { data: existing } = await supabase
+      .from("payment_webhooks")
+      .select("id, processed")
+      .eq("gateway_id", gatewayId)
+      .eq("provider_event_id", eventId)
+      .maybeSingle();
+
+    if (existing) {
+      logger.info("razorpay.webhook.duplicate", {
+        gatewayId,
+        eventId,
+        webhookId: existing.id,
+        processed: existing.processed,
+      });
+      return { ok: true, error: null, webhookId: existing.id, duplicate: true };
+    }
+
+    if (provider === "razorpay") {
+      const alreadyComplete = await isRazorpayCaptureCompleted(gatewayId, eventId);
+      if (alreadyComplete) {
+        logger.info("razorpay.webhook.duplicate", { gatewayId, eventId, via: "capture_log" });
+        return { ok: true, error: null, duplicate: true };
+      }
     }
   }
 
@@ -190,7 +210,27 @@ export async function processWebhookPayload(
     .select("id")
     .single();
 
-  if (error) return { ok: false, error: error.message };
+  // Concurrent delivery lost the race on unique (gateway_id, provider_event_id).
+  if (error) {
+    const isUniqueViolation =
+      error.code === "23505" || /duplicate key|unique constraint/i.test(error.message);
+    if (isUniqueViolation && eventId) {
+      const { data: raced } = await supabase
+        .from("payment_webhooks")
+        .select("id")
+        .eq("gateway_id", gatewayId)
+        .eq("provider_event_id", eventId)
+        .maybeSingle();
+      logger.info("razorpay.webhook.duplicate", {
+        gatewayId,
+        eventId,
+        webhookId: raced?.id,
+        via: "unique_constraint",
+      });
+      return { ok: true, error: null, webhookId: raced?.id, duplicate: true };
+    }
+    return { ok: false, error: error.message };
+  }
 
   await logRazorpayWebhookReceived({
     gatewayId,
