@@ -16,7 +16,6 @@ import { focusRing } from "@/lib/design/ui";
 import { buildCartItemInput } from "@/lib/store/cart-mappers";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
-import { getPublicProductsByIds } from "@/lib/storefront/wishlist-actions";
 import { readGuestWishlistIds, writeGuestWishlistIds } from "@/lib/storefront/wishlist-storage";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { cn } from "@/lib/utils";
@@ -32,6 +31,20 @@ async function removeWishlistViaApi(productId: string) {
     ok: boolean;
     error: string | null;
   };
+}
+
+async function fetchWishlistProductsByIds(ids: string[]): Promise<StorefrontProduct[]> {
+  if (ids.length === 0) return [];
+  const res = await fetch("/api/wishlist?products=1", {
+    method: "GET",
+    credentials: "same-origin",
+    cache: "no-store",
+  });
+  if (!res.ok) return [];
+  const data = (await res.json()) as { products?: StorefrontProduct[] };
+  const products = Array.isArray(data.products) ? data.products : [];
+  const wanted = new Set(ids);
+  return products.filter((p) => wanted.has(p.id));
 }
 
 export default function WishlistClient({
@@ -67,7 +80,7 @@ export default function WishlistClient({
 
       if (!cancelled) setLoading(true);
       try {
-        const loaded = await getPublicProductsByIds(idList);
+        const loaded = await fetchWishlistProductsByIds(idList);
         if (!cancelled) {
           setProducts(loaded.length > 0 ? loaded : products.length > 0 ? products : []);
         }
