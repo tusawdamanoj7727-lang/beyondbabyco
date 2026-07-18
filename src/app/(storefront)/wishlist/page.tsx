@@ -10,6 +10,8 @@ export const metadata = buildPageMetadata({
   noIndex: true,
 });
 
+export const dynamic = "force-dynamic";
+
 export default async function WishlistPage() {
   const user = await getCurrentUser();
   let products: Awaited<ReturnType<typeof getWishlistProducts>> = [];

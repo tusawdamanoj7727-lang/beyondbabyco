@@ -100,20 +100,24 @@ export default function WishlistClient({
   function remove(productId: string) {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     startTransition(async () => {
-      if (isLoggedIn) {
-        const result = await removeFromWishlistAction(productId);
-        if (!result.ok && result.error) {
-          toast.error(result.error);
-          refresh();
-          return;
-        }
+      // Always try the cookie-backed server action first (SSR isLoggedIn can be stale).
+      const result = await removeFromWishlistAction(productId);
+      if (result.ok) {
         refresh();
-      } else {
+        toast.info(MICROCOPY.removedFromWishlist);
+        return;
+      }
+
+      if (result.error === "Not signed in." || !isLoggedIn) {
         const nextIds = readGuestWishlistIds().filter((id) => id !== productId);
         writeGuestWishlistIds(nextIds);
         refresh();
+        toast.info(MICROCOPY.removedFromWishlist);
+        return;
       }
-      toast.info(MICROCOPY.removedFromWishlist);
+
+      toast.error(result.error ?? "Could not remove item");
+      refresh();
     });
   }
 
