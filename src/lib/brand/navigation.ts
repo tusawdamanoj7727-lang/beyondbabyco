@@ -7,6 +7,7 @@ export const CANONICAL_PATHS = {
   blog: "/blog",
   contact: "/contact",
   faq: "/faq",
+  trackOrder: "/track-order",
   account: "/account",
   login: "/login",
   cart: "/cart",
@@ -36,6 +37,7 @@ export const FOOTER_QUICK_LINKS: readonly NavLink[] = [
   { label: "Products", href: CANONICAL_PATHS.products },
   { label: "About", href: CANONICAL_PATHS.about },
   { label: "Contact", href: CANONICAL_PATHS.contact },
+  { label: "Track Order", href: CANONICAL_PATHS.trackOrder },
   { label: "FAQ", href: CANONICAL_PATHS.faq },
 ];
 

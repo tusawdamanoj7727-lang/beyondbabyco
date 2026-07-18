@@ -37,6 +37,27 @@ export function issueInvoiceToken(
   return `${body}.${sign(body)}`;
 }
 
+/**
+ * Stable guest invoice token derived from order placement time.
+ * Same orderId + placedAt always yields the same token until expiry
+ * (placedAt + 90 days) — avoids minting a new token on every track lookup.
+ */
+export function issueStableInvoiceToken(
+  orderId: string,
+  placedAt: string | Date | null | undefined,
+): string {
+  const baseMs =
+    placedAt == null
+      ? Date.now()
+      : typeof placedAt === "string"
+        ? new Date(placedAt).getTime()
+        : placedAt.getTime();
+  const start = Number.isFinite(baseMs) ? baseMs : Date.now();
+  const exp = start + DEFAULT_TTL_MS;
+  const body = Buffer.from(JSON.stringify({ orderId, exp }), "utf8").toString("base64url");
+  return `${body}.${sign(body)}`;
+}
+
 /** Verify token matches orderId and has not expired. */
 export function verifyInvoiceToken(token: string, orderId: string): boolean {
   if (!token || !orderId) return false;

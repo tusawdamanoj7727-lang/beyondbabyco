@@ -107,8 +107,16 @@ export default async function CheckoutSuccessPage({
             <Button asChild variant="primary">
               <Link href={`/account/orders/${orderId}`}>Track Order</Link>
             </Button>
-          ) : null}
-          <Button asChild variant={isGuest ? "primary" : "secondary"}>
+          ) : (
+            <Button asChild variant="primary">
+              <Link
+                href={`/track-order?order=${encodeURIComponent(order.orderNumber)}`}
+              >
+                Track Order
+              </Link>
+            </Button>
+          )}
+          <Button asChild variant="secondary">
             <Link href={invoiceHref}>
               Download Invoice
             </Link>
