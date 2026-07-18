@@ -63,19 +63,23 @@ export default function GlobalError({
             >
               Try again
             </button>
-            <a
-              href="/"
+            <button
+              type="button"
+              onClick={() => {
+                window.location.assign("/");
+              }}
               style={{
                 borderRadius: 999,
                 padding: "0.75rem 1.25rem",
                 border: "1px solid #166534",
+                background: "transparent",
                 color: "#166534",
-                textDecoration: "none",
                 fontWeight: 600,
+                cursor: "pointer",
               }}
             >
               Back to home
-            </a>
+            </button>
           </div>
         </main>
       </body>
