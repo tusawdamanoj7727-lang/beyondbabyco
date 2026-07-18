@@ -12,7 +12,7 @@ import { fetchRazorpayOrderPayments } from "@/lib/checkout/razorpay-verify";
 import { getPaymentGatewayAdapter } from "./gateway-adapters";
 import { decodeGatewaySecret, resolveRazorpayWebhookSecret } from "./gateway-adapters/razorpay";
 import type { GatewayProvider } from "./payment-types";
-import { isRazorpayCaptureEvent } from "./razorpay-webhook-idempotency";
+import { isRazorpayCaptureEvent, isRazorpayShipmentEvent } from "./razorpay-webhook-idempotency";
 import {
   isRazorpayCaptureCompleted,
   logRazorpayWebhookReceived,
@@ -97,6 +97,7 @@ async function processRazorpayCaptureWebhook(
     razorpayPaymentId,
     razorpayOrderId: captureInfo.razorpayOrderId,
     source: "webhook",
+    createShipment: isRazorpayShipmentEvent(eventType),
   });
 
   if (!capture.ok) {

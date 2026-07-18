@@ -18,6 +18,8 @@ export interface CaptureRazorpayPaymentInput {
   razorpaySignature?: string;
   source: RazorpayCaptureSource;
   customerId?: string;
+  /** When true, create Delhivery shipment after capture. Only order.paid webhooks set this. */
+  createShipment?: boolean;
 }
 
 export interface CaptureRazorpayPaymentResult {
@@ -29,15 +31,23 @@ export interface CaptureRazorpayPaymentResult {
 
 const PAID_STATUSES = new Set(["paid", "captured"]);
 
-async function ensureFulfillment(
+async function ensureInventoryCommitted(
   orderId: string,
-): Promise<{ ok: true; awb?: string } | { ok: false; error: string }> {
+): Promise<{ ok: true } | { ok: false; error: string }> {
   const commitResult = await commitOrderStockReservations(orderId);
   if (!commitResult.ok) {
     return { ok: false, error: commitResult.error };
   }
+  return { ok: true };
+}
 
+async function ensureShipmentAfterPaid(
+  orderId: string,
+): Promise<{ ok: true; awb?: string } | { ok: false; error: string }> {
   const fulfillment = await fulfillOrderWithDelhivery(orderId);
+  if (!fulfillment.ok) {
+    return { ok: false, error: fulfillment.error ?? "Fulfillment failed." };
+  }
   return { ok: true, awb: fulfillment.awb };
 }
 
@@ -142,9 +152,21 @@ export async function captureRazorpayPayment(
     // Idempotent: recover emails if a prior fire-and-forget was frozen on Vercel.
     await onPaymentSuccess(input.orderId);
 
-    const fulfillment = await ensureFulfillment(input.orderId);
+    const inventory = await ensureInventoryCommitted(input.orderId);
+    if (!inventory.ok) {
+      return { ok: false, error: inventory.error };
+    }
+
+    if (!input.createShipment) {
+      return { ok: true, error: null, alreadyCaptured: true };
+    }
+
+    const fulfillment = await ensureShipmentAfterPaid(input.orderId);
     if (!fulfillment.ok) {
       return { ok: false, error: fulfillment.error };
+    }
+    if (fulfillment.awb) {
+      await runOrderShippingEmail(input.orderId);
     }
     return { ok: true, error: null, awb: fulfillment.awb, alreadyCaptured: true };
   }
@@ -202,9 +224,19 @@ export async function captureRazorpayPayment(
         }),
       );
       await onPaymentSuccess(input.orderId);
-      const fulfillment = await ensureFulfillment(input.orderId);
+      const inventory = await ensureInventoryCommitted(input.orderId);
+      if (!inventory.ok) {
+        return { ok: false, error: inventory.error };
+      }
+      if (!input.createShipment) {
+        return { ok: true, error: null, alreadyCaptured: true };
+      }
+      const fulfillment = await ensureShipmentAfterPaid(input.orderId);
       if (!fulfillment.ok) {
         return { ok: false, error: fulfillment.error };
+      }
+      if (fulfillment.awb) {
+        await runOrderShippingEmail(input.orderId);
       }
       return { ok: true, error: null, awb: fulfillment.awb, alreadyCaptured: true };
     }
@@ -242,7 +274,16 @@ export async function captureRazorpayPayment(
     }),
   );
 
-  const fulfillment = await ensureFulfillment(input.orderId);
+  const inventory = await ensureInventoryCommitted(input.orderId);
+  if (!inventory.ok) {
+    return { ok: false, error: inventory.error };
+  }
+
+  if (!input.createShipment) {
+    return { ok: true, error: null };
+  }
+
+  const fulfillment = await ensureShipmentAfterPaid(input.orderId);
   if (!fulfillment.ok) {
     return { ok: false, error: fulfillment.error };
   }
