@@ -20,7 +20,7 @@ export type SellerLegal = {
 };
 
 export function getSellerLegal(): SellerLegal {
-  const gstin = process.env.SELLER_GSTIN?.trim() || "";
+  const gstin = process.env.SELLER_GSTIN?.trim() || "08AALCT7770Q1Z8";
   const registeredAddress =
     process.env.SELLER_REGISTERED_ADDRESS?.trim() ||
     "Tusawda Global Private Limited, Udaipur, Rajasthan, India";
