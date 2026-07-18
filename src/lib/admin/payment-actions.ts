@@ -258,6 +258,15 @@ export async function manualRefundPayment(input: {
   const { data: p } = await supabase.from("payments").select("*").eq("id", parsed.data.payment_id).maybeSingle();
   if (!p) return { ok: false, error: "Payment not found." };
 
+  if (!["paid", "captured", "partially_refunded"].includes(p.status)) {
+    return { ok: false, error: "Only paid/captured payments can be refunded." };
+  }
+
+  const refundAmount = parsed.data.full ? Number(p.amount) : parsed.data.amount;
+  if (!(refundAmount > 0) || refundAmount > Number(p.amount) + 0.001) {
+    return { ok: false, error: "Invalid refund amount." };
+  }
+
   let gatewayProvider: GatewayProvider = "custom";
   if (p.gateway_id) {
     const { data: g } = await supabase.from("payment_gateways").select("provider").eq("id", p.gateway_id).maybeSingle();
@@ -267,31 +276,78 @@ export async function manualRefundPayment(input: {
   const adapter = getPaymentGatewayAdapter(gatewayProvider);
   const result = await adapter.refundPayment({
     gatewayTxnId: p.gateway_txn_id ?? p.id,
-    amount: parsed.data.amount,
+    paymentRef: p.payment_ref,
+    amount: refundAmount,
     currency: p.currency,
     reason: parsed.data.reason,
+    notes: { payment_id: p.id, order_id: p.order_id ?? "" },
   });
 
-  if (!result.success) {
-    await logPayment(parsed.data.payment_id, p.gateway_id, `Manual refund failed: ${result.message}`, "error");
+  if (!result.success || !result.data?.refundId) {
+    await logPayment(parsed.data.payment_id, p.gateway_id, `Manual refund failed: ${result.message}`, "error", {
+      amount: refundAmount,
+    });
     return { ok: false, error: result.message ?? "Refund failed." };
   }
 
-  const refundStatus: PaymentStatus = parsed.data.full || parsed.data.amount >= p.amount ? "refunded" : "partially_refunded";
-  await supabase.from("payments").update({ status: refundStatus, updated_at: new Date().toISOString() }).eq("id", parsed.data.payment_id);
+  const refundStatus: PaymentStatus =
+    parsed.data.full || refundAmount >= Number(p.amount) ? "refunded" : "partially_refunded";
 
-  await supabase.from("order_refunds").insert({
-    order_id: p.order_id,
+  await supabase
+    .from("payments")
+    .update({ status: refundStatus, updated_at: new Date().toISOString() })
+    .eq("id", parsed.data.payment_id);
+
+  const { data: refundRow, error: refundErr } = await supabase
+    .from("order_refunds")
+    .insert({
+      order_id: p.order_id,
+      payment_id: parsed.data.payment_id,
+      amount: refundAmount,
+      reason: parsed.data.reason ?? "Manual refund",
+      status: refundStatus,
+      gateway_refund_id: result.data.refundId,
+      provider_payload: { provider: gatewayProvider, refund_id: result.data.refundId } as Json,
+    })
+    .select("id")
+    .single();
+
+  if (refundErr) {
+    await logPayment(parsed.data.payment_id, p.gateway_id, `Refund recorded at gateway but DB insert failed: ${refundErr.message}`, "error", {
+      gateway_refund_id: result.data.refundId,
+    });
+    return {
+      ok: false,
+      error: `Razorpay refund ${result.data.refundId} succeeded but local ledger failed: ${refundErr.message}`,
+    };
+  }
+
+  await supabase.from("payment_transactions").insert({
     payment_id: parsed.data.payment_id,
-    amount: parsed.data.amount,
-    reason: parsed.data.reason ?? "Manual refund",
+    amount: -refundAmount,
     status: refundStatus,
+    txn_ref: `refund:${result.data.refundId}`,
+    gateway_txn_id: result.data.refundId,
+    raw: { gateway_refund_id: result.data.refundId } as Json,
   });
 
-  await logPayment(parsed.data.payment_id, p.gateway_id, `Manual refund ₹${parsed.data.amount} (placeholder mode).`);
-  await audit("payments", parsed.data.payment_id, "refund", { amount: parsed.data.amount });
+  if (p.order_id && refundStatus === "refunded") {
+    await supabase
+      .from("orders")
+      .update({ status: "refunded", updated_at: new Date().toISOString() })
+      .eq("id", p.order_id);
+  }
+
+  await logPayment(parsed.data.payment_id, p.gateway_id, `Manual refund ₹${refundAmount} via ${gatewayProvider}`, "info", {
+    gateway_refund_id: result.data.refundId,
+    refund_id: refundRow?.id,
+  });
+  await audit("payments", parsed.data.payment_id, "refund", {
+    amount: refundAmount,
+    gateway_refund_id: result.data.refundId,
+  });
   revalidate(parsed.data.payment_id);
-  return { ok: true, error: null, id: parsed.data.payment_id };
+  return { ok: true, error: null, id: refundRow?.id ?? parsed.data.payment_id };
 }
 
 export async function syncSettlement(input: { gateway_id: string; settlement_date: string }): Promise<PaymentActionResult> {

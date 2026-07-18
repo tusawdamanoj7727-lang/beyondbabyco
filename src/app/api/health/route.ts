@@ -54,12 +54,57 @@ async function checkQueues(): Promise<HealthCheck> {
   }
 }
 
+async function checkOpsSignals(): Promise<HealthCheck> {
+  const start = Date.now();
+  try {
+    const supabase = await createSupabaseServerClient();
+    const [{ count: failedEmails }, { count: unprocessedWebhooks }, { count: pendingShipments }] =
+      await Promise.all([
+        supabase
+          .from("order_email_logs")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "failed"),
+        supabase
+          .from("payment_webhooks")
+          .select("id", { count: "exact", head: true })
+          .eq("processed", false),
+        supabase
+          .from("shipments")
+          .select("id", { count: "exact", head: true })
+          .eq("carrier", "Delhivery")
+          .is("tracking_number", null),
+      ]);
+
+    const failed = failedEmails ?? 0;
+    const webhooks = unprocessedWebhooks ?? 0;
+    const pending = pendingShipments ?? 0;
+    const degraded = failed > 0 || webhooks > 0 || pending > 5;
+    return {
+      name: "ops",
+      status: degraded ? "degraded" : "ok",
+      latencyMs: Date.now() - start,
+      detail: `failed_emails=${failed} unprocessed_webhooks=${webhooks} shipments_missing_awb=${pending}`,
+    };
+  } catch (e) {
+    return {
+      name: "ops",
+      status: "degraded",
+      latencyMs: Date.now() - start,
+      detail: e instanceof Error ? e.message : "Ops check unavailable",
+    };
+  }
+}
+
 function checkMemory(): HealthCheck {
-  const mem = process.memoryUsage();
-  const heapUsedMb = Math.round(mem.heapUsed / 1024 / 1024);
-  const heapTotalMb = Math.round(mem.heapTotal / 1024 / 1024);
-  const status = heapUsedMb / heapTotalMb > 0.9 ? "degraded" : "ok";
-  return { name: "memory", status, detail: `heap ${heapUsedMb}/${heapTotalMb} MB` };
+  try {
+    const mem = process.memoryUsage();
+    const heapUsedMb = Math.round(mem.heapUsed / 1024 / 1024);
+    const heapTotalMb = Math.round(mem.heapTotal / 1024 / 1024);
+    const status = heapTotalMb > 0 && heapUsedMb / heapTotalMb > 0.9 ? "degraded" : "ok";
+    return { name: "memory", status, detail: `heap ${heapUsedMb}/${heapTotalMb} MB` };
+  } catch {
+    return { name: "memory", status: "degraded", detail: "Check unavailable" };
+  }
 }
 
 function sanitizeCheck(check: HealthCheck): HealthCheck {
@@ -87,7 +132,14 @@ export async function GET() {
       envStatus = { name: "environment", status: "error", detail: e instanceof Error ? e.message : "Invalid" };
     }
 
-    return Promise.all([envStatus, checkDatabase(), checkStorage(), checkQueues(), Promise.resolve(checkMemory())]);
+    return Promise.all([
+      envStatus,
+      checkDatabase(),
+      checkStorage(),
+      checkQueues(),
+      Promise.resolve(checkMemory()),
+      checkOpsSignals(),
+    ]);
   });
 
   const hasError = checks.some((c) => c.status === "error");

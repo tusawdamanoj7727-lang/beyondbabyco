@@ -2606,10 +2606,12 @@ export type Database = {
           amount: number
           created_at: string
           created_by: string | null
+          gateway_refund_id: string | null
           id: string
           notes: string | null
           order_id: string
           payment_id: string | null
+          provider_payload: Json | null
           reason: string | null
           status: Database["public"]["Enums"]["payment_status"]
         }
@@ -2617,10 +2619,12 @@ export type Database = {
           amount: number
           created_at?: string
           created_by?: string | null
+          gateway_refund_id?: string | null
           id?: string
           notes?: string | null
           order_id: string
           payment_id?: string | null
+          provider_payload?: Json | null
           reason?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
         }
@@ -2628,10 +2632,12 @@ export type Database = {
           amount?: number
           created_at?: string
           created_by?: string | null
+          gateway_refund_id?: string | null
           id?: string
           notes?: string | null
           order_id?: string
           payment_id?: string | null
+          provider_payload?: Json | null
           reason?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
         }

@@ -277,11 +277,13 @@ async function persistTrackingScans(
   trackingNumber: string,
   scans: DelhiveryTrackingScan[],
 ) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseServiceClient();
 
   for (const scan of scans) {
     if (!scan.status) continue;
-    await supabase.from("shipment_tracking").insert({
+    const eventTime = scan.timestamp ? new Date(scan.timestamp).toISOString() : new Date().toISOString();
+
+    const { error: trackErr } = await supabase.from("shipment_tracking").insert({
       shipment_id: shipmentId,
       order_id: orderId,
       tracking_number: trackingNumber,
@@ -289,19 +291,42 @@ async function persistTrackingScans(
       status_code: scan.statusCode,
       message: scan.message,
       location: scan.location,
-      event_time: scan.timestamp ? new Date(scan.timestamp).toISOString() : new Date().toISOString(),
+      event_time: eventTime,
       raw: scan as unknown as Json,
     });
 
-    await supabase.from("tracking_events").insert({
+    // Unique (shipment_id, status, event_time) — ignore duplicate cron polls.
+    if (trackErr && trackErr.code !== "23505") {
+      await logCourierCall({
+        action: "persist_tracking_scan",
+        orderId,
+        shipmentId,
+        success: false,
+        errorMessage: trackErr.message,
+        responseBody: { status: scan.status, eventTime },
+      });
+    }
+
+    const mapped = mapDelhiveryStatus(scan.status);
+    const { error: eventErr } = await supabase.from("tracking_events").insert({
       shipment_id: shipmentId,
-      status: mapDelhiveryStatus(scan.status),
+      status: mapped,
       message: scan.message ?? scan.status,
       location: scan.location,
-      event_type: "webhook",
+      event_type: "sync",
       raw: scan as unknown as Json,
-      occurred_at: scan.timestamp ? new Date(scan.timestamp).toISOString() : undefined,
+      occurred_at: eventTime,
     });
+
+    if (eventErr && eventErr.code !== "23505") {
+      await logCourierCall({
+        action: "persist_tracking_event",
+        orderId,
+        shipmentId,
+        success: false,
+        errorMessage: eventErr.message,
+      });
+    }
   }
 }
 
@@ -312,7 +337,7 @@ export async function delhiveryTrackAndPersist(input: {
 }): Promise<DelhiveryActionResult> {
   try {
     const tracking = await trackShipment(input.waybill);
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabaseServiceClient();
     const mappedStatus = mapDelhiveryStatus(tracking.status);
 
     await persistTrackingScans(input.shipmentId, input.orderId, input.waybill, tracking.scans);
@@ -351,18 +376,18 @@ export async function delhiveryTrackAndPersist(input: {
     }
 
     await logCourierCall({
-      action: "track",
+      action: "track_and_persist",
       orderId: input.orderId,
       shipmentId: input.shipmentId,
-      responseBody: tracking.raw,
       success: true,
+      responseBody: { status: mappedStatus, waybill: input.waybill },
     });
 
-    return { ok: true, error: null, data: tracking as unknown as Record<string, unknown> };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Tracking failed";
+    return { ok: true, error: null, data: { status: mappedStatus, waybill: input.waybill } };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Tracking sync failed.";
     await logCourierCall({
-      action: "track",
+      action: "track_and_persist",
       orderId: input.orderId,
       shipmentId: input.shipmentId,
       success: false,
@@ -499,10 +524,35 @@ export async function processDelhiveryWebhook(
   await persistTrackingScans(shipment.id, shipment.order_id, waybill, [scan]);
 
   const mapped = mapDelhiveryStatus(status);
-  await supabase
-    .from("shipments")
-    .update({ status: mapped, updated_at: new Date().toISOString() })
-    .eq("id", shipment.id);
+  const patch: {
+    status: ShipmentStatus;
+    updated_at: string;
+    delivered_at?: string;
+    shipped_at?: string;
+  } = {
+    status: mapped,
+    updated_at: new Date().toISOString(),
+  };
+  if (mapped === "delivered") patch.delivered_at = new Date().toISOString();
+  if (mapped === "in_transit" || mapped === "out_for_delivery") {
+    patch.shipped_at = new Date().toISOString();
+  }
+
+  await supabase.from("shipments").update(patch).eq("id", shipment.id);
+
+  onShipmentStatusChanged(shipment.order_id, mapped);
+
+  if (mapped === "delivered") {
+    await supabase
+      .from("orders")
+      .update({ status: "delivered", updated_at: new Date().toISOString() })
+      .eq("id", shipment.order_id);
+  } else if (mapped === "in_transit" || mapped === "out_for_delivery") {
+    await supabase
+      .from("orders")
+      .update({ status: "shipped", updated_at: new Date().toISOString() })
+      .eq("id", shipment.order_id);
+  }
 
   await logCourierCall({
     action: "webhook",
@@ -515,8 +565,12 @@ export async function processDelhiveryWebhook(
   return { ok: true, error: null, data: { shipmentId: shipment.id, status: mapped } };
 }
 
-export async function syncPendingDelhiveryShipments(): Promise<{ synced: number; errors: number }> {
-  if (!getDelhiveryConfig().isConfigured) return { synced: 0, errors: 0 };
+export async function syncPendingDelhiveryShipments(): Promise<{
+  synced: number;
+  errors: number;
+  skipped: number;
+}> {
+  if (!getDelhiveryConfig().isConfigured) return { synced: 0, errors: 0, skipped: 0 };
 
   const supabase = createSupabaseServiceClient();
   const { data: rows } = await supabase
@@ -528,18 +582,43 @@ export async function syncPendingDelhiveryShipments(): Promise<{ synced: number;
 
   let synced = 0;
   let errors = 0;
+  let skipped = 0;
 
   for (const row of rows ?? []) {
     const waybill = row.tracking_number;
-    if (!waybill) continue;
+    if (!waybill) {
+      skipped += 1;
+      continue;
+    }
     const result = await delhiveryTrackAndPersist({
       waybill,
       shipmentId: row.id,
       orderId: row.order_id,
     });
     if (result.ok) synced += 1;
-    else errors += 1;
+    else {
+      errors += 1;
+      console.error(
+        JSON.stringify({
+          scope: "cron.sync_shipments",
+          shipmentId: row.id,
+          orderId: row.order_id,
+          waybill,
+          error: result.error,
+        }),
+      );
+    }
   }
 
-  return { synced, errors };
+  console.info(
+    JSON.stringify({
+      scope: "cron.sync_shipments",
+      synced,
+      errors,
+      skipped,
+      candidates: rows?.length ?? 0,
+    }),
+  );
+
+  return { synced, errors, skipped };
 }

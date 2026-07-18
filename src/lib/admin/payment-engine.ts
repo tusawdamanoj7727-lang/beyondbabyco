@@ -142,22 +142,50 @@ export async function processWebhookPayload(
       : decodeGatewaySecret(gateway.webhook_secret_encrypted);
   const eventId = opts?.eventId?.trim() || null;
 
-  // Idempotency before insert: any prior row for this provider event → HTTP 200, no reprocess.
+  // Idempotency: only short-circuit when already successfully processed.
+  // Unprocessed rows must be retried so Razorpay keeps driving capture after transient failures.
   if (eventId) {
     const { data: existing } = await supabase
       .from("payment_webhooks")
-      .select("id, processed")
+      .select("id, processed, payload, event_type")
       .eq("gateway_id", gatewayId)
       .eq("provider_event_id", eventId)
       .maybeSingle();
 
-    if (existing) {
+    if (existing?.processed) {
       logger.info("razorpay.webhook.duplicate", {
         gatewayId,
         eventId,
         webhookId: existing.id,
-        processed: existing.processed,
+        processed: true,
       });
+      return { ok: true, error: null, webhookId: existing.id, duplicate: true };
+    }
+
+    if (existing && !existing.processed) {
+      logger.info("razorpay.webhook.reprocess_unprocessed", {
+        gatewayId,
+        eventId,
+        webhookId: existing.id,
+      });
+
+      if (provider === "razorpay" && isRazorpayCaptureEvent(String(existing.event_type ?? payload.event ?? ""))) {
+        const captureResult = await processRazorpayCaptureWebhook(
+          gatewayId,
+          existing.id,
+          (existing.payload as Record<string, unknown>) ?? payload,
+          eventId,
+        );
+        if (!captureResult.ok) {
+          return { ok: false, error: captureResult.error, webhookId: existing.id };
+        }
+        return { ok: true, error: null, webhookId: existing.id, duplicate: true };
+      }
+
+      await supabase
+        .from("payment_webhooks")
+        .update({ processed: true, processed_at: new Date().toISOString(), error: null })
+        .eq("id", existing.id);
       return { ok: true, error: null, webhookId: existing.id, duplicate: true };
     }
 
@@ -218,16 +246,46 @@ export async function processWebhookPayload(
     if (isUniqueViolation && eventId) {
       const { data: raced } = await supabase
         .from("payment_webhooks")
-        .select("id")
+        .select("id, processed, payload, event_type")
         .eq("gateway_id", gatewayId)
         .eq("provider_event_id", eventId)
         .maybeSingle();
-      logger.info("razorpay.webhook.duplicate", {
-        gatewayId,
-        eventId,
-        webhookId: raced?.id,
-        via: "unique_constraint",
-      });
+
+      if (raced?.processed) {
+        logger.info("razorpay.webhook.duplicate", {
+          gatewayId,
+          eventId,
+          webhookId: raced.id,
+          via: "unique_constraint",
+        });
+        return { ok: true, error: null, webhookId: raced.id, duplicate: true };
+      }
+
+      if (raced && !raced.processed && provider === "razorpay") {
+        logger.info("razorpay.webhook.reprocess_after_race", {
+          gatewayId,
+          eventId,
+          webhookId: raced.id,
+        });
+        if (isRazorpayCaptureEvent(String(raced.event_type ?? eventType))) {
+          const captureResult = await processRazorpayCaptureWebhook(
+            gatewayId,
+            raced.id,
+            (raced.payload as Record<string, unknown>) ?? payload,
+            eventId,
+          );
+          if (!captureResult.ok) {
+            return { ok: false, error: captureResult.error, webhookId: raced.id };
+          }
+        } else {
+          await supabase
+            .from("payment_webhooks")
+            .update({ processed: true, processed_at: new Date().toISOString(), error: null })
+            .eq("id", raced.id);
+        }
+        return { ok: true, error: null, webhookId: raced.id, duplicate: true };
+      }
+
       return { ok: true, error: null, webhookId: raced?.id, duplicate: true };
     }
     return { ok: false, error: error.message };

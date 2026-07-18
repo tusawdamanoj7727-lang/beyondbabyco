@@ -179,3 +179,96 @@ export async function verifyRazorpaySignature(input: {
     return false;
   }
 }
+
+/** Create a Razorpay refund against a captured payment (amount in INR). */
+export async function createRazorpayRefund(input: {
+  razorpayPaymentId: string;
+  amountInr: number;
+  reason?: string | null;
+  notes?: Record<string, string>;
+}): Promise<{
+  ok: boolean;
+  error: string | null;
+  refundId?: string;
+  amountInr?: number;
+  status?: string;
+  raw?: Record<string, unknown>;
+}> {
+  const { client, gateway } = await getRazorpayClient();
+  if (!client || !gateway) {
+    return { ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE };
+  }
+
+  const paymentId = input.razorpayPaymentId?.trim();
+  if (!paymentId?.startsWith("pay_")) {
+    return { ok: false, error: "Missing Razorpay payment id for refund." };
+  }
+
+  const amountPaise = Math.round(input.amountInr * 100);
+  if (!Number.isFinite(amountPaise) || amountPaise < MIN_RAZORPAY_AMOUNT_PAISE) {
+    return { ok: false, error: "Minimum refund amount is ₹1.00." };
+  }
+
+  try {
+    const refund = await client.payments.refund(paymentId, {
+      amount: amountPaise,
+      speed: "normal",
+      notes: {
+        reason: (input.reason ?? "Admin refund").slice(0, 250),
+        ...(input.notes ?? {}),
+      },
+    });
+
+    const refundId = String(refund.id ?? "");
+    if (!refundId) {
+      return { ok: false, error: "Razorpay refund returned no id." };
+    }
+
+    return {
+      ok: true,
+      error: null,
+      refundId,
+      amountInr: Number(refund.amount ?? amountPaise) / 100,
+      status: String(refund.status ?? "processed"),
+      raw: refund as unknown as Record<string, unknown>,
+    };
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === "object" && error && "error" in error
+          ? String((error as { error?: { description?: string } }).error?.description ?? "Refund failed")
+          : "Refund failed";
+    loggerError("createRazorpayRefund.failed", { paymentId, amountPaise, message });
+    return { ok: false, error: message };
+  }
+}
+
+function loggerError(step: string, meta: Record<string, unknown>) {
+  console.error(JSON.stringify({ scope: "razorpay.refund", step, ...meta }));
+}
+
+export async function fetchRazorpayRefund(refundId: string): Promise<{
+  ok: boolean;
+  error: string | null;
+  status?: string;
+  amountInr?: number;
+}> {
+  const { client } = await getRazorpayClient();
+  if (!client) return { ok: false, error: PAYMENT_GATEWAY_NOT_CONFIGURED_MESSAGE };
+
+  try {
+    const refund = await client.refunds.fetch(refundId);
+    return {
+      ok: true,
+      error: null,
+      status: String(refund.status ?? ""),
+      amountInr: Number(refund.amount ?? 0) / 100,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Could not fetch refund.",
+    };
+  }
+}

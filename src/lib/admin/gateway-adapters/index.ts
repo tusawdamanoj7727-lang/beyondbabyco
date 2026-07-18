@@ -25,9 +25,12 @@ export interface CapturePaymentParams {
 
 export interface RefundPaymentParams {
   gatewayTxnId: string;
+  /** Razorpay payment id (pay_…) when distinct from order id */
+  paymentRef?: string | null;
   amount: number;
   currency: string;
   reason?: string | null;
+  notes?: Record<string, string>;
 }
 
 export interface WebhookVerifyParams {

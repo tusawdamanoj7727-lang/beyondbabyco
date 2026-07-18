@@ -65,8 +65,23 @@ export const razorpayGatewayAdapter: PaymentGatewayAdapter = {
     return { success: false, message: "Razorpay auto-captures on payment." };
   },
 
-  async refundPayment() {
-    return { success: false, message: "Use admin payment actions for refunds." };
+  async refundPayment(params) {
+    const { createRazorpayRefund } = await import("@/lib/checkout/razorpay-client");
+    const paymentId = params.paymentRef?.trim() || params.gatewayTxnId;
+    const result = await createRazorpayRefund({
+      razorpayPaymentId: paymentId,
+      amountInr: params.amount,
+      reason: params.reason,
+      notes: params.notes,
+    });
+    if (!result.ok || !result.refundId) {
+      return { success: false, message: result.error ?? "Refund failed." };
+    }
+    return {
+      success: true,
+      data: { refundId: result.refundId },
+      message: result.status,
+    };
   },
 
   async verifyWebhook(params: WebhookVerifyParams): Promise<GatewayAdapterResult<{ valid: boolean; eventType?: string }>> {
@@ -113,8 +128,16 @@ export const razorpayGatewayAdapter: PaymentGatewayAdapter = {
     };
   },
 
-  async fetchRefund() {
-    return { success: false, message: "Use admin payments module." };
+  async fetchRefund(refundId: string) {
+    const { fetchRazorpayRefund } = await import("@/lib/checkout/razorpay-client");
+    const result = await fetchRazorpayRefund(refundId);
+    if (!result.ok) {
+      return { success: false, message: result.error ?? "Could not fetch refund." };
+    }
+    return {
+      success: true,
+      data: { status: result.status ?? "unknown", amount: result.amountInr ?? 0 },
+    };
   },
 
   async syncSettlement() {

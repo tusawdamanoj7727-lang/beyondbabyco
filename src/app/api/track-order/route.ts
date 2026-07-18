@@ -6,7 +6,7 @@ import {
   validateTrackOrderInput,
   TRACK_LOOKUP_GENERIC_ERROR,
 } from "@/lib/orders/guest-track";
-import { checkRateLimit } from "@/lib/security/rate-limit";
+import { checkRateLimitAsync } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,7 @@ export const runtime = "nodejs";
  * Rate-limited per IP (and tighter per email+IP) to resist brute force.
  */
 export async function POST(request: NextRequest) {
-  const ipLimited = checkRateLimit(request, {
+  const ipLimited = await checkRateLimitAsync(request, {
     windowMs: 60_000,
     max: 8,
     keyPrefix: "track-order",
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   const emailHash = createHash("sha256").update(validated.email).digest("hex").slice(0, 16);
-  const emailLimited = checkRateLimit(request, {
+  const emailLimited = await checkRateLimitAsync(request, {
     windowMs: 15 * 60_000,
     max: 15,
     keyPrefix: `track-order-em:${emailHash}`,

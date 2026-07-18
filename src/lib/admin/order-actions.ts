@@ -7,6 +7,8 @@ import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { getCurrentUser } from "@/lib/auth/session";
 import type { OrderStatus, Json } from "@/lib/supabase/database.types";
+import { getPaymentGatewayAdapter } from "./gateway-adapters";
+import type { GatewayProvider } from "./payment-types";
 import {
   calcLineTotal,
   calcOrderTotals,
@@ -329,14 +331,50 @@ export async function createRefund(input: {
 
   const { data: payment } = await supabase
     .from("payments")
-    .select("id, amount, status")
+    .select("id, amount, status, method, provider, gateway_id, gateway_txn_id, payment_ref, currency")
     .eq("order_id", parsed.data.order_id)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  const refundAmount = parsed.data.full ? order.grand_total : parsed.data.amount;
-  const refundStatus = parsed.data.full ? "refunded" : "partially_refunded";
+  const refundAmount = parsed.data.full ? Number(order.grand_total) : parsed.data.amount;
+  const refundStatus = parsed.data.full || refundAmount >= Number(order.grand_total) ? "refunded" : "partially_refunded";
+
+  let gatewayRefundId: string | null = null;
+  let providerPayload: Json | null = null;
+
+  const isRazorpay =
+    payment &&
+    (payment.method === "razorpay" || payment.provider === "razorpay") &&
+    ["paid", "captured", "partially_refunded"].includes(payment.status);
+
+  if (isRazorpay && payment) {
+    let gatewayProvider: GatewayProvider = "razorpay";
+    if (payment.gateway_id) {
+      const { data: g } = await supabase
+        .from("payment_gateways")
+        .select("provider")
+        .eq("id", payment.gateway_id)
+        .maybeSingle();
+      if (g) gatewayProvider = g.provider as GatewayProvider;
+    }
+
+    const adapter = getPaymentGatewayAdapter(gatewayProvider);
+    const gatewayResult = await adapter.refundPayment({
+      gatewayTxnId: payment.gateway_txn_id ?? payment.id,
+      paymentRef: payment.payment_ref,
+      amount: refundAmount,
+      currency: payment.currency ?? "INR",
+      reason: parsed.data.reason,
+      notes: { order_id: parsed.data.order_id },
+    });
+
+    if (!gatewayResult.success || !gatewayResult.data?.refundId) {
+      return { ok: false, error: gatewayResult.message ?? "Razorpay refund failed." };
+    }
+    gatewayRefundId = gatewayResult.data.refundId;
+    providerPayload = { provider: gatewayProvider, refund_id: gatewayRefundId } as Json;
+  }
 
   const { data: refund, error: refundErr } = await supabase
     .from("order_refunds")
@@ -348,6 +386,8 @@ export async function createRefund(input: {
       notes: parsed.data.notes,
       status: refundStatus,
       created_by: user?.id ?? null,
+      gateway_refund_id: gatewayRefundId,
+      provider_payload: providerPayload,
     })
     .select("id")
     .single();
@@ -359,7 +399,8 @@ export async function createRefund(input: {
       payment_id: payment.id,
       amount: -refundAmount,
       status: refundStatus,
-      txn_ref: `refund:${refund?.id}`,
+      txn_ref: gatewayRefundId ? `refund:${gatewayRefundId}` : `refund:${refund?.id}`,
+      gateway_txn_id: gatewayRefundId,
     });
   }
 
@@ -371,12 +412,18 @@ export async function createRefund(input: {
   await logOrderEvent(parsed.data.order_id, "refund", `Refund of ₹${refundAmount} processed.`, {
     amount: refundAmount,
     full: parsed.data.full,
+    gateway_refund_id: gatewayRefundId,
   });
   await supabase.rpc("log_audit", {
     p_table: "order_refunds",
     p_record: refund?.id,
     p_action: "create",
-    p_new: { order_id: parsed.data.order_id, amount: refundAmount, status: nextOrderStatus },
+    p_new: {
+      order_id: parsed.data.order_id,
+      amount: refundAmount,
+      status: nextOrderStatus,
+      gateway_refund_id: gatewayRefundId,
+    },
   });
 
   revalidateOrders(parsed.data.order_id);

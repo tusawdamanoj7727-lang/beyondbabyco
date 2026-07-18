@@ -90,8 +90,10 @@ function sendGoogleAdsConversion(label: string | null, payload: { value?: number
     currency: payload.currency ?? "INR",
     transaction_id: payload.transaction_id,
   };
+  // Prefer a single transport: GTM container owns Ads when GTM is enabled.
   if (isGtmEnabled()) {
     safeDataLayerPush({ event: "ads_conversion", ...conversion });
+    return;
   }
   safeGtag("event", "conversion", conversion);
 }
@@ -110,7 +112,7 @@ function sendEvent(
     ...(ecommerce ? { ...ecommerce } : {}),
   };
 
-  // GTM dataLayer for container tags; gtag for GA4/Ads (send_page_view disabled at config).
+  // Exactly one GA transport: GTM dataLayer OR direct gtag — never both.
   if (isGtmEnabled()) {
     safeDataLayerPush({
       event: name,
@@ -118,8 +120,9 @@ function sendEvent(
       ...rest,
       ...(ecommerce ? { ecommerce } : {}),
     });
+  } else {
+    safeGtag("event", name, eventParams);
   }
-  safeGtag("event", name, eventParams);
 
   if (options?.metaStandardEvent) {
     const metaPayload = options.metaStandardEvent.payload ?? {};
@@ -138,11 +141,12 @@ export function trackPageView(path: string, title?: string) {
       page_path: path,
       page_title: title,
     });
+  } else {
+    safeGtag("event", "page_view", {
+      page_path: path,
+      page_title: title,
+    });
   }
-  safeGtag("event", "page_view", {
-    page_path: path,
-    page_title: title,
-  });
   if (getMetaPixelId()) safeFbq("track", "PageView");
   safeClarityEvent("page_view");
 }
@@ -406,6 +410,17 @@ export function trackPurchase(input: {
   coupon?: string;
   paymentType?: string;
 }) {
+  // Client-side idempotency: avoid double purchase on remount / success revisit.
+  if (typeof window !== "undefined") {
+    const key = `bbc_purchase_${input.transactionId}`;
+    try {
+      if (window.sessionStorage.getItem(key) === "1") return;
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      /* private mode — still fire once this call */
+    }
+  }
+
   sendEvent(
     "purchase",
     {

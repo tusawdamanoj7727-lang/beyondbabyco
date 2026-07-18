@@ -4,7 +4,14 @@ import { DEFAULT_JSON_BODY_LIMIT, WEBHOOK_JSON_BODY_LIMIT } from "@/lib/api/requ
 import { validateCsrf } from "@/lib/security/csrf";
 import { isDevApiBlocked } from "@/lib/security/dev-api";
 import { applySecurityHeaders } from "@/lib/security/headers";
-import { checkAdminApiRateLimit, checkAdminRateLimit, checkRateLimit } from "@/lib/security/rate-limit";
+import {
+  checkAdminApiRateLimit,
+  checkAdminRateLimit,
+  checkAuthRateLimit,
+  checkCheckoutRateLimit,
+  checkRateLimitAsync,
+  checkWebhookRateLimit,
+} from "@/lib/security/rate-limit";
 import { generateRequestId, attachRequestHeaders, REQUEST_ID_HEADER } from "@/lib/observability/request-id";
 
 import { updateSessionAndGuard } from "./middleware/auth";
@@ -29,17 +36,28 @@ export async function middleware(request: NextRequest) {
     return applySecurityHeaders(res);
   }
 
-  const isApi = request.nextUrl.pathname.startsWith("/api/");
-  const isAdminApi = request.nextUrl.pathname.startsWith("/api/admin");
-  const isAdmin = request.nextUrl.pathname.startsWith("/admin");
+  const path = request.nextUrl.pathname;
+  const isApi = path.startsWith("/api/");
+  const isAdminApi = path.startsWith("/api/admin");
+  const isAdmin = path.startsWith("/admin");
+  const isWebhook = path.startsWith("/api/webhooks/");
+  const isAuthApi =
+    path.startsWith("/api/auth") || path === "/login" || path === "/register" || path.startsWith("/forgot-password");
+  const isCheckoutApi = path.startsWith("/api/checkout") || path === "/checkout";
 
-  const rateLimited = isAdmin
-    ? checkAdminRateLimit(request)
-    : isAdminApi
-      ? checkAdminApiRateLimit(request)
-      : isApi
-        ? checkRateLimit(request, { max: 200, keyPrefix: "api" })
-        : null;
+  const rateLimited = isWebhook
+    ? await checkWebhookRateLimit(request)
+    : isAdmin
+      ? await checkAdminRateLimit(request)
+      : isAdminApi
+        ? await checkAdminApiRateLimit(request)
+        : isAuthApi
+          ? await checkAuthRateLimit(request)
+          : isCheckoutApi
+            ? await checkCheckoutRateLimit(request)
+            : isApi
+              ? await checkRateLimitAsync(request, { max: 200, keyPrefix: "api" })
+              : null;
 
   if (rateLimited) {
     attachRequestHeaders(rateLimited.headers, requestId);
