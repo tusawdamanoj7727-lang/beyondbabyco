@@ -11,6 +11,17 @@ import { updateSessionAndGuard } from "./middleware/auth";
 
 export async function middleware(request: NextRequest) {
   const requestId = request.headers.get(REQUEST_ID_HEADER) ?? generateRequestId();
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase() ?? "";
+
+  // Apex is canonical — redirect www once TLS for www is valid (Vercel domain alias).
+  if (host === "www.beyondbabyco.in") {
+    const url = request.nextUrl.clone();
+    url.hostname = "beyondbabyco.in";
+    url.protocol = "https:";
+    const res = NextResponse.redirect(url, 308);
+    attachRequestHeaders(res.headers, requestId);
+    return applySecurityHeaders(res);
+  }
 
   if (isDevApiBlocked() && request.nextUrl.pathname.startsWith("/api/dev")) {
     const res = NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });

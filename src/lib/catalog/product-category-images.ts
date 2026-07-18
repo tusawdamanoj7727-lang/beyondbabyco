@@ -1,5 +1,5 @@
 /**
- * Category-based product imagery — Unsplash editorial photos + approved wipes hero.
+ * Category-based product imagery — self-hosted generated product photography.
  */
 
 import { IMAGES, PRODUCT_IMAGES_BY_SLUG } from "@/lib/images";

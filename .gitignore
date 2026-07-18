@@ -65,6 +65,10 @@ next-env.d.ts
 /tools/comfyui/models/**/*.ckpt
 /.pids/
 
-# generated AI images (keep folder structure via .gitkeep)
+# generated AI images — track deployable webp/avif; ignore heavy PNG masters
 /public/images/generated/**/*
 !/public/images/generated/**/.gitkeep
+!/public/images/generated/products/
+!/public/images/generated/products/**
+/public/images/generated/products/**/*.png
+/public/images/generated/products/**/*.blur.txt

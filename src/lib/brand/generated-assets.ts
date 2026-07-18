@@ -138,8 +138,9 @@ export function genVisual({ category, slug }: VisualRef, format: "webp" | "avif"
 export function shouldUseGeneratedAsset(url: string | null | undefined): boolean {
   if (!url?.trim()) return true;
   const lower = url.toLowerCase();
-  if (lower.includes("/images/placeholders/")) return false;
-  if (lower.includes("/images/generated/products/baby-wipes/front.")) return false;
+  // Prefer generated/self-hosted product assets over placeholders, Unsplash, and SVGs.
+  if (lower.includes("/images/placeholders/") || lower.includes(".svg")) return true;
+  if (lower.includes("/images/generated/products/")) return false;
   if (isLegacyOrMissingProductImage(url)) return true;
   return LEGACY_VISUAL_PATTERNS.some((p) => lower.includes(p));
 }

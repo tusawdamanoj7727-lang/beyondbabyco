@@ -4,10 +4,19 @@ import { getDelhiveryConfig } from "@/lib/delhivery/config";
 import { delhiveryCreateOrderShipment } from "@/lib/delhivery/service";
 
 const PAID_STATUSES = new Set(["paid", "captured"]);
+const COD_SHIPPABLE_STATUSES = new Set(["pending", "authorized", "paid", "captured"]);
+
+function isCodPayment(payment: { method?: string | null; provider?: string | null } | null): boolean {
+  const method = payment?.method?.toLowerCase() ?? "";
+  const provider = payment?.provider?.toLowerCase() ?? "";
+  return method === "cod" || provider === "cod";
+}
 
 /**
- * Create Delhivery shipment exactly once after prepaid payment is settled.
- * Safe under concurrent webhook retries — claims a shipment row before calling Delhivery.
+ * Create Delhivery shipment exactly once when an order is ready to ship:
+ * - Prepaid: payment paid/captured
+ * - COD: confirmed order (cash collected on delivery; payment may stay pending)
+ * Safe under concurrent retries — claims a shipment row before calling Delhivery.
  */
 export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
   ok: boolean;
@@ -25,7 +34,7 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
     supabase.from("orders").select("id, status").eq("id", orderId).maybeSingle(),
     supabase
       .from("payments")
-      .select("status, amount, method")
+      .select("status, amount, method, provider")
       .eq("order_id", orderId)
       .order("created_at", { ascending: false })
       .limit(1)
@@ -46,11 +55,20 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
     return { ok: true, error: null, awb: existing.tracking_number, skipped: true };
   }
 
-  if (!payment || !PAID_STATUSES.has(payment.status)) {
+  if (order.status !== "confirmed") {
     return { ok: true, error: null, skipped: true };
   }
 
-  if (order.status !== "confirmed") {
+  if (!payment) {
+    return { ok: true, error: null, skipped: true };
+  }
+
+  const cod = isCodPayment(payment);
+  const paymentReady = cod
+    ? COD_SHIPPABLE_STATUSES.has(payment.status)
+    : PAID_STATUSES.has(payment.status);
+
+  if (!paymentReady) {
     return { ok: true, error: null, skipped: true };
   }
 
@@ -68,7 +86,7 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
       .single();
 
     if (claimError) {
-      // Concurrent claim won (unique order_id) — return existing; never double-call Delhivery.
+      // Concurrent claim won (unique order_id) — reuse row; never double-call Delhivery if AWB exists.
       const { data: raced } = await supabase
         .from("shipments")
         .select("id, tracking_number")
@@ -78,14 +96,17 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
       if (raced?.tracking_number) {
         return { ok: true, error: null, awb: raced.tracking_number, skipped: true };
       }
-      // Another worker holds the claim / is creating — do not call Delhivery again.
-      return { ok: true, error: null, skipped: true };
-    }
-
-    if (claimed?.tracking_number) {
+      // Stuck pending claim from a prior failed attempt — continue on that row.
+      if (raced?.id) {
+        shipmentId = raced.id;
+      } else {
+        return { ok: false, error: claimError.message };
+      }
+    } else if (claimed?.tracking_number) {
       return { ok: true, error: null, awb: claimed.tracking_number, skipped: true };
+    } else {
+      shipmentId = claimed?.id ?? null;
     }
-    shipmentId = claimed?.id ?? null;
   }
 
   if (!shipmentId) {
@@ -103,14 +124,13 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
     return { ok: true, error: null, awb: locked.tracking_number, skipped: true };
   }
 
-  const isCod = payment.method?.toLowerCase() === "cod";
-  const codAmount = isCod ? Number(payment.amount ?? 0) : 0;
+  const codAmount = cod ? Number(payment.amount ?? 0) : 0;
 
   const result = await delhiveryCreateOrderShipment({
     orderId,
     shipmentId,
     codAmount: codAmount > 0 ? codAmount : undefined,
-    paymentMode: codAmount > 0 ? "COD" : "Prepaid",
+    paymentMode: cod ? "COD" : "Prepaid",
   });
 
   if (!result.ok) {
@@ -118,7 +138,7 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
       order_id: orderId,
       type: "shipment",
       message: `Delhivery auto-fulfillment failed: ${result.error}`,
-      metadata: { provider: "delhivery" },
+      metadata: { provider: "delhivery", payment_mode: cod ? "COD" : "Prepaid" },
     });
     return { ok: false, error: result.error };
   }
@@ -126,7 +146,9 @@ export async function fulfillOrderWithDelhivery(orderId: string): Promise<{
   await supabase.from("order_events").insert({
     order_id: orderId,
     type: "shipment",
-    message: "Delhivery shipment created after payment.",
+    message: cod
+      ? "Delhivery COD shipment created after order confirmation."
+      : "Delhivery shipment created after payment.",
     metadata: (result.data ?? {}) as Json,
   });
 
