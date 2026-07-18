@@ -80,8 +80,11 @@ export default function WishlistClient({
     return () => window.removeEventListener("bbc:wishlist-merged", onMerged);
   }, [refresh]);
 
-  // Never cover SSR / known products with an indefinite skeleton.
-  if ((loading || wishlistLoading) && products.length === 0) {
+  // Skeleton only on the first unresolved load — never cover an intentional empty list.
+  const awaitingFirstLoad =
+    products.length === 0 && !initialIdsKey && wishlistLoading && !idsKey;
+
+  if (awaitingFirstLoad) {
     return <ProductGridSkeleton count={4} />;
   }
 
