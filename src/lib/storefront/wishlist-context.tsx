@@ -3,7 +3,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/lib/auth/hooks";
-import { getWishlistProductIds, toggleWishlistAction } from "@/lib/storefront/wishlist-actions";
 import {
   readGuestWishlistIds,
   writeGuestWishlistIds,
@@ -23,6 +22,29 @@ type WishlistContextValue = {
 const WishlistContext = createContext<WishlistContextValue | null>(null);
 
 const SIGN_IN_ERROR = "Sign in to save items to your wishlist.";
+
+async function fetchWishlistIds(): Promise<string[]> {
+  const res = await fetch("/api/wishlist", { method: "GET", credentials: "same-origin", cache: "no-store" });
+  if (!res.ok) return [];
+  const data = (await res.json()) as { ids?: string[] };
+  return Array.isArray(data.ids) ? data.ids.filter((id) => typeof id === "string") : [];
+}
+
+async function postWishlistToggle(productId: string): Promise<{ ok: boolean; error: string | null; inWishlist?: boolean }> {
+  const res = await fetch("/api/wishlist", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId }),
+  });
+  const data = (await res.json().catch(() => null)) as
+    | { ok?: boolean; error?: string | null; inWishlist?: boolean }
+    | null;
+  if (!data || typeof data.ok !== "boolean") {
+    return { ok: false, error: "Wishlist request failed." };
+  }
+  return { ok: data.ok, error: data.error ?? null, inWishlist: data.inWishlist };
+}
 
 export function WishlistProvider({
   children,
@@ -46,11 +68,9 @@ export function WishlistProvider({
     const mutationAtStart = mutationGen.current;
     setLoading(true);
 
-    // Cookie-backed server action — works even before the browser auth client hydrates.
-    getWishlistProductIds()
+    fetchWishlistIds()
       .then((list) => {
         if (gen !== fetchGen.current) return;
-        // Discard reads that started before a local toggle finished writing.
         if (mutationAtStart !== mutationGen.current) return;
         if (list.length > 0 || userId) {
           setIds(new Set(list));
@@ -111,7 +131,7 @@ export function WishlistProvider({
       return next;
     });
 
-    const result = await toggleWishlistAction(productId);
+    const result = await postWishlistToggle(productId);
 
     if (mutation !== mutationGen.current) {
       return { ok: true, error: null };

@@ -16,10 +16,23 @@ import { focusRing } from "@/lib/design/ui";
 import { buildCartItemInput } from "@/lib/store/cart-mappers";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
-import { getPublicProductsByIds, removeFromWishlistAction } from "@/lib/storefront/wishlist-actions";
+import { getPublicProductsByIds } from "@/lib/storefront/wishlist-actions";
 import { readGuestWishlistIds, writeGuestWishlistIds } from "@/lib/storefront/wishlist-storage";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { cn } from "@/lib/utils";
+
+async function removeWishlistViaApi(productId: string) {
+  const res = await fetch("/api/wishlist", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId, action: "remove" }),
+  });
+  return (await res.json().catch(() => ({ ok: false, error: "Request failed" }))) as {
+    ok: boolean;
+    error: string | null;
+  };
+}
 
 export default function WishlistClient({
   products: initialProducts,
@@ -100,8 +113,7 @@ export default function WishlistClient({
   function remove(productId: string) {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     startTransition(async () => {
-      // Always try the cookie-backed server action first (SSR isLoggedIn can be stale).
-      const result = await removeFromWishlistAction(productId);
+      const result = await removeWishlistViaApi(productId);
       if (result.ok) {
         refresh();
         toast.info(MICROCOPY.removedFromWishlist);
