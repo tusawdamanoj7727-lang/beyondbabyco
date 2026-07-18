@@ -34,7 +34,7 @@ export default function WishlistClient({
   const { ids, loading: wishlistLoading, refresh } = useWishlist();
   const idsKey = useMemo(() => [...ids].sort().join(","), [ids]);
   const [products, setProducts] = useState<StorefrontProduct[]>(initialProducts);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [quickView, setQuickView] = useState<StorefrontProduct | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -45,7 +45,8 @@ export default function WishlistClient({
       const idList = idsKey ? idsKey.split(",") : [];
       if (idList.length === 0) {
         if (!cancelled) {
-          setProducts([]);
+          // Keep SSR products until cookie-backed refresh finishes.
+          if (!wishlistLoading) setProducts([]);
           setLoading(false);
         }
         return;
@@ -65,7 +66,7 @@ export default function WishlistClient({
     return () => {
       cancelled = true;
     };
-  }, [idsKey, wishlistLoading]);
+  }, [idsKey, wishlistLoading, isLoggedIn]);
 
   useEffect(() => {
     function onMerged() {
@@ -75,7 +76,8 @@ export default function WishlistClient({
     return () => window.removeEventListener("bbc:wishlist-merged", onMerged);
   }, [refresh]);
 
-  if (loading || wishlistLoading) {
+  // Never cover SSR / known products with an indefinite skeleton.
+  if ((loading || wishlistLoading) && products.length === 0) {
     return <ProductGridSkeleton count={4} />;
   }
 
