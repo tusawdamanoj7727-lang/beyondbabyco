@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 
-import { DEDICATED_CONTENT_SLUGS } from "@/lib/content/dedicated-routes";
+import {
+  DEDICATED_CONTENT_SLUGS,
+  REDIRECT_ONLY_CONTENT_SLUGS,
+} from "@/lib/content/dedicated-routes";
 import { getAllContentSlugs } from "@/lib/content/registry";
 import { MASCOT_SLUGS } from "@/lib/mascots/content";
 import { getCanonicalSiteUrl } from "@/lib/seo/site";
@@ -42,7 +45,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     staticPage(base, `/mascots/${slug}`, { changeFrequency: "monthly", priority: 0.5 }, now),
   );
 
-  const marketingSlugs = getAllContentSlugs().filter((slug) => !DEDICATED_CONTENT_SLUGS.has(slug));
+  const marketingSlugs = getAllContentSlugs().filter(
+    (slug) => !DEDICATED_CONTENT_SLUGS.has(slug) && !REDIRECT_ONLY_CONTENT_SLUGS.has(slug),
+  );
   const contentUrls: MetadataRoute.Sitemap = marketingSlugs.map((slug) =>
     staticPage(base, `/${slug}`, { changeFrequency: "monthly", priority: 0.5 }, now),
   );

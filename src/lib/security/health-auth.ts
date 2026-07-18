@@ -1,6 +1,7 @@
 import "server-only";
 
 import { jsonError, jsonOk } from "@/lib/api/route-helpers";
+import { timingSafeEqualString } from "@/lib/security/timing-safe";
 import { isDeployedEnvironment, isLocalDevelopment } from "@/lib/security/webhook-auth";
 
 function healthCheckSecret(): string | null {
@@ -17,7 +18,9 @@ export function isHealthCheckAuthorized(request: Request): boolean {
   if (!secret) {
     return isLocalDevelopment();
   }
-  return request.headers.get("authorization") === `Bearer ${secret}`;
+  const header = request.headers.get("authorization")?.trim() ?? "";
+  const expected = `Bearer ${secret}`;
+  return timingSafeEqualString(header, expected);
 }
 
 /**

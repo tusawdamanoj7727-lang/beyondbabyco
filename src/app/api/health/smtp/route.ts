@@ -68,10 +68,9 @@ function authorize(request: Request): boolean {
   if (isHealthCheckAuthorized(request)) return true;
   const diag = process.env.SMTP_DIAG_TOKEN?.trim();
   if (!diag) return false;
-  const auth = request.headers.get("authorization");
-  if (auth === `Bearer ${diag}`) return true;
-  const url = new URL(request.url);
-  return url.searchParams.get("token") === diag;
+  // Bearer only — never accept query-string tokens (logs / referrers).
+  const auth = request.headers.get("authorization")?.trim() ?? "";
+  return auth === `Bearer ${diag}`;
 }
 
 export async function GET(request: Request) {

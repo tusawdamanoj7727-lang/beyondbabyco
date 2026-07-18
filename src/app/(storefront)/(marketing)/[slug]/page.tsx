@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import ContentHero from "@/components/content/ContentHero";
 import ContentPageRenderer from "@/components/content/ContentPageRenderer";
 import JsonLd from "@/components/seo/JsonLd";
-import { DEDICATED_CONTENT_SLUGS } from "@/lib/content/dedicated-routes";
+import { DEDICATED_CONTENT_SLUGS, REDIRECT_ONLY_CONTENT_SLUGS } from "@/lib/content/dedicated-routes";
 import {
   getAllContentSlugs,
   getAllFaqItems,
@@ -19,7 +19,7 @@ type PageProps = {
 
 export function generateStaticParams() {
   return getAllContentSlugs()
-    .filter((slug) => !DEDICATED_CONTENT_SLUGS.has(slug))
+    .filter((slug) => !DEDICATED_CONTENT_SLUGS.has(slug) && !REDIRECT_ONLY_CONTENT_SLUGS.has(slug))
     .map((slug) => ({ slug }));
 }
 

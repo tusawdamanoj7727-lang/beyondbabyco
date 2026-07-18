@@ -25,10 +25,14 @@ export function buildContentSecurityPolicy(): string {
   const supabaseHost = supabaseUrl ? new URL(supabaseUrl).origin : "";
 
   // checkout.js (+ cdn risk scripts); frames for hosted checkout modal/iframe.
-  // connect-src/img-src already allow https: (covers api.razorpay.com / *.razorpay.com).
+  // Production omits 'unsafe-eval' (Next does not require it for the storefront bundle).
+  const scriptSrc = isProduction
+    ? "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.razorpay.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://www.facebook.com https://www.clarity.ms https://scripts.clarity.ms"
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://cdn.razorpay.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://www.facebook.com https://www.clarity.ms https://scripts.clarity.ms";
+
   const directives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://cdn.razorpay.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://www.facebook.com https://www.clarity.ms https://scripts.clarity.ms",
+    scriptSrc,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",

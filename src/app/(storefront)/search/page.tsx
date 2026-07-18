@@ -9,6 +9,7 @@ export const metadata = buildPageMetadata({
   title: "Search",
   description: "Search BeyondBabyCo products.",
   path: "/search",
+  noIndex: true,
 });
 
 type PageProps = {

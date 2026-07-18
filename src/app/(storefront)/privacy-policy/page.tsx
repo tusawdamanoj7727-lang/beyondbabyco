@@ -92,7 +92,7 @@ export default function PrivacyPolicyPage() {
         <li>Lodge a grievance with our Grievance Officer (see below)</li>
       </ul>
 
-      <h2>Cookies</h2>
+      <h2 id="cookies">Cookies</h2>
       <p>
         We use essential cookies for cart, login sessions, and site functionality. Analytics cookies help us
         understand how visitors use our site. You can manage cookie preferences in your browser settings.

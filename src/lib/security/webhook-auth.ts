@@ -1,6 +1,7 @@
 import "server-only";
 
 import { isProduction } from "@/lib/env.validation";
+import { timingSafeEqualString } from "@/lib/security/timing-safe";
 
 /**
  * Local machine development only (not Vercel preview/production).
@@ -29,5 +30,6 @@ export function verifyDelhiveryWebhookToken(
   }
 
   const token = request.headers.get("x-delhivery-webhook-token")?.trim();
-  return Boolean(token && token === secret);
+  if (!token) return false;
+  return timingSafeEqualString(token, secret);
 }

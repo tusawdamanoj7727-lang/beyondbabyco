@@ -15,6 +15,19 @@ function metadataBase(): URL {
   return new URL(getCanonicalSiteUrl());
 }
 
+/** Truncate meta descriptions on word boundaries (avoids mid-word cuts). */
+export function truncateMetaDescription(text: string, max = 155): string {
+  const cleaned = text.replace(/\s+/g, " ").trim();
+  if (cleaned.length <= max) return cleaned;
+  const sliced = cleaned.slice(0, max);
+  const lastSpace = sliced.lastIndexOf(" ");
+  const base = (lastSpace > Math.floor(max * 0.4) ? sliced.slice(0, lastSpace) : sliced).replace(
+    /[.,;:\s]+$/u,
+    "",
+  );
+  return `${base}…`;
+}
+
 type PageMetaInput = {
   title: string;
   description?: string;

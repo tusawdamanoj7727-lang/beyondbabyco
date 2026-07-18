@@ -9,6 +9,7 @@ import {
   checkAdminRateLimit,
   checkAuthRateLimit,
   checkCheckoutRateLimit,
+  checkHealthRateLimit,
   checkRateLimitAsync,
   checkWebhookRateLimit,
 } from "@/lib/security/rate-limit";
@@ -41,23 +42,26 @@ export async function middleware(request: NextRequest) {
   const isAdminApi = path.startsWith("/api/admin");
   const isAdmin = path.startsWith("/admin");
   const isWebhook = path.startsWith("/api/webhooks/");
+  const isHealth = path.startsWith("/api/health");
   const isAuthApi =
     path.startsWith("/api/auth") || path === "/login" || path === "/register" || path.startsWith("/forgot-password");
   const isCheckoutApi = path.startsWith("/api/checkout") || path === "/checkout";
 
   const rateLimited = isWebhook
     ? await checkWebhookRateLimit(request)
-    : isAdmin
-      ? await checkAdminRateLimit(request)
-      : isAdminApi
-        ? await checkAdminApiRateLimit(request)
-        : isAuthApi
-          ? await checkAuthRateLimit(request)
-          : isCheckoutApi
-            ? await checkCheckoutRateLimit(request)
-            : isApi
-              ? await checkRateLimitAsync(request, { max: 200, keyPrefix: "api" })
-              : null;
+    : isHealth
+      ? await checkHealthRateLimit(request)
+      : isAdmin
+        ? await checkAdminRateLimit(request)
+        : isAdminApi
+          ? await checkAdminApiRateLimit(request)
+          : isAuthApi
+            ? await checkAuthRateLimit(request)
+            : isCheckoutApi
+              ? await checkCheckoutRateLimit(request)
+              : isApi
+                ? await checkRateLimitAsync(request, { max: 200, keyPrefix: "api" })
+                : null;
 
   if (rateLimited) {
     attachRequestHeaders(rateLimited.headers, requestId);

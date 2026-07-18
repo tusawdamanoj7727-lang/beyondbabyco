@@ -61,7 +61,7 @@ export function getSecurityChecks(): OpsCheckItem[] {
       id: "rate-limiting",
       label: "Rate limiting",
       status: "ready",
-      detail: "In-memory sliding window on /admin/* and /api/*",
+      detail: "Shared Postgres rate-limit buckets (check_rate_limit RPC) with in-memory fallback",
     },
     {
       id: "cookie-settings",

@@ -15,7 +15,7 @@ export const privacyPolicyPage: ContentPage = {
   eyebrow: "Legal",
   relatedLinks: [
     { label: "Terms of Service", href: "/terms-of-service" },
-    { label: "Cookies Policy", href: "/cookies" },
+    { label: "Cookies Policy", href: "/privacy-policy#cookies" },
     { label: "Contact", href: "/contact" },
   ],
   sections: [

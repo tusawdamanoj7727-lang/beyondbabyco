@@ -26,7 +26,6 @@ export const PRIMARY_NAV_LINKS: readonly NavLink[] = [
   { label: "Products", href: CANONICAL_PATHS.products },
   { label: "About", href: CANONICAL_PATHS.about },
   { label: "Research", href: CANONICAL_PATHS.research },
-  { label: "Blog", href: CANONICAL_PATHS.blog },
   { label: "Contact", href: CANONICAL_PATHS.contact },
 ];
 
@@ -44,7 +43,7 @@ export const FOOTER_QUICK_LINKS: readonly NavLink[] = [
 export const FOOTER_COMPANY_LINKS: readonly FooterNavItem[] = [
   { label: "About", href: CANONICAL_PATHS.about },
   { label: "Research", href: CANONICAL_PATHS.research },
-  { label: "Blog", href: CANONICAL_PATHS.blog },
+  { label: "FAQ", href: CANONICAL_PATHS.faq },
   { label: "Careers", comingSoon: true },
   { label: "Press", comingSoon: true },
 ];

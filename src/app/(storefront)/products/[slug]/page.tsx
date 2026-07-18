@@ -13,7 +13,7 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/storefront";
 import { productUnit } from "@/lib/catalog/product-images";
 import { computeReviewSummary } from "@/lib/reviews/helpers";
 import { getProductReviews } from "@/lib/reviews/queries";
-import { buildProductMetadata } from "@/lib/seo/metadata";
+import { buildProductMetadata, truncateMetaDescription } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
 import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
@@ -40,19 +40,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) {
-    return { title: "Product Not Found — BeyondBabyCo" };
+    notFound();
   }
 
   const unit = productUnit(slug);
   const title = unit
     ? `${product.name} ${unit}`
     : (product.seoTitle ?? product.name);
-  const description = (
+  const description = truncateMetaDescription(
     product.seoDescription ??
-    product.shortDescription ??
-    product.description ??
-    ""
-  ).slice(0, 155);
+      product.shortDescription ??
+      product.description ??
+      "",
+  );
 
   const keywords = [
     product.name,
@@ -143,6 +143,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                   body: r.body ?? "",
                   date: r.createdAt,
                 })),
+                { name: product.name, slug: product.slug },
               ) ?? []
             : []),
           ...(faqSchema ? [faqSchema] : []),

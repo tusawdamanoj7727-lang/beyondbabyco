@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { stripJsonLdUndefined } from "@/components/seo/JsonLd";
-import { buildPageMetadata, buildProductMetadata } from "@/lib/seo/metadata";
+import { buildPageMetadata, buildProductMetadata, truncateMetaDescription } from "@/lib/seo/metadata";
 import {
   breadcrumbJsonLd,
   faqJsonLd,
@@ -10,6 +10,21 @@ import {
   productJsonLd,
 } from "@/lib/seo/json-ld";
 import { PRODUCTION_SITE_URL } from "@/lib/seo/site";
+
+describe("truncateMetaDescription", () => {
+  it("does not truncate short text", () => {
+    expect(truncateMetaDescription("Gentle baby care")).toBe("Gentle baby care");
+  });
+
+  it("cuts on word boundaries", () => {
+    const long = "Gentle dermatologically tested baby care products for Indian families with sensitive newborn skin and daily essentials that parents trust every day of the year";
+    const out = truncateMetaDescription(long, 80);
+    expect(out.endsWith("…")).toBe(true);
+    expect(out.length).toBeLessThanOrEqual(81);
+    expect(out).toContain("families");
+    expect(out).not.toContain("sensitive");
+  });
+});
 
 describe("buildPageMetadata", () => {
   it("sets canonical for homepage path", () => {

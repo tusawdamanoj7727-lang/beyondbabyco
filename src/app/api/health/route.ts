@@ -6,6 +6,7 @@ import { logger } from "@/lib/observability/logger";
 import { getRequestContext } from "@/lib/observability/request-context";
 import { attachRequestHeaders } from "@/lib/observability/request-id";
 import { withTiming } from "@/lib/observability/performance";
+import { isHealthCheckAuthorized } from "@/lib/security/health-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -118,20 +119,25 @@ function checkMemory(): HealthCheck {
   }
 }
 
-function sanitizeCheck(check: HealthCheck): HealthCheck {
+function sanitizeCheck(check: HealthCheck, authorized: boolean): HealthCheck {
   if (!isProduction()) return check;
+  if (!authorized) {
+    // Public: status only — no latency/details that aid reconnaissance.
+    return { name: check.name, status: check.status };
+  }
   if (check.name === "environment" && check.status !== "ok") {
     const warnings = getProductionEnvWarnings();
     return { ...check, detail: `${warnings.length} configuration warning(s)` };
   }
   if (check.status === "error" || check.status === "degraded") {
-    return { ...check, detail: "Check unavailable" };
+    return { ...check, detail: check.detail ? "Check unavailable" : "Check unavailable" };
   }
   return { ...check, detail: undefined };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const { requestId, correlationId } = await getRequestContext();
+  const authorized = isHealthCheckAuthorized(request);
 
   const checks = await withTiming("health.all", async () => {
     let envStatus: HealthCheck = { name: "environment", status: "ok" };
@@ -141,6 +147,11 @@ export async function GET() {
       if (warnings.length) envStatus = { name: "environment", status: "degraded", detail: warnings.join("; ") };
     } catch (e) {
       envStatus = { name: "environment", status: "error", detail: e instanceof Error ? e.message : "Invalid" };
+    }
+
+    // Public probes: env + database only (cheap, no service-role fan-out).
+    if (!authorized) {
+      return Promise.all([envStatus, checkDatabase()]);
     }
 
     return Promise.all([
@@ -157,14 +168,14 @@ export async function GET() {
   const hasDegraded = checks.some((c) => c.status === "degraded");
   const overall = hasError ? "error" : hasDegraded ? "degraded" : "ok";
 
-  logger.info("Health check", { requestId, correlationId, overall });
+  logger.info("Health check", { requestId, correlationId, overall, authorized });
 
   const res = jsonOk(
     {
       status: overall,
       timestamp: new Date().toISOString(),
-      requestId: isProduction() ? undefined : requestId,
-      checks: checks.map(sanitizeCheck),
+      requestId: isProduction() && !authorized ? undefined : requestId,
+      checks: checks.map((c) => sanitizeCheck(c, authorized)),
     },
     hasError ? 503 : 200,
   );

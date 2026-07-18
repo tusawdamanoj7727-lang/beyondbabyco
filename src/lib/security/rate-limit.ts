@@ -179,6 +179,10 @@ export async function checkWebhookRateLimit(request: NextRequest): Promise<NextR
   return checkRateLimitAsync(request, { windowMs: 60_000, max: 300, keyPrefix: "webhook" });
 }
 
+export async function checkHealthRateLimit(request: NextRequest): Promise<NextResponse | null> {
+  return checkRateLimitAsync(request, { windowMs: 60_000, max: 30, keyPrefix: "health" });
+}
+
 /** Cleanup stale in-memory entries (best effort). */
 export function pruneRateLimitStore(): void {
   const now = Date.now();

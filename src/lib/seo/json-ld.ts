@@ -127,6 +127,16 @@ export function productJsonLd(product: {
         "@type": "Organization",
         name: SITE_NAME,
       },
+      ...(product.compareAtPrice != null && product.compareAtPrice > product.price
+        ? {
+            priceSpecification: {
+              "@type": "UnitPriceSpecification",
+              priceType: "https://schema.org/ListPrice",
+              price: product.compareAtPrice,
+              priceCurrency: "INR",
+            },
+          }
+        : {}),
     },
     ...(product.ratingCount > 0
       ? {
@@ -166,8 +176,12 @@ export function articleJsonLd(article: {
     headline: article.title,
     description: article.description,
     url: absoluteUrl(article.path),
-    datePublished: article.datePublished ?? "2026-01-01",
-    dateModified: article.dateModified ?? "2026-07-01",
+    ...(article.datePublished ? { datePublished: article.datePublished } : {}),
+    ...(article.dateModified
+      ? { dateModified: article.dateModified }
+      : article.datePublished
+        ? { dateModified: article.datePublished }
+        : {}),
     author: { "@type": "Organization", name: SITE_NAME, url: getCanonicalSiteUrl() },
     publisher: {
       "@type": "Organization",
@@ -177,8 +191,19 @@ export function articleJsonLd(article: {
   };
 }
 
-export function reviewJsonLd(reviews: { author: string; rating: number; body: string; date: string }[]) {
+export function reviewJsonLd(
+  reviews: { author: string; rating: number; body: string; date: string }[],
+  product?: { name: string; slug: string },
+) {
   if (reviews.length === 0) return null;
+  const itemReviewed = product
+    ? {
+        "@type": "Product" as const,
+        name: product.name,
+        url: absoluteUrl(`/products/${product.slug}`),
+      }
+    : undefined;
+
   return reviews.slice(0, 5).map((r) => ({
     "@context": "https://schema.org",
     "@type": "Review",
@@ -186,5 +211,6 @@ export function reviewJsonLd(reviews: { author: string; rating: number; body: st
     reviewRating: { "@type": "Rating", ratingValue: r.rating },
     reviewBody: r.body,
     datePublished: r.date,
+    ...(itemReviewed ? { itemReviewed } : {}),
   }));
 }
