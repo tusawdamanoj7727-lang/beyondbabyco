@@ -25,6 +25,8 @@ import {
   cancelOrder,
   createRefund,
   duplicateOrder,
+  regenerateOrderInvoice,
+  resendOrderInvoice,
   updateOrderNotes,
   updateOrderStatus,
 } from "@/lib/admin/order-actions";
@@ -141,6 +143,21 @@ export default function OrderDetailClient(props: {
     });
   }
 
+  function runResendInvoice() {
+    startTransition(async () => {
+      await resendOrderInvoice(o.id);
+      router.refresh();
+    });
+  }
+
+  function runRegenerateInvoice() {
+    startTransition(async () => {
+      await regenerateOrderInvoice(o.id);
+      window.open(`/admin/orders/${o.id}/documents/invoice`, "_blank", "noopener,noreferrer");
+      router.refresh();
+    });
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3 rounded-3xl border border-cream-200 bg-cream-50 p-4">
@@ -156,6 +173,8 @@ export default function OrderDetailClient(props: {
           <Button variant="ghost" size="sm" onClick={runDuplicate} disabled={pending}>Duplicate</Button>
           <Button variant="ghost" size="sm" onClick={() => setCancelOpen(true)} disabled={pending || o.status === "cancelled"}>Cancel</Button>
           <a href={`/admin/orders/${o.id}/documents/invoice`} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center rounded-2xl px-3 text-sm font-medium text-green-700 hover:bg-green-50">Invoice</a>
+          <Button variant="ghost" size="sm" onClick={runResendInvoice} disabled={pending}>Resend invoice</Button>
+          <Button variant="ghost" size="sm" onClick={runRegenerateInvoice} disabled={pending}>Regenerate invoice</Button>
           <a href={`/admin/orders/${o.id}/documents/packing_slip`} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center rounded-2xl px-3 text-sm font-medium text-green-700 hover:bg-green-50">Packing Slip</a>
           <a href={`/admin/orders/${o.id}/documents/shipping_label`} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center rounded-2xl px-3 text-sm font-medium text-green-700 hover:bg-green-50">Label</a>
         </div>

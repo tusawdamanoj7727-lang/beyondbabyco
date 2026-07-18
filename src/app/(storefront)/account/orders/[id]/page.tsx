@@ -84,12 +84,18 @@ export default async function AccountOrderDetailPage({
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <a
+              href={`/account/orders/${order.id}/documents/invoice?download=1`}
+              className="inline-flex min-h-[40px] items-center rounded-full border border-green-200 px-4 text-sm font-semibold text-green-800 hover:bg-green-50"
+            >
+              Download invoice
+            </a>
+            <a
               href={`/account/orders/${order.id}/documents/invoice`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex min-h-[40px] items-center rounded-full border border-green-200 px-4 text-sm font-semibold text-green-800 hover:bg-green-50"
             >
-              Download invoice
+              Print invoice
             </a>
             {trackingNumber && shipment?.labelUrl ? (
               <a

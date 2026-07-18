@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { EmailAttachment } from "@/lib/communications/types";
 import { renderEmailTemplate } from "@/lib/communications/layout";
 import { getEmailTemplate } from "@/lib/communications/templates/registry";
 
@@ -9,6 +10,7 @@ export async function sendTemplateEmail(
   templateId: string,
   to: string,
   data?: Record<string, string>,
+  options?: { attachments?: EmailAttachment[] },
 ): Promise<{ ok: boolean; error?: string }> {
   const template = getEmailTemplate(templateId);
   if (!template) {
@@ -23,6 +25,7 @@ export async function sendTemplateEmail(
     text: rendered.text,
     tags: [templateId],
     metadata: { templateId },
+    attachments: options?.attachments,
   });
 
   return { ok: result.ok, error: result.error };

@@ -42,6 +42,11 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailSendResult>
         html: payload.html,
         text: payload.text,
         replyTo: payload.replyTo ?? config.replyTo ?? undefined,
+        attachments: payload.attachments?.map((a) => ({
+          filename: a.filename,
+          content: Buffer.from(a.content),
+          contentType: a.contentType ?? "application/octet-stream",
+        })),
       });
 
       logger.info("email.send.success", { id: info.messageId, attempt, to: payload.to });

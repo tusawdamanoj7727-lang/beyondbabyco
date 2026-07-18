@@ -408,3 +408,42 @@ export async function recordDocumentGenerated(orderId: string, docType: string):
     p_new: { docType },
   });
 }
+
+/** Force-resend customer tax invoice email with PDF attachment. */
+export async function resendOrderInvoice(orderId: string): Promise<OrderActionResult> {
+  await guard();
+  const { dispatchOrderEmail } = await import("@/lib/email/dispatch");
+  const result = await dispatchOrderEmail(orderId, "invoice", { force: true });
+  if (!result.sent) {
+    return {
+      ok: false,
+      error: result.error ?? (result.skipped ? "Invoice email was skipped." : "Failed to resend invoice."),
+    };
+  }
+  await logOrderEvent(orderId, "email", "Tax invoice resent to customer.", {
+    templateId: "invoice",
+  });
+  revalidateOrders(orderId);
+  return { ok: true, error: null };
+}
+
+/**
+ * Regenerate tax invoice (stateless PDF rebuild) and record an audit event.
+ * Opens via documents route; this action only logs regeneration.
+ */
+export async function regenerateOrderInvoice(orderId: string): Promise<OrderActionResult> {
+  await guard();
+  const { generateOrderInvoice } = await import("@/lib/invoices/generate-order-invoice");
+  const generated = await generateOrderInvoice(orderId, "invoice");
+  if (!generated) {
+    return { ok: false, error: "Order not found." };
+  }
+  await recordDocumentGenerated(orderId, "invoice");
+  await logOrderEvent(orderId, "document", "Tax invoice regenerated.", {
+    invoiceNumber: generated.data.invoiceNumber,
+    bytes: generated.bytes.byteLength,
+  });
+  revalidateOrders(orderId);
+  return { ok: true, error: null };
+}
+

@@ -62,6 +62,12 @@ export type EmailRenderOptions = {
 };
 
 /** Provider adapter interfaces — prepared for future integrations (Part 11). */
+export type EmailAttachment = {
+  filename: string;
+  content: Buffer | Uint8Array;
+  contentType?: string;
+};
+
 export type EmailPayload = {
   to: string;
   subject: string;
@@ -71,6 +77,7 @@ export type EmailPayload = {
   replyTo?: string;
   tags?: string[];
   metadata?: Record<string, string>;
+  attachments?: EmailAttachment[];
 };
 
 export type SmsPayload = {

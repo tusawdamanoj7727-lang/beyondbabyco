@@ -101,6 +101,9 @@ export function getProductionEnvWarnings(): string[] {
   if (!process.env.SMTP_HOST?.trim() || !process.env.SMTP_USER?.trim() || !process.env.SMTP_PASS?.trim()) {
     warnings.push("SMTP not configured (transactional email disabled)");
   }
+  if (!process.env.SELLER_GSTIN?.trim()) {
+    warnings.push("SELLER_GSTIN not set (tax invoices will show a configure placeholder)");
+  }
   if (
     !process.env.NEXT_PUBLIC_GTM_CONTAINER_ID &&
     !process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID &&

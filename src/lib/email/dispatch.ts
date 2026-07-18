@@ -2,6 +2,8 @@ import "server-only";
 
 import { absoluteUrl } from "@/lib/seo/site";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
+import { generateOrderInvoiceAttachment } from "@/lib/invoices/generate-order-invoice";
+import { issueInvoiceToken } from "@/lib/invoices/token";
 
 import { getSmtpConfig } from "./config";
 import { resolveOrderEmailData } from "./data-resolvers";
@@ -15,6 +17,14 @@ const PREPAID_CONFIRMATION_TEMPLATES = new Set([
   "payment-received",
 ]);
 
+/** Templates that should include the tax invoice PDF when available. */
+const INVOICE_ATTACHMENT_TEMPLATES = new Set([
+  "invoice",
+  "admin-new-order",
+  "order-confirmation",
+  "cod-confirmation",
+]);
+
 /** Skip duplicate sends while another worker owns a fresh pending claim. */
 const PENDING_CLAIM_TTL_MS = 5 * 60 * 1000;
 
@@ -23,6 +33,12 @@ export interface DispatchOrderEmailResult {
   skipped: boolean;
   error?: string;
 }
+
+export type DispatchOrderEmailOptions = {
+  admin?: boolean;
+  /** Bypass already-sent guard (admin resend). */
+  force?: boolean;
+};
 
 async function getOrderPaymentContext(orderId: string): Promise<{
   paymentMethod: string | null;
@@ -94,7 +110,7 @@ function isFreshPending(sentAt: string | null | undefined): boolean {
 export async function dispatchOrderEmail(
   orderId: string,
   templateId: string,
-  options?: { admin?: boolean },
+  options?: DispatchOrderEmailOptions,
 ): Promise<DispatchOrderEmailResult> {
   const supabase = createSupabaseServiceClient();
 
@@ -135,7 +151,7 @@ export async function dispatchOrderEmail(
     .eq("template_id", templateId)
     .maybeSingle();
 
-  if (existing?.status === "sent") {
+  if (!options?.force && existing?.status === "sent") {
     console.info(
       JSON.stringify({
         scope: "email.dispatch",
@@ -148,7 +164,7 @@ export async function dispatchOrderEmail(
     return { sent: false, skipped: true };
   }
 
-  if (existing?.status === "pending" && isFreshPending(existing.sent_at)) {
+  if (!options?.force && existing?.status === "pending" && isFreshPending(existing.sent_at)) {
     console.info(
       JSON.stringify({
         scope: "email.dispatch",
@@ -161,7 +177,14 @@ export async function dispatchOrderEmail(
     return { sent: false, skipped: true };
   }
 
-  const data = await resolveOrderEmailData(orderId);
+  const invoiceToken = issueInvoiceToken(orderId);
+  const secureInvoiceUrl = absoluteUrl(
+    `/api/invoices/${orderId}?token=${encodeURIComponent(invoiceToken)}`,
+  );
+
+  const data = await resolveOrderEmailData(orderId, {
+    invoice_url: secureInvoiceUrl,
+  });
   if (!data?.customer_email && !options?.admin) {
     return { sent: false, skipped: true, error: "Customer email not found." };
   }
@@ -213,13 +236,34 @@ export async function dispatchOrderEmail(
   const payload = {
     ...data,
     order_id: orderId,
+    invoice_url: secureInvoiceUrl,
     admin_order_url: absoluteUrl(`/admin/orders/${orderId}`),
     admin_customers_url: absoluteUrl("/admin/customers"),
     admin_support_url: absoluteUrl("/admin/support"),
     admin_inventory_url: absoluteUrl("/admin/inventory"),
   } as Record<string, string>;
 
-  const result = await sendTemplateEmail(templateId, recipient, payload);
+  let attachments: NonNullable<Awaited<ReturnType<typeof generateOrderInvoiceAttachment>>>[] = [];
+  if (INVOICE_ATTACHMENT_TEMPLATES.has(templateId)) {
+    try {
+      const pdf = await generateOrderInvoiceAttachment(orderId);
+      if (pdf) attachments.push(pdf);
+    } catch (err) {
+      console.error(
+        JSON.stringify({
+          scope: "email.dispatch",
+          step: "invoice_attach_failed",
+          orderId,
+          templateId,
+          error: err instanceof Error ? err.message : "unknown",
+        }),
+      );
+    }
+  }
+
+  const result = await sendTemplateEmail(templateId, recipient, payload, {
+    attachments,
+  });
   const finalStatus = result.ok ? "sent" : "failed";
 
   await supabase.from("order_email_logs").upsert(
@@ -241,6 +285,7 @@ export async function dispatchOrderEmail(
       orderId,
       templateId,
       status: finalStatus,
+      attachedInvoice: attachments.length > 0,
       error: result.ok ? null : (result.error ?? "Send failed"),
     }),
   );
@@ -256,7 +301,7 @@ export async function dispatchOrderEmail(
 export function dispatchOrderEmailAsync(
   orderId: string,
   templateId: string,
-  options?: { admin?: boolean },
+  options?: DispatchOrderEmailOptions,
 ): void {
   void dispatchOrderEmail(orderId, templateId, options).catch((error) => {
     console.error(`[email] dispatch ${templateId} for order ${orderId} failed:`, error);

@@ -8,6 +8,7 @@ import { Mascot } from "@/components/mascots";
 import { formatInr } from "@/lib/catalog/format";
 import { getOrderSuccessDataAction } from "@/lib/checkout/actions";
 import { getCurrentUser } from "@/lib/auth/session";
+import { issueInvoiceToken } from "@/lib/invoices/token";
 
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
@@ -33,6 +34,10 @@ export default async function CheckoutSuccessPage({
   const registerHref = order.email
     ? `/register?email=${encodeURIComponent(order.email)}&redirectTo=${encodeURIComponent(`/account/orders/${orderId}`)}`
     : `/register?redirectTo=${encodeURIComponent(`/account/orders/${orderId}`)}`;
+
+  const invoiceHref = isGuest
+    ? `/api/invoices/${orderId}?token=${encodeURIComponent(issueInvoiceToken(orderId))}&download=1`
+    : `/account/orders/${orderId}/documents/invoice?download=1`;
 
   return (
     <>
@@ -104,7 +109,7 @@ export default async function CheckoutSuccessPage({
             </Button>
           ) : null}
           <Button asChild variant={isGuest ? "primary" : "secondary"}>
-            <Link href={`/account/orders/${orderId}/documents/invoice`} target="_blank">
+            <Link href={invoiceHref}>
               Download Invoice
             </Link>
           </Button>

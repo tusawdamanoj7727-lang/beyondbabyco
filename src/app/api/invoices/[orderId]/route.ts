@@ -1,40 +1,26 @@
 import { NextResponse } from "next/server";
 
-import { guestOwnsOrder } from "@/lib/checkout/guest-customer";
 import { generateOrderInvoice } from "@/lib/invoices/generate-order-invoice";
-import { requireCustomerSession, userOwnsOrder } from "@/lib/orders/customer-auth";
 import { verifyInvoiceToken } from "@/lib/invoices/token";
 
 /**
- * Production tax invoice download.
- * Auth: logged-in owner, guest checkout cookie, or signed ?token=.
+ * Guest / public secure invoice download via signed token.
+ * Production: https://beyondbabyco.in/api/invoices/{orderId}?token=…
  */
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ orderId: string }> },
 ) {
-  const { id } = await params;
+  const { orderId } = await params;
   const url = new URL(req.url);
   const token = url.searchParams.get("token");
   const download = url.searchParams.get("download") === "1";
 
-  let authorized = false;
-  if (token && verifyInvoiceToken(token, id)) {
-    authorized = true;
-  } else {
-    const user = await requireCustomerSession();
-    if (user) {
-      authorized = await userOwnsOrder(id, user.id);
-    } else {
-      authorized = Boolean(await guestOwnsOrder(id));
-    }
+  if (!token || !verifyInvoiceToken(token, orderId)) {
+    return NextResponse.json({ error: "Invalid or expired invoice token" }, { status: 401 });
   }
 
-  if (!authorized) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const generated = await generateOrderInvoice(id, "invoice");
+  const generated = await generateOrderInvoice(orderId, "invoice");
   if (!generated) {
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
