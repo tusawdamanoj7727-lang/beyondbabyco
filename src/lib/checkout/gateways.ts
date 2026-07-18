@@ -191,7 +191,12 @@ async function syncGatewaySecretsAndWebhookUrl(row: GatewayRow): Promise<Gateway
   }
 
   const envWh = envRazorpayWebhookSecret();
-  if (envWh && !decodeSecret(row.webhook_secret_encrypted)) {
+  const { isInvalidRazorpayWebhookSecret } = await import("@/lib/admin/gateway-adapters/razorpay");
+  const dbWh = decodeSecret(row.webhook_secret_encrypted);
+  if (dbWh && isInvalidRazorpayWebhookSecret(dbWh)) {
+    // Clear URL-as-secret misconfiguration so HMAC can use a real env secret.
+    patch.webhook_secret_encrypted = envWh && !isInvalidRazorpayWebhookSecret(envWh) ? encodeSecret(envWh) : null;
+  } else if (envWh && !isInvalidRazorpayWebhookSecret(envWh) && !dbWh) {
     patch.webhook_secret_encrypted = encodeSecret(envWh);
   }
 
