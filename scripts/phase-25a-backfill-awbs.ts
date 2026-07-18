@@ -4,15 +4,26 @@
  *
  *   npx tsx scripts/phase-25a-backfill-awbs.ts
  */
-import { config } from "dotenv";
+import { createRequire } from "node:module";
 import { resolve } from "node:path";
+import { config } from "dotenv";
 import pg from "pg";
-
-import { fulfillOrderWithDelhivery } from "../src/lib/checkout/fulfillment";
 
 config({ path: resolve(process.cwd(), ".env.local") });
 
 async function main() {
+  // Allow importing server-only modules from a Node CLI script.
+  const require = createRequire(import.meta.url);
+  const serverOnlyPath = require.resolve("server-only");
+  require.cache[serverOnlyPath] = {
+    id: serverOnlyPath,
+    filename: serverOnlyPath,
+    loaded: true,
+    exports: {},
+  } as NodeModule;
+
+  const { fulfillOrderWithDelhivery } = await import("../src/lib/checkout/fulfillment");
+
   const client = new pg.Client({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
@@ -68,7 +79,15 @@ async function main() {
     await new Promise((r) => setTimeout(r, 750));
   }
 
-  console.log(JSON.stringify({ scope: "backfill_awb_summary", candidates: rows.length, created, skipped, failed }));
+  console.log(
+    JSON.stringify({
+      scope: "backfill_awb_summary",
+      candidates: rows.length,
+      created,
+      skipped,
+      failed,
+    }),
+  );
   await client.end();
   if (failed > 0) process.exitCode = 1;
 }
