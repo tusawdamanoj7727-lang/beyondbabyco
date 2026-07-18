@@ -10,18 +10,30 @@ const optionalText = z
   .nullable()
   .transform((v) => (v && v.length ? v : null));
 
-export const gatewayInputSchema = z.object({
-  display_name: z.string().trim().min(1).max(200),
-  provider: z.enum(GATEWAY_PROVIDERS),
-  sandbox: z.boolean().default(true),
-  api_key: optionalText,
-  api_secret: optionalText,
-  webhook_secret: optionalText,
-  webhook_url: optionalText,
-  currency: z.string().trim().length(3).default("INR"),
-  is_enabled: z.boolean().default(false),
-  priority: z.number().int().default(0),
-});
+export const gatewayInputSchema = z
+  .object({
+    display_name: z.string().trim().min(1).max(200),
+    provider: z.enum(GATEWAY_PROVIDERS),
+    sandbox: z.boolean().default(true),
+    api_key: optionalText,
+    api_secret: optionalText,
+    webhook_secret: optionalText,
+    webhook_url: optionalText,
+    currency: z.string().trim().length(3).default("INR"),
+    is_enabled: z.boolean().default(false),
+    priority: z.number().int().default(0),
+  })
+  .superRefine((data, ctx) => {
+    const secret = data.webhook_secret?.trim();
+    if (!secret) return;
+    if (/^https?:\/\//i.test(secret) || secret.includes("/api/webhooks/payments")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["webhook_secret"],
+        message: "Webhook secret must be the Razorpay signing secret, not the webhook URL.",
+      });
+    }
+  });
 
 export const manualCaptureSchema = z.object({
   payment_id: z.string().uuid(),

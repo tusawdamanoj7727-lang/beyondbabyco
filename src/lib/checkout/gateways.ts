@@ -332,7 +332,11 @@ export async function isRazorpayWebhookConfigured(): Promise<boolean> {
     .limit(1)
     .maybeSingle();
 
-  return Boolean(decodeSecret(data?.webhook_secret_encrypted));
+  const { isInvalidRazorpayWebhookSecret } = await import(
+    "@/lib/admin/gateway-adapters/razorpay"
+  );
+  const secret = data?.webhook_secret_encrypted;
+  return Boolean(secret) && !isInvalidRazorpayWebhookSecret(secret);
 }
 
 /**

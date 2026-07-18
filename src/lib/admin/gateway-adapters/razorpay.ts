@@ -11,8 +11,23 @@ export function decodeGatewaySecret(value: string | null | undefined): string | 
   return value.startsWith("enc:") ? value.slice(4) : value;
 }
 
+/** True when a stored “secret” is actually a webhook URL (ops misconfiguration). */
+export function isInvalidRazorpayWebhookSecret(value: string | null | undefined): boolean {
+  const secret = decodeGatewaySecret(value);
+  if (!secret) return true;
+  if (/^https?:\/\//i.test(secret)) return true;
+  if (secret.includes("/api/webhooks/payments")) return true;
+  // Razorpay webhook secrets are opaque tokens, not dashboard URLs.
+  if (secret.includes("razorpay.com")) return true;
+  return false;
+}
+
 export function resolveRazorpayWebhookSecret(dbSecret: string | null | undefined): string | null {
-  return decodeGatewaySecret(dbSecret) ?? process.env.RAZORPAY_WEBHOOK_SECRET?.trim() ?? null;
+  const fromDb = decodeGatewaySecret(dbSecret);
+  if (fromDb && !isInvalidRazorpayWebhookSecret(fromDb)) {
+    return fromDb;
+  }
+  return process.env.RAZORPAY_WEBHOOK_SECRET?.trim() || null;
 }
 
 /** HMAC SHA256 verification per Razorpay webhook docs (raw body + webhook secret). */
