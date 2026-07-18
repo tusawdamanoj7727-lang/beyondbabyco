@@ -57,7 +57,9 @@ async function checkQueues(): Promise<HealthCheck> {
 async function checkOpsSignals(): Promise<HealthCheck> {
   const start = Date.now();
   try {
-    const supabase = await createSupabaseServerClient();
+    // Service role — ops counters must not be masked by anon/authenticated RLS.
+    const { createSupabaseServiceClient } = await import("@/lib/supabase/service");
+    const supabase = createSupabaseServiceClient();
     const [{ count: failedEmails }, { count: unprocessedWebhooks }, { count: pendingShipments }] =
       await Promise.all([
         supabase

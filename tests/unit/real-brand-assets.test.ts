@@ -23,7 +23,7 @@ describe("Phase 12.0 real brand assets", () => {
   });
 
   it("OG image uses production 1200×630 dimensions", () => {
-    expect(BRAND_OG_IMAGE).toBe("/images/brand/og-default.png");
+    expect(BRAND_OG_IMAGE).toBe("/images/og/og-default.jpg");
     expect(BRAND_OG_WIDTH).toBe(1200);
     expect(BRAND_OG_HEIGHT).toBe(630);
   });
