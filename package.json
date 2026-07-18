@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "validate:migrations": "node scripts/validate-migrations.mjs",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",

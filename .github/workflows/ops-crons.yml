@@ -1,0 +1,96 @@
+# Frequent operational crons for Vercel Hobby (sub-daily Vercel crons are blocked).
+# Requires repo secrets: CRON_SECRET, SITE_URL (e.g. https://beyondbabyco.in)
+name: Ops Crons
+
+on:
+  schedule:
+    # Every 5 minutes — inventory reservation expiry
+    - cron: "*/5 * * * *"
+    # Every 10 minutes — email + webhook recovery (aligned via path branching below)
+    - cron: "*/10 * * * *"
+    # Every 15 minutes — Delhivery shipment sync
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Cron job to run"
+        required: true
+        type: choice
+        options:
+          - expire-reservations
+          - sync-shipments
+          - retry-emails
+          - replay-webhooks
+          - all
+
+jobs:
+  expire-reservations:
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.job == 'expire-reservations' || github.event.inputs.job == 'all')
+      || github.event_name == 'schedule' && github.event.schedule == '*/5 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Expire inventory reservations
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          set -euo pipefail
+          test -n "${CRON_SECRET:?}"
+          base="${SITE_URL:-https://beyondbabyco.in}"
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${base%/}/api/cron/expire-reservations"
+
+  retry-emails-and-webhooks:
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.job == 'retry-emails' || github.event.inputs.job == 'replay-webhooks' || github.event.inputs.job == 'all')
+      || github.event_name == 'schedule' && github.event.schedule == '*/10 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retry failed emails
+        if: github.event_name == 'schedule' || github.event.inputs.job == 'retry-emails' || github.event.inputs.job == 'all'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          set -euo pipefail
+          test -n "${CRON_SECRET:?}"
+          base="${SITE_URL:-https://beyondbabyco.in}"
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${base%/}/api/cron/retry-emails"
+
+      - name: Replay unprocessed webhooks
+        if: github.event_name == 'schedule' || github.event.inputs.job == 'replay-webhooks' || github.event.inputs.job == 'all'
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          set -euo pipefail
+          test -n "${CRON_SECRET:?}"
+          base="${SITE_URL:-https://beyondbabyco.in}"
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${base%/}/api/cron/replay-webhooks"
+
+  sync-shipments:
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.job == 'sync-shipments' || github.event.inputs.job == 'all')
+      || github.event_name == 'schedule' && github.event.schedule == '*/15 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Delhivery shipments
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          set -euo pipefail
+          test -n "${CRON_SECRET:?}"
+          base="${SITE_URL:-https://beyondbabyco.in}"
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${base%/}/api/cron/sync-shipments"

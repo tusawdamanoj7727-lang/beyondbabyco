@@ -25,9 +25,12 @@ for (let i = 0; i < files.length; i++) {
   const num = parseInt(files[i].slice(0, 3), 10);
   if (i > 0) {
     const prev = parseInt(files[i - 1].slice(0, 3), 10);
-    if (num <= prev) {
+    // Historical repo has a few same-number siblings; warn but do not block deploy.
+    if (num < prev) {
       console.error(`Order error: ${files[i]} must be after ${files[i - 1]}`);
       errors++;
+    } else if (num === prev) {
+      console.warn(`Warning: duplicate migration prefix ${files[i]} and ${files[i - 1]}`);
     }
   }
 

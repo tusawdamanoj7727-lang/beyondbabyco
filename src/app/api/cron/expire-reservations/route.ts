@@ -18,3 +18,7 @@ export async function GET(request: Request) {
     return handleApiError(error, "cron.expire-reservations");
   }
 }
+
+export async function POST(request: Request) {
+  return GET(request);
+}
