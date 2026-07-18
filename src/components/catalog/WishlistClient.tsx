@@ -98,9 +98,15 @@ export default function WishlistClient({
   }
 
   function remove(productId: string) {
+    setProducts((prev) => prev.filter((p) => p.id !== productId));
     startTransition(async () => {
       if (isLoggedIn) {
-        await removeFromWishlistAction(productId);
+        const result = await removeFromWishlistAction(productId);
+        if (!result.ok && result.error) {
+          toast.error(result.error);
+          refresh();
+          return;
+        }
         refresh();
       } else {
         const nextIds = readGuestWishlistIds().filter((id) => id !== productId);
