@@ -20,19 +20,6 @@ import { readGuestWishlistIds, writeGuestWishlistIds } from "@/lib/storefront/wi
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { cn } from "@/lib/utils";
 
-async function removeWishlistViaApi(productId: string) {
-  const res = await fetch("/api/wishlist", {
-    method: "POST",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ productId, action: "remove" }),
-  });
-  return (await res.json().catch(() => ({ ok: false, error: "Request failed" }))) as {
-    ok: boolean;
-    error: string | null;
-  };
-}
-
 async function fetchWishlistProductsByIds(ids: string[]): Promise<StorefrontProduct[]> {
   if (ids.length === 0) return [];
   const res = await fetch("/api/wishlist?products=1", {
@@ -57,7 +44,7 @@ export default function WishlistClient({
   const addStoreItem = useCartStore((s) => s.addItem);
   const cartUi = useCartUiOptional();
   const toast = useToast();
-  const { ids, loading: wishlistLoading, hydrated, refresh } = useWishlist();
+  const { ids, loading: wishlistLoading, hydrated, remove: removeWishlist, refresh } = useWishlist();
   const idsKey = useMemo(() => [...ids].sort().join(","), [ids]);
   const initialIdsKey = useMemo(() => initialProducts.map((p) => p.id).sort().join(","), [initialProducts]);
   const [products, setProducts] = useState<StorefrontProduct[]>(initialProducts);
@@ -126,23 +113,13 @@ export default function WishlistClient({
   function remove(productId: string) {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     startTransition(async () => {
-      const result = await removeWishlistViaApi(productId);
-      if (result.ok) {
+      const result = await removeWishlist(productId);
+      if (!result.ok && result.error) {
+        toast.error(result.error);
         refresh();
-        toast.info(MICROCOPY.removedFromWishlist);
         return;
       }
-
-      if (result.error === "Not signed in." || !isLoggedIn) {
-        const nextIds = readGuestWishlistIds().filter((id) => id !== productId);
-        writeGuestWishlistIds(nextIds);
-        refresh();
-        toast.info(MICROCOPY.removedFromWishlist);
-        return;
-      }
-
-      toast.error(result.error ?? "Could not remove item");
-      refresh();
+      toast.info(MICROCOPY.removedFromWishlist);
     });
   }
 

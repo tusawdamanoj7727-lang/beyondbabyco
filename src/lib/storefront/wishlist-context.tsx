@@ -16,6 +16,7 @@ type WishlistContextValue = {
   isGuest: boolean;
   isWishlisted: (productId: string) => boolean;
   toggle: (productId: string) => Promise<{ ok: boolean; error: string | null }>;
+  remove: (productId: string) => Promise<{ ok: boolean; error: string | null }>;
   refresh: () => void;
 };
 
@@ -44,6 +45,20 @@ async function postWishlistToggle(productId: string): Promise<{ ok: boolean; err
     return { ok: false, error: "Wishlist request failed." };
   }
   return { ok: data.ok, error: data.error ?? null, inWishlist: data.inWishlist };
+}
+
+async function postWishlistRemove(productId: string): Promise<{ ok: boolean; error: string | null }> {
+  const res = await fetch("/api/wishlist", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId, action: "remove" }),
+  });
+  const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string | null } | null;
+  if (!data || typeof data.ok !== "boolean") {
+    return { ok: false, error: "Wishlist request failed." };
+  }
+  return { ok: data.ok, error: data.error ?? null };
 }
 
 export function WishlistProvider({
@@ -165,9 +180,41 @@ export function WishlistProvider({
     return { ok: false, error: result.error };
   }, []);
 
+  const remove = useCallback(async (productId: string) => {
+    mutationGen.current += 1;
+    const mutation = mutationGen.current;
+
+    setIds((prev) => {
+      const next = new Set(prev);
+      next.delete(productId);
+      return next;
+    });
+
+    const result = await postWishlistRemove(productId);
+
+    if (mutation !== mutationGen.current) {
+      return { ok: true, error: null };
+    }
+
+    if (result.ok) {
+      return { ok: true, error: null };
+    }
+
+    if (result.error === "Not signed in.") {
+      const next = readGuestWishlistIds().filter((id) => id !== productId);
+      writeGuestWishlistIds(next);
+      setIds(new Set(next));
+      return { ok: true, error: null };
+    }
+
+    // Roll back by refreshing from server/guest storage.
+    refresh();
+    return { ok: false, error: result.error };
+  }, [refresh]);
+
   const value = useMemo(
-    () => ({ ids, loading, hydrated, isGuest, isWishlisted, toggle, refresh }),
-    [ids, loading, hydrated, isGuest, isWishlisted, toggle, refresh],
+    () => ({ ids, loading, hydrated, isGuest, isWishlisted, toggle, remove, refresh }),
+    [ids, loading, hydrated, isGuest, isWishlisted, toggle, remove, refresh],
   );
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
@@ -183,6 +230,7 @@ export function useWishlist() {
       isGuest: true,
       isWishlisted: () => false,
       toggle: async () => ({ ok: false, error: "Wishlist unavailable" }),
+      remove: async () => ({ ok: false, error: "Wishlist unavailable" }),
       refresh: () => {},
     };
   }
