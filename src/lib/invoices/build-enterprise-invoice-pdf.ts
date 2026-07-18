@@ -29,12 +29,16 @@ const BLACK = rgb(0.08, 0.12, 0.1);
 
 export type InvoiceDocKind = "invoice" | "packing_slip" | "shipping_label";
 
-function money(n: number, currency = "INR"): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency,
+/**
+ * Format money for pdf-lib StandardFonts (WinAnsi).
+ * Do NOT use Intl currency style — "₹" (U+20B9) throws WinAnsi encode errors and 500s the API.
+ */
+function money(n: number, _currency = "INR"): string {
+  const formatted = new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(n);
+  return `Rs. ${formatted}`;
 }
 
 function clip(text: string, max: number): string {
