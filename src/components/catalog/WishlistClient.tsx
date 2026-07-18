@@ -31,7 +31,7 @@ export default function WishlistClient({
   const addStoreItem = useCartStore((s) => s.addItem);
   const cartUi = useCartUiOptional();
   const toast = useToast();
-  const { ids, loading: wishlistLoading, refresh } = useWishlist();
+  const { ids, loading: wishlistLoading, hydrated, refresh } = useWishlist();
   const idsKey = useMemo(() => [...ids].sort().join(","), [ids]);
   const initialIdsKey = useMemo(() => initialProducts.map((p) => p.id).sort().join(","), [initialProducts]);
   const [products, setProducts] = useState<StorefrontProduct[]>(initialProducts);
@@ -46,7 +46,7 @@ export default function WishlistClient({
       const idList = (idsKey || initialIdsKey).split(",").filter(Boolean);
       if (idList.length === 0) {
         if (!cancelled) {
-          if (!wishlistLoading) setProducts([]);
+          if (hydrated) setProducts([]);
           setLoading(false);
         }
         return;
@@ -70,7 +70,7 @@ export default function WishlistClient({
     return () => {
       cancelled = true;
     };
-  }, [idsKey, initialIdsKey, wishlistLoading]);
+  }, [idsKey, initialIdsKey, hydrated]);
 
   useEffect(() => {
     function onMerged() {
@@ -80,11 +80,8 @@ export default function WishlistClient({
     return () => window.removeEventListener("bbc:wishlist-merged", onMerged);
   }, [refresh]);
 
-  // Skeleton only on the first unresolved load — never cover an intentional empty list.
-  const awaitingFirstLoad =
-    products.length === 0 && !initialIdsKey && wishlistLoading && !idsKey;
-
-  if (awaitingFirstLoad) {
+  // Skeleton only before the first cookie-backed sync when we have no SSR rows.
+  if (!hydrated && products.length === 0 && !initialIdsKey) {
     return <ProductGridSkeleton count={4} />;
   }
 

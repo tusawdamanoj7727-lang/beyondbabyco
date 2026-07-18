@@ -13,6 +13,7 @@ import {
 type WishlistContextValue = {
   ids: Set<string>;
   loading: boolean;
+  hydrated: boolean;
   isGuest: boolean;
   isWishlisted: (productId: string) => boolean;
   toggle: (productId: string) => Promise<{ ok: boolean; error: string | null }>;
@@ -33,7 +34,8 @@ export function WishlistProvider({
   const { user, loading: authLoading } = useAuth();
   const initialKey = initialIds.join(",");
   const [ids, setIds] = useState<Set<string>>(() => new Set(initialIds));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(initialIds.length > 0);
   const fetchGen = useRef(0);
   const mutationGen = useRef(0);
   const userId = user?.id ?? null;
@@ -62,7 +64,10 @@ export function WishlistProvider({
         if (!userId) setIds(new Set(readGuestWishlistIds()));
       })
       .finally(() => {
-        if (gen === fetchGen.current) setLoading(false);
+        if (gen === fetchGen.current) {
+          setLoading(false);
+          setHydrated(true);
+        }
       });
   }, [userId]);
 
@@ -71,6 +76,7 @@ export function WishlistProvider({
 
     if (initialKey) {
       setIds(new Set(initialKey.split(",").filter(Boolean)));
+      setHydrated(true);
     }
     refresh();
   }, [userId, authLoading, refresh, initialKey]);
@@ -140,8 +146,8 @@ export function WishlistProvider({
   }, []);
 
   const value = useMemo(
-    () => ({ ids, loading, isGuest, isWishlisted, toggle, refresh }),
-    [ids, loading, isGuest, isWishlisted, toggle, refresh],
+    () => ({ ids, loading, hydrated, isGuest, isWishlisted, toggle, refresh }),
+    [ids, loading, hydrated, isGuest, isWishlisted, toggle, refresh],
   );
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
@@ -153,6 +159,7 @@ export function useWishlist() {
     return {
       ids: new Set<string>(),
       loading: false,
+      hydrated: true,
       isGuest: true,
       isWishlisted: () => false,
       toggle: async () => ({ ok: false, error: "Wishlist unavailable" }),
