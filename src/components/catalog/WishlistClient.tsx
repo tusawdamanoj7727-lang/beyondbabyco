@@ -16,7 +16,6 @@ import { focusRing } from "@/lib/design/ui";
 import { buildCartItemInput } from "@/lib/store/cart-mappers";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useCartUiOptional } from "@/lib/storefront/cart-ui-context";
-import { readGuestWishlistIds, writeGuestWishlistIds } from "@/lib/storefront/wishlist-storage";
 import { useWishlist } from "@/lib/storefront/wishlist-context";
 import { cn } from "@/lib/utils";
 
