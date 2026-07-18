@@ -33,6 +33,7 @@ export default function WishlistClient({
   const toast = useToast();
   const { ids, loading: wishlistLoading, refresh } = useWishlist();
   const idsKey = useMemo(() => [...ids].sort().join(","), [ids]);
+  const initialIdsKey = useMemo(() => initialProducts.map((p) => p.id).sort().join(","), [initialProducts]);
   const [products, setProducts] = useState<StorefrontProduct[]>(initialProducts);
   const [loading, setLoading] = useState(false);
   const [quickView, setQuickView] = useState<StorefrontProduct | null>(null);
@@ -42,10 +43,9 @@ export default function WishlistClient({
     let cancelled = false;
 
     async function load() {
-      const idList = idsKey ? idsKey.split(",") : [];
+      const idList = (idsKey || initialIdsKey).split(",").filter(Boolean);
       if (idList.length === 0) {
         if (!cancelled) {
-          // Keep SSR products until cookie-backed refresh finishes.
           if (!wishlistLoading) setProducts([]);
           setLoading(false);
         }
@@ -53,20 +53,24 @@ export default function WishlistClient({
       }
 
       if (!cancelled) setLoading(true);
-      const loaded = await getPublicProductsByIds(idList);
-      if (!cancelled) {
-        setProducts(loaded);
-        setLoading(false);
+      try {
+        const loaded = await getPublicProductsByIds(idList);
+        if (!cancelled) {
+          setProducts(loaded.length > 0 ? loaded : products.length > 0 ? products : []);
+        }
+      } catch {
+        // Keep whatever is already rendered (SSR or prior load).
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     }
 
-    if (wishlistLoading) return;
     void load();
 
     return () => {
       cancelled = true;
     };
-  }, [idsKey, wishlistLoading, isLoggedIn]);
+  }, [idsKey, initialIdsKey, wishlistLoading]);
 
   useEffect(() => {
     function onMerged() {

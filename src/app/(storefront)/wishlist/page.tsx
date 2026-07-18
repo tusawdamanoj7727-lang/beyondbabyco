@@ -12,7 +12,12 @@ export const metadata = buildPageMetadata({
 
 export default async function WishlistPage() {
   const user = await getCurrentUser();
-  const products = user ? await getWishlistProducts() : [];
+  let products: Awaited<ReturnType<typeof getWishlistProducts>> = [];
+  try {
+    products = user ? await getWishlistProducts() : [];
+  } catch {
+    products = [];
+  }
 
   return (
     <>

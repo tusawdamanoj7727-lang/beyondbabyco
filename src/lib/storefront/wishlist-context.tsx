@@ -35,18 +35,21 @@ export function WishlistProvider({
   const [ids, setIds] = useState<Set<string>>(() => new Set(initialIds));
   const [loading, setLoading] = useState(false);
   const fetchGen = useRef(0);
+  const mutationGen = useRef(0);
   const userId = user?.id ?? null;
   const isGuest = !user && !authLoading;
 
   const refresh = useCallback(() => {
     const gen = ++fetchGen.current;
+    const mutationAtStart = mutationGen.current;
     setLoading(true);
 
-    // Always hit the server action first — auth cookies work even when the
-    // browser client session has not hydrated yet.
+    // Cookie-backed server action — works even before the browser auth client hydrates.
     getWishlistProductIds()
       .then((list) => {
         if (gen !== fetchGen.current) return;
+        // Discard reads that started before a local toggle finished writing.
+        if (mutationAtStart !== mutationGen.current) return;
         if (list.length > 0 || userId) {
           setIds(new Set(list));
           return;
@@ -55,11 +58,11 @@ export function WishlistProvider({
       })
       .catch(() => {
         if (gen !== fetchGen.current) return;
+        if (mutationAtStart !== mutationGen.current) return;
         if (!userId) setIds(new Set(readGuestWishlistIds()));
       })
       .finally(() => {
-        if (gen !== fetchGen.current) return;
-        setLoading(false);
+        if (gen === fetchGen.current) setLoading(false);
       });
   }, [userId]);
 
@@ -90,8 +93,8 @@ export function WishlistProvider({
   const isWishlisted = useCallback((productId: string) => ids.has(productId), [ids]);
 
   const toggle = useCallback(async (productId: string) => {
-    // Invalidate in-flight refreshes so a stale empty fetch cannot wipe this toggle.
-    ++fetchGen.current;
+    mutationGen.current += 1;
+    const mutation = mutationGen.current;
 
     let wasIn = false;
     setIds((prev) => {
@@ -104,6 +107,10 @@ export function WishlistProvider({
 
     const result = await toggleWishlistAction(productId);
 
+    if (mutation !== mutationGen.current) {
+      return { ok: true, error: null };
+    }
+
     if (result.ok) {
       setIds((prev) => {
         const next = new Set(prev);
@@ -114,7 +121,6 @@ export function WishlistProvider({
       return { ok: true, error: null };
     }
 
-    // Cookie session missing → guest localStorage fallback.
     if (result.error === SIGN_IN_ERROR) {
       const guestIds = readGuestWishlistIds();
       const inList = guestIds.includes(productId);
