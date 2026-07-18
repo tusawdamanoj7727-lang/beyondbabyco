@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { ensureCustomerRecordsForUser } from "@/lib/auth/customer-bootstrap";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getCustomerIdForUser } from "@/lib/orders/customer-auth";
 import { getStorefrontProductsByIds } from "@/lib/catalog/storefront";
@@ -16,10 +17,20 @@ export interface WishlistActionResult {
 async function resolveCustomerId(): Promise<string | null> {
   const user = await getCurrentUser();
   if (!user) return null;
-  return getCustomerIdForUser(user.id);
+  const existing = await getCustomerIdForUser(user.id);
+  if (existing) return existing;
+  try {
+    return await ensureCustomerRecordsForUser(user);
+  } catch {
+    return null;
+  }
 }
 
 export async function toggleWishlistAction(productId: string): Promise<WishlistActionResult> {
+  if (!productId?.trim()) {
+    return { ok: false, error: "Invalid product." };
+  }
+
   const customerId = await resolveCustomerId();
   if (!customerId) {
     return { ok: false, error: "Sign in to save items to your wishlist." };
@@ -27,12 +38,14 @@ export async function toggleWishlistAction(productId: string): Promise<WishlistA
 
   const supabase = await createSupabaseServerClient();
 
-  const { data: existing } = await supabase
+  const { data: existing, error: lookupError } = await supabase
     .from("wishlist")
     .select("id")
     .eq("customer_id", customerId)
     .eq("product_id", productId)
     .maybeSingle();
+
+  if (lookupError) return { ok: false, error: lookupError.message };
 
   if (existing) {
     const { error } = await supabase.from("wishlist").delete().eq("id", existing.id);
@@ -46,7 +59,14 @@ export async function toggleWishlistAction(productId: string): Promise<WishlistA
     product_id: productId,
   });
 
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    // Unique race: treat as already wishlisted.
+    if (error.code === "23505") {
+      revalidatePath("/wishlist");
+      return { ok: true, error: null, inWishlist: true };
+    }
+    return { ok: false, error: error.message };
+  }
   revalidatePath("/wishlist");
   return { ok: true, error: null, inWishlist: true };
 }

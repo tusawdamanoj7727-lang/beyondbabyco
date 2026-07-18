@@ -20,6 +20,7 @@ export interface PublicOrderDetail extends PublicOrderSummary {
   discountTotal: number;
   taxTotal: number;
   shippingTotal: number;
+  paymentMethod: string | null;
   items: {
     id: string;
     name: string;
@@ -102,10 +103,16 @@ export async function getOrder(id: string): Promise<PublicOrderDetail | null> {
   const [{ data: items }, { data: address }, { data: payments }] = await Promise.all([
     supabase.from("order_items").select("id, name, sku, quantity, unit_price, total").eq("order_id", id),
     supabase.from("shipping_addresses").select("full_name, line1, city, state, pincode").eq("order_id", id).maybeSingle(),
-    supabase.from("payments").select("status").eq("order_id", id).order("created_at", { ascending: false }).limit(1),
+    supabase
+      .from("payments")
+      .select("status, method, provider")
+      .eq("order_id", id)
+      .order("created_at", { ascending: false })
+      .limit(1),
   ]);
 
   const itemCount = (items ?? []).reduce((s, i) => s + i.quantity, 0);
+  const payment = payments?.[0];
 
   return {
     id: order.id,
@@ -114,7 +121,8 @@ export async function getOrder(id: string): Promise<PublicOrderDetail | null> {
     grandTotal: order.grand_total,
     currency: order.currency,
     itemCount,
-    paymentStatus: payments?.[0]?.status ?? "pending",
+    paymentStatus: payment?.status ?? "pending",
+    paymentMethod: payment?.method ?? payment?.provider ?? null,
     createdAt: order.created_at,
     subtotal: order.subtotal,
     discountTotal: order.discount_total,

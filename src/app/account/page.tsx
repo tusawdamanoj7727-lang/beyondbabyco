@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { label: "Wishlist", href: "/wishlist" },
   { label: "Addresses", href: "/account/addresses" },
   { label: "Profile Settings", href: "/account/profile" },
+  { label: "Security", href: "/account/security" },
 ] as const;
 
 function formatMoney(amount: number, currency = "INR") {

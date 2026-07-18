@@ -14,6 +14,7 @@ import {
   type GuestTrackResult,
   type GuestTrackTimelineStep,
 } from "@/lib/orders/guest-track-types";
+import { buildOrderStatusTimeline } from "@/lib/orders/status-timeline";
 
 export {
   ORDER_NUMBER_REGEX,
@@ -114,108 +115,11 @@ function buildTimeline(
   placedAt: string | null,
   shipmentStatus: string | null,
 ): GuestTrackTimelineStep[] {
-  const s = status.toLowerCase();
-  const ship = (shipmentStatus ?? "").toLowerCase();
-
-  const isCancelled = s === "cancelled";
-  const isRefunded = s === "refunded" || s === "returned";
-
-  const reachedConfirmed = [
-    "confirmed",
-    "processing",
-    "packed",
-    "shipped",
-    "delivered",
-    "completed",
-  ].includes(s);
-  const reachedPacked = ["packed", "processing", "shipped", "delivered", "completed"].includes(s);
-  const reachedShipped =
-    ["shipped", "delivered", "completed"].includes(s) ||
-    ["in_transit", "out_for_delivery", "delivered", "label_created"].includes(ship);
-  const reachedDelivered =
-    ["delivered", "completed"].includes(s) || ship === "delivered";
-
-  const steps: GuestTrackTimelineStep[] = [
-    {
-      key: "placed",
-      label: "Order Placed",
-      state: "complete",
-      at: placedAt,
-    },
-    {
-      key: "confirmed",
-      label: "Confirmed",
-      state: isCancelled || isRefunded
-        ? reachedConfirmed
-          ? "complete"
-          : "upcoming"
-        : reachedConfirmed
-          ? reachedPacked
-            ? "complete"
-            : "current"
-          : "upcoming",
-      at: null,
-    },
-    {
-      key: "packed",
-      label: "Packed",
-      state: isCancelled || isRefunded
-        ? reachedPacked
-          ? "complete"
-          : "upcoming"
-        : reachedPacked
-          ? reachedShipped
-            ? "complete"
-            : "current"
-          : "upcoming",
-      at: null,
-    },
-    {
-      key: "shipped",
-      label: "Shipped",
-      state: isCancelled || isRefunded
-        ? reachedShipped
-          ? "complete"
-          : "upcoming"
-        : reachedShipped
-          ? reachedDelivered
-            ? "complete"
-            : "current"
-          : "upcoming",
-      at: null,
-    },
-    {
-      key: "delivered",
-      label: "Delivered",
-      state: isCancelled || isRefunded
-        ? reachedDelivered
-          ? "complete"
-          : "upcoming"
-        : reachedDelivered
-          ? "complete"
-          : "upcoming",
-      at: null,
-    },
-  ];
-
-  if (isCancelled) {
-    steps.push({
-      key: "cancelled",
-      label: "Cancelled",
-      state: "terminal",
-      at: null,
-    });
-  }
-  if (isRefunded) {
-    steps.push({
-      key: "refunded",
-      label: s === "returned" ? "Returned" : "Refunded",
-      state: "terminal",
-      at: null,
-    });
-  }
-
-  return steps;
+  return buildOrderStatusTimeline(status, placedAt, shipmentStatus).map((step) =>
+    step.key === "refunded" && status.toLowerCase() === "returned"
+      ? { ...step, label: "Returned" }
+      : step,
+  );
 }
 
 type OrderLookupRow = {

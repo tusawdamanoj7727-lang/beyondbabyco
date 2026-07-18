@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   MapPin,
   Package,
+  Shield,
   User,
 } from "lucide-react";
 
@@ -22,6 +23,7 @@ const NAV = [
   { href: "/wishlist", label: "Wishlist", icon: Heart },
   { href: "/account/addresses", label: "Addresses", icon: MapPin },
   { href: "/account/profile", label: "Profile", icon: User },
+  { href: "/account/security", label: "Security", icon: Shield },
   { href: "/account/support", label: "Support", icon: HelpCircle },
   { href: "/account/downloads", label: "Downloads", icon: Download },
 ] as const;

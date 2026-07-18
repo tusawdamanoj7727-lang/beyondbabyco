@@ -59,7 +59,8 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   const { openNotifyMe } = useNotifyMe();
   const { isWishlisted, toggle } = useWishlist();
   const [qty, setQty] = useState(1);
-  const [pending, startTransition] = useTransition();
+  const [checkoutPending, startCheckoutTransition] = useTransition();
+  const [wishlistPending, setWishlistPending] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<StorefrontVariant | null>(
     product.variants[0] ?? null,
   );
@@ -150,9 +151,9 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   const displaySku = activeVariant?.sku ?? product.sku;
 
   function addToCart() {
-    if (!selectedInStock || pending) return;
+    if (!selectedInStock || checkoutPending) return;
 
-    startTransition(() => {
+    startCheckoutTransition(() => {
       const input = buildCartItemInput(
         {
           ...product,
@@ -175,9 +176,9 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   }
 
   function buyNow() {
-    if (!selectedInStock || pending) return;
+    if (!selectedInStock || checkoutPending) return;
 
-    startTransition(() => {
+    startCheckoutTransition(() => {
       const input = buildCartItemInput(
         {
           ...product,
@@ -202,8 +203,10 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
     openNotifyMe(notifyTarget);
   }
 
-  function handleWishlist() {
-    startTransition(async () => {
+  async function handleWishlist() {
+    if (wishlistPending) return;
+    setWishlistPending(true);
+    try {
       const result = await toggle(product.id);
       if (!result.ok && result.error) toast.error(result.error);
       else {
@@ -211,7 +214,9 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         else trackWishlistAdd({ productId: product.id, productName: product.name });
         toast.success(wishlisted ? "Removed from wishlist" : "Saved to wishlist");
       }
-    });
+    } finally {
+      setWishlistPending(false);
+    }
   }
 
   const primaryBadge =
@@ -226,21 +231,21 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         variant="primary"
         size="lg"
         fullWidth
-        disabled={pending}
-        loading={pending}
+        disabled={checkoutPending}
+        loading={checkoutPending}
         onClick={buyNow}
       >
-        {pending ? "Redirecting…" : "Buy Now"}
+        {checkoutPending ? "Redirecting…" : "Buy Now"}
       </Button>
       <Button
         type="button"
         variant="outline"
         size="lg"
         fullWidth
-        disabled={pending}
+        disabled={checkoutPending}
         onClick={addToCart}
       >
-        {pending ? "Adding…" : "Add to Cart"}
+        {checkoutPending ? "Adding…" : "Add to Cart"}
       </Button>
       <p className={cn(textCaption, "text-center")}>
         Free delivery on orders {formatInr(FREE_SHIPPING_THRESHOLD)}+ ·{" "}
@@ -407,10 +412,11 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
 
           <button
             type="button"
-            onClick={handleWishlist}
-            disabled={pending}
+            onClick={() => void handleWishlist()}
+            disabled={wishlistPending}
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
             aria-pressed={wishlisted}
+            aria-busy={wishlistPending}
             className={cn(
               wishlistButton(wishlisted),
               ctaHeight,
@@ -463,20 +469,20 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
                   variant="primary"
                   size="sm"
                   onClick={buyNow}
-                  disabled={pending || !showStickyBar}
-                  loading={pending}
+                  disabled={checkoutPending || !showStickyBar}
+                  loading={checkoutPending}
                   className="flex-1"
                 >
-                  {pending ? "…" : "Buy Now"}
+                  {checkoutPending ? "…" : "Buy Now"}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={addToCart}
-                  disabled={pending || !showStickyBar}
+                  disabled={checkoutPending || !showStickyBar}
                 >
-                  {pending ? "…" : "Cart"}
+                  {checkoutPending ? "…" : "Cart"}
                 </Button>
               </>
             ) : (

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, useTransition } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/lib/auth/hooks";
 import { getWishlistProductIds, toggleWishlistAction } from "@/lib/storefront/wishlist-actions";
@@ -29,40 +29,49 @@ export function WishlistProvider({
   initialIds?: string[];
 }) {
   const { user, loading: authLoading } = useAuth();
-  const [ids, setIds] = useState<Set<string>>(() => {
-    if (typeof window !== "undefined" && initialIds.length === 0) {
-      return new Set(readGuestWishlistIds());
-    }
-    return new Set(initialIds);
-  });
-  const [loading, setLoading] = useState(() => {
-    if (typeof window !== "undefined") return false;
-    return initialIds.length === 0;
-  });
-  const [, startTransition] = useTransition();
+  const initialKey = initialIds.join(",");
+  const [ids, setIds] = useState<Set<string>>(() => new Set(initialIds));
+  const [loading, setLoading] = useState(true);
+  const fetchGen = useRef(0);
+  const userId = user?.id ?? null;
   const isGuest = !user && !authLoading;
 
   const refresh = useCallback(() => {
-    if (user) {
+    const gen = ++fetchGen.current;
+
+    if (userId) {
+      setLoading(true);
       getWishlistProductIds()
-        .then((list) => setIds(new Set(list)))
-        .finally(() => setLoading(false));
-    } else {
-      setIds(new Set(readGuestWishlistIds()));
-      setLoading(false);
+        .then((list) => {
+          if (gen !== fetchGen.current) return;
+          setIds(new Set(list));
+        })
+        .finally(() => {
+          if (gen !== fetchGen.current) return;
+          setLoading(false);
+        });
+      return;
     }
-  }, [user]);
+
+    setIds(new Set(readGuestWishlistIds()));
+    setLoading(false);
+  }, [userId]);
 
   useEffect(() => {
     if (authLoading) return;
-    if (user) {
-      if (initialIds.length > 0 && !loading) return;
+
+    if (userId) {
+      if (initialKey) {
+        setIds(new Set(initialKey.split(",").filter(Boolean)));
+        setLoading(false);
+      }
       refresh();
-    } else {
-      setIds(new Set(readGuestWishlistIds()));
-      setLoading(false);
+      return;
     }
-  }, [user, authLoading, initialIds.length, refresh, loading]);
+
+    setIds(new Set(readGuestWishlistIds()));
+    setLoading(false);
+  }, [userId, authLoading, refresh, initialKey]);
 
   useEffect(() => {
     function onMerged() {
@@ -83,19 +92,34 @@ export function WishlistProvider({
 
   const toggle = useCallback(
     async (productId: string) => {
-      if (user) {
+      if (userId) {
+        let wasIn = false;
+        setIds((prev) => {
+          wasIn = prev.has(productId);
+          const next = new Set(prev);
+          if (wasIn) next.delete(productId);
+          else next.add(productId);
+          return next;
+        });
+
         const result = await toggleWishlistAction(productId);
-        if (result.ok) {
-          startTransition(() => {
-            setIds((prev) => {
-              const next = new Set(prev);
-              if (result.inWishlist) next.add(productId);
-              else next.delete(productId);
-              return next;
-            });
+        if (!result.ok) {
+          setIds((prev) => {
+            const next = new Set(prev);
+            if (wasIn) next.add(productId);
+            else next.delete(productId);
+            return next;
           });
+          return { ok: false, error: result.error };
         }
-        return { ok: result.ok, error: result.error };
+
+        setIds((prev) => {
+          const next = new Set(prev);
+          if (result.inWishlist) next.add(productId);
+          else next.delete(productId);
+          return next;
+        });
+        return { ok: true, error: null };
       }
 
       const guestIds = readGuestWishlistIds();
@@ -105,7 +129,7 @@ export function WishlistProvider({
       setIds(new Set(next));
       return { ok: true, error: null };
     },
-    [user],
+    [userId],
   );
 
   const value = useMemo(

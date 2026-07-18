@@ -2,12 +2,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import OrderDetailActions, { OrderTimelinePanel } from "@/components/account/OrderDetailActions";
+import OrderDetailActions, {
+  OrderStatusTimeline,
+  PaymentStatusBadge,
+} from "@/components/account/OrderDetailActions";
 import OrderStatusBadge from "@/components/admin/OrderStatusBadge";
 import ShipmentStatusBadge from "@/components/admin/ShipmentStatusBadge";
 import CourierBadge from "@/components/shipping/CourierBadge";
 import ShipmentTimeline from "@/components/shipping/ShipmentTimeline";
 import { getCustomerOrderDetail } from "@/lib/orders/customer-shipment";
+import {
+  buildOrderStatusTimeline,
+  customerPaymentStatusLabel,
+  eventTimesFromOrderEvents,
+} from "@/lib/orders/status-timeline";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata({
@@ -39,6 +47,13 @@ export default async function AccountOrderDetailPage({
 
   const { order, shipment, orderTimeline } = data;
   const trackingNumber = shipment?.trackingNumber;
+  const paymentLabel = customerPaymentStatusLabel(order.paymentStatus, order.paymentMethod);
+  const timelineSteps = buildOrderStatusTimeline(
+    order.status,
+    order.createdAt,
+    shipment?.status ?? null,
+    eventTimesFromOrderEvents(orderTimeline),
+  );
 
   return (
     <div className="space-y-8">
@@ -53,18 +68,12 @@ export default async function AccountOrderDetailPage({
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-heading text-2xl font-bold text-green-900">{order.orderNumber}</h1>
           <OrderStatusBadge status={order.status} />
+          <PaymentStatusBadge label={paymentLabel} />
         </div>
         <OrderDetailActions orderId={order.id} status={order.status} />
       </div>
 
-      <OrderTimelinePanel
-        events={orderTimeline.map((e) => ({
-          id: e.id,
-          type: e.type,
-          message: e.message,
-          createdAt: e.createdAt,
-        }))}
-      />
+      <OrderStatusTimeline steps={timelineSteps} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="space-y-3 rounded-3xl border border-cream-200 bg-white p-5">
