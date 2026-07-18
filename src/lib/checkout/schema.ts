@@ -68,7 +68,9 @@ export type PaymentMethodId = "razorpay" | "cod";
 /** Client cart line — server resolves price, GST, and availability. */
 export const checkoutCartLineSchema = z.object({
   productId: z.string().uuid(),
-  variantId: z.string().uuid().nullable(),
+  variantId: z
+    .union([z.string().uuid(), z.literal("default"), z.null()])
+    .transform((v) => (v == null || v === "default" ? null : v)),
   quantity: z.number().int().positive(),
 });
 

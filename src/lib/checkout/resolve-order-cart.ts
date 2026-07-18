@@ -178,6 +178,36 @@ export async function resolveCheckoutCart(input: {
     variantIds.push(variant.id);
   }
 
+  // Collapse duplicate client lines that resolve to the same variant (e.g. listing
+  // `default` + PDP UUID) so inventory reservation RPCs receive one row per variant.
+  const mergedLines: ResolvedCheckoutLine[] = [];
+  const mergedCoupon: CartLineItem[] = [];
+  const lineIndexByVariant = new Map<string, number>();
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]!;
+    const existingIdx = lineIndexByVariant.get(line.variantId);
+    if (existingIdx == null) {
+      lineIndexByVariant.set(line.variantId, mergedLines.length);
+      mergedLines.push(line);
+      mergedCoupon.push(couponLineItems[i]!);
+      continue;
+    }
+    mergedLines[existingIdx] = {
+      ...mergedLines[existingIdx]!,
+      quantity: mergedLines[existingIdx]!.quantity + line.quantity,
+    };
+    mergedCoupon[existingIdx] = {
+      ...mergedCoupon[existingIdx]!,
+      quantity: mergedCoupon[existingIdx]!.quantity + line.quantity,
+    };
+  }
+  lines.length = 0;
+  lines.push(...mergedLines);
+  couponLineItems.length = 0;
+  couponLineItems.push(...mergedCoupon);
+  variantIds.length = 0;
+  variantIds.push(...mergedLines.map((l) => l.variantId));
+
   const stockMap = await getVariantAvailableStock(variantIds);
   for (const line of lines) {
     const available = stockMap.get(line.variantId) ?? 0;

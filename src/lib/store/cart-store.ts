@@ -6,6 +6,52 @@ import { trackAddToCart, trackCouponApplied, trackRemoveFromCart } from "@/lib/a
 import { gstFromInclusiveLine } from "@/lib/catalog/gst-rates";
 import { clampCartQuantity, CART_MIN_QUANTITY } from "@/lib/storefront/cart-types";
 
+/** Must match `DEFAULT_VARIANT_ID` in cart-mappers (avoid circular import). */
+const LEGACY_DEFAULT_VARIANT_ID = "default";
+
+/** Merge duplicate lines: same variantId, or legacy `default` + real UUID for one product. */
+function mergeCartItems(items: CartItem[]): CartItem[] {
+  const result: CartItem[] = [];
+
+  for (const raw of items) {
+    const item: CartItem = {
+      ...raw,
+      quantity: clampCartQuantity(raw.quantity),
+      unit: raw.unit || raw.variantName || "",
+      variantName: raw.variantName || raw.unit || "",
+    };
+
+    const matchIdx = result.findIndex((existing) => {
+      if (existing.variantId === item.variantId) return true;
+      if (existing.productId !== item.productId) return false;
+      return (
+        existing.variantId === LEGACY_DEFAULT_VARIANT_ID ||
+        item.variantId === LEGACY_DEFAULT_VARIANT_ID
+      );
+    });
+
+    if (matchIdx < 0) {
+      result.push(item);
+      continue;
+    }
+
+    const existing = result[matchIdx]!;
+    const preferIncoming =
+      existing.variantId === LEGACY_DEFAULT_VARIANT_ID &&
+      item.variantId !== LEGACY_DEFAULT_VARIANT_ID;
+    const base = preferIncoming ? item : existing;
+    const other = preferIncoming ? existing : item;
+    result[matchIdx] = {
+      ...base,
+      quantity: clampCartQuantity(base.quantity + other.quantity),
+      unit: base.unit || other.unit,
+      variantName: base.variantName || other.variantName,
+    };
+  }
+
+  return result;
+}
+
 export interface CartItem {
   id: string;
   productId: string;
@@ -90,7 +136,6 @@ export const useCartStore = create<CartStore>()(
       addItem: (newItem, quantity = 1) =>
         set((state) => {
           const qty = clampCartQuantity(quantity);
-          const exists = state.items.find((i) => i.variantId === newItem.variantId);
           const trackedItem = {
             ...newItem,
             quantity: qty,
@@ -103,16 +148,9 @@ export const useCartStore = create<CartStore>()(
               items: [analyticsItemFromCartItem(trackedItem)],
             });
           }
-          if (exists) {
-            return {
-              items: state.items.map((i) =>
-                i.variantId === newItem.variantId
-                  ? { ...i, quantity: clampCartQuantity(i.quantity + qty) }
-                  : i,
-              ),
-            };
-          }
-          return { items: [...state.items, { ...newItem, quantity: qty }] };
+          return {
+            items: mergeCartItems([...state.items, { ...trackedItem, quantity: qty }]),
+          };
         }),
 
       removeItem: (variantId) =>
@@ -162,13 +200,7 @@ export const useCartStore = create<CartStore>()(
 
       removeCoupon: () => set({ coupon: null }),
 
-      replaceItems: (items) =>
-        set({
-          items: items.map((item) => ({
-            ...item,
-            quantity: clampCartQuantity(item.quantity),
-          })),
-        }),
+      replaceItems: (items) => set({ items: mergeCartItems(items) }),
 
       itemCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
 
@@ -207,12 +239,20 @@ export const useCartStore = create<CartStore>()(
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         if (!state?.items?.length) return;
-        const normalized = state.items.map((item) => {
-          const unit = item.unit || item.variantName || "";
-          return { ...item, unit, variantName: item.variantName || unit };
-        });
-        if (normalized.some((item, i) => item.unit !== state.items[i]?.unit)) {
-          useCartStore.setState({ items: normalized });
+        const merged = mergeCartItems(state.items);
+        const changed =
+          merged.length !== state.items.length ||
+          merged.some((item, i) => {
+            const prev = state.items[i];
+            return (
+              !prev ||
+              item.unit !== prev.unit ||
+              item.variantId !== prev.variantId ||
+              item.quantity !== prev.quantity
+            );
+          });
+        if (changed) {
+          useCartStore.setState({ items: merged });
         }
       },
     },

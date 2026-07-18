@@ -10,18 +10,32 @@ export function legacyVariantKey(variantId: string | null): string {
   return variantId ?? DEFAULT_VARIANT_ID;
 }
 
-export function storeVariantToLegacy(variantId: string): string | null {
-  return variantId === DEFAULT_VARIANT_ID ? null : variantId;
+export function storeVariantToLegacy(variantId: string | null | undefined): string | null {
+  if (variantId == null || variantId === DEFAULT_VARIANT_ID) return null;
+  return variantId;
+}
+
+function defaultVariantFromProduct(
+  product: CartProductInput | StorefrontProduct,
+): { id: string | null; name: string | null } {
+  if ("variants" in product && Array.isArray(product.variants) && product.variants[0]) {
+    const v = product.variants[0];
+    return { id: v.id ?? null, name: v.name ?? null };
+  }
+  return { id: null, name: null };
 }
 
 export function buildCartItemInput(
   product: CartProductInput | StorefrontProduct,
   options?: { variantId?: string | null; variantName?: string | null },
 ): Omit<StoreCartItem, "quantity"> {
-  const variantKey = legacyVariantKey(options?.variantId ?? null);
+  const fallback = defaultVariantFromProduct(product);
+  const resolvedVariantId = options?.variantId ?? fallback.id;
+  const variantKey = legacyVariantKey(resolvedVariantId);
   const price = product.effectivePrice ?? product.price;
   const originalPrice = product.compareAtPrice ?? price;
-  const unit = options?.variantName?.trim() || productUnit(product.slug);
+  const unit =
+    options?.variantName?.trim() || fallback.name?.trim() || productUnit(product.slug);
 
   return {
     id: `${product.id}:${variantKey}`,

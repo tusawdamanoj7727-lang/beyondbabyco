@@ -28,6 +28,7 @@ import {
   trackViewCart,
 } from "@/lib/analytics/events";
 import { formatInr } from "@/lib/catalog/format";
+import { storeVariantToLegacy } from "@/lib/store/cart-mappers";
 import { checkDeliveryEstimateAction } from "@/lib/storefront/delivery-actions";
 import { applyCouponViaApi } from "@/lib/storefront/cart-coupons";
 import { useCart } from "@/lib/storefront/cart-context";
@@ -516,7 +517,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           paymentMethod,
           cartItems: items.map((i) => ({
             productId: i.productId,
-            variantId: i.variantId,
+            variantId: storeVariantToLegacy(i.variantId),
             quantity: i.quantity,
           })),
           couponCode: appliedCoupon?.code ?? null,

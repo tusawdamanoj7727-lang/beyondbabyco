@@ -58,9 +58,12 @@ export async function findOrderByIdempotencyKey(
   const supabase = createSupabaseServiceClient();
   const { data } = await supabase
     .from("orders")
-    .select("id, order_number, grand_total")
+    .select("id, order_number, grand_total, status")
     .eq("customer_id", customerId)
     .eq("notes", `idempotency:${idempotencyKey}`)
+    .not("status", "in", "(cancelled,failed)")
+    .order("created_at", { ascending: false })
+    .limit(1)
     .maybeSingle();
 
   if (!data) return null;
@@ -72,6 +75,9 @@ export async function findOrderByIdempotencyKey(
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+
+  // Incomplete cancelled-before-payment leftovers must not resume as success.
+  if (!payment) return null;
 
   const paymentMethod =
     payment?.method === "cod" || payment?.provider === "cod"
@@ -298,10 +304,14 @@ export async function placeStorefrontOrder(
   const warehouseId = await getDefaultWarehouseId(supabase);
   const orderNumber = generateOrderNumber();
 
-  const stockLines: OrderStockLine[] = lines.map((line) => ({
-    variantId: line.variantId,
-    quantity: line.quantity,
-  }));
+  const stockLines: OrderStockLine[] = [];
+  const stockByVariant = new Map<string, number>();
+  for (const line of lines) {
+    stockByVariant.set(line.variantId, (stockByVariant.get(line.variantId) ?? 0) + line.quantity);
+  }
+  for (const [variantId, quantity] of stockByVariant) {
+    stockLines.push({ variantId, quantity });
+  }
 
   const lineItems = lines.map((line) => ({
     product_id: line.productId,
