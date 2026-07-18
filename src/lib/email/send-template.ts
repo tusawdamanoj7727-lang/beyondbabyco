@@ -4,7 +4,7 @@ import type { EmailAttachment } from "@/lib/communications/types";
 import { renderEmailTemplate } from "@/lib/communications/layout";
 import { getEmailTemplate } from "@/lib/communications/templates/registry";
 
-import { sendEmail, sendEmailAsync } from "./sendEmail";
+import { sendEmail } from "./sendEmail";
 
 export async function sendTemplateEmail(
   templateId: string,

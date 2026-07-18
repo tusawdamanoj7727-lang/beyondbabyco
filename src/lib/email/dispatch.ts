@@ -243,7 +243,7 @@ export async function dispatchOrderEmail(
     admin_inventory_url: absoluteUrl("/admin/inventory"),
   } as Record<string, string>;
 
-  let attachments: NonNullable<Awaited<ReturnType<typeof generateOrderInvoiceAttachment>>>[] = [];
+  const attachments: NonNullable<Awaited<ReturnType<typeof generateOrderInvoiceAttachment>>>[] = [];
   if (INVOICE_ATTACHMENT_TEMPLATES.has(templateId)) {
     try {
       const pdf = await generateOrderInvoiceAttachment(orderId);
