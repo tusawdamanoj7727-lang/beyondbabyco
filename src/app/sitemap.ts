@@ -53,8 +53,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   try {
-    const { createClient } = await import("@/lib/supabase/server");
-    const supabase = await createClient();
+    // Cookie-free client — sitemap generation has no request cookies.
+    const { createSupabasePublicClient } = await import("@/lib/supabase/public");
+    const supabase = createSupabasePublicClient();
     const { data: products } = await supabase
       .from("products")
       .select("slug, updated_at")
