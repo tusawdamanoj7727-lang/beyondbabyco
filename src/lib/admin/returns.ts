@@ -51,7 +51,7 @@ export async function getReturnDashboard(): Promise<ReturnDashboard> {
   const monthStart = startOfMonthIso();
 
   const [{ data: returns }, { data: orders }] = await Promise.all([
-    supabase.from("returns").select("id, status, created_at"),
+    supabase.from("returns").select("id, status, refund_status, created_at"),
     supabase.from("orders").select("id, created_at").gte("created_at", monthStart),
   ]);
 
@@ -66,6 +66,10 @@ export async function getReturnDashboard(): Promise<ReturnDashboard> {
     refundQueue: rows.filter((r) => r.status === "refund_approved").length,
     completedReturns: rows.filter((r) => r.status === "closed").length,
     returnRate: rate,
+    refundsPending: rows.filter((r) => r.refund_status === "pending").length,
+    refundsApproved: rows.filter((r) => ["full", "partial", "store_credit", "gift_card"].includes(String(r.refund_status))).length,
+    refundsRejected: rows.filter((r) => r.status === "rejected").length,
+    refundsCompleted: rows.filter((r) => r.refund_status === "refunded" || r.refund_status === "full").length,
   };
 }
 

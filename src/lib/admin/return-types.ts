@@ -110,6 +110,10 @@ export interface ReturnDashboard {
   refundQueue: number;
   completedReturns: number;
   returnRate: number;
+  refundsPending: number;
+  refundsApproved: number;
+  refundsRejected: number;
+  refundsCompleted: number;
 }
 
 export interface ReturnItemRow {

@@ -1,7 +1,7 @@
 export { TRUST_IMAGES, TRUST_BADGES, QUALITY_PROMISE_BADGES } from "./images";
 export { RESEARCH_PROCESS_STEPS, RESEARCH_PROCESS_FAQ } from "./research-process";
 export type { ResearchProcessStep } from "./research-process";
-export { CORE_INGREDIENTS } from "./ingredients";
+export { CORE_INGREDIENTS, getIngredientById, getAllIngredientIds } from "./ingredients";
 export type { IngredientProfile } from "./ingredients";
 export { QUALITY_STANDARDS } from "./quality-standards";
 export type { QualityStandard } from "./quality-standards";

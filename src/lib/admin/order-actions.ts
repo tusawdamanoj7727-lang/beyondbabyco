@@ -444,6 +444,49 @@ export async function bulkCancelOrders(ids: string[], reason: string): Promise<O
   return { ok: true, error: null };
 }
 
+/** Apply the same status to many orders (uses per-order inventory + audit rules). */
+export async function bulkUpdateOrderStatus(
+  ids: string[],
+  nextStatus: OrderStatus,
+): Promise<OrderActionResult> {
+  await guard();
+  if (!ids.length) return { ok: false, error: "No orders selected." };
+  for (const id of ids) {
+    const result = await updateOrderStatus(id, nextStatus);
+    if (!result.ok) return { ok: false, error: `${result.error} (${id})` };
+  }
+  revalidateOrders();
+  return { ok: true, error: null };
+}
+
+/** Regenerate invoice PDFs for selected orders (audit + document events). */
+export async function bulkRegenerateInvoices(ids: string[]): Promise<OrderActionResult> {
+  await guard();
+  if (!ids.length) return { ok: false, error: "No orders selected." };
+  let okCount = 0;
+  for (const id of ids) {
+    const result = await regenerateOrderInvoice(id);
+    if (result.ok) okCount += 1;
+  }
+  revalidateOrders();
+  if (okCount === 0) return { ok: false, error: "Could not regenerate invoices for the selection." };
+  return { ok: true, error: null };
+}
+
+/** Resend tax invoice emails for selected orders. */
+export async function bulkResendInvoices(ids: string[]): Promise<OrderActionResult> {
+  await guard();
+  if (!ids.length) return { ok: false, error: "No orders selected." };
+  let okCount = 0;
+  for (const id of ids) {
+    const result = await resendOrderInvoice(id);
+    if (result.ok) okCount += 1;
+  }
+  revalidateOrders();
+  if (okCount === 0) return { ok: false, error: "Could not resend invoices for the selection." };
+  return { ok: true, error: null };
+}
+
 export async function recordDocumentGenerated(orderId: string, docType: string): Promise<void> {
   await guard();
   const supabase = await createSupabaseServerClient();

@@ -163,6 +163,10 @@ export default function ReturnsClient(props: {
         <StatsCard label="Pending Returns" value={String(props.dashboard.pendingReturns)} icon="activity" />
         <StatsCard label="Awaiting Inspection" value={String(props.dashboard.awaitingInspection)} icon="inventory" />
         <StatsCard label="Refund Queue" value={String(props.dashboard.refundQueue)} icon="payments" />
+        <StatsCard label="Refunds Pending" value={String(props.dashboard.refundsPending)} icon="payments" />
+        <StatsCard label="Refunds Approved" value={String(props.dashboard.refundsApproved)} icon="sparkles" hint="Full/partial/credit" />
+        <StatsCard label="Refund Rejected" value={String(props.dashboard.refundsRejected)} icon="close" />
+        <StatsCard label="Refunds Completed" value={String(props.dashboard.refundsCompleted)} icon="orders" />
         <StatsCard label="Completed Returns" value={String(props.dashboard.completedReturns)} icon="orders" />
         <StatsCard label="Return Rate" value={`${props.dashboard.returnRate}%`} icon="reports" />
       </div>

@@ -210,7 +210,11 @@ export default function CatalogToolbar({
           id="catalog-sort"
           value={params.sort ?? "featured"}
           onChange={(e) => pushParams({ sort: e.target.value as StorefrontSort, page: 1 })}
-          className={cn("collection-sort-select focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500/60", focusRing)}
+          aria-label="Sort products"
+          className={cn(
+            "collection-sort-select min-h-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-500/60",
+            focusRing,
+          )}
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>

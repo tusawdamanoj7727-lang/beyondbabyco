@@ -187,9 +187,11 @@ export default function CouponsClient(props: {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
         <StatsCard label="Active Coupons" value={String(props.dashboard.activeCoupons)} icon="coupons" />
         <StatsCard label="Scheduled" value={String(props.dashboard.scheduledCoupons)} icon="activity" />
+        <StatsCard label="Expiring (7d)" value={String(props.dashboard.expiringSoon)} icon="activity" />
+        <StatsCard label="Disabled" value={String(props.dashboard.disabledCoupons)} icon="close" />
         <StatsCard label="Expired" value={String(props.dashboard.expiredCoupons)} icon="reports" />
         <StatsCard label="Redemption Rate" value={`${props.dashboard.redemptionRate}%`} icon="orders" />
         <StatsCard label="Revenue Generated" value={`₹${props.dashboard.revenueGenerated.toLocaleString("en-IN")}`} icon="payments" />

@@ -109,13 +109,18 @@ export default function ProductGallery({
               type="button"
               onClick={() => setLightboxOpen(true)}
               className={cn(
-                "absolute right-4 top-4 z-[2] grid h-11 w-11 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm opacity-100 transition-opacity duration-[var(--duration-button)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
+                "absolute right-4 top-4 z-[2] grid h-11 w-11 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm",
+                "opacity-100 transition-opacity duration-[var(--duration-button)]",
+                "sm:opacity-90 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
                 focusRing,
               )}
               aria-label="Zoom image"
             >
               <ZoomIn className="h-4 w-4" aria-hidden="true" />
             </button>
+            <p className="pointer-events-none absolute bottom-3 right-3 z-[2] hidden rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-green-700 shadow-[var(--shadow-soft)] sm:block sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
+              Click to zoom
+            </p>
             {multi ? (
               <p className="absolute bottom-3 left-3 z-[2] rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-green-900 shadow-[var(--shadow-soft)]">
                 {activeIndex + 1} / {sorted.length}

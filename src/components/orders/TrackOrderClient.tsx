@@ -15,13 +15,23 @@ type FieldErrors = Partial<Record<"orderNumber" | "email", string>>;
 
 function Timeline({ steps }: { steps: GuestTrackTimelineStep[] }) {
   return (
-    <ol className="space-y-3" aria-label="Order timeline">
-      {steps.map((step) => {
+    <ol className="relative space-y-0" aria-label="Order timeline">
+      {steps.map((step, index) => {
         const done = step.state === "complete" || step.state === "terminal";
         const current = step.state === "current";
+        const isLast = index === steps.length - 1;
         return (
-          <li key={step.key} className="flex gap-3">
-            <span className="mt-0.5 shrink-0" aria-hidden="true">
+          <li key={step.key} className="relative flex gap-4 pb-6 last:pb-0">
+            {!isLast ? (
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "absolute left-[9px] top-6 h-[calc(100%-0.5rem)] w-0.5",
+                  done ? "bg-green-300" : "bg-green-100",
+                )}
+              />
+            ) : null}
+            <span className="relative z-[1] mt-0.5 shrink-0" aria-hidden="true">
               {done ? (
                 <CheckCircle2
                   className={cn(
@@ -29,11 +39,22 @@ function Timeline({ steps }: { steps: GuestTrackTimelineStep[] }) {
                     step.state === "terminal" ? "text-terra-600" : "text-green-700",
                   )}
                 />
+              ) : current ? (
+                <span className="relative flex h-5 w-5 items-center justify-center">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-terra-400/40 motion-reduce:animate-none" />
+                  <Circle className="relative h-5 w-5 fill-terra-50 text-terra-500" />
+                </span>
               ) : (
-                <Circle className={cn("h-5 w-5", current ? "text-terra-500" : "text-green-200")} />
+                <Circle className="h-5 w-5 text-green-200" />
               )}
             </span>
-            <div>
+            <div
+              className={cn(
+                "min-w-0 flex-1 rounded-2xl px-3 py-2",
+                current && "bg-terra-50/70 ring-1 ring-terra-100",
+                done && !current && "bg-green-50/40",
+              )}
+            >
               <p
                 className={cn(
                   "text-sm font-semibold",
@@ -42,17 +63,23 @@ function Timeline({ steps }: { steps: GuestTrackTimelineStep[] }) {
               >
                 {step.label}
                 {current ? (
-                  <span className="ml-2 text-xs font-medium text-terra-600">Current</span>
+                  <span className="ml-2 rounded-full bg-terra-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-terra-700">
+                    Current
+                  </span>
                 ) : null}
               </p>
               {step.at ? (
-                <p className="text-xs text-green-600">
+                <p className="mt-0.5 text-xs text-green-600">
                   {new Intl.DateTimeFormat("en-IN", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   }).format(new Date(step.at))}
                 </p>
+              ) : current ? (
+                <p className="mt-0.5 text-xs text-terra-700">In progress</p>
               ) : null}
             </div>
           </li>
@@ -141,43 +168,49 @@ function OrderResult({ order }: { order: GuestTrackResult }) {
       ) : null}
 
       {(order.trackingNumber || order.courierName) && (
-        <div className="rounded-2xl border border-green-100 bg-cream-50/80 p-4">
-          <h3 className="mb-2 flex items-center gap-2 font-heading text-base font-bold text-green-900">
+        <div className="rounded-2xl border border-green-100 bg-cream-50/80 p-4 sm:p-5">
+          <h3 className="mb-3 flex items-center gap-2 font-heading text-base font-bold text-green-900">
             <Truck className="h-4 w-4" aria-hidden="true" />
-            Shipment
+            Shipment status
           </h3>
-          <dl className="grid gap-2 text-sm sm:grid-cols-2">
+          <dl className="grid gap-3 text-sm sm:grid-cols-2">
             {order.courierName ? (
               <div>
-                <dt className="text-green-600">Courier</dt>
-                <dd className="font-medium text-green-900">{order.courierName}</dd>
+                <dt className="text-xs font-medium uppercase tracking-wide text-green-600">Courier</dt>
+                <dd className="mt-0.5 font-medium text-green-900">{order.courierName}</dd>
               </div>
             ) : null}
             {order.trackingNumber ? (
               <div>
-                <dt className="text-green-600">Tracking number (AWB)</dt>
-                <dd className="font-mono text-sm font-semibold text-green-900">
+                <dt className="text-xs font-medium uppercase tracking-wide text-green-600">
+                  Tracking number (AWB)
+                </dt>
+                <dd className="mt-0.5 break-all font-mono text-sm font-semibold text-green-900">
                   {order.trackingNumber}
                 </dd>
               </div>
             ) : null}
             {order.shipmentStatus ? (
               <div>
-                <dt className="text-green-600">Shipment status</dt>
-                <dd className="font-medium capitalize text-green-900">
+                <dt className="text-xs font-medium uppercase tracking-wide text-green-600">
+                  Shipment status
+                </dt>
+                <dd className="mt-0.5 font-medium capitalize text-green-900">
                   {order.shipmentStatus.replace(/_/g, " ")}
                 </dd>
               </div>
             ) : null}
             {order.latestShipmentUpdate ? (
               <div className="sm:col-span-2">
-                <dt className="text-green-600">Latest update</dt>
-                <dd className="font-medium text-green-900">{order.latestShipmentUpdate}</dd>
+                <dt className="text-xs font-medium uppercase tracking-wide text-green-600">
+                  Latest update
+                </dt>
+                <dd className="mt-0.5 font-medium text-green-900">{order.latestShipmentUpdate}</dd>
               </div>
             ) : null}
           </dl>
           {order.trackingUrl ? (
-            <div className="mt-3">
+            <div className="mt-4">
               <Button asChild variant="outline" size="sm">
                 <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer">
                   Track with courier
@@ -190,7 +223,7 @@ function OrderResult({ order }: { order: GuestTrackResult }) {
       )}
 
       <div>
-        <h3 className="mb-3 font-heading text-base font-bold text-green-900">Timeline</h3>
+        <h3 className="mb-4 font-heading text-base font-bold text-green-900">Order timeline</h3>
         <Timeline steps={order.timeline} />
       </div>
 

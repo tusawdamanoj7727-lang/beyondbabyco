@@ -94,6 +94,12 @@ function IngredientCard({ ingredient }: { ingredient: IngredientProfile }) {
               ))}
             </ul>
           </div>
+          <Link
+            href={`/ingredients/${ingredient.id}`}
+            className="inline-flex text-sm font-semibold text-terra-600 hover:underline"
+          >
+            Full ingredient page →
+          </Link>
         </div>
       ) : null}
     </Card>
@@ -126,8 +132,8 @@ export default function IngredientTransparency({ id = "ingredients", limit }: In
           </h2>
           <AccentBar width="lg" align="center" className="mt-4" />
           <p className="section-subcopy mt-4">
-            Every core ingredient is chosen for a clear purpose. Tap any card for the full profile — origin,
-            safety, research, and related products.
+            Every core ingredient is chosen for a clear purpose. Expand a card for a quick profile, or open the
+            full page for baby-safe explanations and FAQs.
           </p>
         </div>
 
@@ -138,6 +144,12 @@ export default function IngredientTransparency({ id = "ingredients", limit }: In
             </Reveal>
           ))}
         </div>
+
+        <p className="mt-8 text-center">
+          <Link href="/ingredients" className="text-sm font-semibold text-terra-600 hover:underline">
+            Browse the full ingredient library →
+          </Link>
+        </p>
       </div>
     </MotionSection>
   );

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Gift,
   Heart,
   MapPin,
   Package,
+  ShieldCheck,
   ShoppingBag,
   Sparkles,
   Truck,
@@ -82,15 +82,36 @@ export default function AccountDashboard({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-700">
-              <Gift className="h-4 w-4" aria-hidden="true" />
-              BeyondBaby Rewards
+              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+              Account care
             </p>
             <h2 className="mt-2 font-heading text-xl font-bold text-green-900">
-              Earn on every order
+              Need help with an order?
             </h2>
             <p className="mt-1 max-w-md text-sm text-green-700">
-              Shop research-backed care — loyalty rewards will be available in a future update.
+              Track shipments, manage addresses, or reach support — we keep your baby-care orders
+              clear and easy to follow.
             </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href="/account/orders"
+                className={cn(
+                  "inline-flex min-h-11 items-center rounded-full bg-green-800 px-4 text-sm font-semibold text-white hover:bg-green-900",
+                  focusRing,
+                )}
+              >
+                View orders
+              </Link>
+              <Link
+                href="/contact"
+                className={cn(
+                  "inline-flex min-h-11 items-center rounded-full border border-green-200 bg-white px-4 text-sm font-semibold text-green-800 hover:border-green-300",
+                  focusRing,
+                )}
+              >
+                Contact support
+              </Link>
+            </div>
           </div>
           <Mascot mascot="bella-bunny" pose="welcome" size={100} animated alt="" />
         </div>
@@ -146,6 +167,7 @@ export default function AccountDashboard({
                   className={cn(
                     interactiveSurface,
                     "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-green-100 bg-white/90 p-4",
+                    focusRing,
                   )}
                 >
                   <div>

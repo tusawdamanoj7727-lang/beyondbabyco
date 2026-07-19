@@ -65,6 +65,8 @@ export interface ShippingDashboard {
   readyToShip: number;
   todaysPickups: number;
   failedDeliveries: number;
+  deliveredShipments: number;
+  missingAwb: number;
   ndrCount: number;
   rtoCount: number;
 }

@@ -78,8 +78,8 @@ const nextConfig: NextConfig = {
       { source: "/terms", destination: "/terms-of-service", permanent: true },
       { source: "/return-policy", destination: "/refund-policy", permanent: true },
       { source: "/cookies", destination: "/privacy-policy", permanent: true },
-      // /blog has no route — permanent redirect until a blog is published.
-      { source: "/blog", destination: "/about", permanent: true },
+      // /blog has no editorial CMS yet — send readers to the Learn hub.
+      { source: "/blog", destination: "/learn", permanent: true },
     ];
   },
 };

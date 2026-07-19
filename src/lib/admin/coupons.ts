@@ -108,6 +108,15 @@ export async function getCouponDashboard(): Promise<CouponDashboard> {
   const active = rows.filter((r) => r.displayStatus === "active").length;
   const scheduled = rows.filter((r) => r.displayStatus === "scheduled").length;
   const expired = rows.filter((r) => r.displayStatus === "expired").length;
+  const disabledCoupons = rows.filter(
+    (r) => r.displayStatus === "inactive" || r.displayStatus === "archived" || !r.is_active,
+  ).length;
+  const soon = Date.now() + 7 * 24 * 60 * 60 * 1000;
+  const expiringSoon = rows.filter((r) => {
+    if (!r.expires_at || r.displayStatus === "expired") return false;
+    const exp = new Date(r.expires_at).getTime();
+    return exp >= Date.now() && exp <= soon;
+  }).length;
   const totalUses = rows.reduce((s, r) => s + (r.used_count ?? 0), 0);
   const totalMax = rows.reduce((s, r) => s + (r.max_uses ?? 0), 0);
   const rate = totalMax ? Math.round((totalUses / totalMax) * 1000) / 10 : totalUses ? 100 : 0;
@@ -128,6 +137,8 @@ export async function getCouponDashboard(): Promise<CouponDashboard> {
     activeCoupons: active,
     scheduledCoupons: scheduled,
     expiredCoupons: expired,
+    disabledCoupons,
+    expiringSoon,
     redemptionRate: rate,
     revenueGenerated: revenue,
     topCoupons,

@@ -86,7 +86,11 @@ export default function HeroSection({ hero }: { hero: ResolvedHeroContent }) {
               </Link>
             </div>
 
-            <div className="hero-trust-row flex flex-wrap items-center gap-2.5">
+            <p className="sr-only">
+              Primary action: {hero.primaryCta}. Secondary: {hero.secondaryCta}.
+            </p>
+
+            <div className="hero-trust-row flex flex-wrap items-center gap-2.5" aria-label="Product quality badges">
               {TRUST_BADGES.map((badge) => (
                 <TrustBadgeIcon key={badge.slug} slug={badge.slug} label={badge.label} />
               ))}

@@ -20,7 +20,8 @@ import {
   type OrderListItem,
 } from "@/lib/admin/order-types";
 import type { OrderStatus, PaymentStatus, ShipmentStatus } from "@/lib/supabase/database.types";
-import { bulkCancelOrders } from "@/lib/admin/order-actions";
+import { bulkCancelOrders, bulkRegenerateInvoices, bulkUpdateOrderStatus } from "@/lib/admin/order-actions";
+import { useToast } from "@/components/ui/ToastProvider";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -53,9 +54,11 @@ export default function OrdersClient(props: {
   dir: "asc" | "desc";
 }) {
   const router = useRouter();
+  const toast = useToast();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [search, setSearch] = useState(props.filters.search);
   const [bulkCancelOpen, setBulkCancelOpen] = useState(false);
+  const [bulkStatus, setBulkStatus] = useState<OrderStatus>("processing");
   const [pending, startTransition] = useTransition();
 
   useEffect(() => setSelectedIds([]), [props.rows]);
@@ -208,13 +211,102 @@ export default function OrdersClient(props: {
         <input type="date" aria-label="To date" value={props.filters.dateTo} onChange={(e) => push({ to: e.target.value || null })} className={fieldControlClasses + " lg:w-40"} />
       </div>
 
-      <BulkActions
-        count={selectedIds.length}
-        loading={pending}
-        onDelete={() => setBulkCancelOpen(true)}
-        deleteLabel="Cancel orders"
-        onClear={() => setSelectedIds([])}
-      />
+      <div className="flex flex-col gap-2">
+        <BulkActions
+          count={selectedIds.length}
+          loading={pending}
+          onDelete={() => setBulkCancelOpen(true)}
+          deleteLabel="Cancel orders"
+          onClear={() => setSelectedIds([])}
+          extraActions={[
+            {
+              label: "Mark processing",
+              onClick: () => {
+                startTransition(async () => {
+                  const res = await bulkUpdateOrderStatus(selectedIds, "processing");
+                  if (!res.ok) toast.error(res.error ?? "Bulk update failed");
+                  else {
+                    toast.success("Orders updated to processing");
+                    setSelectedIds([]);
+                    router.refresh();
+                  }
+                });
+              },
+            },
+            {
+              label: "Mark packed",
+              onClick: () => {
+                startTransition(async () => {
+                  const res = await bulkUpdateOrderStatus(selectedIds, "packed");
+                  if (!res.ok) toast.error(res.error ?? "Bulk update failed");
+                  else {
+                    toast.success("Orders marked packed");
+                    setSelectedIds([]);
+                    router.refresh();
+                  }
+                });
+              },
+            },
+            {
+              label: "Regenerate invoices",
+              onClick: () => {
+                startTransition(async () => {
+                  const res = await bulkRegenerateInvoices(selectedIds);
+                  if (!res.ok) toast.error(res.error ?? "Invoice generation failed");
+                  else {
+                    toast.success("Invoices regenerated");
+                    router.refresh();
+                  }
+                });
+              },
+            },
+          ]}
+        />
+        {selectedIds.length > 0 ? (
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-cream-200 bg-white px-3 py-2">
+            <label htmlFor="bulk-status" className="text-xs font-semibold uppercase tracking-wide text-green-600">
+              Set status
+            </label>
+            <Select
+              id="bulk-status"
+              aria-label="Bulk status"
+              value={bulkStatus}
+              onChange={(e) => setBulkStatus(e.target.value as OrderStatus)}
+              className="lg:w-40"
+            >
+              {ORDER_STATUSES.filter((s) => s !== "cancelled").map((s) => (
+                <option key={s} value={s}>
+                  {ORDER_STATUS_LABELS[s]}
+                </option>
+              ))}
+            </Select>
+            <button
+              type="button"
+              disabled={pending}
+              className="rounded-xl bg-green-700 px-3 py-1.5 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-50"
+              onClick={() => {
+                startTransition(async () => {
+                  const res = await bulkUpdateOrderStatus(selectedIds, bulkStatus);
+                  if (!res.ok) toast.error(res.error ?? "Bulk update failed");
+                  else {
+                    toast.success(`Updated to ${ORDER_STATUS_LABELS[bulkStatus]}`);
+                    setSelectedIds([]);
+                    router.refresh();
+                  }
+                });
+              }}
+            >
+              Apply status
+            </button>
+            <a
+              href={`/admin/exports?resource=orders&format=csv`}
+              className="ml-auto text-sm font-semibold text-terra-600 hover:underline"
+            >
+              Export orders →
+            </a>
+          </div>
+        ) : null}
+      </div>
 
       <DataTable
         columns={columns}

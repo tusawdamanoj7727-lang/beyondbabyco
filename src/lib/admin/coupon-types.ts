@@ -80,6 +80,8 @@ export interface CouponDashboard {
   activeCoupons: number;
   scheduledCoupons: number;
   expiredCoupons: number;
+  disabledCoupons: number;
+  expiringSoon: number;
   redemptionRate: number;
   revenueGenerated: number;
   topCoupons: { id: string; code: string; name: string; usageCount: number; revenue: number }[];

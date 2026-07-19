@@ -10,16 +10,19 @@ export const contactPage: ContentPage = {
   eyebrow: "We're Here to Help",
   heroImage: CONTENT_IMAGES.contact,
   relatedLinks: [
+    { label: "Help Center", href: "/help" },
     { label: "FAQ", href: "/faq" },
+    { label: "Track Order", href: "/track-order" },
     { label: "Shipping Policy", href: "/shipping-policy" },
     { label: "Return Policy", href: "/refund-policy" },
+    { label: "Learn", href: "/learn" },
   ],
   sections: [
     {
       type: "intro",
       paragraphs: [
         "Whether you have a question about an order, want to learn more about our products, or are interested in partnering with us — we would love to hear from you.",
-        `Email us directly at ${brandSupportEmail()} or use the form below. Our support team is available Monday through Saturday, 10 AM – 6 PM IST.`,
+        `Email us directly at ${brandSupportEmail()} or use the form below. Our support team is available Monday through Saturday, 10 AM – 6 PM IST. We aim to respond within one business day.`,
       ],
     },
     {
@@ -30,23 +33,25 @@ export const contactPage: ContentPage = {
         {
           icon: "heart",
           title: "Customer Support",
-          description: `Order help, returns, and product questions.\nEmail: ${brandSupportEmail()}`,
+          description: `Order help, returns, and product questions.\nEmail: ${brandSupportEmail()}\nTypical reply: within 1 business day.`,
         },
         {
           icon: "beaker",
-          title: "Product Enquiries",
-          description: "Ingredients, safety, and formulation questions. We respond within one business day.",
+          title: "Product & ingredients",
+          description:
+            "Safety, ingredients, and usage questions. Browse our Help Center and Ingredient Library anytime.",
+          href: "/ingredients",
         },
         {
           icon: "sparkles",
           title: "Partnerships & Press",
-          description: "Retail, distribution, and media enquiries. Subject: Partnership or Press Enquiry.",
+          description: "Retail, distribution, and media enquiries. Subject line: Partnership or Press Enquiry.",
         },
       ],
     },
     {
       type: "cards",
-      title: "Visit us",
+      title: "Business information",
       columns: 2,
       items: [
         {
@@ -54,8 +59,9 @@ export const contactPage: ContentPage = {
           description: "Tusawda Global Private Limited\nUdaipur, Rajasthan, India",
         },
         {
-          title: "Support Hours",
-          description: "Monday – Saturday\n10:00 AM – 6:00 PM IST",
+          title: "Support hours & channels",
+          description:
+            "Monday – Saturday, 10:00 AM – 6:00 PM IST\nEmail · WhatsApp · Contact form\nTrack orders anytime at /track-order",
         },
       ],
     },
@@ -64,10 +70,10 @@ export const contactPage: ContentPage = {
     },
     {
       type: "cta",
-      title: "Looking for quick answers?",
-      description: "Browse our frequently asked questions.",
-      primary: { label: "View FAQ", href: "/faq" },
-      secondary: { label: "Shop Products", href: "/products" },
+      title: "Need answers right away?",
+      description: "Browse the Help Center for ordering, shipping, returns, and product care.",
+      primary: { label: "Open Help Center", href: "/help" },
+      secondary: { label: "Track an order", href: "/track-order" },
     },
   ],
 };

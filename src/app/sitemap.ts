@@ -4,9 +4,11 @@ import {
   DEDICATED_CONTENT_SLUGS,
   REDIRECT_ONLY_CONTENT_SLUGS,
 } from "@/lib/content/dedicated-routes";
+import { getAllEducationSlugs } from "@/lib/content/education";
 import { getAllContentSlugs } from "@/lib/content/registry";
 import { MASCOT_SLUGS } from "@/lib/mascots/content";
 import { getCanonicalSiteUrl } from "@/lib/seo/site";
+import { getAllIngredientIds } from "@/lib/trust/ingredients";
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 
@@ -29,10 +31,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     staticPage(base, "/products", { changeFrequency: "daily", priority: 0.9 }, now),
     staticPage(base, "/about", { changeFrequency: "monthly", priority: 0.7 }, now),
     staticPage(base, "/research", { changeFrequency: "monthly", priority: 0.7 }, now),
+    staticPage(base, "/learn", { changeFrequency: "weekly", priority: 0.7 }, now),
+    staticPage(base, "/help", { changeFrequency: "monthly", priority: 0.6 }, now),
     staticPage(base, "/contact", { changeFrequency: "monthly", priority: 0.6 }, now),
     staticPage(base, "/faq", { changeFrequency: "monthly", priority: 0.5 }, now),
     staticPage(base, "/mascots", { changeFrequency: "monthly", priority: 0.6 }, now),
     staticPage(base, "/trust-center", { changeFrequency: "monthly", priority: 0.7 }, now),
+    staticPage(base, "/ingredients", { changeFrequency: "monthly", priority: 0.7 }, now),
     staticPage(base, "/community", { changeFrequency: "weekly", priority: 0.6 }, now),
     staticPage(base, "/reviews/gallery", { changeFrequency: "weekly", priority: 0.5 }, now),
     staticPage(base, "/privacy-policy", { changeFrequency: "yearly", priority: 0.3 }, now),
@@ -52,6 +57,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     staticPage(base, `/${slug}`, { changeFrequency: "monthly", priority: 0.5 }, now),
   );
 
+  const learnUrls: MetadataRoute.Sitemap = getAllEducationSlugs().map((slug) =>
+    staticPage(base, `/learn/${slug}`, { changeFrequency: "monthly", priority: 0.55 }, now),
+  );
+
+  const ingredientUrls: MetadataRoute.Sitemap = getAllIngredientIds().map((id) =>
+    staticPage(base, `/ingredients/${id}`, { changeFrequency: "monthly", priority: 0.55 }, now),
+  );
+
   try {
     // Cookie-free client — sitemap generation has no request cookies.
     const { createSupabasePublicClient } = await import("@/lib/supabase/public");
@@ -69,8 +82,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-    return [...pages, ...mascotUrls, ...contentUrls, ...productUrls];
+    return [...pages, ...mascotUrls, ...contentUrls, ...learnUrls, ...ingredientUrls, ...productUrls];
   } catch {
-    return [...pages, ...mascotUrls, ...contentUrls];
+    return [...pages, ...mascotUrls, ...contentUrls, ...learnUrls, ...ingredientUrls];
   }
 }

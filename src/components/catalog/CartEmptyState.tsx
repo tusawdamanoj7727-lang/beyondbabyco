@@ -76,6 +76,12 @@ export default function CartEmptyState({ className, recoveryProducts = [] }: Car
       <Button asChild variant="primary" className={cn(ctaHeight, "mt-8 min-w-[200px] font-semibold")}>
         <Link href="/products">Explore Products</Link>
       </Button>
+      <Link
+        href="/"
+        className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-green-700 underline-offset-2 hover:text-terra-700 hover:underline"
+      >
+        Back to homepage
+      </Link>
 
       {picks.length > 0 ? (
         <div className="mt-12 w-full text-left">

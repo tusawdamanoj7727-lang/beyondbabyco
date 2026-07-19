@@ -43,17 +43,22 @@ export async function getShippingDashboard(): Promise<ShippingDashboard> {
   const today = todayIsoDate();
 
   const [{ data: shipments }, { data: pickups }, { data: ndrs }] = await Promise.all([
-    supabase.from("shipments").select("id, status"),
+    supabase.from("shipments").select("id, status, tracking_number"),
     supabase.from("pickup_requests").select("id, pickup_date, status").eq("pickup_date", today),
     supabase.from("ndr_events").select("id, status"),
   ]);
 
   const shipRows = shipments ?? [];
+  const openStatuses = new Set(["pending", "label_created", "in_transit", "out_for_delivery"]);
   return {
     pendingShipments: shipRows.filter((s) => s.status === "pending").length,
     readyToShip: shipRows.filter((s) => ["pending", "label_created"].includes(s.status)).length,
     todaysPickups: (pickups ?? []).filter((p) => p.status !== "cancelled").length,
     failedDeliveries: shipRows.filter((s) => s.status === "failed").length,
+    deliveredShipments: shipRows.filter((s) => s.status === "delivered").length,
+    missingAwb: shipRows.filter(
+      (s) => openStatuses.has(s.status) && (!s.tracking_number || !String(s.tracking_number).trim()),
+    ).length,
     ndrCount: (ndrs ?? []).filter((n) => n.status === "open").length,
     rtoCount: (ndrs ?? []).filter((n) => n.status === "rto").length,
   };

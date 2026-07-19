@@ -6,6 +6,7 @@ export type ErrorTrackingProviderId = "sentry" | "better_stack" | "logtail" | "n
 
 export const OPERATIONS_NAV = [
   { href: "/admin/operations", label: "Health" },
+  { href: "/admin/operations/queues", label: "Queues" },
   { href: "/admin/operations/monitoring", label: "Monitoring" },
   { href: "/admin/operations/security", label: "Security" },
   { href: "/admin/operations/performance", label: "Performance" },

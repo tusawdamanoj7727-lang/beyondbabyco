@@ -124,11 +124,13 @@ export default function ShippingClient(props: {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-8">
         <StatsCard label="Pending Shipments" value={String(props.dashboard.pendingShipments)} icon="orders" />
         <StatsCard label="Ready to Ship" value={String(props.dashboard.readyToShip)} icon="activity" />
+        <StatsCard label="Missing AWB" value={String(props.dashboard.missingAwb)} icon="activity" />
         <StatsCard label="Today's Pickups" value={String(props.dashboard.todaysPickups)} icon="inventory" />
         <StatsCard label="Failed Deliveries" value={String(props.dashboard.failedDeliveries)} icon="reports" />
+        <StatsCard label="Delivered" value={String(props.dashboard.deliveredShipments)} icon="orders" />
         <StatsCard label="NDR Count" value={String(props.dashboard.ndrCount)} icon="reviews" />
         <StatsCard label="RTO Count" value={String(props.dashboard.rtoCount)} icon="activity" />
       </div>

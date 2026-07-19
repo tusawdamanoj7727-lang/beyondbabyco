@@ -12,8 +12,11 @@ export const aboutPage: ContentPage = {
   jsonLd: "article",
   relatedLinks: [
     { label: "Our Story", href: "/our-story" },
+    { label: "Why BeyondBabyCo", href: "/why-beyondbabyco" },
     { label: "Trust Center", href: "/trust-center" },
     { label: "Research", href: "/research" },
+    { label: "Learn", href: "/learn" },
+    { label: "Help Center", href: "/help" },
     { label: "Contact", href: "/contact" },
   ],
   sections: [
@@ -29,14 +32,86 @@ export const aboutPage: ContentPage = {
       items: [
         { value: "5 Years", label: "Of research" },
         { value: "2021", label: "Research began" },
-        { value: "Made in", label: "Udaipur, India 🇮🇳" },
+        { value: "Made in", label: "Udaipur, India" },
         { value: "100%", label: "Dermatologically tested" },
       ],
     },
     {
       type: "cards",
+      title: "Mission, vision & values",
+      description: "Why BeyondBabyCo exists — and how we make decisions every day.",
+      columns: 3,
+      items: [
+        {
+          icon: "heart",
+          title: "Mission",
+          description:
+            "Every baby deserves the safest touch. We create transparent, research-backed baby care parents can trust — without greenwashing or hidden shortcuts.",
+        },
+        {
+          icon: "sparkles",
+          title: "Vision",
+          description:
+            "To be India's most trusted research-led baby care brand — where science, honesty, and gentleness meet in every wipe, wash, and lotion.",
+        },
+        {
+          icon: "shield",
+          title: "Values",
+          description:
+            "Research first. Safety always. Full ingredient transparency. Made in India with pride. No compromises on what touches delicate skin.",
+        },
+      ],
+    },
+    {
+      type: "cards",
+      title: "Our product philosophy",
+      description: "How we decide what goes into a BeyondBabyCo formula — and what stays out.",
+      columns: 2,
+      items: [
+        {
+          icon: "beaker",
+          title: "Minimal, purposeful ingredients",
+          description:
+            "Every ingredient must earn its place with a clear purpose. We publish INCI lists and explain core ingredients in plain language.",
+          href: "/ingredients",
+        },
+        {
+          icon: "shield",
+          title: "Tested before it ships",
+          description:
+            "Dermatological testing, quality checks, and manufacturing discipline come before launch — not after a marketing claim.",
+          href: "/safety-standards",
+        },
+        {
+          icon: "sparkles",
+          title: "Made in India, built for Indian families",
+          description:
+            "Formulated and manufactured with Indian climates, routines, and parent expectations in mind.",
+          href: "/manufacturing",
+        },
+        {
+          icon: "leaf",
+          title: "No harmful shortcuts",
+          description:
+            "We exclude harsh sulphates, parabens, phthalates, and unnecessary irritants from baby-facing formulas.",
+          href: "/trust-center",
+        },
+      ],
+    },
+    {
+      type: "imageSplit",
+      title: "A note from our founders",
+      paragraphs: [
+        "BeyondBabyCo began with a question every new parent asks: \"Is this truly safe for my baby?\" Vague claims and unclear labels were not enough. We spent years studying ingredients, testing formulations, and building a brand we would trust for our own children.",
+        "Operated by Tusawda Global Private Limited from Udaipur, we are still a focused team — not a marketplace of endless SKUs. When you choose BeyondBabyCo, you support Indian research, transparent care, and a promise to keep earning your trust.",
+      ],
+      image: CONTENT_IMAGES.family,
+      imageAlt: "BeyondBabyCo family-focused baby care lifestyle",
+    },
+    {
+      type: "cards",
       title: "What guides us",
-      description: "Three principles shape every decision we make — from ingredient selection to packaging.",
+      description: "Three principles shape every decision — from ingredient selection to packaging.",
       items: [
         {
           icon: "beaker",
@@ -62,21 +137,11 @@ export const aboutPage: ContentPage = {
       ],
     },
     {
-      type: "imageSplit",
-      title: "Rooted in Rajasthan, made for every Indian family",
-      paragraphs: [
-        "Our team operates from Udaipur, where we combine local manufacturing expertise with global quality standards. We source ingredients thoughtfully, partner with certified facilities, and maintain full traceability from raw material to finished product.",
-        "BeyondBabyCo is more than a brand — it is a promise to parents across India that gentle, effective baby care can be both accessible and trustworthy.",
-      ],
-      image: CONTENT_IMAGES.family,
-      imageAlt: "BeyondBabyCo family-focused baby care lifestyle",
-    },
-    {
       type: "cta",
-      title: "Discover our research journey",
-      description: "See how five years of science became products families can trust.",
+      title: "Explore the brand ecosystem",
+      description: "Learn our science, read care guides, or get help with an order.",
       primary: { label: "Trust Center", href: "/trust-center" },
-      secondary: { label: "Shop Products", href: "/products" },
+      secondary: { label: "Parent Learning Hub", href: "/learn" },
     },
     { type: "sustainability" },
   ],

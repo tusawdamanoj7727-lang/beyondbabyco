@@ -1116,6 +1116,7 @@
 
   body:has(.pdp-sticky-bar.translate-y-0) .whatsapp-fab,
   body:has(.checkout-mobile-bar) .whatsapp-fab,
+  body:has(.cart-sticky-checkout) .whatsapp-fab,
   body:has(.collection-compare-bar) .whatsapp-fab {
     bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
   }
@@ -2693,6 +2694,10 @@ body {
   background: color-mix(in srgb, white 96%, transparent);
   backdrop-filter: blur(12px);
   box-shadow: 0 -8px 32px color-mix(in srgb, var(--green-900) 8%, transparent);
+}
+
+.cart-sticky-checkout {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
 }
 
 @media (min-width: 768px) {

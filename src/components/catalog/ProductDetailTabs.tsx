@@ -134,16 +134,29 @@ function IngredientsPanel({ ingredients }: { ingredients: StorefrontIngredient[]
     );
   }
   return (
-    <ul className="pdp-ingredient-grid">
-      {ingredients.map((ing) => (
-        <li key={ing.id} className="pdp-ingredient-card">
-          <h3 className="font-semibold text-green-900">{ing.name}</h3>
-          {ing.inciName ? <p className="pdp-ingredient-inci">{ing.inciName}</p> : null}
-          {ing.description ? <p className="mt-3 text-sm leading-[1.75] text-green-800">{ing.description}</p> : null}
-          {ing.notes ? <p className="mt-2 text-xs leading-relaxed text-green-700">{ing.notes}</p> : null}
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="pdp-ingredient-grid">
+        {ingredients.map((ing) => (
+          <li key={ing.id} className="pdp-ingredient-card">
+            <h3 className="font-semibold text-green-900">{ing.name}</h3>
+            {ing.inciName ? <p className="pdp-ingredient-inci">{ing.inciName}</p> : null}
+            {ing.description ? <p className="mt-3 text-sm leading-[1.75] text-green-800">{ing.description}</p> : null}
+            {ing.notes ? <p className="mt-2 text-xs leading-relaxed text-green-700">{ing.notes}</p> : null}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-6 text-sm text-green-700">
+        Want plain-language ingredient education?{" "}
+        <Link href="/ingredients" className="font-semibold text-terra-600 hover:underline">
+          Browse our ingredient library
+        </Link>{" "}
+        or read{" "}
+        <Link href="/learn/baby-skincare-basics" className="font-semibold text-terra-600 hover:underline">
+          baby skincare basics
+        </Link>
+        .
+      </p>
+    </>
   );
 }
 
@@ -207,25 +220,57 @@ function SafetyPanel({
   ingredients: StorefrontIngredient[];
 }) {
   return (
-    <div className="max-w-prose space-y-5 text-base leading-[1.75] text-green-800">
-      <p>
-        Every BeyondBabyCo formula is dermatologically tested and developed for delicate skin.
-        Patch test on a small area before first use. Discontinue use if irritation occurs.
-      </p>
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-green-100 bg-green-50/60 p-5">
+        <p className="font-heading text-base font-bold text-green-900">Safe for delicate skin</p>
+        <p className="mt-2 max-w-prose text-base leading-[1.75] text-green-800">
+          Every BeyondBabyCo formula is dermatologically tested and developed for delicate skin.
+          Patch test on a small area before first use. Discontinue use if irritation occurs.
+        </p>
+      </div>
       {benefits.some((b) => /safe|gentle|test/i.test(b.name)) ? (
-        <ul className="list-disc space-y-2 pl-5">
+        <ul className="grid gap-3 sm:grid-cols-2">
           {benefits
             .filter((b) => /safe|gentle|test/i.test(b.name))
             .map((b) => (
-              <li key={b.id}>{b.name}{b.description ? ` — ${b.description}` : ""}</li>
+              <li
+                key={b.id}
+                className="rounded-2xl border border-cream-200/90 bg-white/90 p-4 text-sm leading-[1.75] text-green-800 shadow-[var(--shadow-soft)]"
+              >
+                <p className="font-semibold text-green-900">{b.name}</p>
+                {b.description ? <p className="mt-1.5 text-green-700">{b.description}</p> : null}
+              </li>
             ))}
         </ul>
       ) : null}
       {ingredients.length ? (
-        <p className="text-sm text-green-700">
-          Review the full ingredient list if your child has known sensitivities or allergies.
+        <p className="max-w-prose text-sm leading-relaxed text-green-700">
+          Review the full ingredient list if your child has known sensitivities or allergies.{" "}
+          <Link href="#ingredients" className="font-semibold text-terra-600 underline-offset-2 hover:underline">
+            Jump to ingredients
+          </Link>
         </p>
       ) : null}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-cream-200 bg-cream-50/80 p-4">
+          <p className="font-semibold text-green-900">Shipping</p>
+          <p className="mt-1.5 text-sm leading-[1.7] text-green-700">
+            Pan-India delivery with tracking. Free shipping on eligible orders.{" "}
+            <Link href="/shipping-policy" className="font-semibold text-terra-600 hover:underline">
+              Shipping policy
+            </Link>
+          </p>
+        </div>
+        <div className="rounded-2xl border border-cream-200 bg-cream-50/80 p-4">
+          <p className="font-semibold text-green-900">Returns</p>
+          <p className="mt-1.5 text-sm leading-[1.7] text-green-700">
+            Easy returns on unused, sealed products within the policy window.{" "}
+            <Link href="/refund-policy" className="font-semibold text-terra-600 hover:underline">
+              Return policy
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

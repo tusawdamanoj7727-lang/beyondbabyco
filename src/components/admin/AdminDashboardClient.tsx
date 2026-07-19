@@ -15,12 +15,14 @@ import type { OrderStatus } from "@/lib/supabase/database.types";
 import { cn } from "@/lib/utils";
 
 const QUICK_ACTIONS: { label: string; icon: IconName; href: string }[] = [
-  { label: "Add product", icon: "products", href: "/admin/products/new" },
-  { label: "Edit homepage", icon: "homepage", href: "/admin/homepage" },
-  { label: "Media library", icon: "media", href: "/admin/media" },
-  { label: "View analytics", icon: "reports", href: "/admin/analytics" },
-  { label: "Operations", icon: "settings", href: "/admin/operations" },
-  { label: "Create coupon", icon: "coupons", href: "/admin/coupons/new" },
+  { label: "Orders", icon: "orders", href: "/admin/orders" },
+  { label: "Shipments", icon: "orders", href: "/admin/shipping" },
+  { label: "Returns", icon: "audit", href: "/admin/returns" },
+  { label: "Inventory", icon: "inventory", href: "/admin/inventory" },
+  { label: "Customers", icon: "customers", href: "/admin/customers" },
+  { label: "Reports", icon: "reports", href: "/admin/reports" },
+  { label: "Exports", icon: "reports", href: "/admin/exports" },
+  { label: "Ops queues", icon: "settings", href: "/admin/operations/queues" },
 ];
 
 export default function AdminDashboardClient({ data }: { data: AdminDashboardOverview }) {
@@ -35,9 +37,11 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
     <div className="mx-auto max-w-7xl space-y-8 p-4 sm:p-6 lg:p-8">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">Content Studio</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">Operations</p>
           <h1 className="mt-1 font-heading text-3xl font-bold tracking-tight text-green-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-green-700/70">Store overview, health, and quick actions.</p>
+          <p className="mt-1 text-sm text-green-700/70">
+            Revenue, fulfillment, inventory, and store health at a glance.
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <a
@@ -50,29 +54,52 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
             Preview store
           </a>
           <Link
-            href="/admin/homepage"
+            href="/admin/orders"
             className="inline-flex h-10 items-center gap-2 rounded-3xl bg-green-600 px-4 text-sm font-semibold text-cream-50 transition-colors hover:bg-green-700"
           >
-            <Icon name="homepage" size={16} />
-            Edit homepage
+            <Icon name="orders" size={16} />
+            Manage orders
           </Link>
         </div>
       </header>
 
-      <section aria-label="Key metrics">
+      <section aria-label="Revenue overview">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Reveal as="div" viewport={false} delay={0}>
-            <StatsCard label="Products" value={String(data.stats.products)} icon="products" hint="Active catalog" glass />
+            <StatsCard label="Revenue (month)" value={data.stats.revenueMonth} icon="revenue" hint="Excl. cancelled/refunded" glass />
           </Reveal>
-          <Reveal as="div" viewport={false} delay={0.06}>
-            <StatsCard label="Orders" value={String(data.stats.orders)} icon="orders" hint={`${data.stats.pendingOrders} pending`} glass />
+          <Reveal as="div" viewport={false} delay={0.04}>
+            <StatsCard label="AOV (month)" value={data.stats.aovMonth} icon="revenue" hint="Average order value" glass />
+          </Reveal>
+          <Reveal as="div" viewport={false} delay={0.08}>
+            <StatsCard
+              label="Orders today"
+              value={String(data.stats.ordersToday)}
+              icon="orders"
+              hint={`${data.stats.ordersWeek} this week · ${data.stats.ordersMonth} this month`}
+              glass
+            />
           </Reveal>
           <Reveal as="div" viewport={false} delay={0.12}>
-            <StatsCard label="Customers" value={String(data.stats.customers)} icon="customers" hint="Registered" glass />
+            <StatsCard
+              label="Pending refunds"
+              value={String(data.stats.refundsPending)}
+              icon="payments"
+              hint={`${data.stats.refundsMonthAmount} refund volume (month)`}
+              glass
+            />
           </Reveal>
-          <Reveal as="div" viewport={false} delay={0.18}>
-            <StatsCard label="Revenue" value={data.stats.revenueMonth} icon="revenue" hint="This month" glass />
-          </Reveal>
+        </div>
+      </section>
+
+      <section aria-label="Fulfillment snapshot">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+          <StatsCard label="Pending" value={String(data.stats.pendingOrders)} icon="activity" hint="Awaiting confirm" />
+          <StatsCard label="Processing" value={String(data.stats.processingOrders)} icon="inventory" hint="Packed / processing" />
+          <StatsCard label="Delivered" value={String(data.stats.deliveredOrders)} icon="orders" hint="All time" />
+          <StatsCard label="Cancelled" value={String(data.stats.cancelledOrders)} icon="close" hint="Incl. refunded" />
+          <StatsCard label="Low stock" value={String(data.stats.lowStock)} icon="inventory" hint="At/below reorder" />
+          <StatsCard label="Out of stock" value={String(data.stats.outOfStock)} icon="inventory" hint="Available ≤ 0" />
         </div>
       </section>
 
@@ -82,7 +109,7 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Icon name="orders" size={18} />
-                <h2 className="font-heading text-base font-bold text-green-900">Recent orders</h2>
+                <h2 className="font-heading text-base font-bold text-green-900">Recent activity</h2>
               </div>
               <Link href="/admin/orders" className="text-sm font-semibold text-terra-600 hover:underline">
                 View all
@@ -96,7 +123,7 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
                   <li key={order.id}>
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="flex items-center justify-between gap-3 py-3 transition-colors hover:bg-cream-50/80 -mx-2 px-2 rounded-2xl"
+                      className="-mx-2 flex items-center justify-between gap-3 rounded-2xl px-2 py-3 transition-colors hover:bg-cream-50/80"
                     >
                       <div className="min-w-0">
                         <p className="font-semibold text-green-900">{order.orderNumber}</p>
@@ -130,16 +157,34 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
               <HealthRow label="Database" ok={data.storeHealth.dbOk} />
               <HealthRow label="Email provider" ok={data.storeHealth.emailOk} />
               <HealthRow label="Homepage" ok={data.homepagePublished} okLabel="Published" failLabel="Draft" />
-              {data.stats.lowStock > 0 ? (
-                <Link href="/admin/inventory" className="block rounded-2xl border border-terra-200 bg-terra-50 px-4 py-3 text-sm font-medium text-terra-800 hover:bg-terra-100/80">
-                  {data.stats.lowStock} SKU{data.stats.lowStock === 1 ? "" : "s"} low on stock
+              {data.stats.lowStock > 0 || data.stats.outOfStock > 0 ? (
+                <Link
+                  href="/admin/inventory"
+                  className="block rounded-2xl border border-terra-200 bg-terra-50 px-4 py-3 text-sm font-medium text-terra-800 hover:bg-terra-100/80"
+                >
+                  {data.stats.outOfStock > 0
+                    ? `${data.stats.outOfStock} out of stock`
+                    : `${data.stats.lowStock} low stock`}
+                  {data.stats.lowStock > 0 && data.stats.outOfStock > 0
+                    ? ` · ${data.stats.lowStock} low`
+                    : ""}
                 </Link>
               ) : null}
               {data.storeHealth.envWarnings > 0 ? (
-                <Link href="/admin/operations" className="block rounded-2xl border border-cream-300 bg-cream-50 px-4 py-3 text-sm text-green-800">
-                  {data.storeHealth.envWarnings} environment warning{data.storeHealth.envWarnings === 1 ? "" : "s"}
+                <Link
+                  href="/admin/operations"
+                  className="block rounded-2xl border border-cream-300 bg-cream-50 px-4 py-3 text-sm text-green-800"
+                >
+                  {data.storeHealth.envWarnings} environment warning
+                  {data.storeHealth.envWarnings === 1 ? "" : "s"}
                 </Link>
               ) : null}
+              <Link
+                href="/admin/operations/queues"
+                className="block rounded-2xl border border-green-100 bg-green-50/70 px-4 py-3 text-sm font-medium text-green-800 hover:bg-green-50"
+              >
+                Open queues & cron status →
+              </Link>
             </div>
           </Card>
         </section>
@@ -162,7 +207,7 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
                       href={`/admin/products/${p.id}`}
                       className="flex items-center justify-between rounded-2xl px-3 py-2.5 transition-colors hover:bg-cream-50"
                     >
-                      <span className="flex items-center gap-3 min-w-0">
+                      <span className="flex min-w-0 items-center gap-3">
                         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-green-100 text-xs font-bold text-green-800">
                           {i + 1}
                         </span>
@@ -201,6 +246,12 @@ export default function AdminDashboardClient({ data }: { data: AdminDashboardOve
           </Card>
         </section>
       </div>
+
+      <section aria-label="Catalog snapshot" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatsCard label="Active products" value={String(data.stats.products)} icon="products" glass />
+        <StatsCard label="Total orders" value={String(data.stats.orders)} icon="orders" glass />
+        <StatsCard label="Customers" value={String(data.stats.customers)} icon="customers" glass />
+      </section>
     </div>
   );
 }

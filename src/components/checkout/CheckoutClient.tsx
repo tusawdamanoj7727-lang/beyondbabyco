@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/nextjs";
 import { Loader2, MapPin, ShieldCheck, Tag } from "lucide-react";
 
 import CheckoutOrderSummary, { useCheckoutTotals } from "@/components/checkout/CheckoutOrderSummary";
+import CheckoutProgress from "@/components/checkout/CheckoutProgress";
 import PaymentMethodSelector, { type PaymentMethodId } from "@/components/checkout/PaymentMethodSelector";
 import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
@@ -129,8 +130,8 @@ function focusField(fieldId: string) {
   if ("focus" in el) (el as HTMLElement).focus({ preventScroll: true });
 }
 
-function inputClass() {
-  return formControl;
+function inputClass(hasError?: boolean) {
+  return cn(formControl, focusRing, hasError && "border-terra-400 ring-1 ring-terra-200");
 }
 
 export default function CheckoutClient({ initial }: { initial: CheckoutInitialData }) {
@@ -647,8 +648,25 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
   const busy = pending || isPlacingOrder || checkingPin;
   const selectedAddressId = shipping.id;
 
+  const progressStep: 1 | 2 | 3 | 4 = (() => {
+    if (reviewOpen || paymentPhase !== "idle") return 4;
+    const detailsOk =
+      customer.full_name.trim().length >= 2 &&
+      customer.email.includes("@") &&
+      customer.phone.replace(/\D/g, "").length === 10;
+    if (!detailsOk) return 1;
+    const addressOk =
+      shipping.line1.trim().length >= 3 &&
+      shipping.city.trim().length >= 2 &&
+      shipping.pincode.replace(/\D/g, "").length === 6;
+    if (!addressOk) return 2;
+    if (!paymentMethod) return 3;
+    return 3;
+  })();
+
   return (
     <>
+      <CheckoutProgress currentStep={progressStep} />
       <form
         className="grid gap-6 lg:grid-cols-[1fr_380px] lg:gap-8 xl:grid-cols-[1fr_420px]"
         autoComplete="on"
@@ -1137,8 +1155,8 @@ function CheckoutSection({
   return (
     <section className="rounded-3xl border border-green-100/80 bg-white/90 p-4 shadow-sm sm:p-5">
       <h2 className="font-heading text-lg font-bold text-green-900">{title}</h2>
-      {description ? <p className="mt-1 text-sm text-green-700">{description}</p> : null}
-      <div className="mt-3 sm:mt-4">{children}</div>
+      {description ? <p className="mt-1.5 text-sm leading-relaxed text-green-700">{description}</p> : null}
+      <div className="mt-4 sm:mt-5">{children}</div>
     </section>
   );
 }
@@ -1163,7 +1181,11 @@ function Field({
       </label>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="mt-1.5 text-xs font-medium text-terra-700" role="alert">
+        <p
+          id={`${id}-error`}
+          className="mt-1.5 rounded-lg bg-terra-50 px-2.5 py-1.5 text-xs font-medium text-terra-800"
+          role="alert"
+        >
           {error}
         </p>
       ) : null}

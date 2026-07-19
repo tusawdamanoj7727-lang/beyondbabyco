@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import JsonLd from "@/components/seo/JsonLd";
 import { STOREFRONT_FAQ_ITEMS } from "@/lib/content/faq-items";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
@@ -26,8 +28,19 @@ export default function FaqPage() {
       />
       <div className="min-h-screen bg-brand-cream py-16">
         <div className="mx-auto max-w-3xl px-4">
-          <h1 className="mb-3 font-heading text-4xl font-black text-brand-forest">Frequently Asked Questions</h1>
-          <p className="mb-10 text-caption text-green-700">Answers to common questions from parents like you</p>
+          <h1 className="mb-3 font-heading text-4xl font-black text-brand-forest">
+            Frequently Asked Questions
+          </h1>
+          <p className="mb-4 text-caption text-green-700">
+            Answers to common questions from parents like you
+          </p>
+          <p className="mb-10 text-sm text-green-700">
+            Prefer topics grouped by ordering, shipping, and returns?{" "}
+            <Link href="/help" className="font-semibold text-terra-600 hover:underline">
+              Open the Help Center
+            </Link>
+            .
+          </p>
           <div role="region" aria-label="Frequently asked questions" className="space-y-4">
             {STOREFRONT_FAQ_ITEMS.map((faq) => (
               <details

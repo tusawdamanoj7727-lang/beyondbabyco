@@ -124,26 +124,37 @@ export async function getOrderDashboard(): Promise<OrderDashboard> {
   const supabase = await createSupabaseServerClient();
   const today = startOfTodayIso();
 
-  const { data: orders } = await supabase
-    .from("orders")
-    .select("id, status, grand_total, created_at");
+  const [
+    { count: todayOrders },
+    { count: pending },
+    { count: packed },
+    { count: shipped },
+    { count: returns },
+    { data: todayPaidOrders },
+  ] = await Promise.all([
+    supabase.from("orders").select("id", { count: "exact", head: true }).gte("created_at", today),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    supabase
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .in("status", ["packed", "processing"]),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "shipped"),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "returned"),
+    supabase.from("orders").select("id, grand_total, created_at").gte("created_at", today),
+  ]);
 
-  const todayRows = (orders ?? []).filter((o) => o.created_at >= today);
-  const paidMap = await loadPaymentsByOrder((orders ?? []).map((o) => o.id));
-  const paidToday = todayRows.filter((o) => {
-    const p = paidMap.get(o.id);
-    return p?.status === "paid";
-  });
-
-  const revenue = paidToday.reduce((s, o) => s + o.grand_total, 0);
+  const ids = (todayPaidOrders ?? []).map((o) => o.id);
+  const paidMap = await loadPaymentsByOrder(ids);
+  const paidToday = (todayPaidOrders ?? []).filter((o) => paidMap.get(o.id)?.status === "paid");
+  const revenue = paidToday.reduce((s, o) => s + Number(o.grand_total), 0);
   const avg = paidToday.length ? revenue / paidToday.length : 0;
 
   return {
-    todayOrders: todayRows.length,
-    pending: (orders ?? []).filter((o) => o.status === "pending").length,
-    packed: (orders ?? []).filter((o) => o.status === "packed" || o.status === "processing").length,
-    shipped: (orders ?? []).filter((o) => o.status === "shipped").length,
-    returns: (orders ?? []).filter((o) => o.status === "returned").length,
+    todayOrders: todayOrders ?? 0,
+    pending: pending ?? 0,
+    packed: packed ?? 0,
+    shipped: shipped ?? 0,
+    returns: returns ?? 0,
     revenue,
     averageOrderValue: Math.round(avg * 100) / 100,
   };

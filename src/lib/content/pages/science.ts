@@ -16,6 +16,8 @@ export const researchPage: ContentPage = {
     { label: "Ingredients", href: "/ingredients" },
     { label: "Safety Standards", href: "/safety-standards" },
     { label: "Manufacturing", href: "/manufacturing" },
+    { label: "Learn", href: "/learn" },
+    { label: "Help Center", href: "/help" },
   ],
   sections: [
     {
@@ -89,6 +91,8 @@ export const ingredientsPage: ContentPage = {
     { label: "Trust Center", href: "/trust-center" },
     { label: "Research", href: "/research" },
     { label: "Safety Standards", href: "/safety-standards" },
+    { label: "Learn hub", href: "/learn" },
+    { label: "Help Center", href: "/help" },
     { label: "Why BeyondBabyCo", href: "/why-beyondbabyco" },
   ],
   sections: [

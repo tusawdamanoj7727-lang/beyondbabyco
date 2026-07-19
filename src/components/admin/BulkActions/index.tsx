@@ -13,6 +13,8 @@ export interface BulkActionsProps {
   publishLabel?: string;
   deleteLabel?: string;
   archiveLabel?: string;
+  /** Extra action buttons rendered before delete. */
+  extraActions?: { label: string; onClick: () => void; tone?: "default" | "danger" }[];
 }
 
 export default function BulkActions({
@@ -26,6 +28,7 @@ export default function BulkActions({
   publishLabel = "Publish",
   deleteLabel = "Delete",
   archiveLabel = "Archive",
+  extraActions = [],
 }: BulkActionsProps) {
   const actionClass =
     "flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50";
@@ -59,6 +62,17 @@ export default function BulkActions({
                 <Icon name="audit" size={16} /> {archiveLabel}
               </button>
             ) : null}
+            {extraActions.map((action) => (
+              <button
+                key={action.label}
+                type="button"
+                onClick={action.onClick}
+                disabled={loading}
+                className={`${actionClass} ${action.tone === "danger" ? "text-terra-600 hover:bg-terra-100" : "text-green-700 hover:bg-green-100"}`}
+              >
+                {action.label}
+              </button>
+            ))}
             {onDelete ? (
               <button type="button" onClick={onDelete} disabled={loading} className={`${actionClass} text-terra-600 hover:bg-terra-100`}>
                 <Icon name="close" size={16} /> {deleteLabel}
