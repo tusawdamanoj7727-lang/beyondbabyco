@@ -3,7 +3,7 @@ import { PRODUCTS_PAGE } from "@/lib/brand/copy";
 
 export default function ProductsPageHero() {
   return (
-    <section className="relative overflow-visible bg-brand-cream py-16 text-center">
+    <section className="relative overflow-visible bg-brand-cream py-8 text-center md:py-16">
       <HomepageMascotGuide
         mascot="bella-bunny"
         pose="hold-product"
@@ -14,7 +14,7 @@ export default function ProductsPageHero() {
         <span className="text-eyebrow font-bold uppercase tracking-widest text-brand-terra">
           {PRODUCTS_PAGE.heroEyebrow}
         </span>
-        <h1 className="mb-4 mt-3 font-heading text-4xl font-black text-brand-forest sm:text-5xl">
+        <h1 className="mb-4 mt-3 font-heading text-3xl font-black text-brand-forest sm:text-5xl">
           {PRODUCTS_PAGE.heroTitle}
         </h1>
         <p className="mx-auto max-w-xl text-body text-green-700 sm:text-lg">

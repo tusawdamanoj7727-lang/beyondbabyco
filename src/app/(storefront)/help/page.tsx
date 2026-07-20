@@ -30,9 +30,9 @@ export default function HelpCenterPage() {
       />
       <div className="min-h-screen bg-brand-cream pb-16">
         <header className="border-b border-green-100 bg-gradient-to-b from-white to-cream-50">
-          <div className="container mx-auto max-w-5xl px-4 py-12 sm:py-16">
+          <div className="container mx-auto max-w-5xl px-4 py-8 sm:py-16">
             <p className="text-eyebrow text-terra-600">Customer support</p>
-            <h1 className="mt-2 font-heading text-4xl font-bold text-green-900 sm:text-5xl">Help Center</h1>
+            <h1 className="mt-2 font-heading text-3xl font-bold text-green-900 sm:text-5xl">Help Center</h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-green-800">
               Answers for ordering, payments, shipping, returns, and product care. Still stuck? Email{" "}
               <a className="font-semibold text-terra-700 underline-offset-2 hover:underline" href={`mailto:${brandSupportEmail()}`}>

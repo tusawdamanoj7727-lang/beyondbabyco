@@ -26,15 +26,15 @@ export default function FaqPage() {
           ...(faqSchema ? [faqSchema] : []),
         ]}
       />
-      <div className="min-h-screen bg-brand-cream py-16">
+      <div className="min-h-screen bg-brand-cream py-8 md:py-16">
         <div className="mx-auto max-w-3xl px-4">
-          <h1 className="mb-3 font-heading text-4xl font-black text-brand-forest">
+          <h1 className="mb-3 font-heading text-3xl font-black text-brand-forest md:text-4xl">
             Frequently Asked Questions
           </h1>
           <p className="mb-4 text-caption text-green-700">
             Answers to common questions from parents like you
           </p>
-          <p className="mb-10 text-sm text-green-700">
+          <p className="mb-6 text-sm text-green-700 md:mb-10">
             Prefer topics grouped by ordering, shipping, and returns?{" "}
             <Link href="/help" className="font-semibold text-terra-600 hover:underline">
               Open the Help Center

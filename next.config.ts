@@ -27,9 +27,10 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [390, 414, 640, 750, 828, 1080, 1200],
-    imageSizes: [48, 64, 96, 128, 256, 320, 384, 400],
-    minimumCacheTTL: 60 * 60 * 24,
+    deviceSizes: [390, 414, 640, 750, 828],
+    /** Include 280 to match homepage hero `sizes` mobile slot (~280px display). */
+    imageSizes: [48, 64, 96, 128, 256, 280, 320, 384, 400],
+    minimumCacheTTL: 60 * 60 * 24 * 7,
     dangerouslyAllowSVG: false,
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" },

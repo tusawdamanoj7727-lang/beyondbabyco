@@ -45,7 +45,28 @@ export default function AccountDashboard({
   useEffect(() => {
     const ids = readRecentlyViewedIds();
     if (ids.length === 0) return;
-    void fetchRecentlyViewedProducts(ids).then(setRecentlyViewed);
+
+    const load = () => void fetchRecentlyViewedProducts(ids).then(setRecentlyViewed);
+
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (!isMobile) {
+      void load();
+      return;
+    }
+
+    const g = globalThis as typeof globalThis & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (typeof g.requestIdleCallback === "function") {
+      const idleId = g.requestIdleCallback(load, { timeout: 4000 });
+      return () => {
+        if (typeof g.cancelIdleCallback === "function") g.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = window.setTimeout(load, 2000);
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   const quickActions = [

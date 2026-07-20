@@ -9,6 +9,7 @@ export const metadata: Metadata = buildPageMetadata({
   noIndex: true,
 });
 
+/** Match storefront `site-main-offset` so the fixed header never covers content. */
 export default function AccountHubLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <div className="site-main-offset">{children}</div>;
 }

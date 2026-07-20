@@ -3,9 +3,15 @@ import Image from "next/image";
 import { EDITORIAL } from "@/lib/brand/generated-assets";
 import type { CatalogBanner } from "@/lib/catalog/types";
 import { blurForGeneratedUrl } from "@/lib/brand/generated-blur";
-import { IMAGE_QUALITY, resolveImageBlur } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 
-export default function CatalogHero({ banner }: { banner: CatalogBanner }) {
+export default function CatalogHero({
+  banner,
+  priorityImage = false,
+}: {
+  banner: CatalogBanner;
+  priorityImage?: boolean;
+}) {
   const heroImage = banner.imageUrl ?? EDITORIAL.hero.url;
   const heroBlur = banner.imageUrl ? blurForGeneratedUrl(banner.imageUrl) : EDITORIAL.hero.blur;
 
@@ -16,10 +22,11 @@ export default function CatalogHero({ banner }: { banner: CatalogBanner }) {
           src={heroImage}
           alt=""
           fill
-          priority={true}
-          fetchPriority="high"
-          sizes="100vw"
-          quality={IMAGE_QUALITY.hero}
+          priority={priorityImage}
+          fetchPriority={priorityImage ? "high" : undefined}
+          loading={priorityImage ? undefined : "lazy"}
+          sizes={IMAGE_SIZES.sectionBackground}
+          quality={IMAGE_QUALITY.decorativeHero}
           placeholder="blur"
           blurDataURL={resolveImageBlur(heroBlur)}
           className="object-cover object-center opacity-25"

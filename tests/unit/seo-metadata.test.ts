@@ -122,7 +122,7 @@ describe("organizationJsonLd", () => {
     const org = organizationJsonLd();
     expect(org).toMatchObject({
       contactPoint: {
-        email: "care@beyondbabyco.com",
+        email: "info@beyondbabyco.com",
         contactType: "customer service",
       },
       address: {

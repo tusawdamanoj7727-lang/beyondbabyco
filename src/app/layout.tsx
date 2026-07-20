@@ -34,7 +34,8 @@ import { cn } from "@/lib/utils";
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap",
+  /** optional avoids swap-induced CLS (measured 0.053 from Geist woff2). */
+  display: "optional",
   adjustFontFallback: true,
   preload: true,
 });
@@ -68,11 +69,6 @@ export const metadata: Metadata = {
   },
 };
 
-/** Reserves no height while CMS streams — avoids ghost gap when announcement is off. */
-function AnnouncementBarFallback() {
-  return <div data-announcement-active="false" hidden aria-hidden="true" />;
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -93,9 +89,8 @@ export default async function RootLayout({
           <AppToaster />
           <HideOnAdmin>
             <div className="site-header fixed inset-x-0 top-0 z-50 flex flex-col">
-              <Suspense fallback={<AnnouncementBarFallback />}>
-                <AnnouncementBar />
-              </Suspense>
+              {/* Awaited (no Suspense) — streaming a late ticker caused measured CLS ~0.053. */}
+              <AnnouncementBar />
               <Navbar />
             </div>
           </HideOnAdmin>

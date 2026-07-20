@@ -231,7 +231,7 @@ export default function CatalogToolbar({
             </Button>
           </Dialog.Trigger>
           <Dialog.Portal>
-            <Dialog.Overlay className="fixed inset-0 z-[80] bg-green-950/45 backdrop-blur-sm lg:hidden" />
+            <Dialog.Overlay className="fixed inset-0 z-[80] bg-green-950/55 lg:hidden" />
             <Dialog.Content className="collection-mobile-filter-sheet lg:hidden">
               <div className="mb-5 flex items-center justify-between gap-3">
                 <Dialog.Title className="font-heading text-lg font-bold text-green-900">
@@ -241,7 +241,10 @@ export default function CatalogToolbar({
                   <button
                     type="button"
                     aria-label="Close filters"
-                    className={cn("rounded-full p-2 text-green-700 hover:bg-green-50", focusRing)}
+                    className={cn(
+                      "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-green-700 hover:bg-green-50 touch-manipulation",
+                      focusRing,
+                    )}
                   >
                     <X className="h-5 w-5" />
                   </button>

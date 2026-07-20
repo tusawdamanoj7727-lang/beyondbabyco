@@ -9,14 +9,14 @@ export const BRAND_LOGO_LIGHT_PATH = "/images/brand/logo-light.png";
 export const BRAND_LOGO_ICON_PATH = "/images/brand/logo-icon.png";
 export const BRAND_LOGO_MONOCHROME_PATH = "/images/brand/logo-monochrome.png";
 
-/** Intrinsic dimensions of official file (791 × 1024). */
-export const BRAND_LOGO_WIDTH = 791;
-export const BRAND_LOGO_HEIGHT = 1024;
+/** Intrinsic dimensions of cropped lockup (717 × 348). */
+export const BRAND_LOGO_WIDTH = 717;
+export const BRAND_LOGO_HEIGHT = 348;
 
 /** Email-optimised lockup (max 320px wide). */
 export const BRAND_EMAIL_LOGO = "/images/brand/logo-email.png";
 export const BRAND_EMAIL_LOGO_WIDTH = 320;
-export const BRAND_EMAIL_LOGO_HEIGHT = 414;
+export const BRAND_EMAIL_LOGO_HEIGHT = 155;
 
 /** Favicon & PWA */
 export const BRAND_FAVICON_SVG = "/images/brand/favicon.svg";

@@ -10,14 +10,19 @@ const GUEST_COOKIE = "bbc_guest_checkout";
 const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 30; // 30 days
 
 function signingSecret(): string {
-  const secret =
-    process.env.GUEST_CHECKOUT_SECRET?.trim() ||
-    process.env.CRON_SECRET?.trim() ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  if (!secret) {
+  const dedicated = process.env.GUEST_CHECKOUT_SECRET?.trim();
+  if (dedicated) return dedicated;
+  const fallback =
+    process.env.CRON_SECRET?.trim() || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!fallback) {
     throw new Error("Guest checkout signing secret is not configured.");
   }
-  return secret;
+  if (process.env.NODE_ENV === "production") {
+    console.warn(
+      "[guest-customer] Using fallback signing secret — set GUEST_CHECKOUT_SECRET in production.",
+    );
+  }
+  return fallback;
 }
 
 function signPayload(payload: string): string {

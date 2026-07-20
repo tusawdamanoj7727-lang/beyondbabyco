@@ -3,9 +3,10 @@
 import { useState, type FormEvent } from "react";
 
 import Button from "@/components/ui/Button";
-import { trackContactForm } from "@/lib/analytics/events";
-import { focusRing } from "@/lib/design/ui";
 import { submitContactQueryAction } from "@/lib/account/support-actions";
+import { trackContactForm } from "@/lib/analytics/events";
+import { brandSupportEmail } from "@/lib/brand/contact";
+import { focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 export default function ContactPageForm() {
@@ -35,7 +36,9 @@ export default function ContactPageForm() {
       setMessage("");
     } else {
       setStatus("error");
-      setStatusMessage(result.error ?? "Something went wrong. Please email care@beyondbabyco.com directly.");
+      setStatusMessage(
+        result.error ?? `Something went wrong. Please email ${brandSupportEmail()} directly.`,
+      );
     }
 
     setLoading(false);

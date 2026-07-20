@@ -110,6 +110,8 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
   useEffect(() => {
     const el = ctaRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+
     const io = new IntersectionObserver(
       ([entry]) => {
         setShowStickyBar(!entry?.isIntersecting);
@@ -402,7 +404,7 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
             pose="hug"
             size={120}
             placementClassName="-right-4 top-0"
-            className="opacity-90"
+            className="hidden opacity-90 md:block"
             floating={false}
           />
 
@@ -454,12 +456,15 @@ export default function ProductPurchasePanel({ product }: { product: StorefrontP
         aria-hidden={!showStickyBar}
         {...(!showStickyBar ? { inert: true } : {})}
       >
-        <div className="mx-auto flex max-w-7xl items-center gap-3">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 sm:gap-3 sm:px-4">
           {!isComingSoon ? (
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 max-[390px]:hidden">
               <p className="truncate text-sm font-semibold text-green-900">{product.name}</p>
               <p className={productPrice}>{formatInr(displayPrice)}</p>
             </div>
+          ) : null}
+          {!isComingSoon ? (
+            <p className={cn(productPrice, "hidden shrink-0 max-[390px]:block")}>{formatInr(displayPrice)}</p>
           ) : null}
           <div className={cn("flex shrink-0 gap-2", isComingSoon && "w-full")}>
             {selectedInStock ? (

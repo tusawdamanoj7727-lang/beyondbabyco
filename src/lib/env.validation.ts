@@ -89,6 +89,12 @@ export function getProductionEnvWarnings(): string[] {
   if (!process.env.SENTRY_DSN && !process.env.ERROR_TRACKING_DSN && !process.env.LOGTAIL_SOURCE_TOKEN) {
     warnings.push("Error tracking DSN not configured (SENTRY_DSN, ERROR_TRACKING_DSN, or LOGTAIL_SOURCE_TOKEN)");
   }
+  if (!process.env.INVOICE_TOKEN_SECRET?.trim()) {
+    warnings.push("INVOICE_TOKEN_SECRET not set (invoice links fall back to weaker shared secrets)");
+  }
+  if (!process.env.GUEST_CHECKOUT_SECRET?.trim()) {
+    warnings.push("GUEST_CHECKOUT_SECRET not set (guest checkout cookies fall back to weaker shared secrets)");
+  }
   if (!process.env.RAZORPAY_WEBHOOK_SECRET) {
     warnings.push("RAZORPAY_WEBHOOK_SECRET not set (webhook HMAC verification requires dedicated secret)");
   }

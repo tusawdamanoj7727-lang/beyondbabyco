@@ -22,7 +22,6 @@ export default async function HomePageWithReviews({ data }: { data: StorefrontHo
         data={data}
         communityReviews={[]}
         heroCampaign={marketing.heroCampaign}
-        promoCampaign={marketing.promoCampaign}
         bannerCampaign={marketing.bannerCampaign}
         popupCampaign={marketing.popupCampaign}
         managedBanners={managedBanners}

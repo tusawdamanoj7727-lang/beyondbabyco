@@ -9,6 +9,34 @@ import { generateLabel } from "@/lib/delhivery/client";
 
 export const dynamic = "force-dynamic";
 
+const ALLOWED_LABEL_HOST_SUFFIXES = [
+  "delhivery.com",
+  "delhivery.co",
+  "dlvcdn.com",
+  "amazonaws.com",
+  "cloudfront.net",
+] as const;
+
+function isAllowedLabelUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname.toLowerCase();
+    return ALLOWED_LABEL_HOST_SUFFIXES.some(
+      (suffix) => host === suffix || host.endsWith(`.${suffix}`),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function redirectLabel(url: string) {
+  if (!isAllowedLabelUrl(url)) {
+    return jsonError("Label URL is not from a trusted host", 502);
+  }
+  return NextResponse.redirect(url);
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const parsed = labelQuerySchema.safeParse({
@@ -38,7 +66,7 @@ export async function GET(request: Request) {
     }
 
     if (shipment?.label_url && !searchParams.get("format")) {
-      return NextResponse.redirect(shipment.label_url);
+      return redirectLabel(shipment.label_url);
     }
   } else {
     const staff = await requireStaffApi();
@@ -57,7 +85,7 @@ export async function GET(request: Request) {
           },
         });
       }
-      if (label.labelUrl) return NextResponse.redirect(label.labelUrl);
+      if (label.labelUrl) return redirectLabel(label.labelUrl);
     } catch {
       return jsonError("Label download failed", 502);
     }
@@ -67,7 +95,7 @@ export async function GET(request: Request) {
   if (!result.ok) return jsonError(result.error ?? "Label fetch failed", 502);
 
   const labelUrl = result.data?.labelUrl as string | undefined;
-  if (labelUrl) return NextResponse.redirect(labelUrl);
+  if (labelUrl) return redirectLabel(labelUrl);
 
   return jsonError("Label not available", 404);
 }

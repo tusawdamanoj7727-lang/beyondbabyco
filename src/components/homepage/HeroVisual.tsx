@@ -51,25 +51,31 @@ export default function HeroVisual({ heroImageUrl, heroImageAlt }: HeroVisualPro
   const heroBlur = resolveImageBlur(heroImageUrl ? resolved.blur : HERO_DEFAULT_BLUR);
 
   return (
-    <div className="hero-visual-stage relative z-10 mx-auto w-full max-w-[32rem] overflow-visible lg:max-w-[34rem]">
-      <div className="premium-image-frame hero-editorial-frame relative z-0 aspect-[4/5] w-full overflow-hidden bg-white">
+    <div className="hero-visual-stage relative z-10 mx-auto w-full max-w-[17.5rem] overflow-visible sm:max-w-[32rem] lg:max-w-[34rem]">
+      <div className="premium-image-frame hero-editorial-frame relative z-0 aspect-[5/4] w-full overflow-hidden bg-white sm:aspect-[4/5]">
         <Image
           src={resolvedUrl}
           alt={heroImageAlt}
-          fill
-          priority={true}
+          /** Fixed intrinsic size (≈2× mobile display) — avoids Next `fill` preload of w=1200. */
+          width={560}
+          height={448}
+          /**
+           * Route-level single-URL `<link rel=preload>` owns discovery.
+           * Do not set `priority` / `fetchPriority` — Next injects a competing imageSrcSet preload.
+           */
+          loading="eager"
           sizes={IMAGE_SIZES.hero}
           quality={IMAGE_QUALITY.hero}
           placeholder="blur"
           blurDataURL={heroBlur}
-          className="absolute inset-0 z-0 object-cover object-[center_22%]"
+          className="absolute inset-0 z-0 h-full w-full object-cover object-[center_22%]"
         />
       </div>
 
-      <div aria-hidden="true" className="hero-editorial-reflection relative z-0" />
-      <div aria-hidden="true" className="hero-editorial-pedestal relative z-0" />
+      <div aria-hidden="true" className="hero-editorial-reflection relative z-0 hidden sm:block" />
+      <div aria-hidden="true" className="hero-editorial-pedestal relative z-0 hidden sm:block" />
 
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-30 select-none">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-30 hidden select-none lg:block">
         {HERO_MASCOTS.map((mascot) => (
           <div
             key={mascot.id}

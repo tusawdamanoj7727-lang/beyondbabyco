@@ -33,7 +33,13 @@ export default function CatalogBundleRecommendations({
   function addAll() {
     startTransition(() => {
       for (const product of bundleItems) {
-        addItem(buildCartItemInput(product));
+        addItem(
+          buildCartItemInput(product, {
+            variantId: product.defaultVariantId ?? null,
+            variantName: product.defaultVariantName ?? null,
+          }),
+          1,
+        );
       }
       cartUi?.openMiniCart();
       toast.success("Bundle added to cart");

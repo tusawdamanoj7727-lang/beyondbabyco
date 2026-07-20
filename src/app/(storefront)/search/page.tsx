@@ -30,8 +30,8 @@ export default async function SearchPage({ searchParams }: PageProps) {
         ]}
       />
       <div>
-        <div className="container mb-8">
-          <h1 className="font-heading text-3xl font-bold text-green-900">Search</h1>
+        <div className="container mb-6 pt-2 md:mb-8 md:pt-0">
+          <h1 className="font-heading text-2xl font-bold text-green-900 md:text-3xl">Search</h1>
           {q ? (
             <p className="mt-2 text-green-700">
               Results for <span className="font-semibold text-green-900">&ldquo;{q}&rdquo;</span>

@@ -43,7 +43,7 @@ export default function RefundPolicyPage() {
       <h2>How to request a return</h2>
       <ol>
         <li>
-          Email <a href="mailto:care@beyondbabyco.com">care@beyondbabyco.com</a> with your order number,
+          Email <a href="mailto:info@beyondbabyco.com">info@beyondbabyco.com</a> with your order number,
           product name, and reason for return.
         </li>
         <li>Our team will confirm eligibility within 1–2 business days.</li>
@@ -77,7 +77,7 @@ export default function RefundPolicyPage() {
 
       <h2>Contact</h2>
       <p>
-        Email: <a href="mailto:care@beyondbabyco.com">care@beyondbabyco.com</a>
+        Email: <a href="mailto:info@beyondbabyco.com">info@beyondbabyco.com</a>
         <br />
         WhatsApp: +91 72968 87936
         <br />

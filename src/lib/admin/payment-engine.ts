@@ -141,9 +141,9 @@ export async function processWebhookPayload(
       ? resolveRazorpayWebhookSecret(gateway.webhook_secret_encrypted)
       : decodeGatewaySecret(gateway.webhook_secret_encrypted);
   const eventId = opts?.eventId?.trim() || null;
+  const adapter = getPaymentGatewayAdapter(provider);
 
-  // Idempotency: only short-circuit when already successfully processed.
-  // Unprocessed rows must be retried so Razorpay keeps driving capture after transient failures.
+  // Idempotency: short-circuit only when already successfully processed (no mutation).
   if (eventId) {
     const { data: existing } = await supabase
       .from("payment_webhooks")
@@ -161,6 +161,48 @@ export async function processWebhookPayload(
       });
       return { ok: true, error: null, webhookId: existing.id, duplicate: true };
     }
+
+    if (provider === "razorpay") {
+      const alreadyComplete = await isRazorpayCaptureCompleted(gatewayId, eventId);
+      if (alreadyComplete) {
+        logger.info("razorpay.webhook.duplicate", { gatewayId, eventId, via: "capture_log" });
+        return { ok: true, error: null, duplicate: true };
+      }
+    }
+  }
+
+  // Always verify HMAC before insert or reprocess of unprocessed rows.
+  const verify = await adapter.verifyWebhook({
+    payload,
+    signature,
+    secret: webhookSecret,
+    rawBody: opts?.rawBody,
+  });
+
+  if (!verify.success) {
+    logger.warn("payment.webhook.rejected", {
+      gatewayId,
+      provider,
+      reason: verify.message,
+    });
+
+    await supabase.from("payment_logs").insert({
+      gateway_id: gatewayId,
+      level: "error",
+      message: `Webhook rejected: ${verify.message ?? "Verification failed"}`,
+      metadata: { eventId, hasSignature: Boolean(signature) },
+    });
+
+    return { ok: false, error: verify.message ?? "Webhook verification failed." };
+  }
+
+  if (eventId) {
+    const { data: existing } = await supabase
+      .from("payment_webhooks")
+      .select("id, processed, payload, event_type")
+      .eq("gateway_id", gatewayId)
+      .eq("provider_event_id", eventId)
+      .maybeSingle();
 
     if (existing && !existing.processed) {
       logger.info("razorpay.webhook.reprocess_unprocessed", {
@@ -188,39 +230,6 @@ export async function processWebhookPayload(
         .eq("id", existing.id);
       return { ok: true, error: null, webhookId: existing.id, duplicate: true };
     }
-
-    if (provider === "razorpay") {
-      const alreadyComplete = await isRazorpayCaptureCompleted(gatewayId, eventId);
-      if (alreadyComplete) {
-        logger.info("razorpay.webhook.duplicate", { gatewayId, eventId, via: "capture_log" });
-        return { ok: true, error: null, duplicate: true };
-      }
-    }
-  }
-
-  const adapter = getPaymentGatewayAdapter(provider);
-  const verify = await adapter.verifyWebhook({
-    payload,
-    signature,
-    secret: webhookSecret,
-    rawBody: opts?.rawBody,
-  });
-
-  if (!verify.success) {
-    logger.warn("payment.webhook.rejected", {
-      gatewayId,
-      provider,
-      reason: verify.message,
-    });
-
-    await supabase.from("payment_logs").insert({
-      gateway_id: gatewayId,
-      level: "error",
-      message: `Webhook rejected: ${verify.message ?? "Verification failed"}`,
-      metadata: { event_id: eventId } as Json,
-    });
-
-    return { ok: false, error: verify.message ?? "Webhook verification failed" };
   }
 
   const eventType = String(payload.event ?? payload.type ?? "unknown");

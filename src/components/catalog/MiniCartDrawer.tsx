@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { ShoppingBag, X } from "lucide-react";
@@ -8,7 +9,6 @@ import CartLineItemRow from "@/components/catalog/CartLineItemRow";
 import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import { MICROCOPY } from "@/lib/brand/copy";
 import Button from "@/components/ui/Button";
-import { Mascot } from "@/components/mascots";
 import { useCustomerAuth } from "@/lib/auth/customer-hooks";
 import { badgeCount, dialogOverlay, drawerPanel, focusRing, iconButton } from "@/lib/design/ui";
 import { formatInr } from "@/lib/catalog/format";
@@ -19,6 +19,11 @@ import { formatGstRateLabel } from "@/lib/catalog/gst-rates";
 import { estimateShippingFee } from "@/lib/storefront/shipping";
 import { cartLineKey } from "@/lib/storefront/cart-types";
 import { cn } from "@/lib/utils";
+
+const Mascot = dynamic(() => import("@/components/mascots/Mascot"), {
+  ssr: false,
+  loading: () => <div className="h-[120px] w-[120px]" aria-hidden />,
+});
 
 export default function MiniCartDrawer() {
   const { miniCartOpen, setMiniCartOpen } = useCartUi();

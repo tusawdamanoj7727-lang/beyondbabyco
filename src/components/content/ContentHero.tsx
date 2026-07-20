@@ -25,6 +25,7 @@ export default function ContentHero({
           description,
           imageUrl: heroImage ?? null,
         }}
+        priorityImage={false}
       />
       <CatalogBreadcrumb
         items={[

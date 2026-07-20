@@ -29,8 +29,10 @@ export default async function WishlistPage() {
           { label: "Wishlist" },
         ]}
       />
-      <div className="container pb-16">
-        <h1 className="mb-8 font-heading text-3xl font-bold text-green-900">Wishlist</h1>
+      <div className="container pb-10 md:pb-16">
+        <h1 className="mb-5 font-heading text-2xl font-bold text-green-900 md:mb-8 md:text-3xl">
+          Wishlist
+        </h1>
         <WishlistClient products={products} isLoggedIn={!!user} />
       </div>
     </>

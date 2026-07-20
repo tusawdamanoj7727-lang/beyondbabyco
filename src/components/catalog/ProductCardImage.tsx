@@ -1,20 +1,10 @@
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
-
 import CategoryProductPlaceholder from "@/components/catalog/CategoryProductPlaceholder";
-import StaticSvgImage, { isStaticSvgUrl } from "@/components/media/StaticSvgImage";
+import ProductCardImageClient from "@/components/catalog/ProductCardImageClient";
 import {
   categoryPlaceholderImage,
   resolveProductVisualGroup,
 } from "@/lib/catalog/product-category-images";
-import {
-  IMAGE_DIMENSIONS,
-  IMAGE_QUALITY,
-  IMAGE_SIZES,
-  resolveImageBlur,
-} from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
 import { cn } from "@/lib/utils";
 
 type ProductCardImageProps = {
@@ -32,6 +22,7 @@ type ProductCardImageProps = {
   compact?: boolean;
 };
 
+/** Server-rendered product image — hydrates only the tiny error-fallback client island. */
 export default function ProductCardImage({
   src,
   alt,
@@ -48,10 +39,9 @@ export default function ProductCardImage({
 }: ProductCardImageProps) {
   const group = resolveProductVisualGroup(categorySlug, productSlug);
   const fallbackSrc = categoryPlaceholderImage(group);
-  const [activeSrc, setActiveSrc] = useState(src?.trim() || fallbackSrc);
-  const [usePlaceholder, setUsePlaceholder] = useState(!src?.trim());
+  const trimmed = src?.trim();
 
-  if (usePlaceholder) {
+  if (!trimmed) {
     return (
       <CategoryProductPlaceholder
         productName={productName}
@@ -63,42 +53,21 @@ export default function ProductCardImage({
     );
   }
 
-  if (isStaticSvgUrl(activeSrc)) {
-    return (
-      <div className={cn("relative h-full w-full overflow-hidden bg-cream-50", className)}>
-        <StaticSvgImage
-          src={activeSrc}
-          alt={alt}
-          fill
-          className={cn("object-cover", imageClassName)}
-        />
-      </div>
-    );
-  }
-
-  const { width, height } = IMAGE_DIMENSIONS.productCard;
-
   return (
-    <div className={cn("relative flex h-full w-full items-center justify-center overflow-hidden bg-cream-50", className)}>
-      <Image
-        src={activeSrc}
-        alt={alt}
-        width={width}
-        height={height}
-        priority={priority}
-        sizes={sizes ?? IMAGE_SIZES.productCard}
-        quality={quality}
-        placeholder="blur"
-        blurDataURL={resolveImageBlur(blurDataUrl)}
-        className={cn("h-full w-full", imageClassName)}
-        onError={() => {
-          if (activeSrc !== fallbackSrc) {
-            setActiveSrc(fallbackSrc);
-            return;
-          }
-          setUsePlaceholder(true);
-        }}
-      />
-    </div>
+    <ProductCardImageClient
+      src={trimmed}
+      alt={alt}
+      productName={productName}
+      productSlug={productSlug}
+      categorySlug={categorySlug}
+      blurDataUrl={blurDataUrl}
+      className={className}
+      imageClassName={imageClassName}
+      sizes={sizes ?? IMAGE_SIZES.productCard}
+      quality={quality}
+      priority={priority}
+      compact={compact}
+      fallbackSrc={fallbackSrc}
+    />
   );
 }

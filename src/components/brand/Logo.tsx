@@ -12,34 +12,40 @@ import { cn } from "@/lib/utils";
 type LogoProps = {
   className?: string;
   href?: string | null;
-  size?: "nav" | "md" | "footer" | "loading";
+  size?: "nav" | "md" | "footer" | "loading" | "hero";
   variant?: BrandLogoVariant;
   priority?: boolean;
 };
 
-/** Height-only sizing (+35% vs Phase 10.7) — width follows intrinsic aspect ratio. */
+/**
+ * Cropped landscape lockup (717×348) — height-based so headers stay balanced
+ * while the full “Beyond / Baby Co.” wordmark stays sharp and readable.
+ */
 const sizeMap = {
-  /** Navbar: 110px mobile, 140px desktop width */
+  /** Header / sticky / mobile drawer — locked to `--header-nav` breakpoints (768px) */
   nav: {
-    className: "h-auto w-[110px] lg:w-[140px]",
-    sizes: "(max-width: 1024px) 110px, 140px",
+    className: "h-10 w-auto md:h-12",
+    sizes: "(max-width: 767px) 118px, 148px",
   },
-  /** Auth, checkout, admin login */
+  /** Homepage hero brand signal */
+  hero: {
+    className: "h-14 w-auto sm:h-16 lg:h-[4.25rem]",
+    sizes: "(max-width: 640px) 160px, (max-width: 1024px) 185px, 210px",
+  },
+  /** Auth, checkout empty, admin login */
   md: {
-    className: "h-[3.75rem] w-auto sm:h-16",
-    sizes: "65px",
+    className: "h-14 w-auto sm:h-16",
+    sizes: "(max-width: 640px) 160px, 185px",
   },
-  /** Footer on dark green */
+  /** Footer brand block */
   footer: {
-    className: "h-10 w-auto",
-    width: 120,
-    height: 40,
-    sizes: "120px",
+    className: "h-12 w-auto sm:h-14",
+    sizes: "(max-width: 640px) 140px, 160px",
   },
   /** Full-page loading states */
   loading: {
-    className: "h-16 w-auto sm:h-20",
-    sizes: "80px",
+    className: "h-16 w-auto sm:h-[4.5rem]",
+    sizes: "(max-width: 640px) 185px, 210px",
   },
 } as const;
 
@@ -48,21 +54,19 @@ export default function Logo({
   href = "/",
   size = "md",
   variant,
-  priority = size === "nav",
+  priority = size === "hero",
 }: LogoProps) {
   const resolvedVariant = variant ?? "default";
   const dims = sizeMap[size];
   const intrinsic = brandLogoDimensions(resolvedVariant);
-  const width = "width" in dims ? dims.width : intrinsic.width;
-  const height = "height" in dims ? dims.height : intrinsic.height;
   const src = brandLogoPath(resolvedVariant);
 
   const image = (
     <Image
       src={src}
       alt={BRAND_LOGO_ALT}
-      width={width}
-      height={height}
+      width={intrinsic.width}
+      height={intrinsic.height}
       priority={priority}
       sizes={dims.sizes}
       unoptimized={src.endsWith(".png")}

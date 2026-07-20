@@ -104,7 +104,7 @@ describe("trust SEO schemas", () => {
       foundingDate: "2021",
       areaServed: "IN",
       contactPoint: {
-        email: "care@beyondbabyco.com",
+        email: "info@beyondbabyco.com",
         contactType: "customer service",
       },
       address: {

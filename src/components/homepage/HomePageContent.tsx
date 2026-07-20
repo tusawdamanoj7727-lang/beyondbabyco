@@ -2,7 +2,6 @@ import Image from "next/image";
 
 import HeroSection from "@/components/sections/HeroSection";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
-import PromotionalCards from "@/components/homepage/PromotionalCards";
 import HomepageMarketingBanner from "@/components/homepage/HomepageMarketingBanner";
 import ManagedStorefrontBanner from "@/components/marketing/ManagedStorefrontBanner";
 import HomePageClientIslands from "@/components/homepage/HomePageClientIslands";
@@ -15,14 +14,13 @@ import type { BannerListItem } from "@/lib/admin/banner-types";
 import { fixedImageSizes, mascotImageQuality } from "@/lib/media/image-delivery";
 
 /**
- * Above-the-fold SSR (hero + featured products + promos when ordered early).
+ * Above-the-fold SSR (hero + featured products when ordered early).
  * Below-fold + popup mount from a client island to allow `ssr: false`.
  */
 export default function HomePageContent({
   data,
   communityReviews,
   heroCampaign = null,
-  promoCampaign = null,
   bannerCampaign = null,
   popupCampaign = null,
   managedBanners = [],
@@ -31,7 +29,6 @@ export default function HomePageContent({
   featuredReview?: EnrichedPublicReview | null;
   communityReviews: EnrichedPublicReview[];
   heroCampaign?: StorefrontCampaignSlot | null;
-  promoCampaign?: StorefrontCampaignSlot | null;
   bannerCampaign?: StorefrontCampaignSlot | null;
   popupCampaign?: StorefrontCampaignSlot | null;
   managedBanners?: BannerListItem[];
@@ -39,9 +36,9 @@ export default function HomePageContent({
   const hero = applyHeroCampaignOverride(data.hero, heroCampaign);
   const order = data.sectionOrder.length
     ? data.sectionOrder
-    : (["hero", "promotions", "featured_products"] as const);
+    : (["hero", "featured_products"] as const);
 
-  const aboveFoldKeys = new Set(["hero", "promotions", "featured_products"]);
+  const aboveFoldKeys = new Set(["hero", "featured_products"]);
   const above = order.filter((k) => aboveFoldKeys.has(k));
 
   return (
@@ -50,18 +47,10 @@ export default function HomePageContent({
         if (key === "hero" && data.sections.hero.enabled) {
           return <HeroSection key="hero" hero={hero} />;
         }
-        if (key === "promotions" && data.sections.promotions.enabled) {
-          return (
-            <div key="promotions">
-              <SectionWaveDivider />
-              <PromotionalCards config={data.promotions} campaign={promoCampaign} />
-            </div>
-          );
-        }
         if (key === "featured_products" && data.sections.featured_products.enabled) {
           return (
-            <div key="featured_products" className="relative overflow-visible">
-              <SectionWaveDivider />
+            <div key="featured_products" className="homepage-featured-wrap relative overflow-visible">
+              <SectionWaveDivider className="homepage-section-wave" />
               <div
                 className="pointer-events-none absolute right-0 top-8 z-20 hidden select-none xl:block"
                 aria-hidden="true"

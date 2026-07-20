@@ -22,9 +22,9 @@ export default async function AccountLayout({ children }: { children: React.Reac
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_12%_0%,color-mix(in_srgb,var(--green-100)_40%,transparent),transparent_70%)]"
         />
-        <div className="relative mx-auto max-w-6xl px-4 pb-6 pt-10">
+        <div className="relative mx-auto max-w-6xl px-4 pb-4 pt-6 md:pb-6 md:pt-10">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">My Account</p>
-          <h1 className="mt-2 font-heading text-3xl font-bold text-green-900">Welcome back</h1>
+          <h1 className="mt-2 font-heading text-2xl font-bold text-green-900 md:text-3xl">Welcome back</h1>
           <p className="mt-1 text-sm text-green-700">Manage orders, addresses, and your profile.</p>
         </div>
       </div>

@@ -68,13 +68,13 @@ export default function ShippingPolicyPage() {
       <h2>Delivery issues</h2>
       <p>
         If your order is delayed, lost, or arrives damaged, contact us within <strong>48 hours</strong> at{" "}
-        <a href="mailto:care@beyondbabyco.com">care@beyondbabyco.com</a> with your order number. We will
+        <a href="mailto:info@beyondbabyco.com">info@beyondbabyco.com</a> with your order number. We will
         coordinate with our courier partner to resolve the issue.
       </p>
 
       <h2>Contact</h2>
       <p>
-        Email: <a href="mailto:care@beyondbabyco.com">care@beyondbabyco.com</a>
+        Email: <a href="mailto:info@beyondbabyco.com">info@beyondbabyco.com</a>
         <br />
         WhatsApp: +91 72968 87936
         <br />

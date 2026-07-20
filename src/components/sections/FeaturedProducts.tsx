@@ -1,11 +1,10 @@
 import HomeSection from "@/components/homepage/HomeSection";
 import HomeSectionHeader from "@/components/homepage/HomeSectionHeader";
-import ProductCard from "@/components/catalog/ProductCard";
+import FeaturedProductCard from "@/components/catalog/FeaturedProductCard";
 import { FEATURED_PRODUCTS as FEATURED_COPY } from "@/lib/brand/copy";
 import type { StorefrontFeaturedProduct } from "@/lib/homepage/storefront";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { GST_RATE_BABY } from "@/lib/catalog/gst-rates";
-import { homepageGridGap } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
 
 const LAUNCH_PRODUCT_COUNT = 8;
@@ -66,24 +65,27 @@ export default function FeaturedProducts({
   if (cards.length === 0) return null;
 
   return (
-    <HomeSection id="products" tone="white" reveal={false}>
+    <HomeSection id="products" tone="white" reveal={false} className="homepage-featured-section">
       <HomeSectionHeader
         eyebrow={FEATURED_COPY.eyebrow}
         heading={sectionHeading}
         intro={FEATURED_COPY.intro}
+        className="homepage-featured-header"
       />
 
-      <div className={cn("homepage-section-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4", homepageGridGap)}>
-        {cards.map((product, index) => (
-          <div key={product.id} className="h-full">
-            <ProductCard
-              product={product}
-              showListingCta
-              hideHoverActions
-              imagePriority={index < 2}
-              className="homepage-product-card h-full"
-            />
-          </div>
+      <div
+        className={cn(
+          "homepage-section-grid homepage-featured-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+          "gap-4 sm:gap-6 lg:gap-8",
+        )}
+      >
+        {cards.map((product) => (
+          <FeaturedProductCard
+            key={product.id}
+            product={product}
+            imagePriority={false}
+            className="homepage-product-card h-full"
+          />
         ))}
       </div>
     </HomeSection>

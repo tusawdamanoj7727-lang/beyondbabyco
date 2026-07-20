@@ -53,7 +53,7 @@ export default function CheckoutOrderSummary({
       className={
         compact
           ? "space-y-3"
-          : "sticky top-32 rounded-3xl border border-green-100/80 bg-white/95 p-6 shadow-card backdrop-blur-sm"
+          : "sticky top-[calc(var(--site-header-h)+1rem)] rounded-3xl border border-green-100/80 bg-white p-4 shadow-card sm:p-6 md:bg-white/95 md:backdrop-blur-sm md:p-5"
       }
       aria-label="Order summary"
     >
@@ -147,30 +147,4 @@ export default function CheckoutOrderSummary({
   );
 }
 
-export function useCheckoutTotals(shippingTotal: number, buyerState: string) {
-  const { items, subtotal, appliedCoupon } = useCart();
-  const couponDiscount = appliedCoupon?.discountAmount ?? 0;
-  const freeShipping = appliedCoupon?.freeShipping ?? false;
-  const shipping = freeShipping ? 0 : shippingTotal;
-  const afterDiscount = Math.max(0, subtotal - couponDiscount);
-  const gstLineItems: GstLineItem[] = items.map((i) => ({
-    price: i.price,
-    quantity: i.quantity,
-    gstRate: i.gstRate,
-  }));
-  const gstBreakdown = calculateGSTFromCart(
-    gstLineItems,
-    buyerState.trim() || SELLER_STATE,
-    couponDiscount,
-  );
-  const total = afterDiscount + shipping;
-  return {
-    subtotal,
-    couponDiscount,
-    shipping,
-    tax: gstBreakdown.total,
-    gstBreakdown,
-    total,
-    freeShipping,
-  };
-}
+export { useCheckoutTotals } from "@/components/checkout/use-checkout-totals";

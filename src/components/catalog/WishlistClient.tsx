@@ -35,7 +35,7 @@ async function fetchWishlistProductsByIds(ids: string[]): Promise<StorefrontProd
 
 export default function WishlistClient({
   products: initialProducts,
-  isLoggedIn,
+  isLoggedIn: _isLoggedIn,
 }: {
   products: StorefrontProduct[];
   isLoggedIn: boolean;
@@ -43,11 +43,11 @@ export default function WishlistClient({
   const addStoreItem = useCartStore((s) => s.addItem);
   const cartUi = useCartUiOptional();
   const toast = useToast();
-  const { ids, loading: wishlistLoading, hydrated, remove: removeWishlist, refresh } = useWishlist();
+  const { ids, hydrated, remove: removeWishlist, refresh } = useWishlist();
   const idsKey = useMemo(() => [...ids].sort().join(","), [ids]);
   const initialIdsKey = useMemo(() => initialProducts.map((p) => p.id).sort().join(","), [initialProducts]);
   const [products, setProducts] = useState<StorefrontProduct[]>(initialProducts);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [quickView, setQuickView] = useState<StorefrontProduct | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -68,7 +68,7 @@ export default function WishlistClient({
       try {
         const loaded = await fetchWishlistProductsByIds(idList);
         if (!cancelled) {
-          setProducts(loaded.length > 0 ? loaded : products.length > 0 ? products : []);
+          setProducts(loaded);
         }
       } catch {
         // Keep whatever is already rendered (SSR or prior load).
@@ -155,14 +155,14 @@ export default function WishlistClient({
                 aria-label={`Remove ${product.name} from wishlist`}
                 onClick={() => remove(product.id)}
                 className={cn(
-                  "absolute right-3 top-3 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream-200 bg-white/95 text-green-800 shadow-sm backdrop-blur-sm transition hover:bg-terra-50 hover:text-terra-600",
+                  "absolute right-3 top-3 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream-200 bg-white text-green-800 shadow-sm transition hover:bg-terra-50 hover:text-terra-600 md:bg-white/95 md:backdrop-blur-sm",
                   focusRing,
                 )}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-2 gap-2 max-[430px]:grid-cols-1 sm:grid-cols-3">
               <Button
                 variant="primary"
                 size="sm"

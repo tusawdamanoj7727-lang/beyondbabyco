@@ -29,7 +29,7 @@ describe("communications email templates", () => {
     expect(rendered.subject).toContain("BBC-2026");
     expect(rendered.html).toContain("BeyondBabyCo");
     expect(rendered.html).toContain("Dermatologically Tested");
-    expect(rendered.html).toContain("care@beyondbabyco.com");
+    expect(rendered.html).toContain("info@beyondbabyco.com");
     expect(rendered.text.length).toBeGreaterThan(20);
   });
 

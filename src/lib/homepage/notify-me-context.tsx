@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   createContext,
   useCallback,
@@ -9,11 +10,14 @@ import {
   type ReactNode,
 } from "react";
 
-import NotifyMeModal from "@/components/notify/NotifyMeModal";
 import {
   buildCategoryNotifyTarget,
   type NotifyMeTarget,
 } from "@/lib/notify-me/target";
+
+const NotifyMeModal = dynamic(() => import("@/components/notify/NotifyMeModal"), {
+  ssr: false,
+});
 
 type NotifyMeContextValue = {
   openNotifyMe: (target: NotifyMeTarget | string) => void;
@@ -41,14 +45,16 @@ export function NotifyMeProvider({ children }: { children: ReactNode }) {
   return (
     <NotifyMeContext.Provider value={value}>
       {children}
-      <NotifyMeModal
-        open={open}
-        productCategory={target.productCategory}
-        productId={target.productId}
-        productName={target.productName}
-        mode={target.mode}
-        onClose={() => setOpen(false)}
-      />
+      {open ? (
+        <NotifyMeModal
+          open={open}
+          productCategory={target.productCategory}
+          productId={target.productId}
+          productName={target.productName}
+          mode={target.mode}
+          onClose={() => setOpen(false)}
+        />
+      ) : null}
     </NotifyMeContext.Provider>
   );
 }

@@ -5,15 +5,20 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const DEFAULT_TTL_MS = 60 * 60 * 24 * 90; // 90 days
 
 function signingSecret(): string {
-  const secret =
-    process.env.INVOICE_TOKEN_SECRET?.trim() ||
-    process.env.GUEST_CHECKOUT_SECRET?.trim() ||
-    process.env.CRON_SECRET?.trim() ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  if (!secret) {
+  const dedicated =
+    process.env.INVOICE_TOKEN_SECRET?.trim() || process.env.GUEST_CHECKOUT_SECRET?.trim();
+  if (dedicated) return dedicated;
+  const fallback =
+    process.env.CRON_SECRET?.trim() || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!fallback) {
     throw new Error("Invoice token signing secret is not configured.");
   }
-  return secret;
+  if (process.env.NODE_ENV === "production") {
+    console.warn(
+      "[invoices/token] Using fallback signing secret — set INVOICE_TOKEN_SECRET in production.",
+    );
+  }
+  return fallback;
 }
 
 function sign(payload: string): string {

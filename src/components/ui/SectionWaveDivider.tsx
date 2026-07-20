@@ -21,7 +21,7 @@ export default function SectionWaveDivider({
         viewBox="0 0 1440 40"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
-        className="h-8 w-full"
+        className="h-5 w-full sm:h-8"
         style={{ fill }}
       >
         <path d="M0,20 C360,40 1080,0 1440,20 L1440,40 L0,40 Z" />

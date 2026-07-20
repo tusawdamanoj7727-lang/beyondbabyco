@@ -1,47 +1,31 @@
-import CatalogBundleRecommendations from "@/components/catalog/CatalogBundleRecommendations";
-import FeaturedCollections from "@/components/catalog/FeaturedCollections";
 import ProductGridPagination from "@/components/catalog/ProductGridPagination";
 import ProductListingGrid from "@/components/catalog/ProductListingGrid";
 import ProductsCatalogClient from "@/components/catalog/ProductsCatalogClient";
 import RecentlyViewed from "@/components/catalog/RecentlyViewed";
 import { catalogParamsToSearchParams, parseCatalogParams } from "@/lib/catalog/params";
 import type { CatalogSearchParams } from "@/lib/catalog/types";
-import {
-  getCatalogFilterOptions,
-  getFeaturedStorefrontProducts,
-  listStorefrontProducts,
-} from "@/lib/catalog/storefront";
+import { getCatalogFilterOptions, listStorefrontProducts } from "@/lib/catalog/storefront";
 
 type ProductsCatalogSectionProps = {
   searchParams: Record<string, string | string[] | undefined>;
-  showFeatured: boolean;
   hasActiveFilters: boolean;
 };
 
 export default async function ProductsCatalogSection({
   searchParams,
-  showFeatured,
   hasActiveFilters,
 }: ProductsCatalogSectionProps) {
   const params = parseCatalogParams(searchParams);
 
-  const [filters, result, featured] = await Promise.all([
+  const [filters, result] = await Promise.all([
     getCatalogFilterOptions(),
     listStorefrontProducts(params),
-    showFeatured ? getFeaturedStorefrontProducts(4) : Promise.resolve([]),
   ]);
 
   const queryString = catalogParamsToSearchParams(params).toString();
 
   return (
     <>
-      {showFeatured ? (
-        <>
-          <FeaturedCollections products={featured} />
-          <CatalogBundleRecommendations products={featured} />
-        </>
-      ) : null}
-
       <ProductsCatalogClient filters={filters} params={params} total={result.total} />
 
       <ProductListingGrid

@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { cn } from "@/lib/utils";
 
+/** Sticky catalog toolbar — border/shadow via CSS only (no scroll listeners). */
 export default function CollectionStickyToolbar({
   children,
   className,
@@ -11,20 +10,5 @@ export default function CollectionStickyToolbar({
   children: React.ReactNode;
   className?: string;
 }) {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 120);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <div className={cn("collection-sticky-toolbar", scrolled && "is-scrolled", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("collection-sticky-toolbar", className)}>{children}</div>;
 }

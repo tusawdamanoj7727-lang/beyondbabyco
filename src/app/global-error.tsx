@@ -45,7 +45,7 @@ export default function GlobalError({
           </p>
           <h1 style={{ fontSize: "1.75rem", margin: "0.75rem 0" }}>We hit an unexpected error</h1>
           <p style={{ lineHeight: 1.6, color: "#166534" }}>
-            Please try again. If this continues, email care@beyondbabyco.com and we will help right away.
+            Please try again. If this continues, email info@beyondbabyco.com and we will help right away.
           </p>
           <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", marginTop: "1.5rem" }}>
             <button

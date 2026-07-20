@@ -2,14 +2,17 @@ import { STATIC_IMAGE_BLUR } from "@/lib/media/image-placeholder";
 
 /** Image quality tiers for Next.js Image optimization. */
 export const IMAGE_QUALITY = {
-  hero: 82,
-  editorial: 78,
-  product: 80,
+  /** Homepage / PDP LCP photography — leaner bytes for mobile LCP. */
+  hero: 72,
+  editorial: 70,
+  product: 72,
   /** Small decorative mascots (hero accents, footer row). */
-  mascot: 70,
-  mascotFooter: 65,
+  mascot: 68,
+  mascotFooter: 62,
   /** Feature-card thumbnails & science icons (48–72px display). */
-  thumbnail: 68,
+  thumbnail: 65,
+  /** Decorative faded heroes (opacity ~25%) — keep tiny. */
+  decorativeHero: 55,
 } as const;
 
 /** Intrinsic dimensions for Next.js Image (caps optimizer srcset width). */
@@ -34,8 +37,8 @@ export const EDITORIAL_IMAGE_QUALITY = IMAGE_QUALITY.editorial;
 
 /** Responsive `sizes` hints for common layouts. */
 export const IMAGE_SIZES = {
-  /** Full-width hero / above-the-fold photography */
-  hero: "(max-width: 768px) 100vw, 50vw",
+  /** Homepage hero frame (~280px mobile / ~512–544px desktop — not full viewport). */
+  hero: "(max-width: 640px) 280px, (max-width: 1024px) 512px, 544px",
   /** Lifestyle split hero, beyond-care panels */
   lifestyleHero: "(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw",
   /** Small lifestyle icon inside feature cards (48px display, 2× retina) */
@@ -43,9 +46,9 @@ export const IMAGE_SIZES = {
   /** Brand promise card icons (72px display, 2× retina) */
   brandPromiseIcon: "144px",
   /** Product cards in grids (homepage featured, /products, wishlist) */
-  productCard: "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+  productCard: "(max-width: 390px) 46vw, (max-width: 640px) 48vw, (max-width: 1024px) 33vw, 280px",
   /** @deprecated Use productCard */
-  featuredProduct: "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+  featuredProduct: "(max-width: 390px) 46vw, (max-width: 640px) 48vw, (max-width: 1024px) 33vw, 280px",
   /** Category tiles on homepage */
   categoryCard: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
   /** Decorative mascot clusters — homepage grid */
@@ -57,11 +60,11 @@ export const IMAGE_SIZES = {
   /** Faded full-bleed section backgrounds (low opacity) */
   sectionBackground: "(max-width: 768px) 100vw, 800px",
   /** Cart line item thumbnails */
-  cartLineItem: "(max-width: 768px) 25vw, 80px",
+  cartLineItem: "(max-width: 768px) 72px, 80px",
   /** Product detail page main gallery */
-  productDetail: "(max-width: 1024px) 100vw, 50vw",
+  productDetail: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 560px",
   /** Navbar / footer logo */
-  logo: "(max-width: 1024px) 110px, 140px",
+  logo: "(max-width: 640px) 130px, (max-width: 1024px) 145px, 160px",
 } as const;
 
 /** Pick responsive `sizes` for mascot Image by display width. */

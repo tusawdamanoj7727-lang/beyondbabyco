@@ -15,7 +15,6 @@ import {
   legacyCouponToStore,
   legacyItemToStore,
   legacyItemsToStore,
-  legacyVariantKey,
   storeCouponToLegacy,
   storeItemToLegacy,
 } from "@/lib/store/cart-mappers";
@@ -202,7 +201,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = useCallback(
     (productId: string, variantId: string | null, quantity: number) => {
-      useCartStore.getState().updateQuantity(legacyVariantKey(variantId), clampCartQuantity(quantity));
+      useCartStore.getState().updateQuantity(cartLineKey(productId, variantId), clampCartQuantity(quantity));
       syncToServer(currentLegacyItems());
     },
     [syncToServer],
@@ -210,7 +209,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const removeItem = useCallback(
     (productId: string, variantId: string | null) => {
-      useCartStore.getState().removeItem(legacyVariantKey(variantId));
+      useCartStore.getState().removeItem(cartLineKey(productId, variantId));
       syncToServer(currentLegacyItems());
     },
     [syncToServer],
@@ -221,7 +220,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const key = cartLineKey(productId, variantId);
       const item = items.find((i) => cartLineKey(i.productId, i.variantId) === key);
       if (!item) return;
-      useCartStore.getState().removeItem(legacyVariantKey(variantId));
+      useCartStore.getState().removeItem(key);
       setSavedItems((saved) => {
         const savedNext = [...saved.filter((s) => cartLineKey(s.productId, s.variantId) !== key), item];
         writeSavedStorage(savedNext);

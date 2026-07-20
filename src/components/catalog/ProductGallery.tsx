@@ -109,7 +109,7 @@ export default function ProductGallery({
               type="button"
               onClick={() => setLightboxOpen(true)}
               className={cn(
-                "absolute right-4 top-4 z-[2] grid h-11 w-11 place-items-center rounded-full bg-white/92 text-green-800 shadow-[var(--shadow-soft)] backdrop-blur-sm",
+                "absolute right-4 top-4 z-[2] grid h-11 w-11 place-items-center rounded-full bg-white text-green-800 shadow-sm md:bg-white/92 md:shadow-[var(--shadow-soft)] md:backdrop-blur-sm",
                 "opacity-100 transition-opacity duration-[var(--duration-button)]",
                 "sm:opacity-90 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
                 focusRing,
@@ -138,7 +138,7 @@ export default function ProductGallery({
               onClick={() => goTo(-1)}
               aria-label="Previous image"
               className={cn(
-                "absolute left-3 top-1/2 z-[2] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-sm",
+                "absolute left-3 top-1/2 z-[2] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white shadow-sm md:bg-white/92 md:shadow-[var(--shadow-soft)] md:backdrop-blur-sm",
                 focusRing,
               )}
             >
@@ -149,7 +149,7 @@ export default function ProductGallery({
               onClick={() => goTo(1)}
               aria-label="Next image"
               className={cn(
-                "absolute right-3 top-1/2 z-[2] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/92 shadow-[var(--shadow-soft)] backdrop-blur-sm",
+                "absolute right-3 top-1/2 z-[2] grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white shadow-sm md:bg-white/92 md:shadow-[var(--shadow-soft)] md:backdrop-blur-sm",
                 focusRing,
               )}
             >
@@ -163,7 +163,7 @@ export default function ProductGallery({
         <>
           <div
             ref={thumbRailRef}
-            className="pdp-gallery-thumb-rail"
+            className="pdp-gallery-thumb-rail hidden sm:flex"
             role="tablist"
             aria-label="Product images"
           >
@@ -185,6 +185,7 @@ export default function ProductGallery({
                   fill
                   loading="lazy"
                   sizes="80px"
+                  quality={IMAGE_QUALITY.thumbnail}
                   placeholder="blur"
                   blurDataURL={resolveImageBlur(img.blurDataUrl)}
                   className="object-cover object-center"
@@ -192,7 +193,7 @@ export default function ProductGallery({
               </button>
             ))}
           </div>
-          <div className="flex justify-center gap-1.5 sm:hidden" role="group" aria-label="Image position">
+          <div className="flex justify-center gap-1 sm:hidden" role="group" aria-label="Image position">
             {sorted.map((img, index) => (
               <button
                 key={`dot-${img.id}`}
@@ -201,11 +202,18 @@ export default function ProductGallery({
                 aria-label={`Go to image ${index + 1}`}
                 aria-current={activeIndex === index ? "true" : undefined}
                 className={cn(
-                  "h-2 rounded-full transition-all duration-[var(--duration-button)]",
+                  "flex h-11 w-11 items-center justify-center rounded-full",
                   focusRing,
-                  activeIndex === index ? "w-4 bg-green-600" : "w-2 bg-green-200",
                 )}
-              />
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "block rounded-full transition-all duration-[var(--duration-button)]",
+                    activeIndex === index ? "h-2 w-4 bg-green-600" : "h-2 w-2 bg-green-200",
+                  )}
+                />
+              </button>
             ))}
           </div>
         </>
@@ -213,7 +221,7 @@ export default function ProductGallery({
 
       <Dialog.Root open={lightboxOpen} onOpenChange={setLightboxOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-[120] bg-green-950/82 backdrop-blur-sm" />
+          <Dialog.Overlay className="fixed inset-0 z-[120] bg-green-950/82 md:backdrop-blur-sm" />
           <Dialog.Content className="fixed inset-4 z-[130] flex items-center justify-center outline-none sm:inset-8">
             <Dialog.Title className="sr-only">{productName} — enlarged view</Dialog.Title>
             <Dialog.Description className="sr-only">
@@ -230,8 +238,8 @@ export default function ProductGallery({
                   alt={current.alt ?? productName}
                   fill
                   sizes="100vw"
+                  loading="lazy"
                   className="object-contain object-center"
-                  priority
                 />
               </div>
             ) : null}

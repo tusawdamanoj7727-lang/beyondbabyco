@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getImageProps } from "next/image";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
@@ -16,7 +15,6 @@ import { getProductReviews } from "@/lib/reviews/queries";
 import { buildProductMetadata, truncateMetaDescription } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, faqJsonLd, productJsonLd, reviewJsonLd } from "@/lib/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
-import { IMAGE_QUALITY, IMAGE_SIZES, resolveImageBlur } from "@/lib/media/image-delivery";
 
 export const revalidate = 60;
 
@@ -85,36 +83,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const productFaqs = product.faqs.map((f) => ({ question: f.question, answer: f.answer }));
   const faqSchema = productFaqs.length > 0 ? faqJsonLd(productFaqs) : null;
 
-  const sortedImages = [...product.images].sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
-  const primaryImage = sortedImages[0];
-  const lcpImageSrc = primaryImage?.url ?? product.imageUrl;
-
-  const productPreload =
-    lcpImageSrc != null
-      ? getImageProps({
-          src: lcpImageSrc,
-          alt: primaryImage?.alt ?? product.name,
-          fill: true,
-          priority: true,
-          sizes: IMAGE_SIZES.productDetail,
-          quality: IMAGE_QUALITY.product,
-          placeholder: "blur",
-          blurDataURL: resolveImageBlur(primaryImage?.blurDataUrl),
-        })
-      : null;
-
   return (
     <>
-      {productPreload ? (
-        <link
-          rel="preload"
-          as="image"
-          href={productPreload.props.src}
-          imageSrcSet={productPreload.props.srcSet}
-          imageSizes={productPreload.props.sizes}
-          fetchPriority="high"
-        />
-      ) : null}
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -159,7 +129,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         ]}
       />
       <div className="container pb-28 md:pb-20">
-        <div className="pdp-above-fold grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+        <div className="pdp-above-fold grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-24">
           <ProductGallery images={product.images} productName={product.name} />
           <ProductPurchasePanel product={product} />
         </div>

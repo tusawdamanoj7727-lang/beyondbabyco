@@ -7,16 +7,12 @@ import {
   prefersReducedMotion,
   revealAllScrollElements,
 } from "@/lib/a11y/scroll-reveal";
-
-function isCoarsePointerMobile(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
-}
+import { isCoarsePointer } from "@/lib/a11y/coarse-pointer";
 
 /** One-shot IntersectionObserver for CSS reveal classes (replaces scroll-linked view timelines). */
 export default function ScrollRevealObserver() {
   useEffect(() => {
-    if (prefersReducedMotion()) {
+    if (prefersReducedMotion() || isCoarsePointer()) {
       revealAllScrollElements(document);
       return;
     }
@@ -24,7 +20,7 @@ export default function ScrollRevealObserver() {
     let observer: IntersectionObserver | undefined;
     let mutation: MutationObserver | undefined;
     let cancelled = false;
-    const coarse = isCoarsePointerMobile();
+    let pendingScan = false;
 
     const setup = () => {
       if (cancelled) return;
@@ -39,9 +35,8 @@ export default function ScrollRevealObserver() {
           }
         },
         {
-          threshold: coarse ? 0.02 : 0.08,
-          // Eagerly reveal slightly ahead of viewport on mobile to avoid late paints mid-scroll.
-          rootMargin: coarse ? "40px 0px 12% 0px" : "0px 0px -4% 0px",
+          threshold: 0.08,
+          rootMargin: "0px 0px -4% 0px",
         },
       );
 
@@ -55,24 +50,34 @@ export default function ScrollRevealObserver() {
 
       observe(document);
 
-      // Always watch for late-mounted below-fold islands (critical on mobile).
       mutation = new MutationObserver((records) => {
+        if (pendingScan) return;
+        let hasElements = false;
         for (const record of records) {
-          record.addedNodes.forEach((node) => {
-            if (node instanceof Element) observe(node);
-          });
+          for (const node of record.addedNodes) {
+            if (node instanceof Element) {
+              hasElements = true;
+              break;
+            }
+          }
+          if (hasElements) break;
         }
+        if (!hasElements) return;
+        pendingScan = true;
+        requestAnimationFrame(() => {
+          pendingScan = false;
+          if (!cancelled) observe(document);
+        });
       });
       mutation.observe(document.body, { childList: true, subtree: true });
 
-      // Extra re-scan after deferred chunks typically mount.
       window.setTimeout(() => {
         if (!cancelled) observe(document);
-      }, coarse ? 1800 : 600);
+      }, 400);
     };
 
     if (typeof requestIdleCallback !== "undefined") {
-      const idleId = requestIdleCallback(setup, { timeout: coarse ? 800 : 1200 });
+      const idleId = requestIdleCallback(setup, { timeout: 900 });
       return () => {
         cancelled = true;
         cancelIdleCallback(idleId);

@@ -1,14 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Sentry from "@sentry/nextjs";
-import { Loader2, MapPin, ShieldCheck, Tag } from "lucide-react";
+import { Loader2, MapPin, ShieldCheck } from "lucide-react";
 
-import CheckoutOrderSummary, { useCheckoutTotals } from "@/components/checkout/CheckoutOrderSummary";
+import CheckoutAddressFields, {
+  CheckoutField,
+  CheckoutReviewBlock,
+  CheckoutSection,
+} from "@/components/checkout/CheckoutAddressFields";
+import CheckoutCouponBlock from "@/components/checkout/CheckoutCouponBlock";
+import CheckoutMobileBar from "@/components/checkout/CheckoutMobileBar";
+import { useCheckoutTotals } from "@/components/checkout/use-checkout-totals";
 import CheckoutProgress from "@/components/checkout/CheckoutProgress";
-import PaymentMethodSelector, { type PaymentMethodId } from "@/components/checkout/PaymentMethodSelector";
+import type { PaymentMethodId } from "@/components/checkout/PaymentMethodSelector";
 import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import { MICROCOPY } from "@/lib/brand/copy";
@@ -17,7 +25,7 @@ import { useToast } from "@/components/ui/ToastProvider";
 import type { CheckoutInitialData } from "@/lib/checkout/actions";
 import { lookupPincodeAction, placeCheckoutOrderAction } from "@/lib/checkout/actions";
 import { notifyPaymentFailedAction, abandonCheckoutPaymentAction } from "@/lib/checkout/payment-email-actions";
-import { INDIAN_STATES, type AddressFormValues } from "@/lib/checkout/schema";
+import type { AddressFormValues } from "@/lib/checkout/schema";
 import type { CustomerAddressRow } from "@/lib/checkout/address-actions";
 import { analyticsItemFromCartItem } from "@/lib/analytics/items";
 import {
@@ -36,6 +44,17 @@ import { useCart } from "@/lib/storefront/cart-context";
 import { estimateShippingFee } from "@/lib/storefront/shipping";
 import { dialogContentCentered, dialogOverlay, focusRing, formControl } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
+
+const CheckoutOrderSummary = dynamic(() => import("@/components/checkout/CheckoutOrderSummary"), {
+  loading: () => <div className="min-h-[280px] animate-pulse rounded-3xl bg-green-50/60" aria-hidden="true" />,
+});
+
+const PaymentMethodSelector = dynamic(
+  () => import("@/components/checkout/PaymentMethodSelector"),
+  {
+    loading: () => <div className="min-h-[120px] animate-pulse rounded-2xl bg-green-50/60" aria-hidden="true" />,
+  },
+);
 
 type FieldErrors = Record<string, string>;
 
@@ -695,7 +714,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             }
           >
             <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-              <Field label="Full name" id="cust-name" error={fieldErrors["customer.full_name"]}>
+              <CheckoutField label="Full name" id="cust-name" error={fieldErrors["customer.full_name"]}>
                 <input
                   id="cust-name"
                   name="name"
@@ -707,8 +726,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   aria-invalid={!!fieldErrors["customer.full_name"]}
                   aria-describedby={fieldErrors["customer.full_name"] ? "cust-name-error" : undefined}
                 />
-              </Field>
-              <Field label="Phone" id="cust-phone" error={fieldErrors["customer.phone"]}>
+              </CheckoutField>
+              <CheckoutField label="Phone" id="cust-phone" error={fieldErrors["customer.phone"]}>
                 <input
                   id="cust-phone"
                   name="tel"
@@ -723,8 +742,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   aria-invalid={!!fieldErrors["customer.phone"]}
                   aria-describedby={fieldErrors["customer.phone"] ? "cust-phone-error" : undefined}
                 />
-              </Field>
-              <Field
+              </CheckoutField>
+              <CheckoutField
                 label="Email"
                 id="cust-email"
                 className="sm:col-span-2"
@@ -743,7 +762,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   aria-invalid={!!fieldErrors["customer.email"]}
                   aria-describedby={fieldErrors["customer.email"] ? "cust-email-error" : undefined}
                 />
-              </Field>
+              </CheckoutField>
             </div>
           </CheckoutSection>
 
@@ -786,7 +805,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   })}
               </div>
             ) : null}
-            <AddressFields
+            <CheckoutAddressFields
               idPrefix="shipping"
               values={shipping}
               onChange={updateShipping}
@@ -822,7 +841,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             </label>
             {!billingSame ? (
               <div className="mt-3">
-                <AddressFields
+                <CheckoutAddressFields
                   idPrefix="billing"
                   values={billing}
                   onChange={(field, value) => {
@@ -930,27 +949,12 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         </div>
       </form>
 
-      <div className="checkout-mobile-bar fixed inset-x-0 bottom-0 z-40 border-t border-green-100 bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm lg:hidden pt-3 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
-        <div className="mx-auto flex max-w-7xl items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs text-green-700">Total payable</p>
-            <p className="font-heading text-lg font-bold text-green-900">{formatInr(totals.total)}</p>
-          </div>
-          <Button
-            variant="primary"
-            type="button"
-            className="min-w-[10.5rem] shrink-0"
-            disabled={busy}
-            onClick={openReview}
-          >
-            {paymentPhase === "opening_razorpay" ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            ) : (
-              "Review order"
-            )}
-          </Button>
-        </div>
-      </div>
+      <CheckoutMobileBar
+        total={totals.total}
+        busy={busy}
+        paymentPhase={paymentPhase}
+        onReview={openReview}
+      />
       <div className="h-24 lg:hidden" aria-hidden="true" />
 
       <Dialog.Root
@@ -971,12 +975,12 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
             </Dialog.Description>
 
             <div className="mt-5 space-y-3 text-sm">
-              <ReviewBlock title="Contact">
+              <CheckoutReviewBlock title="Contact">
                 <p>{customer.full_name}</p>
                 <p>{customer.email}</p>
                 <p>{customer.phone}</p>
-              </ReviewBlock>
-              <ReviewBlock title="Deliver to">
+              </CheckoutReviewBlock>
+              <CheckoutReviewBlock title="Deliver to">
                 <p>{shipping.full_name || customer.full_name}</p>
                 <p>
                   {shipping.line1}
@@ -986,8 +990,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                   {shipping.city}, {shipping.state} — {shipping.pincode}
                 </p>
                 <p>{shipping.phone || customer.phone}</p>
-              </ReviewBlock>
-              <ReviewBlock title="Items">
+              </CheckoutReviewBlock>
+              <CheckoutReviewBlock title="Items">
                 <ul className="space-y-1.5">
                   {items.map((i) => (
                     <li key={`${i.productId}:${i.variantId}`} className="flex justify-between gap-2">
@@ -999,8 +1003,8 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                     </li>
                   ))}
                 </ul>
-              </ReviewBlock>
-              <ReviewBlock title="Payment & total">
+              </CheckoutReviewBlock>
+              <CheckoutReviewBlock title="Payment & total">
                 <div className="flex justify-between gap-2">
                   <span>{paymentMethod === "cod" ? "Cash on Delivery" : "Pay Online (Razorpay)"}</span>
                   <span className="font-heading text-lg font-bold text-green-900">
@@ -1015,7 +1019,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
                 <p className="mt-1 text-xs text-green-700">
                   Shipping {totals.shipping === 0 ? "free" : formatInr(totals.shipping)} · Prices include GST
                 </p>
-              </ReviewBlock>
+              </CheckoutReviewBlock>
             </div>
 
             <div className="mt-6 flex flex-col gap-2 sm:flex-row">
@@ -1053,286 +1057,5 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
         </Dialog.Portal>
       </Dialog.Root>
     </>
-  );
-}
-
-function CheckoutCouponBlock({
-  couponId,
-  appliedCode,
-  appliedSavings,
-  couponInput,
-  couponMsg,
-  applying,
-  disabled,
-  onInputChange,
-  onApply,
-  onRemove,
-}: {
-  couponId: string;
-  appliedCode: string | null;
-  appliedSavings: number;
-  couponInput: string;
-  couponMsg: { text: string; type: "" | "success" | "error" };
-  applying: boolean;
-  disabled: boolean;
-  onInputChange: (value: string) => void;
-  onApply: () => void;
-  onRemove: () => void;
-}) {
-  return (
-    <div className="rounded-3xl border border-green-100/80 bg-white/95 p-4 shadow-sm sm:p-5">
-      <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-green-900">
-        <Tag className="h-4 w-4 text-terra-600" aria-hidden="true" />
-        Coupon
-      </p>
-      {appliedCode ? (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-green-200 bg-green-50 px-3 py-2">
-          <span className="text-sm font-semibold text-green-800">
-            {appliedCode}
-            {appliedSavings > 0 ? ` — save ${formatInr(appliedSavings)}` : ""}
-          </span>
-          <button
-            type="button"
-            onClick={onRemove}
-            disabled={disabled}
-            className={cn("text-xs font-medium text-green-700 hover:text-terra-600", focusRing)}
-          >
-            Remove
-          </button>
-        </div>
-      ) : (
-        <div>
-          <div className="flex gap-2">
-            <label htmlFor={couponId} className="sr-only">
-              Coupon code
-            </label>
-            <input
-              id={couponId}
-              value={couponInput}
-              onChange={(e) => onInputChange(e.target.value.toUpperCase())}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  onApply();
-                }
-              }}
-              placeholder="Enter code"
-              disabled={applying || disabled}
-              autoComplete="off"
-              enterKeyHint="go"
-              className={formControl}
-            />
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={applying || disabled || !couponInput.trim()}
-              onClick={onApply}
-              className="shrink-0 px-4"
-            >
-              {applying ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : "Apply"}
-            </Button>
-          </div>
-          {couponMsg.text ? (
-            <p
-              className={cn(
-                "mt-1.5 text-xs",
-                couponMsg.type === "success" ? "text-green-600" : "text-terra-700",
-              )}
-              role="status"
-            >
-              {couponMsg.text}
-            </p>
-          ) : (
-            <p className="mt-1.5 text-xs text-green-700">
-              Have a code? Apply it here before placing your order.
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CheckoutSection({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-3xl border border-green-100/80 bg-white/90 p-4 shadow-sm sm:p-5">
-      <h2 className="font-heading text-lg font-bold text-green-900">{title}</h2>
-      {description ? <p className="mt-1.5 text-sm leading-relaxed text-green-700">{description}</p> : null}
-      <div className="mt-4 sm:mt-5">{children}</div>
-    </section>
-  );
-}
-
-function Field({
-  label,
-  id,
-  children,
-  className,
-  error,
-}: {
-  label: string;
-  id: string;
-  children: React.ReactNode;
-  className?: string;
-  error?: string;
-}) {
-  return (
-    <div className={className}>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-green-800">
-        {label}
-      </label>
-      {children}
-      {error ? (
-        <p
-          id={`${id}-error`}
-          className="mt-1.5 rounded-lg bg-terra-50 px-2.5 py-1.5 text-xs font-medium text-terra-800"
-          role="alert"
-        >
-          {error}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-function AddressFields({
-  idPrefix,
-  values,
-  onChange,
-  checkingPin,
-  errors = {},
-}: {
-  idPrefix: string;
-  values: AddressFormValues;
-  onChange: (field: keyof AddressFormValues, value: string) => void;
-  checkingPin?: boolean;
-  errors?: FieldErrors;
-}) {
-  const id = (name: string) => `${idPrefix}-${name}`;
-  const auto = idPrefix === "billing" ? "billing" : "shipping";
-  const err = (field: string) => errors[`${idPrefix}.${field}`];
-
-  return (
-    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-      <Field label="Full name" id={id("name")} error={err("full_name")}>
-        <input
-          id={id("name")}
-          name={`${auto} name`}
-          value={values.full_name}
-          onChange={(e) => onChange("full_name", e.target.value)}
-          className={inputClass()}
-          autoComplete={`${auto} name`}
-          enterKeyHint="next"
-          aria-invalid={!!err("full_name")}
-          aria-describedby={err("full_name") ? `${id("name")}-error` : undefined}
-        />
-      </Field>
-      <Field label="Phone" id={id("phone")} error={err("phone")}>
-        <input
-          id={id("phone")}
-          name={`${auto} tel`}
-          type="tel"
-          inputMode="numeric"
-          maxLength={10}
-          value={values.phone}
-          onChange={(e) => onChange("phone", e.target.value.replace(/\D/g, "").slice(0, 10))}
-          className={inputClass()}
-          autoComplete={`${auto} tel`}
-          enterKeyHint="next"
-          aria-invalid={!!err("phone")}
-          aria-describedby={err("phone") ? `${id("phone")}-error` : undefined}
-        />
-      </Field>
-      <Field label="Address line 1" id={id("line1")} className="sm:col-span-2" error={err("line1")}>
-        <input
-          id={id("line1")}
-          value={values.line1}
-          onChange={(e) => onChange("line1", e.target.value)}
-          className={inputClass()}
-          autoComplete={`${auto} address-line1`}
-          enterKeyHint="next"
-          aria-invalid={!!err("line1")}
-          aria-describedby={err("line1") ? `${id("line1")}-error` : undefined}
-        />
-      </Field>
-      <Field label="Address line 2 (optional)" id={id("line2")} className="sm:col-span-2">
-        <input
-          id={id("line2")}
-          value={values.line2 ?? ""}
-          onChange={(e) => onChange("line2", e.target.value)}
-          className={inputClass()}
-          autoComplete={`${auto} address-line2`}
-          enterKeyHint="next"
-        />
-      </Field>
-      <Field label="PIN code" id={id("pin")} error={err("pincode")}>
-        <input
-          id={id("pin")}
-          type="text"
-          inputMode="numeric"
-          maxLength={6}
-          value={values.pincode}
-          onChange={(e) => onChange("pincode", e.target.value.replace(/\D/g, "").slice(0, 6))}
-          className={inputClass()}
-          autoComplete={`${auto} postal-code`}
-          enterKeyHint="next"
-          aria-invalid={!!err("pincode")}
-          aria-describedby={err("pincode") ? `${id("pin")}-error` : undefined}
-        />
-        {checkingPin ? (
-          <p className="mt-1 flex items-center gap-1 text-xs text-green-600">
-            <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" /> Checking PIN…
-          </p>
-        ) : null}
-      </Field>
-      <Field label="City" id={id("city")} error={err("city")}>
-        <input
-          id={id("city")}
-          value={values.city}
-          onChange={(e) => onChange("city", e.target.value)}
-          className={inputClass()}
-          autoComplete={`${auto} address-level2`}
-          enterKeyHint="next"
-          aria-invalid={!!err("city")}
-          aria-describedby={err("city") ? `${id("city")}-error` : undefined}
-        />
-      </Field>
-      <Field label="State" id={id("state")} className="sm:col-span-2" error={err("state")}>
-        <select
-          id={id("state")}
-          value={values.state}
-          onChange={(e) => onChange("state", e.target.value)}
-          className={inputClass()}
-          autoComplete={`${auto} address-level1`}
-          aria-invalid={!!err("state")}
-          aria-describedby={err("state") ? `${id("state")}-error` : undefined}
-        >
-          <option value="">Select state</option>
-          {INDIAN_STATES.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-      </Field>
-      <input type="hidden" autoComplete={`${auto} country-name`} value="India" readOnly />
-    </div>
-  );
-}
-
-function ReviewBlock({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-green-100 bg-white/80 p-3.5 sm:p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-green-600">{title}</p>
-      <div className="mt-2 text-green-900">{children}</div>
-    </div>
   );
 }

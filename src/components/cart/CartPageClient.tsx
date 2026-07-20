@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Tag, Trash2 } from "lucide-react";
 
 import ProductImageFallback from "@/components/brand/ProductImageFallback";
 import CartEmptyState from "@/components/catalog/CartEmptyState";
-import CartUpsellRail from "@/components/cart/CartUpsellRail";
+
+const CartUpsellRail = dynamic(() => import("@/components/cart/CartUpsellRail"), {
+  loading: () => null,
+  ssr: false,
+});
 import CommerceTrustStrip from "@/components/catalog/CommerceTrustStrip";
 import FreeShippingProgress from "@/components/catalog/FreeShippingProgress";
 import Button from "@/components/ui/Button";
@@ -293,7 +298,7 @@ export default function CartPageClient({
           </div>
 
           <div className="lg:col-span-1">
-            <div className={cn(surfaceCard, "sticky top-24 p-6")}>
+            <div className={cn(surfaceCard, "sticky top-24 p-4 sm:p-6")}>
               <h2 className="mb-4 font-heading text-lg font-bold text-green-900">Order Summary</h2>
 
               <FreeShippingProgress subtotal={subtotal} className="mb-4" />
@@ -419,13 +424,13 @@ export default function CartPageClient({
         </div>
       </div>
 
-      <div className="cart-sticky-checkout fixed inset-x-0 bottom-0 z-40 border-t border-green-100 bg-white/95 px-4 py-3 shadow-[0_-8px_32px_rgba(20,60,40,0.08)] backdrop-blur-md lg:hidden">
+      <div className="cart-sticky-checkout fixed inset-x-0 bottom-0 z-40 border-t border-green-100 bg-white px-4 py-3 shadow-[0_-8px_32px_rgba(20,60,40,0.08)] lg:hidden">
         <div className="mx-auto flex max-w-6xl items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xs text-green-600">Total</p>
             <p className="truncate font-heading text-lg font-bold text-green-900">{formatInr(total)}</p>
           </div>
-          <Button asChild variant="primary" size="lg" className="shrink-0 min-w-[10.5rem]">
+          <Button asChild variant="primary" size="lg" className="shrink-0 min-w-[8.5rem] max-[360px]:min-w-[7.5rem] sm:min-w-[10.5rem]">
             <Link href="/checkout">Checkout →</Link>
           </Button>
         </div>

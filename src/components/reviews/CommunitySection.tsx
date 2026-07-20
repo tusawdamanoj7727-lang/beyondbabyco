@@ -1,18 +1,56 @@
 import Link from "next/link";
-import Image from "next/image";
+import { BookOpen, Leaf, ShieldCheck } from "lucide-react";
 
 import ProductCard from "@/components/catalog/ProductCard";
-import CommunityHighlight from "@/components/reviews/CommunityHighlight";
 import ReviewCard from "@/components/reviews/ReviewCard";
 import RatingStars from "@/components/reviews/RatingStars";
-import {
-  CARE_TIPS,
-  COMMUNITY_HIGHLIGHTS,
-  PARENT_STORIES,
-} from "@/lib/reviews/demo-data";
 import type { EnrichedPublicReview } from "@/lib/reviews/types";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { cn } from "@/lib/utils";
+
+const COMMUNITY_PILLARS = [
+  {
+    id: "research",
+    title: "Research-led care",
+    body: "Formulations refined through years of ingredient study and safety validation in Udaipur.",
+    icon: BookOpen,
+  },
+  {
+    id: "gentle",
+    title: "Gentle by design",
+    body: "Mindfully selected ingredients chosen for everyday baby skin — without unnecessary additives.",
+    icon: Leaf,
+  },
+  {
+    id: "trust",
+    title: "Dermatologically tested",
+    body: "Every product is tested for safety so parents can shop with confidence.",
+    icon: ShieldCheck,
+  },
+] as const;
+
+const CARE_TIPS = [
+  {
+    id: "patch",
+    title: "Patch test first",
+    body: "Apply a small amount on the inner arm and wait 24 hours before first full use.",
+  },
+  {
+    id: "routine",
+    title: "Keep routines simple",
+    body: "One gentle cleanser and one moisturizer cover most everyday baby care needs.",
+  },
+  {
+    id: "storage",
+    title: "Store cool & dry",
+    body: "Keep products away from direct sunlight so textures and actives stay stable.",
+  },
+  {
+    id: "support",
+    title: "We’re here to help",
+    body: "Questions about an ingredient or routine? Reach us at info@beyondbabyco.com.",
+  },
+] as const;
 
 export default function CommunitySection({
   featuredReviews,
@@ -25,12 +63,12 @@ export default function CommunitySection({
   topRatedProducts: StorefrontProduct[];
   className?: string;
 }) {
+  const realReviews = featuredReviews.filter((r) => !r.isSample);
   const hasRealRatings = topRatedProducts.some((p) => p.ratingCount > 0);
   const avgRating = hasRealRatings
     ? topRatedProducts.reduce((s, p) => s + p.ratingAvg, 0) / topRatedProducts.length
     : 0;
   const totalReviews = topRatedProducts.reduce((s, p) => s + p.ratingCount, 0);
-  const featuredAreSample = featuredReviews.some((r) => r.isSample);
 
   return (
     <div className={cn("space-y-16", className)}>
@@ -43,24 +81,35 @@ export default function CommunitySection({
           {hasRealRatings ? (
             <RatingStars rating={avgRating} count={totalReviews || undefined} size="md" showValue detailed />
           ) : (
-            <p className="text-sm font-medium text-green-700">Verified reviews will appear as families share their experience.</p>
+            <p className="text-sm font-medium text-green-700">
+              Verified reviews will appear as families share their experience.
+            </p>
           )}
         </div>
         <p className="text-body prose-width mx-auto mt-3">
-          Honest routines, thoughtful reviews, and gentle care tips from families who value research as much as we do.
+          Honest routines, thoughtful reviews, and gentle care tips from families who value research as
+          much as we do.
         </p>
       </header>
 
-      <section aria-labelledby="community-highlights-heading">
-        <h3 id="community-highlights-heading" className="sr-only">
-          Community highlights
+      <section aria-labelledby="community-pillars-heading">
+        <h3 id="community-pillars-heading" className="sr-only">
+          What parents can expect
         </h3>
         <ul className="grid gap-4 sm:grid-cols-3">
-          {COMMUNITY_HIGHLIGHTS.map((item) => (
-            <li key={item.id}>
-              <CommunityHighlight item={item} />
-            </li>
-          ))}
+          {COMMUNITY_PILLARS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li
+                key={item.id}
+                className="rounded-2xl border border-cream-200 bg-white p-5 shadow-card"
+              >
+                <Icon className="h-5 w-5 text-green-700" strokeWidth={1.75} aria-hidden="true" />
+                <h4 className="mt-3 font-heading text-lg font-bold text-green-900">{item.title}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-green-800">{item.body}</p>
+              </li>
+            );
+          })}
         </ul>
       </section>
 
@@ -70,7 +119,10 @@ export default function CommunitySection({
             <h3 id="popular-products-heading" className="font-heading text-2xl font-bold text-green-900">
               Popular with parents
             </h3>
-            <Link href="/products?sort=best_selling" className="text-sm font-semibold text-terra-600 hover:underline">
+            <Link
+              href="/products?sort=best_selling"
+              className="text-sm font-semibold text-terra-600 hover:underline"
+            >
               Explore the collection →
             </Link>
           </div>
@@ -90,7 +142,10 @@ export default function CommunitySection({
             <h3 id="top-rated-heading" className="font-heading text-2xl font-bold text-green-900">
               Top-rated products
             </h3>
-            <Link href="/products?sort=rating" className="text-sm font-semibold text-terra-600 hover:underline">
+            <Link
+              href="/products?sort=rating"
+              className="text-sm font-semibold text-terra-600 hover:underline"
+            >
               See all top rated →
             </Link>
           </div>
@@ -104,31 +159,6 @@ export default function CommunitySection({
         </section>
       ) : null}
 
-      <section id="stories" aria-labelledby="parent-stories-heading">
-        <h3 id="parent-stories-heading" className="font-heading text-2xl font-bold text-green-900">
-          Parent stories
-        </h3>
-        <p className="mt-2 text-sm text-green-700">Illustrative stories from our community — real submissions welcome after launch.</p>
-        <ul className="mt-6 grid gap-6 md:grid-cols-3">
-          {PARENT_STORIES.map((story) => (
-            <li key={story.id}>
-              <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-cream-200 bg-white shadow-card">
-                {story.imageUrl ? (
-                  <div className="relative aspect-[16/10] bg-cream-50">
-                    <Image src={story.imageUrl} alt={story.title} fill className="object-cover" sizes="(max-width:768px) 100vw, 33vw" />
-                  </div>
-                ) : null}
-                <div className="flex flex-1 flex-col p-5">
-                  <h4 className="font-heading text-lg font-bold text-green-900">{story.title}</h4>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-green-800">{story.excerpt}</p>
-                  <p className="mt-3 text-xs font-semibold text-green-700">{story.author}</p>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <section aria-labelledby="care-tips-heading">
         <h3 id="care-tips-heading" className="font-heading text-2xl font-bold text-green-900">
           Care tips from our team
@@ -136,35 +166,46 @@ export default function CommunitySection({
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CARE_TIPS.map((tip) => (
             <li key={tip.id} className="rounded-2xl border border-cream-200 bg-cream-50/50 p-4">
-              {tip.icon ? (
-                <span className="text-xl" aria-hidden="true">
-                  {tip.icon}
-                </span>
-              ) : null}
-              <h4 className="mt-2 font-heading text-base font-bold text-green-900">{tip.title}</h4>
+              <h4 className="font-heading text-base font-bold text-green-900">{tip.title}</h4>
               <p className="mt-1 text-sm text-green-800">{tip.body}</p>
             </li>
           ))}
         </ul>
       </section>
 
-      {featuredReviews.length > 0 ? (
+      {realReviews.length > 0 ? (
         <section aria-labelledby="featured-reviews-heading">
           <h3 id="featured-reviews-heading" className="font-heading text-2xl font-bold text-green-900">
             Featured reviews
           </h3>
-          {featuredAreSample ? (
-            <p className="mt-2 text-sm text-green-700">Sample reviews shown until verified customer reviews are published.</p>
-          ) : null}
           <ul className="mt-6 grid gap-4 lg:grid-cols-2">
-            {featuredReviews.slice(0, 4).map((r) => (
+            {realReviews.slice(0, 4).map((r) => (
               <li key={r.id}>
                 <ReviewCard review={r} compact />
               </li>
             ))}
           </ul>
         </section>
-      ) : null}
+      ) : (
+        <section
+          aria-labelledby="reviews-invite-heading"
+          className="rounded-3xl border border-dashed border-green-200 bg-cream-50/60 px-6 py-10 text-center"
+        >
+          <h3 id="reviews-invite-heading" className="font-heading text-xl font-bold text-green-900">
+            Be among the first to review
+          </h3>
+          <p className="mx-auto mt-2 max-w-md text-sm text-green-700">
+            Customer photos and verified reviews will appear here as orders ship. Explore the collection
+            and share your experience after purchase.
+          </p>
+          <Link
+            href="/products"
+            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-green-700 px-6 text-sm font-semibold text-cream-50 hover:bg-green-800"
+          >
+            Shop the collection
+          </Link>
+        </section>
+      )}
     </div>
   );
 }

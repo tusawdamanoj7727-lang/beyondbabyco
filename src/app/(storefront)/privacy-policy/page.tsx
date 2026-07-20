@@ -109,7 +109,7 @@ export default function PrivacyPolicyPage() {
       <p>
         For privacy requests or complaints:
         <br />
-        Email: <a href="mailto:care@beyondbabyco.com">care@beyondbabyco.com</a>
+        Email: <a href="mailto:info@beyondbabyco.com">info@beyondbabyco.com</a>
         <br />
         Company: Tusawda Global Private Limited, Udaipur, Rajasthan, India
       </p>

@@ -27,9 +27,9 @@ export default function LearnHubPage() {
       />
       <div className="min-h-screen bg-brand-cream">
         <header className="border-b border-green-100/80 bg-gradient-to-b from-white to-cream-50">
-          <div className="container mx-auto max-w-5xl px-4 py-12 sm:py-16">
+          <div className="container mx-auto max-w-5xl px-4 py-8 sm:py-16">
             <p className="text-eyebrow text-terra-600">Education hub</p>
-            <h1 className="mt-2 font-heading text-4xl font-bold text-green-900 sm:text-5xl">
+            <h1 className="mt-2 font-heading text-3xl font-bold text-green-900 sm:text-5xl">
               Learn with BeyondBabyCo
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-green-800 sm:text-lg">

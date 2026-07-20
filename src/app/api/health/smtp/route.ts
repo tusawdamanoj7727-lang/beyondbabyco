@@ -189,7 +189,7 @@ export async function GET(request: Request) {
           defined: present(process.env[key]),
           length: present(process.env[key]) ? process.env[key]!.trim().length : 0,
           value:
-            key === "SMTP_PASS"
+            key === "SMTP_PASS" || key === "SMTP_USER"
               ? null
               : present(process.env[key])
                 ? process.env[key]!.trim()

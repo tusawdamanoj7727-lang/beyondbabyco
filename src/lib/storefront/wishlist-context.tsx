@@ -113,6 +113,39 @@ export function WishlistProvider({
       setIds(new Set(initialKey.split(",").filter(Boolean)));
       setHydrated(true);
     }
+
+    if (!userId) {
+      if (!initialKey) {
+        setIds(new Set(readGuestWishlistIds()));
+      }
+      setLoading(false);
+      setHydrated(true);
+
+      let cancelled = false;
+      const syncLater = () => {
+        if (!cancelled) refresh();
+      };
+
+      const g = globalThis as typeof globalThis & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+        cancelIdleCallback?: (id: number) => void;
+      };
+
+      if (typeof g.requestIdleCallback === "function") {
+        const idleId = g.requestIdleCallback(syncLater, { timeout: 8000 });
+        return () => {
+          cancelled = true;
+          if (typeof g.cancelIdleCallback === "function") g.cancelIdleCallback(idleId);
+        };
+      }
+
+      const timeoutId = window.setTimeout(syncLater, 4000);
+      return () => {
+        cancelled = true;
+        window.clearTimeout(timeoutId);
+      };
+    }
+
     refresh();
   }, [userId, authLoading, refresh, initialKey]);
 

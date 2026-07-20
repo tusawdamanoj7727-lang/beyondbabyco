@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
 import { QuickCompareProvider } from "@/components/catalog/QuickCompareContext";
 import { MICROCOPY } from "@/lib/brand/copy";
 import ProductCard from "@/components/catalog/ProductCard";
-import QuickViewModal from "@/components/catalog/QuickViewModal";
 import type { StorefrontProduct } from "@/lib/catalog/types";
 import { focusRing } from "@/lib/design/ui";
 import { cn } from "@/lib/utils";
+
+const QuickViewModal = dynamic(() => import("@/components/catalog/QuickViewModal"), {
+  ssr: false,
+});
 
 export default function ProductGrid({
   products,
@@ -26,6 +30,13 @@ export default function ProductGrid({
   hasActiveFilters?: boolean;
 }) {
   const [quickView, setQuickView] = useState<StorefrontProduct | null>(null);
+  const [desktopInteractions, setDesktopInteractions] = useState(false);
+
+  useEffect(() => {
+    setDesktopInteractions(window.matchMedia("(min-width: 768px)").matches);
+  }, []);
+
+  const quickViewEnabled = enableQuickView && desktopInteractions;
 
   if (products.length === 0) {
     return (
@@ -46,21 +57,21 @@ export default function ProductGrid({
   }
 
   return (
-    <QuickCompareProvider enabled={enableCompare}>
+    <QuickCompareProvider enabled={enableCompare && desktopInteractions}>
       <div className={cn("collection-product-grid", className)}>
         {products.map((product, index) => (
           <ProductCard
             key={product.id}
             product={product}
-            onQuickView={enableQuickView ? setQuickView : undefined}
+            onQuickView={quickViewEnabled ? setQuickView : undefined}
             enableCompare={enableCompare}
             showListingCta
             hideHoverActions={false}
-            imagePriority={index < 2}
+            imagePriority={index === 0}
           />
         ))}
       </div>
-      {enableQuickView ? (
+      {quickViewEnabled ? (
         <QuickViewModal
           product={quickView}
           open={!!quickView}

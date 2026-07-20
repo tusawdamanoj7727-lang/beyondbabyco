@@ -4,7 +4,7 @@ import TrustCenterContent from "@/components/trust/TrustCenterContent";
 import JsonLd from "@/components/seo/JsonLd";
 import { articleJsonLd, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { RESEARCH_PROCESS_FAQ, TRUST_IMAGES } from "@/lib/trust";
+import { RESEARCH_PROCESS_FAQ } from "@/lib/trust";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Trust Center",
@@ -32,7 +32,6 @@ export default function TrustCenterPage() {
 
   return (
     <>
-      <link rel="preload" as="image" href={TRUST_IMAGES.trustHero} fetchPriority="high" />
       <JsonLd data={jsonLd} />
       <TrustCenterContent />
     </>

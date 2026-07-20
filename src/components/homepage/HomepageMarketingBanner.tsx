@@ -29,9 +29,9 @@ export default function HomepageMarketingBanner({ slot }: { slot: StorefrontCamp
   }
 
   return (
-    <section className="container py-4 sm:py-6">
+    <section className="container py-3 sm:py-6">
       <Link href={href} className="group relative block overflow-hidden rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terra-400">
-        <div className="relative aspect-[16/7] w-full sm:aspect-[21/7]">
+        <div className="relative aspect-[5/2] w-full sm:aspect-[21/7]">
           {mobile ? (
             <Image
               src={mobile}

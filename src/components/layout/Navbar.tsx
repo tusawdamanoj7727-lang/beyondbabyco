@@ -19,8 +19,7 @@ import {
   siteNavbar,
   siteNavbarScrolled,
 } from "@/lib/design/ui";
-import { useCartStore } from "@/lib/store/cart-store";
-import { useCartHydrated } from "@/lib/store/use-cart-hydrated";
+import { useCartItemCount } from "@/lib/store/use-cart-hydrated";
 import { isCustomerAuthPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +31,9 @@ const MOBILE_NAV_LINK = cn(
   "block rounded-xl px-4 py-3.5 text-[0.9375rem] font-medium tracking-[-0.01em] text-green-900 transition-colors duration-[var(--duration-button)] hover:bg-green-50",
   focusRing,
 );
+
+/** Matches `--header-nav` — never change height on scroll (avoids sticky jump / CLS). */
+const NAV_ROW = "site-navbar-grid h-[var(--header-nav)]";
 
 function InstagramIcon() {
   return (
@@ -60,32 +62,49 @@ export function Navbar() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const hydrated = useCartHydrated();
-  const itemCount = useCartStore((s) => s.itemCount());
-  const count = hydrated ? itemCount : 0;
+  const count = useCartItemCount();
 
   useEffect(() => {
-    const sentinel = document.createElement("div");
-    sentinel.setAttribute("aria-hidden", "true");
-    sentinel.setAttribute("data-scroll-sentinel", "1");
-    sentinel.style.cssText =
-      "position:absolute;top:0;left:0;width:1px;height:20px;pointer-events:none;visibility:hidden";
-    document.body.prepend(sentinel);
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const next = !entry.isIntersecting;
+    let removeScroll: (() => void) | undefined;
+
+    function attachScroll() {
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const next = window.scrollY > 8;
         if (next === scrolledRef.current) return;
         scrolledRef.current = next;
         setScrolled(next);
-      },
-      { threshold: 0 },
-    );
-    observer.observe(sentinel);
+      };
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      };
+      update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      removeScroll = () => window.removeEventListener("scroll", onScroll);
+    }
 
+    if (desktopQuery.matches) attachScroll();
+
+    function onBreakpointChange(e: MediaQueryListEvent) {
+      removeScroll?.();
+      removeScroll = undefined;
+      if (e.matches) {
+        attachScroll();
+      } else {
+        scrolledRef.current = false;
+        setScrolled(false);
+      }
+    }
+
+    desktopQuery.addEventListener("change", onBreakpointChange);
     return () => {
-      observer.disconnect();
-      sentinel.remove();
+      removeScroll?.();
+      desktopQuery.removeEventListener("change", onBreakpointChange);
     };
   }, []);
 
@@ -101,6 +120,7 @@ export function Navbar() {
   useEffect(() => {
     if (!mobileOpen) return;
     const panel = panelRef.current;
+    const menuButton = menuButtonRef.current;
     closeButtonRef.current?.focus();
 
     function onKeyDown(e: KeyboardEvent) {
@@ -113,7 +133,7 @@ export function Navbar() {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
-      menuButtonRef.current?.focus();
+      menuButton?.focus();
     };
   }, [mobileOpen]);
 
@@ -131,14 +151,14 @@ export function Navbar() {
       )}
     >
       <div className="container">
-        <div className="site-navbar-grid h-[4.5rem] md:h-[5.25rem]">
-          <div className="site-navbar-logo site-logo-wrap flex shrink-0 items-center">
-            <Logo size="nav" priority className="site-navbar-logo-img" />
+        <div className={NAV_ROW}>
+          <div className="site-navbar-logo site-logo-wrap flex h-full shrink-0 items-center">
+            <Logo size="nav" className="site-navbar-logo-img" />
           </div>
 
           <div
             aria-label="Main navigation"
-            className="site-navbar-nav hidden shrink-0 items-center gap-6 lg:flex xl:gap-8"
+            className="site-navbar-nav hidden h-full shrink-0 items-center gap-6 lg:flex xl:gap-8"
           >
             {PRIMARY_NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href} className={NAV_LINK}>
@@ -148,7 +168,7 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="site-navbar-actions flex items-center justify-end gap-1 sm:gap-2">
+          <div className="site-navbar-actions flex h-full items-center justify-end gap-0.5 sm:gap-2">
             <a
               href={INSTAGRAM_URL}
               target="_blank"
@@ -211,7 +231,7 @@ export function Navbar() {
           type="button"
           aria-label="Close menu"
           className={cn(
-            "fixed inset-0 z-40 bg-green-950/50 backdrop-blur-[2px] lg:hidden",
+            "fixed inset-0 z-40 bg-green-950/60 lg:hidden",
             focusRing,
           )}
           onClick={() => setMobileOpen(false)}
@@ -227,13 +247,13 @@ export function Navbar() {
         hidden={!mobileOpen}
         className={cn(
           drawerPanel,
-          "fixed inset-y-0 right-0 z-50 flex w-[min(20.5rem,calc(100vw-1.25rem))] max-w-full transform flex-col transition-transform duration-[var(--duration-drawer)] ease-[var(--ease-out)] lg:hidden",
+          "fixed inset-y-0 right-0 z-50 flex w-[min(20.5rem,calc(100vw-1.25rem))] max-w-full transform flex-col pt-[env(safe-area-inset-top)] transition-transform duration-[var(--duration-drawer)] ease-[var(--ease-out)] lg:hidden",
           mobileOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
         )}
       >
         {mobileOpen ? (
           <>
-            <div className="flex h-[4.5rem] shrink-0 items-center justify-between gap-3 border-b border-green-100/80 px-4">
+            <div className="flex h-[var(--header-nav)] shrink-0 items-center justify-between gap-3 border-b border-green-100/80 px-4">
               <Logo size="nav" href="/" />
               <button
                 ref={closeButtonRef}

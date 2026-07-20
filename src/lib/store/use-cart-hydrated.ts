@@ -10,9 +10,11 @@ export function useCartHydrated() {
 
   useEffect(() => {
     const finish = () => setHydrated(true);
-    const unsub = useCartStore.persist.onFinishHydration(finish);
-    finish();
-    return unsub;
+    if (useCartStore.persist.hasHydrated()) {
+      finish();
+      return;
+    }
+    return useCartStore.persist.onFinishHydration(finish);
   }, []);
 
   return hydrated;
@@ -20,6 +22,8 @@ export function useCartHydrated() {
 
 export function useCartItemCount() {
   const hydrated = useCartHydrated();
-  const count = useCartStore((s) => s.itemCount());
+  const count = useCartStore((s) =>
+    s.items.reduce((total, item) => total + item.quantity, 0),
+  );
   return hydrated ? count : 0;
 }

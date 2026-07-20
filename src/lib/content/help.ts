@@ -56,7 +56,7 @@ export const HELP_FAQ_ITEMS: HelpFaqItem[] = [
     category: "payments",
     question: "My payment failed but money was deducted. What now?",
     answer:
-      "Failed gateway attempts are usually auto-reversed by your bank. Share your order number and payment reference at care@beyondbabyco.com so we can help verify status.",
+      "Failed gateway attempts are usually auto-reversed by your bank. Share your order number and payment reference at info@beyondbabyco.com so we can help verify status.",
   },
   {
     category: "shipping",
@@ -104,7 +104,7 @@ export const HELP_FAQ_ITEMS: HelpFaqItem[] = [
     category: "contact",
     question: "How do I contact customer support?",
     answer:
-      "Email care@beyondbabyco.com, WhatsApp +91 72968 87936, or use the Contact form. Support hours: Monday–Saturday, 10 AM – 6 PM IST. We aim to reply within one business day.",
+      "Email info@beyondbabyco.com, WhatsApp +91 72968 87936, or use the Contact form. Support hours: Monday–Saturday, 10 AM – 6 PM IST. We aim to reply within one business day.",
   },
 ];
 

@@ -33,7 +33,6 @@ export default async function ProductsPage({ searchParams }: PageProps) {
   const raw = await searchParams;
   const params = parseCatalogParams(raw);
   const activeFilters = hasBrowseFilters(params);
-  const showFeatured = !activeFilters;
 
   const [bundleProducts, listed] = await Promise.all([
     listSevenStorefrontProducts(),
@@ -59,18 +58,18 @@ export default async function ProductsPage({ searchParams }: PageProps) {
         ]}
       />
       <div>
-        <section className="bg-brand-cream px-4 py-16">
+        <section className="products-page-hero bg-brand-cream px-4 py-8 md:py-16">
           <div className="mx-auto max-w-6xl text-center">
             <p className="text-eyebrow mb-2 font-bold uppercase tracking-widest text-brand-terra">
               Our Collection
             </p>
-            <h1 className="font-heading text-4xl font-black text-brand-forest md:text-5xl">
+            <h1 className="font-heading text-3xl font-black text-brand-forest md:text-5xl">
               Shop Baby Care
             </h1>
-            <p className="mx-auto mt-3 max-w-xl text-lg text-gray-500">
+            <p className="mx-auto mt-3 max-w-xl text-base text-gray-500 md:text-lg">
               Pure. Gentle. Tested. Everything your baby needs, nothing they don&apos;t.
             </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <div className="mt-4 flex flex-wrap justify-center gap-2 md:mt-6 md:gap-3">
               {["Dermatologically Tested", "Made in India", "Natural Ingredients", "Research Backed"].map(
                 (tag) => (
                   <span
@@ -85,7 +84,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-12">
+        <section className="mx-auto max-w-6xl px-4 py-8 md:py-12">
           <Suspense
             fallback={
               <div className="collection-search mb-8 h-12 animate-pulse rounded-2xl bg-green-50/80" />
@@ -105,7 +104,6 @@ export default async function ProductsPage({ searchParams }: PageProps) {
           >
             <ProductsCatalogSection
               searchParams={raw}
-              showFeatured={showFeatured}
               hasActiveFilters={activeFilters}
             />
           </Suspense>
@@ -115,8 +113,8 @@ export default async function ProductsPage({ searchParams }: PageProps) {
           <div className="border-t border-gray-100" />
         </div>
 
-        <section className="mx-auto max-w-6xl px-4 py-12">
-          <div className="mb-10 text-center">
+        <section className="mx-auto max-w-6xl px-4 py-8 md:py-12">
+          <div className="mb-6 text-center md:mb-10">
             <p className="text-eyebrow mb-2 font-bold uppercase tracking-widest text-brand-terra">
               Better Together
             </p>

@@ -5,7 +5,7 @@ import HomePageWithReviews from "@/components/homepage/HomePageWithReviews";
 import { resolveVisualUrl } from "@/lib/brand/generated-assets";
 import { getStorefrontHomepage } from "@/lib/homepage/storefront";
 import { HERO_DEFAULT_BLUR } from "@/lib/homepage/visual-assets";
-import { IMAGE_QUALITY, IMAGE_SIZES } from "@/lib/media/image-delivery";
+import { IMAGE_QUALITY } from "@/lib/media/image-delivery";
 import { IMAGES } from "@/lib/images";
 import { buildHomepageMetadata } from "@/lib/seo/metadata";
 
@@ -27,20 +27,21 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const data = await getStorefrontHomepage();
-  const heroLcpImage = (() => {
-    const resolved = resolveVisualUrl(data.hero.imageUrl, {
-      category: "hero",
-      slug: "gentle-care-hero",
-    });
-    return resolved.url || IMAGES.hero.mother_baby;
-  })();
+  const resolved = resolveVisualUrl(data.hero.imageUrl, {
+    category: "hero",
+    slug: "gentle-care-hero",
+  });
+  const heroLcpImage = resolved.url || IMAGES.hero.mother_baby;
 
-  const heroPreload = getImageProps({
+  /**
+   * Single-URL preload (~2× mobile hero CSS width). Avoids Next's multi-width
+   * imageSrcSet preload which delayed LCP discovery (measured ~1.6s load delay).
+   */
+  const { props: heroPreload } = getImageProps({
     src: heroLcpImage,
-    alt: data.hero.imageAlt,
-    fill: true,
-    priority: true,
-    sizes: IMAGE_SIZES.hero,
+    alt: "",
+    width: 640,
+    height: 512,
     quality: IMAGE_QUALITY.hero,
     placeholder: "blur",
     blurDataURL: data.hero.imageUrl?.trim()
@@ -50,14 +51,7 @@ export default async function Home() {
 
   return (
     <>
-      <link
-        rel="preload"
-        as="image"
-        href={heroPreload.props.src}
-        imageSrcSet={heroPreload.props.srcSet}
-        imageSizes={heroPreload.props.sizes}
-        fetchPriority="high"
-      />
+      <link rel="preload" as="image" href={heroPreload.src} fetchPriority="high" />
       <div className="homepage-main">
         <HomePageWithReviews data={data} />
       </div>

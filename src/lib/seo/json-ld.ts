@@ -1,3 +1,4 @@
+import { brandSupportEmail } from "@/lib/brand/contact";
 import { BRAND_LOGO_PATH } from "@/lib/brand/logo";
 import { absoluteUrl, getCanonicalSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "./site";
 
@@ -20,7 +21,7 @@ export function organizationJsonLd() {
     },
     contactPoint: {
       "@type": "ContactPoint",
-      email: "care@beyondbabyco.com",
+      email: brandSupportEmail(),
       contactType: "customer service",
       areaServed: "IN",
       availableLanguage: "English",

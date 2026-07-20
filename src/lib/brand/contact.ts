@@ -1,5 +1,5 @@
 /** Public brand support email — override via env in production. */
-const DEFAULT_BRAND_EMAIL = "care@beyondbabyco.com";
+const DEFAULT_BRAND_EMAIL = "info@beyondbabyco.com";
 
 /** Digits only, with country code — e.g. 919876543210 */
 const DEFAULT_WHATSAPP_NUMBER = "917296887936";

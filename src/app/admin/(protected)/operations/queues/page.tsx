@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import PageHeader from "@/components/admin/PageHeader";
 import StatsCard from "@/components/admin/StatsCard";
 import { requirePermission } from "@/lib/auth/guards";
 import { PERMISSIONS } from "@/lib/auth/permissions";

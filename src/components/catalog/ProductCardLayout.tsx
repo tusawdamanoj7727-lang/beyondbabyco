@@ -1,8 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import ProductCardImage from "@/components/catalog/ProductCardImage";
+import ProductCardImageClient from "@/components/catalog/ProductCardImageClient";
+import CategoryProductPlaceholder from "@/components/catalog/CategoryProductPlaceholder";
 import RatingStars from "@/components/reviews/RatingStars";
+import {
+  categoryPlaceholderImage,
+  resolveProductVisualGroup,
+} from "@/lib/catalog/product-category-images";
 import { formatInr } from "@/lib/catalog/format";
 import { productUnit } from "@/lib/catalog/product-images";
 import type { StorefrontProduct } from "@/lib/catalog/types";
@@ -74,20 +79,34 @@ export function ProductCardLayout({
   const related = density === "related";
   const href = `/products/${product.slug}`;
 
+  const group = resolveProductVisualGroup(product.categorySlug, product.slug);
+  const fallbackSrc = categoryPlaceholderImage(group);
+  const trimmed = product.imageUrl?.trim();
+
   return (
     <div className={cn(premiumCardHover, "group relative overflow-hidden", className)}>
       <div className="relative aspect-square overflow-hidden bg-cream-100">
-        <ProductCardImage
-          src={product.imageUrl}
-          alt={product.name}
-          productName={product.name}
-          productSlug={product.slug}
-          categorySlug={product.categorySlug}
-          blurDataUrl={product.imageBlurDataUrl}
-          priority={priority}
-          className="h-full w-full"
-          imageClassName={cn("object-contain p-4", imageHoverZoom)}
-        />
+        {trimmed ? (
+          <ProductCardImageClient
+            src={trimmed}
+            alt={product.name}
+            productName={product.name}
+            productSlug={product.slug}
+            categorySlug={product.categorySlug}
+            blurDataUrl={product.imageBlurDataUrl}
+            priority={priority}
+            className="h-full w-full"
+            imageClassName={cn("object-contain p-4", imageHoverZoom)}
+            fallbackSrc={fallbackSrc}
+          />
+        ) : (
+          <CategoryProductPlaceholder
+            productName={product.name}
+            categorySlug={product.categorySlug}
+            productSlug={product.slug}
+            className="h-full w-full"
+          />
+        )}
 
         {badge ? (
           <div className="pointer-events-none absolute right-3 top-3 z-[1]">

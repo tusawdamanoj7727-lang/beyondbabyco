@@ -83,7 +83,7 @@ export default function TickerBar({
       >
         <div
           className={cn(
-            "flex w-max items-center py-2.5 will-change-transform",
+            "flex w-max items-center py-2.5 motion-reduce:!animate-none md:will-change-transform",
             pauseOnHover && "group-hover:[animation-play-state:paused]",
             "motion-reduce:!animate-none",
           )}

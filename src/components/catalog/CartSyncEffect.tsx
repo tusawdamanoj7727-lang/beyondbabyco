@@ -24,12 +24,42 @@ export default function CartSyncEffect() {
 
   useEffect(() => {
     if (loading || !setLoggedIn || !hydrated) return;
-    if (userId) {
-      setLoggedIn(true, userId);
-    } else if (prevUserIdRef.current) {
-      setLoggedIn(false);
+
+    const applyLogin = () => {
+      if (userId) {
+        setLoggedIn(true, userId);
+      } else if (prevUserIdRef.current) {
+        setLoggedIn(false);
+      }
+      prevUserIdRef.current = userId;
+    };
+
+    if (!userId) {
+      applyLogin();
+      return;
     }
-    prevUserIdRef.current = userId;
+
+    let cancelled = false;
+    const g = globalThis as typeof globalThis & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (typeof g.requestIdleCallback === "function") {
+      const idleId = g.requestIdleCallback(() => {
+        if (!cancelled) applyLogin();
+      }, { timeout: 2000 });
+      return () => {
+        cancelled = true;
+        if (typeof g.cancelIdleCallback === "function") g.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = window.setTimeout(applyLogin, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
   }, [userId, loading, setLoggedIn, hydrated]);
 
   useEffect(() => {
@@ -51,11 +81,35 @@ export default function CartSyncEffect() {
     const guestIds = readGuestWishlistIds();
     if (guestIds.length === 0) return;
 
-    void mergeGuestWishlistOnLogin(guestIds).then(() => {
-      localStorage.removeItem(WISHLIST_STORAGE_KEY);
-      writeGuestWishlistIds([]);
-      window.dispatchEvent(new CustomEvent("bbc:wishlist-merged"));
-    });
+    let cancelled = false;
+    const merge = () => {
+      if (cancelled) return;
+      void mergeGuestWishlistOnLogin(guestIds).then(() => {
+        if (cancelled) return;
+        localStorage.removeItem(WISHLIST_STORAGE_KEY);
+        writeGuestWishlistIds([]);
+        window.dispatchEvent(new CustomEvent("bbc:wishlist-merged"));
+      });
+    };
+
+    const g = globalThis as typeof globalThis & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (typeof g.requestIdleCallback === "function") {
+      const idleId = g.requestIdleCallback(merge, { timeout: 3000 });
+      return () => {
+        cancelled = true;
+        if (typeof g.cancelIdleCallback === "function") g.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = window.setTimeout(merge, 500);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
   }, [userId, loading]);
 
   return null;

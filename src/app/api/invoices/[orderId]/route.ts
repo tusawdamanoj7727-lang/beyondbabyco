@@ -46,9 +46,6 @@ export async function GET(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("[api/invoices] generation failed", { orderId, message, error });
-    return NextResponse.json(
-      { error: "Invoice generation failed", detail: message },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Invoice generation failed" }, { status: 500 });
   }
 }

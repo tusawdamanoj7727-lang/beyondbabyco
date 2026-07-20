@@ -96,7 +96,7 @@ export default function TermsOfServicePage() {
         <br />
         Udaipur, Rajasthan, India
         <br />
-        Email: <a href="mailto:care@beyondbabyco.com">care@beyondbabyco.com</a>
+        Email: <a href="mailto:info@beyondbabyco.com">info@beyondbabyco.com</a>
       </p>
     </LegalPageShell>
   );
