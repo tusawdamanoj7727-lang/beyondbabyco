@@ -4,40 +4,52 @@ import { absoluteUrl } from "@/lib/seo/site";
 
 import { getSmtpConfig } from "../config";
 import { resolveContactEmailData, resolveCustomerEmailData } from "../data-resolvers";
-import { sendTemplateEmailAsync } from "../send-template";
+import { sendTemplateEmail } from "../send-template";
 
-function notifyAdmin(templateId: string, data: Record<string, string>): void {
+async function notifyAdmin(templateId: string, data: Record<string, string>): Promise<void> {
   const adminEmail = getSmtpConfig()?.adminAlertEmail;
   if (!adminEmail) return;
-  sendTemplateEmailAsync(templateId, adminEmail, data);
+  const result = await sendTemplateEmail(templateId, adminEmail, data);
+  if (!result.ok) {
+    console.error(`[email] admin template ${templateId} failed:`, result.error);
+  }
 }
 
-export function onNewCustomer(customerId: string): void {
-  void (async () => {
+export async function onNewCustomer(customerId: string): Promise<void> {
+  try {
     const data = await resolveCustomerEmailData(customerId, {
       admin_customers_url: absoluteUrl("/admin/customers"),
     });
     if (!data) return;
-    notifyAdmin("admin-new-customer", data);
+    await notifyAdmin("admin-new-customer", data);
     if (data.customer_email) {
-      sendTemplateEmailAsync("welcome", data.customer_email, data);
-      sendTemplateEmailAsync("account-created", data.customer_email, data);
+      const welcome = await sendTemplateEmail("welcome", data.customer_email, data);
+      if (!welcome.ok) console.error("[email] welcome failed:", welcome.error);
+      const created = await sendTemplateEmail("account-created", data.customer_email, data);
+      if (!created.ok) console.error("[email] account-created failed:", created.error);
     }
-  })().catch((e) => console.error("[email] onNewCustomer failed:", e));
+  } catch (e) {
+    console.error("[email] onNewCustomer failed:", e);
+  }
 }
 
-export function onContactFormSubmitted(input: {
+export async function onContactFormSubmitted(input: {
   name: string;
   email: string;
   subject: string;
   message: string;
-}): void {
-  const data = resolveContactEmailData(input);
-  notifyAdmin("admin-contact-form", {
-    ...data,
-    admin_support_url: absoluteUrl("/admin/support"),
-  });
-  sendTemplateEmailAsync("contact-auto-reply", input.email, data);
+}): Promise<void> {
+  try {
+    const data = resolveContactEmailData(input);
+    await notifyAdmin("admin-contact-form", {
+      ...data,
+      admin_support_url: absoluteUrl("/admin/support"),
+    });
+    const reply = await sendTemplateEmail("contact-auto-reply", input.email, data);
+    if (!reply.ok) console.error("[email] contact-auto-reply failed:", reply.error);
+  } catch (e) {
+    console.error("[email] onContactFormSubmitted failed:", e);
+  }
 }
 
 export function onRefundRequested(orderId: string, reason: string): void {
@@ -49,7 +61,7 @@ export function onRefundRequested(orderId: string, reason: string): void {
       order_id: orderId,
     });
     if (!data) return;
-    notifyAdmin("admin-refund-request", data);
+    await notifyAdmin("admin-refund-request", data);
   })().catch((e) => console.error("[email] onRefundRequested failed:", e));
 }
 
@@ -59,7 +71,7 @@ export function onLowStockAlert(input: {
   quantity: number;
   reorderLevel: number;
 }): void {
-  notifyAdmin("admin-low-stock", {
+  void notifyAdmin("admin-low-stock", {
     product_name: input.productName,
     product_sku: input.sku,
     stock_quantity: String(input.quantity),
@@ -69,7 +81,7 @@ export function onLowStockAlert(input: {
 }
 
 export function onOutOfStockAlert(input: { productName: string; sku: string }): void {
-  notifyAdmin("admin-out-of-stock", {
+  void notifyAdmin("admin-out-of-stock", {
     product_name: input.productName,
     product_sku: input.sku,
     admin_inventory_url: absoluteUrl("/admin/inventory"),
@@ -77,13 +89,12 @@ export function onOutOfStockAlert(input: { productName: string; sku: string }): 
 }
 
 export function onNewsletterSubscribed(email: string, name?: string): void {
-  sendTemplateEmailAsync("newsletter-confirmation", email, {
-    customer_name: name ?? email.split("@")[0] ?? "Subscriber",
+  void sendTemplateEmail("newsletter-confirmation", email, {
+    customer_name: name || "there",
     customer_email: email,
-    verify_link: absoluteUrl("/account/profile"),
-  });
-  sendTemplateEmailAsync("subscription-confirmation", email, {
-    customer_name: name ?? email.split("@")[0] ?? "Subscriber",
+  }).catch((e) => console.error("[email] newsletter-confirmation failed:", e));
+  void sendTemplateEmail("subscription-confirmation", email, {
+    customer_name: name || "there",
     customer_email: email,
-  });
+  }).catch((e) => console.error("[email] subscription-confirmation failed:", e));
 }

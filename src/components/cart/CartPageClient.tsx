@@ -95,9 +95,12 @@ export default function CartPageClient({
           discountType: data.discountType,
           discountValue: data.discountValue,
           savings: data.savings,
+          freeShipping: data.freeShipping,
         });
         setCouponMsg({
-          text: `Coupon applied! You save ${formatInr(data.savings)}`,
+          text: data.freeShipping
+            ? `Coupon applied! Free shipping unlocked.`
+            : `Coupon applied! You save ${formatInr(data.savings)}`,
           type: "success",
         });
         setCouponInput("");
@@ -225,7 +228,7 @@ export default function CartPageClient({
                         <button
                           type="button"
                           aria-label={`Decrease quantity of ${item.name}`}
-                          onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           className={cn(
                             "flex h-11 w-11 items-center justify-center text-green-800 transition-colors hover:bg-green-50",
                             focusRing,
@@ -244,7 +247,7 @@ export default function CartPageClient({
                           aria-label={`Increase quantity of ${item.name}`}
                           disabled={item.quantity >= 10}
                           onClick={() =>
-                            updateQuantity(item.variantId, clampCartQuantity(item.quantity + 1))
+                            updateQuantity(item.id, clampCartQuantity(item.quantity + 1))
                           }
                           className={cn(
                             "flex h-11 w-11 items-center justify-center text-green-800 transition-colors hover:bg-green-50 disabled:opacity-40",
@@ -260,7 +263,7 @@ export default function CartPageClient({
                         <button
                           type="button"
                           aria-label={`Remove ${item.name}`}
-                          onClick={() => removeItem(item.variantId)}
+                          onClick={() => removeItem(item.id)}
                           className={cn(
                             "flex h-11 w-11 items-center justify-center rounded-full text-green-700 transition-colors hover:bg-terra-50 hover:text-terra-700",
                             focusRing,

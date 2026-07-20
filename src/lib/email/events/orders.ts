@@ -3,7 +3,7 @@ import "server-only";
 import type { OrderStatus } from "@/lib/supabase/database.types";
 import { trackServerRefund } from "@/lib/analytics/measurement-protocol";
 
-import { dispatchOrderEmail, dispatchOrderEmailAsync } from "../dispatch";
+import { dispatchOrderEmail } from "../dispatch";
 import { runOrderCompletionEmails } from "../lifecycle";
 
 const STATUS_TEMPLATE_MAP: Partial<Record<OrderStatus, string>> = {
@@ -59,19 +59,19 @@ export async function onPaymentFailed(orderId: string): Promise<void> {
   await dispatchOrderEmail(orderId, "admin-payment-failure", { admin: true });
 }
 
-export function onOrderStatusChanged(orderId: string, status: OrderStatus): void {
+export async function onOrderStatusChanged(orderId: string, status: OrderStatus): Promise<void> {
   const templateId = STATUS_TEMPLATE_MAP[status];
   if (!templateId) return;
-  dispatchOrderEmailAsync(orderId, templateId);
+  await dispatchOrderEmail(orderId, templateId);
   if (status === "refunded") {
     trackServerRefund({ transactionId: orderId });
   }
 }
 
-export function onShipmentStatusChanged(
+export async function onShipmentStatusChanged(
   orderId: string,
   shipmentStatus: string,
-): void {
+): Promise<void> {
   const map: Record<string, string> = {
     label_created: "shipment-created",
     in_transit: "in-transit",
@@ -80,23 +80,23 @@ export function onShipmentStatusChanged(
   };
   const templateId = map[shipmentStatus];
   if (!templateId) return;
-  dispatchOrderEmailAsync(orderId, templateId);
+  await dispatchOrderEmail(orderId, templateId);
 }
 
-export function onRefundInitiated(orderId: string, amount?: string): void {
+export async function onRefundInitiated(orderId: string, amount?: string): Promise<void> {
   void amount;
-  dispatchOrderEmailAsync(orderId, "refund-initiated");
+  await dispatchOrderEmail(orderId, "refund-initiated");
 }
 
-export function onRefundCompleted(orderId: string, amount?: string): void {
+export async function onRefundCompleted(orderId: string, amount?: string): Promise<void> {
   const value = amount ? Number(amount) : undefined;
-  dispatchOrderEmailAsync(orderId, "refund-completed");
+  await dispatchOrderEmail(orderId, "refund-completed");
   trackServerRefund({
     transactionId: orderId,
     value: Number.isFinite(value) ? value : undefined,
   });
 }
 
-export function onOrderCancelled(orderId: string): void {
-  onOrderStatusChanged(orderId, "cancelled");
+export async function onOrderCancelled(orderId: string): Promise<void> {
+  await onOrderStatusChanged(orderId, "cancelled");
 }

@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Heart, Menu, ShoppingBag, UserCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
+import Logo from "@/components/brand/Logo";
 import { handleFocusTrap, lockBodyScroll } from "@/lib/a11y/dialog-a11y";
 import { useAuth } from "@/lib/auth/hooks";
-import { BRAND_LOGO_ALT, BRAND_LOGO_PATH } from "@/lib/brand/logo";
 import { HEADER_ACCOUNT_HREF, PRIMARY_NAV_LINKS } from "@/lib/brand/navigation";
 import { INSTAGRAM_URL } from "@/lib/brand/social";
 import {
@@ -30,7 +29,7 @@ const ICON_LINK = cn(headerIconBtn, "relative shrink-0", focusRing);
 const NAV_LINK = cn(headerNavLink, "text-green-700 hover:text-green-900", focusRing);
 
 const MOBILE_NAV_LINK = cn(
-  "block rounded-[var(--radius-input)] px-4 py-3 text-base font-medium text-green-800 transition-colors duration-[var(--duration-button)] hover:bg-green-50 hover:text-green-900",
+  "block rounded-xl px-4 py-3.5 text-[0.9375rem] font-medium tracking-[-0.01em] text-green-900 transition-colors duration-[var(--duration-button)] hover:bg-green-50",
   focusRing,
 );
 
@@ -66,26 +65,27 @@ export function Navbar() {
   const count = hydrated ? itemCount : 0;
 
   useEffect(() => {
-    let ticking = false;
-    const syncScrolled = () => {
-      const next = window.scrollY > 20;
-      if (next === scrolledRef.current) return;
-      scrolledRef.current = next;
-      setScrolled(next);
-    };
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        ticking = false;
-        syncScrolled();
-      });
-    };
-    syncScrolled();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const sentinel = document.createElement("div");
+    sentinel.setAttribute("aria-hidden", "true");
+    sentinel.setAttribute("data-scroll-sentinel", "1");
+    sentinel.style.cssText =
+      "position:absolute;top:0;left:0;width:1px;height:20px;pointer-events:none;visibility:hidden";
+    document.body.prepend(sentinel);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const next = !entry.isIntersecting;
+        if (next === scrolledRef.current) return;
+        scrolledRef.current = next;
+        setScrolled(next);
+      },
+      { threshold: 0 },
+    );
+    observer.observe(sentinel);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+      sentinel.remove();
     };
   }, []);
 
@@ -126,28 +126,15 @@ export function Navbar() {
       aria-label="Site navigation"
       className={cn(
         siteNavbar,
-        "w-full bg-cream-50/95",
+        "w-full bg-green-50/95",
         scrolled && siteNavbarScrolled,
       )}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="site-navbar-grid h-16 md:h-20">
-          <Link
-            href="/"
-            className={cn("site-navbar-logo flex h-11 min-w-11 shrink-0 items-center", focusRing)}
-            aria-label="BeyondBabyCo home"
-          >
-            <Image
-              src={BRAND_LOGO_PATH}
-              alt={BRAND_LOGO_ALT}
-              width={160}
-              height={52}
-              priority
-              sizes="160px"
-              quality={75}
-              className="h-10 w-auto md:h-12"
-            />
-          </Link>
+      <div className="container">
+        <div className="site-navbar-grid h-[4.5rem] md:h-[5.25rem]">
+          <div className="site-navbar-logo site-logo-wrap flex shrink-0 items-center">
+            <Logo size="nav" priority className="site-navbar-logo-img" />
+          </div>
 
           <div
             aria-label="Main navigation"
@@ -167,7 +154,7 @@ export function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className={ICON_LINK}
+              className={cn(ICON_LINK, "hidden sm:inline-flex")}
             >
               <InstagramIcon />
             </a>
@@ -223,7 +210,10 @@ export function Navbar() {
         <button
           type="button"
           aria-label="Close menu"
-          className={cn("fixed inset-0 z-40 bg-green-900/40 lg:hidden", focusRing)}
+          className={cn(
+            "fixed inset-0 z-40 bg-green-950/50 backdrop-blur-[2px] lg:hidden",
+            focusRing,
+          )}
           onClick={() => setMobileOpen(false)}
         />
       ) : null}
@@ -237,27 +227,28 @@ export function Navbar() {
         hidden={!mobileOpen}
         className={cn(
           drawerPanel,
-          "fixed inset-y-0 right-0 z-50 w-72 transform transition-transform duration-[var(--duration-drawer)] ease-[var(--ease-out)] lg:hidden",
+          "fixed inset-y-0 right-0 z-50 flex w-[min(20.5rem,calc(100vw-1.25rem))] max-w-full transform flex-col transition-transform duration-[var(--duration-drawer)] ease-[var(--ease-out)] lg:hidden",
           mobileOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
         )}
       >
         {mobileOpen ? (
           <>
-            <div className="flex h-16 items-center justify-between border-b border-green-100 px-4">
-              <span className="text-sm font-semibold text-green-900" id="mobile-nav-title">
-                Menu
-              </span>
+            <div className="flex h-[4.5rem] shrink-0 items-center justify-between gap-3 border-b border-green-100/80 px-4">
+              <Logo size="nav" href="/" />
               <button
                 ref={closeButtonRef}
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className={ICON_LINK}
+                className={cn(ICON_LINK, "h-10 w-10")}
                 aria-label="Close menu"
               >
-                <X className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+                <X className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" />
               </button>
             </div>
-            <nav className="space-y-1 px-4 py-4" aria-label="Mobile navigation">
+            <nav
+              className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-5"
+              aria-label="Mobile navigation"
+            >
               {PRIMARY_NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
@@ -268,48 +259,12 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="mt-4 flex items-center gap-2 border-t border-green-100 pt-4">
-                <a
-                  href={INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setMobileOpen(false)}
-                  aria-label="Instagram"
-                  className={ICON_LINK}
-                >
-                  <InstagramIcon />
-                </a>
-                <Link
-                  href="/wishlist"
-                  onClick={() => setMobileOpen(false)}
-                  aria-label="Wishlist"
-                  className={ICON_LINK}
-                >
-                  <Heart className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" />
-                </Link>
-                <Link
-                  href={HEADER_ACCOUNT_HREF}
-                  onClick={() => setMobileOpen(false)}
-                  aria-label="My Account"
-                  className={ICON_LINK}
-                >
-                  <UserCircle className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/cart"
-                  onClick={() => setMobileOpen(false)}
-                  aria-label={count > 0 ? `Cart, ${count} items` : "Cart"}
-                  className={ICON_LINK}
-                >
-                  <ShoppingBag className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" />
-                  {count > 0 ? (
-                    <span className={cn(badgeCount, "absolute right-0 top-0 bg-terra-500 text-white")}>
-                      {count > 9 ? "9+" : count}
-                    </span>
-                  ) : null}
-                </Link>
-              </div>
             </nav>
+            <div className="shrink-0 border-t border-green-100/80 px-5 py-4">
+              <p className="text-xs leading-relaxed text-green-700/70">
+                Premium baby care · Dermatologically tested
+              </p>
+            </div>
           </>
         ) : null}
       </div>

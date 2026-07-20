@@ -291,43 +291,79 @@ export type Database = {
       }
       banners: {
         Row: {
+          alt_text: string | null
+          aria_label: string | null
+          campaign_id: string | null
           created_at: string
+          cta_label: string | null
+          deleted_at: string | null
           ends_at: string | null
           id: string
           image_url: string | null
           is_active: boolean
           link_url: string | null
+          media_type: string
+          mobile_image_url: string | null
           placement: string | null
           position: number
+          priority: number
           starts_at: string | null
+          status: string
+          subtitle: string | null
+          tablet_image_url: string | null
           title: string | null
           updated_at: string
+          video_url: string | null
         }
         Insert: {
+          alt_text?: string | null
+          aria_label?: string | null
+          campaign_id?: string | null
           created_at?: string
+          cta_label?: string | null
+          deleted_at?: string | null
           ends_at?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
           link_url?: string | null
+          media_type?: string
+          mobile_image_url?: string | null
           placement?: string | null
           position?: number
+          priority?: number
           starts_at?: string | null
+          status?: string
+          subtitle?: string | null
+          tablet_image_url?: string | null
           title?: string | null
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
+          alt_text?: string | null
+          aria_label?: string | null
+          campaign_id?: string | null
           created_at?: string
+          cta_label?: string | null
+          deleted_at?: string | null
           ends_at?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
           link_url?: string | null
+          media_type?: string
+          mobile_image_url?: string | null
           placement?: string | null
           position?: number
+          priority?: number
           starts_at?: string | null
+          status?: string
+          subtitle?: string | null
+          tablet_image_url?: string | null
           title?: string | null
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -1550,16 +1586,20 @@ export type Database = {
           cta_label: string | null
           cta_url: string | null
           description: string | null
+          ends_at: string | null
           id: string
           image_url: string | null
           is_active: boolean
+          mobile_image_url: string | null
           overlay: number
           position: number
           secondary_cta_label: string | null
           secondary_cta_url: string | null
+          starts_at: string | null
           subtitle: string | null
           title: string | null
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           background_url?: string | null
@@ -1567,16 +1607,20 @@ export type Database = {
           cta_label?: string | null
           cta_url?: string | null
           description?: string | null
+          ends_at?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_image_url?: string | null
           overlay?: number
           position?: number
           secondary_cta_label?: string | null
           secondary_cta_url?: string | null
+          starts_at?: string | null
           subtitle?: string | null
           title?: string | null
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           background_url?: string | null
@@ -1584,16 +1628,20 @@ export type Database = {
           cta_label?: string | null
           cta_url?: string | null
           description?: string | null
+          ends_at?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_image_url?: string | null
           overlay?: number
           position?: number
           secondary_cta_label?: string | null
           secondary_cta_url?: string | null
+          starts_at?: string | null
           subtitle?: string | null
           title?: string | null
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }

@@ -57,7 +57,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: "Marketing", href: "/admin/marketing", icon: "coupons", permission: PERMISSIONS.MARKETING_VIEW },
       { label: "Communications", href: "/admin/communications", icon: "newsletter", permission: PERMISSIONS.MARKETING_VIEW },
       { label: "Homepage CMS", href: "/admin/homepage", icon: "homepage", permission: PERMISSIONS.CMS_MANAGE },
-      { label: "Banners", href: "/admin/banners", icon: "banners", permission: PERMISSIONS.CONTENT_MANAGE, soon: true },
+      { label: "Banners", href: "/admin/banners", icon: "banners", permission: PERMISSIONS.CONTENT_MANAGE },
       { label: "Blog", href: "/admin/blog", icon: "blog", permission: PERMISSIONS.CONTENT_MANAGE, soon: true },
       { label: "Newsletter", href: "/admin/newsletter", icon: "newsletter", permission: PERMISSIONS.CONTENT_MANAGE, soon: true },
       { label: "Testimonials", href: "/admin/testimonials", icon: "testimonials", permission: PERMISSIONS.CONTENT_MANAGE, soon: true },

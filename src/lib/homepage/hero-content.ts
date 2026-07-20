@@ -37,9 +37,11 @@ export type ResolvedHeroContent = {
   primaryCtaUrl: string | null;
   secondaryCtaUrl: string | null;
   imageUrl: string;
+  mobileImageUrl?: string | null;
+  videoUrl?: string | null;
   imageAlt: string;
   /** Which layer supplied the copy fields (image may still come from CMS). */
-  copySource: "cms" | "brand" | "emergency";
+  copySource: "cms" | "brand" | "emergency" | "campaign";
 };
 
 function normalizeCopy(value: string): string {
@@ -128,7 +130,35 @@ export function resolveHeroContent(
     primaryCtaUrl,
     secondaryCtaUrl,
     imageUrl,
+    mobileImageUrl: published ? cmsSlide?.mobileImageUrl?.trim() || null : null,
+    videoUrl: published ? cmsSlide?.videoUrl?.trim() || null : null,
     imageAlt,
     copySource,
+  };
+}
+
+/** Soft-override evergreen hero with an active homepage_hero campaign. */
+export function applyHeroCampaignOverride(
+  hero: ResolvedHeroContent,
+  campaign: {
+    headline: string;
+    subheading: string;
+    ctaLabel: string;
+    ctaUrl: string;
+    targetUrl: string;
+    heroUrl?: string | null;
+    bannerUrl?: string | null;
+  } | null,
+): ResolvedHeroContent {
+  if (!campaign) return hero;
+  return {
+    ...hero,
+    title: campaign.headline || hero.title,
+    subtitle: campaign.subheading || hero.subtitle,
+    primaryCta: campaign.ctaLabel || hero.primaryCta,
+    primaryCtaUrl: campaign.ctaUrl || campaign.targetUrl || hero.primaryCtaUrl,
+    imageUrl: campaign.heroUrl || campaign.bannerUrl || hero.imageUrl,
+    mobileImageUrl: campaign.bannerUrl || hero.mobileImageUrl,
+    copySource: "campaign",
   };
 }

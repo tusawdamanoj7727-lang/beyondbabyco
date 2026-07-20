@@ -74,12 +74,15 @@ export default function AccountPage() {
     };
   }, [router]);
 
-  const signOut = () => {
+  const signOut = async () => {
     const supabase = createClient();
     resetClientCart();
     setUser(null);
-    window.location.replace("/");
-    void supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      window.location.replace("/");
+    }
   };
 
   if (loading) {

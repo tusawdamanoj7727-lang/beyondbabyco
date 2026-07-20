@@ -18,6 +18,7 @@ import type {
   CalendarEvent,
   HomepageCampaignSlot,
 } from "@/lib/campaigns/types";
+import { getCampaignAnalyticsMap } from "@/lib/marketing/analytics";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import type { CampaignStatus } from "./marketing-types";
@@ -39,6 +40,8 @@ async function fetchCampaignRows() {
     : { data: [] };
   const segMap = new Map((segments ?? []).map((s) => [s.id, s.name]));
 
+  const analyticsMap = await getCampaignAnalyticsMap(rows.map((r) => r.id));
+
   return rows.map((r) => {
     const config = parseCampaignConfig(r.buttons);
     if (!config.headline && r.title) config.headline = r.title;
@@ -56,7 +59,7 @@ async function fetchCampaignRows() {
       scheduledAt: r.scheduled_at,
       segmentName: r.segment_id ? segMap.get(r.segment_id) ?? null : null,
       createdAt: r.created_at,
-      analytics: sampleAnalytics(r.id),
+      analytics: analyticsMap.get(r.id) ?? sampleAnalytics(r.id),
     };
     return item;
   });
@@ -67,11 +70,15 @@ export async function getCampaignCenterItem(id: string): Promise<CampaignCenterI
   return items.find((c) => c.id === id) ?? null;
 }
 
-export async function getCampaignCenterOverview(): Promise<CampaignCenterOverview> {
+export async function getCampaignCenterOverview(opts?: {
+  /** When true, merge demo campaigns for empty admin UI only. Never for storefront. */
+  includeDemos?: boolean;
+}): Promise<CampaignCenterOverview> {
   let campaigns = await fetchCampaignRows();
+  const includeDemos = opts?.includeDemos === true;
   const hasRichConfig = campaigns.some((c) => c.config.slug || c.config.headline);
 
-  if (!campaigns.length || !hasRichConfig) {
+  if (includeDemos && (!campaigns.length || !hasRichConfig)) {
     campaigns = [...campaigns, ...DEMO_CAMPAIGNS.filter((d) => !campaigns.some((c) => c.id === d.id))];
   }
 
@@ -90,10 +97,9 @@ export async function getCampaignCenterOverview(): Promise<CampaignCenterOvervie
 }
 
 export async function getCampaignCalendarEvents(): Promise<CalendarEvent[]> {
-  const overview = await getCampaignCenterOverview();
+  const overview = await getCampaignCenterOverview({ includeDemos: true });
   const events = buildCalendarEvents(overview.campaigns);
 
-  // Static festival / newsletter reminders (demo until calendar integrations)
   events.push(
     {
       id: "fest-diwali",
@@ -117,8 +123,11 @@ export async function getCampaignCalendarEvents(): Promise<CalendarEvent[]> {
 }
 
 export const getActiveHomepageCampaigns = cache(async () => {
-  const overview = await getCampaignCenterOverview();
-  return resolveActiveSlotCampaigns(overview.campaigns);
+  // Never inject DEMO_CAMPAIGNS into live storefront slots.
+  const overview = await getCampaignCenterOverview({ includeDemos: false });
+  return resolveActiveSlotCampaigns(
+    overview.campaigns.filter((c) => !c.id.startsWith("demo-")),
+  );
 });
 
 export type StorefrontCampaignSlot = {

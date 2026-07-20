@@ -5,9 +5,12 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 
 import { assertAppUrlMatchesOrigin } from "@/lib/app-url";
 import { ensureCustomerRecordsForUser } from "@/lib/auth/customer-bootstrap";
+import { shouldSendOAuthWelcomeEmail } from "@/lib/checkout/commerce-stability";
+import { onNewCustomer } from "@/lib/email/events/admin";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { resolveCustomerRedirect } from "@/lib/routes";
 import type { Database } from "@/lib/supabase/types";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function resolvePostAuthRedirect(
   origin: string,
@@ -121,7 +124,20 @@ export async function GET(request: NextRequest) {
 
   if (sessionUser) {
     try {
-      await ensureCustomerRecordsForUser(sessionUser);
+      const supabaseUserClient = await createSupabaseServerClient();
+      const { data: existingCustomer } = await supabaseUserClient
+        .from("customers")
+        .select("id")
+        .eq("profile_id", sessionUser.id)
+        .maybeSingle();
+
+      const customerId = await ensureCustomerRecordsForUser(sessionUser);
+      if (
+        customerId &&
+        shouldSendOAuthWelcomeEmail(Boolean(existingCustomer))
+      ) {
+        await onNewCustomer(customerId);
+      }
     } catch (err) {
       console.warn("[auth/callback] customer bootstrap skipped:", err);
     }

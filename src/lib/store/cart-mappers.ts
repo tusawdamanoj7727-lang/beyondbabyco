@@ -22,6 +22,12 @@ function defaultVariantFromProduct(
     const v = product.variants[0];
     return { id: v.id ?? null, name: v.name ?? null };
   }
+  if ("defaultVariantId" in product && product.defaultVariantId) {
+    return {
+      id: product.defaultVariantId,
+      name: ("defaultVariantName" in product ? product.defaultVariantName : null) ?? null,
+    };
+  }
   return { id: null, name: null };
 }
 
@@ -95,7 +101,7 @@ export function storeCouponToLegacy(coupon: StoreCoupon | null): LegacyCoupon | 
     code: coupon.code,
     couponId: "",
     discountAmount: coupon.savings,
-    freeShipping: false,
+    freeShipping: Boolean(coupon.freeShipping),
   };
 }
 
@@ -105,6 +111,7 @@ export function legacyCouponToStore(coupon: LegacyCoupon): StoreCoupon {
     discountType: "flat",
     discountValue: coupon.discountAmount,
     savings: coupon.discountAmount,
+    freeShipping: coupon.freeShipping,
   };
 }
 
@@ -113,12 +120,14 @@ export function apiCouponToStore(coupon: {
   discountType: "percent" | "flat";
   discountValue: number;
   savings: number;
+  freeShipping?: boolean;
 }): StoreCoupon {
   return {
     code: coupon.code,
     discountType: coupon.discountType,
     discountValue: coupon.discountValue,
     savings: coupon.savings,
+    freeShipping: Boolean(coupon.freeShipping),
   };
 }
 

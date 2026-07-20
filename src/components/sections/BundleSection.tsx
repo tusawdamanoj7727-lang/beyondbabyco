@@ -50,7 +50,14 @@ export default function BundleSection({ products }: BundleSectionProps) {
   function addBundle(bundle: Bundle, items: StorefrontProduct[]) {
     startTransition(() => {
       for (const product of items) {
-        addItem(buildCartItemInput(product));
+        // Always qty 1 per curated SKU; resolve real default variant when available.
+        addItem(
+          buildCartItemInput(product, {
+            variantId: product.defaultVariantId ?? null,
+            variantName: product.defaultVariantName ?? null,
+          }),
+          1,
+        );
       }
       cartUi?.openMiniCart();
       toast.success(`${bundle.title} added to cart!`);

@@ -25,6 +25,8 @@ export interface HomepageHeroSlide {
   ctaUrl: string;
   secondaryCtaLabel: string;
   secondaryCtaUrl: string;
+  mobileImageUrl?: string;
+  videoUrl?: string;
 }
 
 export interface HomepageTestimonial {
@@ -51,13 +53,12 @@ function merge<T extends object>(fallback: T, value: unknown): T {
   return { ...fallback, ...(value as Partial<T>) };
 }
 
-/** Enabled homepage sections, ordered by position. */
-export async function getHomepageSections(): Promise<HomepageSection[]> {
+/** All homepage sections (enabled + disabled), ordered by position. */
+export async function getAllHomepageSections(): Promise<HomepageSection[]> {
   const supabase = createSupabasePublicClient();
   const { data } = await supabase
     .from("homepage_sections")
     .select("key, title, position, is_enabled, config")
-    .eq("is_enabled", true)
     .order("position", { ascending: true });
 
   return (data ?? []).map((r) => ({
@@ -69,7 +70,13 @@ export async function getHomepageSections(): Promise<HomepageSection[]> {
   }));
 }
 
-/** Active hero slides, ordered by position. */
+/** Enabled homepage sections, ordered by position. */
+export async function getHomepageSections(): Promise<HomepageSection[]> {
+  const all = await getAllHomepageSections();
+  return all.filter((s) => s.isEnabled);
+}
+
+/** Active hero slides within schedule window, ordered by position. */
 export async function getHero(): Promise<HomepageHeroSlide[]> {
   const supabase = createSupabasePublicClient();
   const { data } = await supabase
@@ -78,19 +85,41 @@ export async function getHero(): Promise<HomepageHeroSlide[]> {
     .eq("is_active", true)
     .order("position", { ascending: true });
 
-  return (data ?? []).map((r) => ({
-    id: r.id,
-    title: r.title ?? "",
-    subtitle: r.subtitle ?? "",
-    description: r.description ?? "",
-    imageUrl: r.image_url ?? "",
-    backgroundUrl: r.background_url ?? "",
-    overlay: r.overlay ?? 0,
-    ctaLabel: r.cta_label ?? "",
-    ctaUrl: r.cta_url ?? "",
-    secondaryCtaLabel: r.secondary_cta_label ?? "",
-    secondaryCtaUrl: r.secondary_cta_url ?? "",
-  }));
+  const now = Date.now();
+
+  return (data ?? [])
+    .filter((r) => {
+      const row = r as Record<string, unknown>;
+      const startsAt = typeof row.starts_at === "string" ? row.starts_at : null;
+      const endsAt = typeof row.ends_at === "string" ? row.ends_at : null;
+      if (startsAt) {
+        const start = Date.parse(startsAt);
+        if (!Number.isNaN(start) && now < start) return false;
+      }
+      if (endsAt) {
+        const end = Date.parse(endsAt);
+        if (!Number.isNaN(end) && now > end) return false;
+      }
+      return true;
+    })
+    .map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        id: r.id,
+        title: r.title ?? "",
+        subtitle: r.subtitle ?? "",
+        description: r.description ?? "",
+        imageUrl: r.image_url ?? "",
+        backgroundUrl: r.background_url ?? "",
+        overlay: r.overlay ?? 0,
+        ctaLabel: r.cta_label ?? "",
+        ctaUrl: r.cta_url ?? "",
+        secondaryCtaLabel: r.secondary_cta_label ?? "",
+        secondaryCtaUrl: r.secondary_cta_url ?? "",
+        mobileImageUrl: typeof row.mobile_image_url === "string" ? row.mobile_image_url : "",
+        videoUrl: typeof row.video_url === "string" ? row.video_url : "",
+      };
+    });
 }
 
 /** Published testimonials, ordered by position. */
@@ -118,7 +147,7 @@ async function fetchHomepage(): Promise<Homepage> {
 
   const [settingsRes, sections, hero, testimonials] = await Promise.all([
     supabase.from("homepage_settings").select("key, value"),
-    getHomepageSections(),
+    getAllHomepageSections(),
     getHero(),
     getHomepageTestimonials(),
   ]);

@@ -1,0 +1,15 @@
+# Keep Vercel uploads small — local AI tooling must never ship
+tools
+.next
+node_modules
+.git
+tmp
+test-results
+playwright-report
+.pids
+coverage
+out
+build
+*.tsbuildinfo
+.env*
+.DS_Store

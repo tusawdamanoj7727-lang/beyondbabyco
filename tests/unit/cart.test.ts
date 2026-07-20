@@ -14,10 +14,12 @@ function passesCouponMinOrder(cartTotal: number, minOrder: number): boolean {
 }
 
 function makeItem(overrides: Partial<CartItem> & Pick<CartItem, "variantId" | "price">): CartItem {
+  const productId = overrides.productId ?? "product-1";
+  const variantId = overrides.variantId;
   return {
-    id: overrides.variantId,
-    productId: overrides.productId ?? "product-1",
-    variantId: overrides.variantId,
+    id: overrides.id ?? `${productId}:${variantId}`,
+    productId,
+    variantId,
     name: overrides.name ?? "Test product",
     unit: overrides.unit ?? overrides.variantName ?? "Default",
     variantName: overrides.variantName ?? overrides.unit ?? "Default",
@@ -162,7 +164,7 @@ describe("Cart calculations", () => {
       items: [makeItem({ variantId: "v-1", price: 299, quantity: 2 })],
     });
 
-    useCartStore.getState().updateQuantity("v-1", 0);
+    useCartStore.getState().updateQuantity("product-1:v-1", 0);
 
     expect(useCartStore.getState().items).toHaveLength(0);
   });
@@ -172,9 +174,84 @@ describe("Cart calculations", () => {
       items: [makeItem({ variantId: "v-1", price: 299, quantity: 1 })],
     });
 
-    useCartStore.getState().updateQuantity("v-1", 11);
+    useCartStore.getState().updateQuantity("product-1:v-1", 11);
 
     expect(useCartStore.getState().items[0]?.quantity).toBe(10);
+  });
+
+  it("keeps distinct products when all use legacy default variant id", () => {
+    const { addItem } = useCartStore.getState();
+    addItem(
+      makeItem({
+        productId: "wash",
+        variantId: "default",
+        slug: "baby-body-wash-200ml",
+        name: "Baby Body Wash",
+        price: 399,
+      }),
+      1,
+    );
+    addItem(
+      makeItem({
+        productId: "shampoo",
+        variantId: "default",
+        slug: "baby-shampoo-200ml",
+        name: "Baby Shampoo",
+        price: 399,
+      }),
+      1,
+    );
+    addItem(
+      makeItem({
+        productId: "lotion",
+        variantId: "default",
+        slug: "baby-lotion-200ml",
+        name: "Baby Lotion",
+        price: 449,
+      }),
+      1,
+    );
+
+    const items = useCartStore.getState().items;
+    expect(items).toHaveLength(3);
+    expect(items.map((i) => i.slug).sort()).toEqual([
+      "baby-body-wash-200ml",
+      "baby-lotion-200ml",
+      "baby-shampoo-200ml",
+    ]);
+    expect(items.every((i) => i.quantity === 1)).toBe(true);
+    expect(useCartStore.getState().subtotal()).toBe(399 + 399 + 449);
+  });
+
+  it("removes only the targeted line when multiple share default variant id", () => {
+    useCartStore.setState({
+      items: [
+        makeItem({ productId: "wash", variantId: "default", slug: "baby-body-wash-200ml", price: 399 }),
+        makeItem({ productId: "shampoo", variantId: "default", slug: "baby-shampoo-200ml", price: 399 }),
+      ],
+    });
+
+    useCartStore.getState().removeItem("wash:default");
+
+    const items = useCartStore.getState().items;
+    expect(items).toHaveLength(1);
+    expect(items[0]?.productId).toBe("shampoo");
+  });
+
+  it("merges qty only for the same product+variant", () => {
+    const { addItem } = useCartStore.getState();
+    const line = makeItem({
+      productId: "wash",
+      variantId: "v-wash",
+      slug: "baby-body-wash-200ml",
+      price: 399,
+    });
+    addItem(line, 1);
+    addItem(line, 2);
+
+    const items = useCartStore.getState().items;
+    expect(items).toHaveLength(1);
+    expect(items[0]?.quantity).toBe(3);
   });
 
   it("applies coupon discount before GST in checkout GST helper", () => {

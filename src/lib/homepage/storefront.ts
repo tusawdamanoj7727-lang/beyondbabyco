@@ -9,11 +9,14 @@ import {
   type LifestyleConfig,
   type MascotsConfig,
   type NewsletterConfig,
+  type PromotionsConfig,
   type ResearchTimelineConfig,
   type ScienceConfig,
   type SectionKey,
   type SeoConfig,
   type TestimonialsConfig,
+  type TrustStatsConfig,
+  REORDERABLE_SECTION_KEYS,
 } from "@/lib/admin/homepage-schema";
 import { listSevenStorefrontProducts } from "@/lib/catalog/storefront";
 import type { StorefrontProduct } from "@/lib/catalog/types";
@@ -52,8 +55,21 @@ export type StorefrontHomepage = {
     enabled: boolean;
     items: string[];
     background?: string;
+    textColor?: string;
     link?: string;
+    ctaLabel?: string;
+    ctaUrl?: string;
+    sticky: boolean;
+    startsAt?: string;
+    endsAt?: string;
+    rotationSpeedMs?: number;
+    pauseOnHover?: boolean;
+    autoPlay?: boolean;
+    maxVisible?: number;
+    mobileSwipe?: boolean;
   };
+  /** Body sections ordered by CMS position (excludes announcement). */
+  sectionOrder: SectionKey[];
   sections: Record<SectionKey, { enabled: boolean }>;
   hero: ResolvedHeroContent;
   brandPromise: BrandPromiseConfig;
@@ -63,6 +79,8 @@ export type StorefrontHomepage = {
   researchTimeline: ResearchTimelineConfig;
   testimonialsHeading: TestimonialsConfig;
   newsletter: NewsletterConfig;
+  promotions: PromotionsConfig;
+  trustStats: TrustStatsConfig;
   featuredProducts: StorefrontFeaturedProduct[];
   featuredProductsHeading?: string;
   testimonials: StorefrontTestimonial[];
@@ -157,16 +175,41 @@ function resolveTestimonials(cms: Homepage, published: boolean): StorefrontTesti
 
 function resolveAnnouncement(cms: Homepage, published: boolean) {
   const cfg = sectionConfig(cms, "announcement", DEFAULTS.announcement, published);
-  const cmsLines = cfg.text.trim()
+  const fromText = cfg.text.trim()
     ? cfg.text.split(/\n|•/).map((s) => s.trim()).filter(Boolean)
-    : undefined;
+    : [];
+  const rotating = (cfg.rotating ?? []).map((s) => s.trim()).filter(Boolean);
+  const cmsLines = [...fromText, ...rotating];
 
   return {
     enabled: sectionEnabled(cms, "announcement", published),
-    items: [...getAnnouncementTickerItems(cmsLines)],
+    items: [...getAnnouncementTickerItems(cmsLines.length ? cmsLines : undefined)],
     background: cfg.background || undefined,
+    textColor: cfg.textColor || undefined,
     link: cfg.link || undefined,
+    ctaLabel: cfg.ctaLabel || undefined,
+    ctaUrl: cfg.ctaUrl || undefined,
+    sticky: cfg.sticky !== false,
+    startsAt: cfg.startsAt || undefined,
+    endsAt: cfg.endsAt || undefined,
+    rotationSpeedMs: cfg.rotationSpeedMs ?? 40000,
+    pauseOnHover: cfg.pauseOnHover !== false,
+    autoPlay: cfg.autoPlay !== false,
+    maxVisible: cfg.maxVisible ?? 1,
+    mobileSwipe: cfg.mobileSwipe !== false,
   };
+}
+
+function resolveSectionOrder(cms: Homepage, published: boolean): SectionKey[] {
+  if (!published) return [...REORDERABLE_SECTION_KEYS];
+
+  const positioned = cms.sections
+    .filter((s) => REORDERABLE_SECTION_KEYS.includes(s.key as SectionKey))
+    .sort((a, b) => a.position - b.position)
+    .map((s) => s.key as SectionKey);
+
+  const missing = REORDERABLE_SECTION_KEYS.filter((k) => !positioned.includes(k));
+  return [...positioned, ...missing];
 }
 
 function buildFromCms(cms: Homepage): StorefrontHomepage {
@@ -177,10 +220,13 @@ function buildFromCms(cms: Homepage): StorefrontHomepage {
     seo: published ? mergeConfig(DEFAULTS.seo, cms.seo) : DEFAULTS.seo,
     footer: published ? mergeConfig(DEFAULTS.footer, cms.footer) : DEFAULTS.footer,
     announcement: resolveAnnouncement(cms, published),
+    sectionOrder: resolveSectionOrder(cms, published),
     sections: {
       announcement: { enabled: sectionEnabled(cms, "announcement", published) },
       hero: { enabled: sectionEnabled(cms, "hero", published) },
+      promotions: { enabled: sectionEnabled(cms, "promotions", published) },
       featured_products: { enabled: sectionEnabled(cms, "featured_products", published) },
+      trust_stats: { enabled: sectionEnabled(cms, "trust_stats", published) },
       brand_promise: { enabled: sectionEnabled(cms, "brand_promise", published) },
       science: { enabled: sectionEnabled(cms, "science", published) },
       lifestyle: { enabled: sectionEnabled(cms, "lifestyle", published) },
@@ -197,6 +243,8 @@ function buildFromCms(cms: Homepage): StorefrontHomepage {
     researchTimeline: sectionConfig(cms, "research_timeline", DEFAULTS.research_timeline, published),
     testimonialsHeading: sectionConfig(cms, "testimonials", DEFAULTS.testimonials, published),
     newsletter: sectionConfig(cms, "newsletter", DEFAULTS.newsletter, published),
+    promotions: sectionConfig(cms, "promotions", DEFAULTS.promotions, published),
+    trustStats: sectionConfig(cms, "trust_stats", DEFAULTS.trust_stats, published),
     featuredProductsHeading: sectionConfig(
       cms,
       "featured_products",
@@ -216,12 +264,17 @@ const STATIC_FALLBACK: StorefrontHomepage = {
     enabled: true,
     items: [...getAnnouncementTickerItems()],
     background: undefined,
+    textColor: undefined,
     link: undefined,
+    sticky: true,
   },
+  sectionOrder: [...REORDERABLE_SECTION_KEYS],
   sections: {
     announcement: { enabled: true },
     hero: { enabled: true },
+    promotions: { enabled: true },
     featured_products: { enabled: true },
+    trust_stats: { enabled: true },
     brand_promise: { enabled: true },
     science: { enabled: true },
     lifestyle: { enabled: true },
@@ -238,6 +291,8 @@ const STATIC_FALLBACK: StorefrontHomepage = {
   researchTimeline: DEFAULTS.research_timeline,
   testimonialsHeading: DEFAULTS.testimonials,
   newsletter: DEFAULTS.newsletter,
+  promotions: DEFAULTS.promotions,
+  trustStats: DEFAULTS.trust_stats,
   featuredProducts: mapStaticProducts(),
   testimonials: TESTIMONIALS,
 };

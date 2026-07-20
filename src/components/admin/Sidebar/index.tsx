@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import Logo from "@/components/brand/Logo";
 import Icon from "../Icon";
-import Mascot from "@/components/mascots/Mascot";
 import { NAV_SECTIONS, canSeeNavItem, type NavItem } from "../nav";
 import { useAdminNavAuth } from "@/lib/auth/use-admin-nav-auth";
 import { cn } from "@/lib/utils";
@@ -39,17 +39,14 @@ export default function Sidebar({
           href="/admin"
           onClick={onNavigate}
           aria-label="BeyondBabyCo Admin home"
-          className="flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50"
+          className="flex min-w-0 items-center gap-2 rounded-2xl focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-terra-500/50"
         >
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-cream-100 ring-1 ring-cream-300">
-            <Mascot mascot="bella-bunny" pose="welcome" size={30} />
-          </span>
-          {!collapsed && (
-            <span className="flex flex-col leading-tight">
-              <span className="font-heading text-sm font-bold text-green-900">
-                BeyondBabyCo
-              </span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-green-600">
+          {collapsed ? (
+            <Logo href={null} size="nav" variant="icon" className="!h-9 !w-9 object-contain" />
+          ) : (
+            <span className="flex min-w-0 flex-col gap-0.5">
+              <Logo href={null} size="nav" className="!h-9 max-w-[9.5rem]" />
+              <span className="pl-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-green-600">
                 Admin
               </span>
             </span>

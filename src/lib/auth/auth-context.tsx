@@ -19,7 +19,7 @@ export interface AuthContextValue {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signOut: () => void;
+  signOut: () => void | Promise<void>;
   refresh: () => Promise<void>;
 }
 
@@ -65,12 +65,15 @@ export function AuthProvider({
     };
   }, []);
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
     trackLogout({ method: "password" });
     resetClientCart();
     setSession(null);
-    window.location.replace("/");
-    void supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      window.location.replace("/");
+    }
   }, []);
 
   const value = useMemo<AuthContextValue>(

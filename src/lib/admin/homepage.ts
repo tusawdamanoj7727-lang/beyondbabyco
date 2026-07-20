@@ -11,12 +11,16 @@ import {
   type LifestyleConfig,
   type MascotsConfig,
   type NewsletterConfig,
+  type PromotionsConfig,
   type PublishStatus,
   type ResearchTimelineConfig,
   type ScienceConfig,
   type SectionKey,
   type SeoConfig,
   type TestimonialsConfig,
+  type TrustStatsConfig,
+  REORDERABLE_SECTION_KEYS,
+  SECTION_LABELS,
 } from "./homepage-schema";
 
 export interface HeroSlide {
@@ -31,6 +35,10 @@ export interface HeroSlide {
   ctaUrl: string;
   secondaryCtaLabel: string;
   secondaryCtaUrl: string;
+  mobileImageUrl: string;
+  videoUrl: string;
+  startsAt: string;
+  endsAt: string;
   position: number;
   isActive: boolean;
 }
@@ -56,6 +64,13 @@ export interface SectionState<T> {
   config: T;
 }
 
+export interface SectionLayoutItem {
+  key: SectionKey;
+  label: string;
+  position: number;
+  isEnabled: boolean;
+}
+
 export interface HomepageAdminData {
   status: PublishStatus;
   settings: {
@@ -66,7 +81,9 @@ export interface HomepageAdminData {
   sections: {
     announcement: SectionState<AnnouncementConfig>;
     hero: SectionState<Record<string, never>>;
+    promotions: SectionState<PromotionsConfig>;
     featured_products: SectionState<FeaturedProductsConfig>;
+    trust_stats: SectionState<TrustStatsConfig>;
     brand_promise: SectionState<BrandPromiseConfig>;
     science: SectionState<ScienceConfig>;
     lifestyle: SectionState<LifestyleConfig>;
@@ -75,6 +92,7 @@ export interface HomepageAdminData {
     testimonials: SectionState<TestimonialsConfig>;
     newsletter: SectionState<NewsletterConfig>;
   };
+  sectionLayout: SectionLayoutItem[];
   heroSlides: HeroSlide[];
   testimonials: TestimonialRow[];
   options: {
@@ -134,7 +152,9 @@ export async function getHomepageAdminData(): Promise<HomepageAdminData> {
     sections: {
       announcement: section("announcement", DEFAULTS.announcement),
       hero: section("hero", {} as Record<string, never>),
+      promotions: section("promotions", DEFAULTS.promotions),
       featured_products: section("featured_products", DEFAULTS.featured_products),
+      trust_stats: section("trust_stats", DEFAULTS.trust_stats),
       brand_promise: section("brand_promise", DEFAULTS.brand_promise),
       science: section("science", DEFAULTS.science),
       lifestyle: section("lifestyle", DEFAULTS.lifestyle),
@@ -143,6 +163,22 @@ export async function getHomepageAdminData(): Promise<HomepageAdminData> {
       testimonials: section("testimonials", DEFAULTS.testimonials),
       newsletter: section("newsletter", DEFAULTS.newsletter),
     },
+    sectionLayout: (() => {
+      const rows = sectionsRes.data ?? [];
+      const byKey = new Map(rows.map((r) => [r.key, r]));
+      const ordered = [...REORDERABLE_SECTION_KEYS]
+        .map((key) => {
+          const row = byKey.get(key);
+          return {
+            key,
+            label: SECTION_LABELS[key],
+            position: row?.position ?? 99,
+            isEnabled: row?.is_enabled ?? true,
+          };
+        })
+        .sort((a, b) => a.position - b.position);
+      return ordered;
+    })(),
     heroSlides: (heroRes.data ?? []).map((r) => ({
       id: r.id,
       title: r.title ?? "",
@@ -155,6 +191,10 @@ export async function getHomepageAdminData(): Promise<HomepageAdminData> {
       ctaUrl: r.cta_url ?? "",
       secondaryCtaLabel: r.secondary_cta_label ?? "",
       secondaryCtaUrl: r.secondary_cta_url ?? "",
+      mobileImageUrl: (r as { mobile_image_url?: string | null }).mobile_image_url ?? "",
+      videoUrl: (r as { video_url?: string | null }).video_url ?? "",
+      startsAt: (r as { starts_at?: string | null }).starts_at ?? "",
+      endsAt: (r as { ends_at?: string | null }).ends_at ?? "",
       position: r.position,
       isActive: r.is_active,
     })),

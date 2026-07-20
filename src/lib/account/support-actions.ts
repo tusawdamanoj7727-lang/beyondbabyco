@@ -43,7 +43,7 @@ export async function submitContactQueryAction(input: {
   });
 
   if (error) return { ok: false, error: error.message };
-  onContactFormSubmitted(parsed.data);
+  await onContactFormSubmitted(parsed.data);
   return { ok: true, error: null };
 }
 

@@ -10,6 +10,7 @@ export type StorefrontCouponPreviewResult =
       discountType: "percent" | "flat";
       discountValue: number;
       savings: number;
+      freeShipping: boolean;
       message: string;
     }
   | {
@@ -34,6 +35,7 @@ export async function previewStorefrontCouponAction(
     discountType: result.discountType,
     discountValue: result.discountValue,
     savings: result.savings,
+    freeShipping: result.freeShipping,
     message: result.message,
   };
 }

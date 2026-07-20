@@ -21,6 +21,11 @@ import {
 } from "@/lib/checkout/gateways";
 import { onCodOrderConfirmed } from "@/lib/email/events/orders";
 import { runOrderShippingEmail } from "@/lib/email/lifecycle";
+import { releaseCouponForOrder } from "@/lib/coupons/redemption";
+import {
+  canResumeRazorpayCheckout,
+  razorpayInitFailureCleanup,
+} from "@/lib/checkout/commerce-stability";
 
 export interface PlaceOrderResult {
   ok: boolean;
@@ -127,6 +132,22 @@ async function ensureRazorpayOrderForExistingPayment(input: {
     currency: "INR",
   });
 
+  const supabase = createSupabaseServiceClient();
+  const { data: orderRow } = await supabase
+    .from("orders")
+    .select("status")
+    .eq("id", input.orderId)
+    .maybeSingle();
+
+  if (!orderRow || !canResumeRazorpayCheckout(orderRow.status)) {
+    logRazorpayCheckout("ensureRazorpayOrderForExistingPayment.early_return", {
+      why: "order_not_payable",
+      orderId: input.orderId,
+      status: orderRow?.status ?? null,
+    });
+    return { ok: false, error: "Order is no longer payable." };
+  }
+
   const gateway = await getEnabledRazorpayGateway();
   logRazorpayCheckout("ensureRazorpayOrderForExistingPayment.gateway", {
     orderId: input.orderId,
@@ -170,7 +191,6 @@ async function ensureRazorpayOrderForExistingPayment(input: {
     return { ok: false, error: rz.error ?? "Payment initialization failed." };
   }
 
-  const supabase = createSupabaseServiceClient();
   await supabase
     .from("payments")
     .update({
@@ -501,6 +521,27 @@ export async function placeStorefrontOrder(
       keyIdExists: Boolean(gateway?.keyId),
       keySecretExists: Boolean(gateway?.keySecret),
     });
+    const cleanup = razorpayInitFailureCleanup();
+    await supabase
+      .from("orders")
+      .update({ status: cleanup.orderStatus, updated_at: new Date().toISOString() })
+      .eq("id", order.id)
+      .eq("status", "pending");
+    await supabase
+      .from("payments")
+      .update({ status: cleanup.paymentStatus, updated_at: new Date().toISOString() })
+      .eq("id", payment.id)
+      .eq("status", "pending");
+    if (cleanup.releaseCoupon) {
+      await releaseCouponForOrder(order.id);
+    }
+    await supabase.from("order_events").insert({
+      order_id: order.id,
+      type: "payment",
+      message: "Razorpay order creation failed — order cancelled; stock/coupon released.",
+      metadata: { reason: "razorpay_init_failed", error: rz.error ?? null },
+    });
+    // keepReservation stays false → finally releases stock
     return { ok: false, error: rz.error ?? "Payment initialization failed." };
   }
 

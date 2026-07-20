@@ -14,6 +14,11 @@ export const DEFAULT_CAMPAIGN_CONFIG = (): CampaignCenterConfig => ({
   startDate: null,
   endDate: null,
   priority: 50,
+  timezone: "Asia/Kolkata",
+  recurring: "none",
+  autoPublish: true,
+  autoUnpublish: true,
+  showCountdown: false,
   theme: { primary: "#1a4d2e", background: "#faf7f2", accent: "#c45c3e" },
   assets: {},
   homepageSlot: null,
@@ -68,6 +73,14 @@ export function parseCampaignConfig(buttons: unknown): CampaignCenterConfig {
     startDate: blob.startDate ? String(blob.startDate) : null,
     endDate: blob.endDate ? String(blob.endDate) : null,
     priority: Number(blob.priority ?? defaults.priority),
+    timezone: String(blob.timezone ?? defaults.timezone),
+    recurring:
+      blob.recurring === "daily" || blob.recurring === "weekly" || blob.recurring === "monthly"
+        ? blob.recurring
+        : "none",
+    autoPublish: blob.autoPublish !== false,
+    autoUnpublish: blob.autoUnpublish !== false,
+    showCountdown: Boolean(blob.showCountdown),
     theme: { ...defaults.theme, ...(blob.theme as CampaignCenterConfig["theme"]) },
     assets: { ...defaults.assets, ...(blob.assets as CampaignCenterConfig["assets"]) },
     homepageSlot: (blob.homepageSlot as CampaignCenterConfig["homepageSlot"]) ?? null,

@@ -16,13 +16,16 @@ import {
   FooterEditor,
   GeneralEditor,
   HeroEditor,
+  LayoutEditor,
   LifestyleEditor,
   MascotsEditor,
   NewsletterEditor,
+  PromotionsEditor,
   ResearchTimelineEditor,
   ScienceEditor,
   SeoEditor,
   TestimonialsEditor,
+  TrustStatsEditor,
 } from "./editors";
 import { setHomepageStatus } from "@/lib/admin/homepage-actions";
 import { CMS_NAV, type CmsNavKey, type PublishStatus } from "@/lib/admin/homepage-schema";
@@ -31,9 +34,12 @@ import { cn } from "@/lib/utils";
 
 const SECTION_ICONS: Partial<Record<CmsNavKey, IconName>> = {
   general: "settings",
+  layout: "panelLeft",
   hero: "homepage",
   announcement: "bell",
+  promotions: "sparkles",
   featured_products: "products",
+  trust_stats: "activity",
   brand_promise: "sparkles",
   science: "activity",
   lifestyle: "media",
@@ -129,12 +135,18 @@ function Editor({ active, data }: { active: CmsNavKey; data: HomepageAdminData }
   switch (active) {
     case "general":
       return <GeneralEditor data={data.settings.general} />;
+    case "layout":
+      return <LayoutEditor layout={data.sectionLayout} />;
     case "hero":
       return <HeroEditor section={data.sections.hero} slides={data.heroSlides} />;
     case "announcement":
       return <AnnouncementEditor section={data.sections.announcement} />;
+    case "promotions":
+      return <PromotionsEditor section={data.sections.promotions} />;
     case "featured_products":
       return <FeaturedProductsEditor section={data.sections.featured_products} products={data.options.products} />;
+    case "trust_stats":
+      return <TrustStatsEditor section={data.sections.trust_stats} />;
     case "brand_promise":
       return <BrandPromiseEditor section={data.sections.brand_promise} />;
     case "science":

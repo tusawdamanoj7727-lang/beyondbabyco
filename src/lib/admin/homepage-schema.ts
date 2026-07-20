@@ -11,9 +11,12 @@ import { EDITORIAL } from "@/lib/brand/generated-assets";
 
 export type CmsNavKey =
   | "general"
+  | "layout"
   | "hero"
   | "announcement"
+  | "promotions"
   | "featured_products"
+  | "trust_stats"
   | "brand_promise"
   | "science"
   | "lifestyle"
@@ -33,9 +36,12 @@ export interface CmsNavItem {
 
 export const CMS_NAV: CmsNavItem[] = [
   { key: "general", label: "General", source: "settings" },
+  { key: "layout", label: "Section Order", source: "composite" },
   { key: "hero", label: "Hero", source: "composite" },
   { key: "announcement", label: "Announcement Bar", source: "section" },
+  { key: "promotions", label: "Promotional Cards", source: "section" },
   { key: "featured_products", label: "Featured Products", source: "section" },
+  { key: "trust_stats", label: "Trust & Social Proof", source: "section" },
   { key: "brand_promise", label: "Brand Promise", source: "section" },
   { key: "science", label: "Science Section", source: "section" },
   { key: "lifestyle", label: "Lifestyle", source: "section" },
@@ -51,7 +57,9 @@ export const CMS_NAV: CmsNavItem[] = [
 export type SectionKey =
   | "announcement"
   | "hero"
+  | "promotions"
   | "featured_products"
+  | "trust_stats"
   | "brand_promise"
   | "science"
   | "lifestyle"
@@ -59,6 +67,36 @@ export type SectionKey =
   | "research_timeline"
   | "testimonials"
   | "newsletter";
+
+/** Homepage body sections that can be reordered (excludes announcement). */
+export const REORDERABLE_SECTION_KEYS: SectionKey[] = [
+  "hero",
+  "promotions",
+  "featured_products",
+  "trust_stats",
+  "mascots",
+  "science",
+  "brand_promise",
+  "research_timeline",
+  "lifestyle",
+  "testimonials",
+  "newsletter",
+];
+
+export const SECTION_LABELS: Record<SectionKey, string> = {
+  announcement: "Announcement Bar",
+  hero: "Hero",
+  promotions: "Promotional Cards",
+  featured_products: "Featured Products",
+  trust_stats: "Trust & Social Proof",
+  brand_promise: "Brand Promise",
+  science: "Science Section",
+  lifestyle: "Lifestyle",
+  mascots: "Mascots",
+  research_timeline: "Research Timeline",
+  testimonials: "Testimonials",
+  newsletter: "Newsletter",
+};
 
 export type SettingsKey = "general" | "seo" | "footer";
 
@@ -98,9 +136,51 @@ export interface FooterConfig {
 // ----------------------------- Sections -----------------------------
 
 export interface AnnouncementConfig {
+  /** Primary message — supports emoji. Newlines or • split rotating lines. */
   text: string;
   link: string;
   background: string;
+  textColor: string;
+  /** Optional CTA button label (shown when ctaUrl is set). */
+  ctaLabel: string;
+  ctaUrl: string;
+  /** Keep bar in fixed header (true) or let it scroll away (false). */
+  sticky: boolean;
+  /** ISO date — hide before this time when set. */
+  startsAt: string;
+  /** ISO date — auto-hide after this time when set. */
+  endsAt: string;
+  /** Extra rotating messages (merged with text lines). */
+  rotating: string[];
+  /** Rotation / ticker behaviour */
+  rotationSpeedMs: number;
+  pauseOnHover: boolean;
+  autoPlay: boolean;
+  maxVisible: number;
+  mobileSwipe: boolean;
+}
+
+export interface PromoCardItem {
+  title: string;
+  description: string;
+  href: string;
+  emoji?: string;
+  imageUrl?: string;
+}
+
+export interface PromotionsConfig {
+  heading: string;
+  cards: PromoCardItem[];
+}
+
+export interface TrustStatItem {
+  value: string;
+  label: string;
+}
+
+export interface TrustStatsConfig {
+  heading: string;
+  stats: TrustStatItem[];
 }
 
 export interface FeaturedProductsConfig {
@@ -190,7 +270,42 @@ export const DEFAULTS = {
   } as GeneralConfig,
   seo: { title: "", description: "", keywords: "", canonical: "", schema: "" } as SeoConfig,
   footer: { companyInfo: "", email: "", phone: "", address: "", social: [], copyright: "" } as FooterConfig,
-  announcement: { text: "", link: "", background: "#0f5132" } as AnnouncementConfig,
+  announcement: {
+    text: "",
+    link: "",
+    background: "#0f5132",
+    textColor: "#faf7f2",
+    ctaLabel: "",
+    ctaUrl: "",
+    sticky: true,
+    startsAt: "",
+    endsAt: "",
+    rotating: [],
+    rotationSpeedMs: 40000,
+    pauseOnHover: true,
+    autoPlay: true,
+    maxVisible: 1,
+    mobileSwipe: true,
+  } as AnnouncementConfig,
+  promotions: {
+    heading: "Shop by occasion",
+    cards: [
+      { title: "New Arrival", description: "Fresh formulas just launched", href: "/products?sort=newest", emoji: "✨" },
+      { title: "Best Seller", description: "Parents repurchase these most", href: "/products?sort=best_selling", emoji: "⭐" },
+      { title: "Limited Offer", description: "Seasonal bundles & gifts", href: "/products", emoji: "🎁" },
+      { title: "Doctor Recommended", description: "Formulas parents trust", href: "/research", emoji: "🩺" },
+    ],
+  } as PromotionsConfig,
+  trust_stats: {
+    heading: "",
+    stats: [
+      { value: "2021", label: "Research Started" },
+      { value: "5+", label: "Years of R&D" },
+      { value: "100%", label: "Natural Ingredients" },
+      { value: "0", label: "Harmful Chemicals" },
+      { value: "2026", label: "First Launch" },
+    ],
+  } as TrustStatsConfig,
   featured_products: { heading: "Featured Collection", limit: 8, productIds: [] } as FeaturedProductsConfig,
   brand_promise: { heading: "Our Promise", description: "", cards: [] } as BrandPromiseConfig,
   science: {

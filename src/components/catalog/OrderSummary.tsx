@@ -68,7 +68,7 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
         code: result.code,
         couponId: result.couponId,
         discountAmount: result.savings,
-        freeShipping: false,
+        freeShipping: result.freeShipping,
       });
       useCartStore.getState().applyCoupon(
         apiCouponToStore({
@@ -76,6 +76,7 @@ export default function OrderSummary({ compact = false, onCheckout }: OrderSumma
           discountType: result.discountType,
           discountValue: result.discountValue,
           savings: result.savings,
+          freeShipping: result.freeShipping,
         }),
       );
       setCouponMessage({

@@ -6,29 +6,25 @@ import { trackAddToCart, trackCouponApplied, trackRemoveFromCart } from "@/lib/a
 import { gstFromInclusiveLine } from "@/lib/catalog/gst-rates";
 import { clampCartQuantity, CART_MIN_QUANTITY } from "@/lib/storefront/cart-types";
 
-/** Must match `DEFAULT_VARIANT_ID` in cart-mappers (avoid circular import). */
-const LEGACY_DEFAULT_VARIANT_ID = "default";
+/** Merge only exact productId + variantId matches (never cross-variant). */
+function sameProductLine(a: CartItem, b: CartItem): boolean {
+  if (a.productId !== b.productId) return false;
+  return a.variantId === b.variantId;
+}
 
-/** Merge duplicate lines: same variantId, or legacy `default` + real UUID for one product. */
 function mergeCartItems(items: CartItem[]): CartItem[] {
   const result: CartItem[] = [];
 
   for (const raw of items) {
     const item: CartItem = {
       ...raw,
+      id: raw.id || `${raw.productId}:${raw.variantId}`,
       quantity: clampCartQuantity(raw.quantity),
       unit: raw.unit || raw.variantName || "",
       variantName: raw.variantName || raw.unit || "",
     };
 
-    const matchIdx = result.findIndex((existing) => {
-      if (existing.variantId === item.variantId) return true;
-      if (existing.productId !== item.productId) return false;
-      return (
-        existing.variantId === LEGACY_DEFAULT_VARIANT_ID ||
-        item.variantId === LEGACY_DEFAULT_VARIANT_ID
-      );
-    });
+    const matchIdx = result.findIndex((existing) => sameProductLine(existing, item));
 
     if (matchIdx < 0) {
       result.push(item);
@@ -36,16 +32,12 @@ function mergeCartItems(items: CartItem[]): CartItem[] {
     }
 
     const existing = result[matchIdx]!;
-    const preferIncoming =
-      existing.variantId === LEGACY_DEFAULT_VARIANT_ID &&
-      item.variantId !== LEGACY_DEFAULT_VARIANT_ID;
-    const base = preferIncoming ? item : existing;
-    const other = preferIncoming ? existing : item;
     result[matchIdx] = {
-      ...base,
-      quantity: clampCartQuantity(base.quantity + other.quantity),
-      unit: base.unit || other.unit,
-      variantName: base.variantName || other.variantName,
+      ...existing,
+      id: `${existing.productId}:${existing.variantId}`,
+      quantity: clampCartQuantity(existing.quantity + item.quantity),
+      unit: existing.unit || item.unit,
+      variantName: existing.variantName || item.variantName,
     };
   }
 
@@ -74,6 +66,8 @@ export interface AppliedCoupon {
   discountType: "percent" | "flat";
   discountValue: number;
   savings: number;
+  /** When true, shipping is free regardless of subtotal threshold. */
+  freeShipping?: boolean;
   /** Compatibility aliases for simpler coupon payloads. */
   type?: "percent" | "flat";
   value?: number;
@@ -83,9 +77,11 @@ interface CartStore {
   items: CartItem[];
   coupon: AppliedCoupon | null;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (variantId: string) => void;
-  updateQuantity: (variantId: string, quantity: number) => void;
-  updateQty: (variantId: string, quantity: number) => void;
+  /** Remove by cart line id (`productId:variantId`). */
+  removeItem: (lineId: string) => void;
+  /** Update quantity by cart line id (`productId:variantId`). */
+  updateQuantity: (lineId: string, quantity: number) => void;
+  updateQty: (lineId: string, quantity: number) => void;
   clearCart: () => void;
   applyCoupon: (coupon: AppliedCoupon) => void;
   removeCoupon: () => void;
@@ -153,29 +149,29 @@ export const useCartStore = create<CartStore>()(
           };
         }),
 
-      removeItem: (variantId) =>
+      removeItem: (lineId) =>
         set((s) => {
-          const removed = s.items.find((i) => i.variantId === variantId);
+          const removed = s.items.find((i) => i.id === lineId);
           if (removed && typeof window !== "undefined") {
             trackRemoveFromCart({
               value: removed.price * removed.quantity,
               items: [analyticsItemFromCartItem(removed, s.coupon?.code ?? undefined)],
             });
           }
-          return { items: s.items.filter((i) => i.variantId !== variantId) };
+          return { items: s.items.filter((i) => i.id !== lineId) };
         }),
 
-      updateQuantity: (variantId, qty) =>
+      updateQuantity: (lineId, qty) =>
         set((s) => ({
           items:
             qty < CART_MIN_QUANTITY
-              ? s.items.filter((i) => i.variantId !== variantId)
+              ? s.items.filter((i) => i.id !== lineId)
               : s.items.map((i) =>
-                  i.variantId === variantId ? { ...i, quantity: clampCartQuantity(qty) } : i,
+                  i.id === lineId ? { ...i, quantity: clampCartQuantity(qty) } : i,
                 ),
         })),
 
-      updateQty: (variantId, qty) => get().updateQuantity(variantId, qty),
+      updateQty: (lineId, qty) => get().updateQuantity(lineId, qty),
 
       clearCart: () => set({ items: [], coupon: null }),
 
@@ -209,9 +205,12 @@ export const useCartStore = create<CartStore>()(
       discount: () => {
         const { coupon } = get();
         if (!coupon) return 0;
-        return couponType(coupon) === "percent"
-          ? Math.round((get().subtotal() * couponValue(coupon)) / 100)
-          : couponValue(coupon);
+        const sub = get().subtotal();
+        const raw =
+          couponType(coupon) === "percent"
+            ? Math.round((sub * couponValue(coupon)) / 100)
+            : couponValue(coupon);
+        return Math.min(sub, Math.max(0, raw));
       },
 
       gstAmount: () =>
@@ -223,6 +222,8 @@ export const useCartStore = create<CartStore>()(
       gst: () => get().gstAmount(),
 
       shippingCharge: () => {
+        const { coupon } = get();
+        if (coupon?.freeShipping) return 0;
         const sub = get().subtotal() - get().discount();
         return sub >= 999 ? 0 : 49;
       },

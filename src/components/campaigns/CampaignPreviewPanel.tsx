@@ -14,17 +14,19 @@ export default function CampaignPreviewPanel({
 }: {
   config: CampaignCenterConfig;
   name: string;
-  viewport?: "desktop" | "mobile";
+  viewport?: "desktop" | "tablet" | "mobile";
   couponLabel?: string | null;
 }) {
   const isMobile = viewport === "mobile";
+  const isTablet = viewport === "tablet";
   const hero = config.assets.hero ?? config.assets.banner;
+  const mobile = config.assets.mobileBanner ?? hero;
 
   return (
     <div
       className={cn(
         "overflow-hidden rounded-2xl border border-cream-200 bg-white shadow-card",
-        isMobile ? "mx-auto max-w-[375px]" : "w-full",
+        isMobile ? "mx-auto max-w-[375px]" : isTablet ? "mx-auto max-w-[768px]" : "w-full",
       )}
       aria-label={`${viewport} campaign preview`}
     >
@@ -32,9 +34,15 @@ export default function CampaignPreviewPanel({
         className="relative px-6 py-10 text-white"
         style={{ background: `linear-gradient(135deg, ${config.theme.primary}, ${config.theme.background})` }}
       >
-        {hero ? (
+        {(isMobile ? mobile : hero) ? (
           <div className="absolute inset-0 opacity-30">
-            <Image src={hero} alt="" fill className="object-cover" sizes={isMobile ? "375px" : "800px"} />
+            <Image
+              src={(isMobile ? mobile : hero) || ""}
+              alt=""
+              fill
+              className="object-cover"
+              sizes={isMobile ? "375px" : isTablet ? "768px" : "800px"}
+            />
           </div>
         ) : null}
         <div className="relative">

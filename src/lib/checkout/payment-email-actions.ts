@@ -6,7 +6,11 @@ import { resolveCheckoutCustomerIdForOrder } from "@/lib/checkout/guest-customer
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { onPaymentFailed } from "@/lib/email/events/orders";
 
-/** Release inventory reservation when Razorpay is dismissed or fails. Idempotent. */
+/**
+ * Soft-abandon: release stock/coupon but do NOT cancel the order.
+ * Cancelling on dismiss races with a successful Razorpay capture
+ * (money taken + cancelled order). Capture path can still confirm.
+ */
 export async function abandonCheckoutPaymentAction(orderId: string): Promise<void> {
   const trimmed = orderId?.trim();
   if (!trimmed) return;
@@ -25,26 +29,34 @@ export async function abandonCheckoutPaymentAction(orderId: string): Promise<voi
     return;
   }
 
+  // If payment already captured, never abandon.
+  const { data: payment } = await supabase
+    .from("payments")
+    .select("id, status")
+    .eq("order_id", trimmed)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (payment?.status === "paid") {
+    return;
+  }
+
   await releaseOrderStockReservations(trimmed);
   await releaseCouponForOrder(trimmed);
-
-  await supabase
-    .from("orders")
-    .update({ status: "cancelled", updated_at: new Date().toISOString() })
-    .eq("id", trimmed)
-    .eq("status", "pending");
 
   await supabase.from("order_events").insert({
     order_id: trimmed,
     type: "payment",
-    message: "Payment abandoned — stock reservation released.",
-    metadata: { reason: "payment_abandoned" },
+    message: "Payment dismissed — stock reservation released; order left pending for capture/TTL.",
+    metadata: { reason: "payment_abandoned_soft" },
   });
-
-  await onPaymentFailed(trimmed);
 }
 
-/** Fire-and-forget payment failure notification — does not block checkout UI. */
+/** Notify failure email without cancelling (avoids capture race). */
 export async function notifyPaymentFailedAction(orderId: string): Promise<void> {
-  await abandonCheckoutPaymentAction(orderId);
+  const trimmed = orderId?.trim();
+  if (!trimmed) return;
+  await abandonCheckoutPaymentAction(trimmed);
+  await onPaymentFailed(trimmed);
 }

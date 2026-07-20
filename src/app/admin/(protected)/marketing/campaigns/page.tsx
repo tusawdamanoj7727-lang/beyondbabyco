@@ -19,7 +19,7 @@ export default async function CampaignsPage({
   await requirePermission(PERMISSIONS.MARKETING_VIEW);
   const sp = await searchParams;
   const view = sp.view === "all" ? "all" : "overview";
-  const overview = await getCampaignCenterOverview();
+  const overview = await getCampaignCenterOverview({ includeDemos: true });
 
   return (
     <div className="space-y-6">

@@ -12,7 +12,6 @@ import ResourceHints from "@/components/seo/ResourceHints";
 import {
   AnalyticsRoot,
   AppToaster,
-  FloatingLogo,
   ScrollRevealObserver,
   WhatsAppButton,
 } from "@/components/layout/DeferredClientWidgets";
@@ -69,9 +68,9 @@ export const metadata: Metadata = {
   },
 };
 
-/** Reserves announcement ticker height while CMS data streams — prevents header CLS. */
+/** Reserves no height while CMS streams — avoids ghost gap when announcement is off. */
 function AnnouncementBarFallback() {
-  return <div className="announcement-bar shrink-0" aria-hidden="true" />;
+  return <div data-announcement-active="false" hidden aria-hidden="true" />;
 }
 
 export default async function RootLayout({
@@ -101,9 +100,6 @@ export default async function RootLayout({
             </div>
           </HideOnAdmin>
           {children}
-          <HideOnAdmin>
-            <FloatingLogo />
-          </HideOnAdmin>
           <HideOnAdmin>
             <Suspense fallback={null}>
               <StorefrontFooter />

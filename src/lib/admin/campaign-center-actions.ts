@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { parseCampaignConfig, serializeCampaignConfig, slugifyCampaignName } from "@/lib/campaigns/config";
+import { validateCampaignForPublish } from "@/lib/campaigns/validation";
 import type { CampaignCenterConfig } from "@/lib/campaigns/types";
 import { runAiPresetAction } from "@/lib/ai/preset-actions";
 import type { AiImagePresetId } from "@/lib/ai/preset-definitions";
@@ -20,9 +21,20 @@ function revalidateCampaignPaths() {
     "/admin/marketing/campaigns",
     "/admin/marketing/campaigns/calendar",
     "/admin/marketing/campaigns/creative",
+    "/admin/banners",
     "/",
   ];
   for (const p of paths) revalidatePath(p);
+}
+
+async function auditCampaign(id: string, action: string, payload?: Json) {
+  const supabase = await createSupabaseServerClient();
+  await supabase.rpc("log_audit", {
+    p_table: "marketing_campaigns",
+    p_record: id,
+    p_action: action,
+    ...(payload === undefined ? {} : { p_new: payload }),
+  });
 }
 
 export async function saveCampaignCenter(
@@ -36,6 +48,7 @@ export async function saveCampaignCenter(
     subject?: string | null;
     message?: string | null;
     scheduled_at?: string | null;
+    publish?: boolean;
   },
 ): Promise<MarketingActionResult> {
   await requirePermission(PERMISSIONS.MARKETING_MANAGE);
@@ -44,6 +57,11 @@ export async function saveCampaignCenter(
     ...input.config,
     slug: input.config.slug || slugifyCampaignName(input.name),
   };
+
+  if (input.publish) {
+    const v = validateCampaignForPublish(config, { status: "running" });
+    if (!v.ok) return { ok: false, error: v.errors[0] ?? "Campaign validation failed." };
+  }
 
   const payload = {
     name: input.name,
@@ -73,10 +91,12 @@ export async function saveCampaignCenter(
       .update({
         ...parsed.data,
         buttons: parsed.data.buttons as Json,
+        ...(input.publish ? { status: "running" as const } : {}),
         updated_at: new Date().toISOString(),
       })
       .eq("id", id);
     if (error) return { ok: false, error: error.message };
+    await auditCampaign(id, input.publish ? "publish" : "update", { name: input.name, slot: config.homepageSlot });
     revalidateCampaignPaths();
     return { ok: true, error: null, id };
   }
@@ -86,13 +106,19 @@ export async function saveCampaignCenter(
     .insert({
       ...parsed.data,
       buttons: parsed.data.buttons as Json,
-      status: parsed.data.scheduled_at ? "scheduled" : "draft",
+      status: input.publish ? "running" : parsed.data.scheduled_at ? "scheduled" : "draft",
       created_by: user.user?.id ?? null,
     })
     .select("id")
     .single();
 
   if (error) return { ok: false, error: error.message };
+  if (data?.id) {
+    await auditCampaign(data.id, input.publish ? "publish" : parsed.data.scheduled_at ? "schedule" : "create", {
+      name: input.name,
+      slot: config.homepageSlot,
+    });
+  }
   revalidateCampaignPaths();
   return { ok: true, error: null, id: data.id };
 }

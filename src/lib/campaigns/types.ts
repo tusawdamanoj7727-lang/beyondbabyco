@@ -109,6 +109,13 @@ export interface CampaignCenterConfig {
   startDate: string | null;
   endDate: string | null;
   priority: number;
+  /** IANA timezone for schedule display / auto publish. */
+  timezone: string;
+  /** Recurring cadence: none | daily | weekly | monthly */
+  recurring: "none" | "daily" | "weekly" | "monthly";
+  autoPublish: boolean;
+  autoUnpublish: boolean;
+  showCountdown: boolean;
   theme: CampaignTheme;
   assets: CampaignAssets;
   homepageSlot: HomepageCampaignSlot | null;
@@ -143,6 +150,11 @@ export interface CampaignAnalyticsPreview {
   couponUsage: number;
   orders: number;
   traffic: number;
+  /** Unique views (session-based when events exist). */
+  uniqueViews?: number;
+  averageOrderValue?: number;
+  conversionRate?: number;
+  returningCustomers?: number;
 }
 
 export interface CampaignCenterOverview {

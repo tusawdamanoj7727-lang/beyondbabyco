@@ -14,7 +14,9 @@ import CampaignPreviewPanel from "@/components/campaigns/CampaignPreviewPanel";
 import CampaignTypeBadge from "@/components/campaigns/CampaignTypeBadge";
 import CouponCampaignPanel from "@/components/campaigns/CouponCampaignPanel";
 import LandingPagePreview from "@/components/campaigns/LandingPagePreview";
+import CampaignAnalyticsPreviewCards from "@/components/campaigns/CampaignAnalyticsPreview";
 import { saveCampaignCenter } from "@/lib/admin/campaign-center-actions";
+import { validateCampaignForPublish } from "@/lib/campaigns/validation";
 import {
   CAMPAIGN_TYPES,
   CAMPAIGN_TYPE_LABELS,
@@ -22,6 +24,11 @@ import {
 } from "@/lib/admin/marketing-types";
 import type { CouponListItem } from "@/lib/admin/coupon-types";
 import { DEFAULT_CAMPAIGN_CONFIG, slugifyCampaignName } from "@/lib/campaigns/config";
+import {
+  applyFestivalTemplate,
+  FESTIVAL_TEMPLATES,
+  type FestivalTemplateId,
+} from "@/lib/campaigns/festival-templates";
 import {
   HOMEPAGE_CAMPAIGN_SLOTS,
   HOMEPAGE_SLOT_LABELS,
@@ -32,7 +39,7 @@ import {
 import type { CampaignCenterItem } from "@/lib/campaigns/types";
 import { cn } from "@/lib/utils";
 
-type Tab = "content" | "placement" | "coupon" | "landing" | "media" | "ai";
+type Tab = "content" | "placement" | "schedule" | "coupon" | "landing" | "media" | "ai";
 
 export default function CampaignBuilderClient({
   campaign,
@@ -49,7 +56,8 @@ export default function CampaignBuilderClient({
   const toast = useToast();
   const [pending, startTransition] = useTransition();
   const [tab, setTab] = useState<Tab>("content");
-  const [viewport, setViewport] = useState<"desktop" | "mobile">("desktop");
+  const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [name, setName] = useState(campaign?.name ?? "");
   const [channelType, setChannelType] = useState<CampaignType>((campaign?.channelType as CampaignType) ?? "email");
   const [segmentId, setSegmentId] = useState("");
@@ -67,14 +75,33 @@ export default function CampaignBuilderClient({
     setConfig((prev) => ({ ...prev, assets: { ...prev.assets, ...partial } }));
   }
 
-  function save() {
+  function save(publish = false) {
     startTransition(async () => {
+      const nextConfig = {
+        ...config,
+        slug: config.slug || slugifyCampaignName(name),
+        communicationsTemplateId: templateId || null,
+      };
+      if (publish) {
+        const v = validateCampaignForPublish(nextConfig, { status: "running" });
+        if (!v.ok) {
+          setValidationErrors(v.errors);
+          toast.error(v.errors[0] ?? "Fix validation errors before publishing.");
+          return;
+        }
+        setValidationErrors(v.warnings.length ? v.warnings : []);
+      } else {
+        setValidationErrors([]);
+      }
+
       const res = await saveCampaignCenter(isDemo ? null : campaign?.id ?? null, {
         name,
         campaign_type: channelType,
-        config: { ...config, slug: config.slug || slugifyCampaignName(name), communicationsTemplateId: templateId || null },
+        config: nextConfig,
         segment_id: segmentId || null,
         template_id: templateId || null,
+        publish,
+        scheduled_at: nextConfig.startDate,
       });
       notifyActionResult(toast, res);
       if (!res.ok) return;
@@ -86,6 +113,7 @@ export default function CampaignBuilderClient({
   const tabs: { id: Tab; label: string }[] = [
     { id: "content", label: "Content" },
     { id: "placement", label: "Homepage slots" },
+    { id: "schedule", label: "Schedule" },
     { id: "coupon", label: "Coupon" },
     { id: "landing", label: "Landing page" },
     { id: "media", label: "Media" },
@@ -126,6 +154,25 @@ export default function CampaignBuilderClient({
         <div className="rounded-3xl border border-cream-200 bg-white p-6 space-y-4">
           {tab === "content" && (
             <>
+              <FormField label="Festival template">
+                  <Select
+                    value=""
+                    onChange={(e) => {
+                      const id = e.target.value as FestivalTemplateId;
+                      if (!id) return;
+                      setConfig(applyFestivalTemplate(id, config));
+                      if (!name) setName(FESTIVAL_TEMPLATES.find((t) => t.id === id)?.name ?? "");
+                    }}
+                    aria-label="Apply festival template"
+                  >
+                    <option value="">Apply a seasonal template…</option>
+                    {FESTIVAL_TEMPLATES.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormField>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField label="Campaign name">
                   <Input value={name} onChange={(e) => setName(e.target.value)} required aria-label="Campaign name" />
@@ -171,22 +218,6 @@ export default function CampaignBuilderClient({
                 </FormField>
                 <FormField label="Target URL">
                   <Input value={config.targetUrl} onChange={(e) => patchConfig({ targetUrl: e.target.value })} aria-label="Target URL" />
-                </FormField>
-                <FormField label="Start date">
-                  <Input
-                    type="datetime-local"
-                    value={config.startDate?.slice(0, 16) ?? ""}
-                    onChange={(e) => patchConfig({ startDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                    aria-label="Start date"
-                  />
-                </FormField>
-                <FormField label="End date">
-                  <Input
-                    type="datetime-local"
-                    value={config.endDate?.slice(0, 16) ?? ""}
-                    onChange={(e) => patchConfig({ endDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                    aria-label="End date"
-                  />
                 </FormField>
                 <FormField label="Priority (0–100)">
                   <Input
@@ -239,7 +270,10 @@ export default function CampaignBuilderClient({
 
           {tab === "placement" && (
             <>
-              <p className="text-sm text-green-700">Only one active campaign per slot. Higher priority wins when dates overlap.</p>
+              <p className="text-sm text-green-700">
+                Priority engine: Emergency → Flash → Festival → Launch → Free shipping → Evergreen. Only one campaign
+                controls each surface unless announcement rotation is enabled.
+              </p>
               <FormField label="Homepage slot">
                 <Select
                   value={config.homepageSlot ?? ""}
@@ -253,6 +287,90 @@ export default function CampaignBuilderClient({
                 </Select>
               </FormField>
             </>
+          )}
+
+          {tab === "schedule" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <FormField label="Start date">
+                <Input
+                  type="datetime-local"
+                  value={config.startDate?.slice(0, 16) ?? ""}
+                  onChange={(e) =>
+                    patchConfig({ startDate: e.target.value ? new Date(e.target.value).toISOString() : null })
+                  }
+                  aria-label="Start date"
+                />
+              </FormField>
+              <FormField label="End date">
+                <Input
+                  type="datetime-local"
+                  value={config.endDate?.slice(0, 16) ?? ""}
+                  onChange={(e) =>
+                    patchConfig({ endDate: e.target.value ? new Date(e.target.value).toISOString() : null })
+                  }
+                  aria-label="End date"
+                />
+              </FormField>
+              <FormField label="Timezone">
+                <Select
+                  value={config.timezone}
+                  onChange={(e) => patchConfig({ timezone: e.target.value })}
+                  aria-label="Timezone"
+                >
+                  <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+                  <option value="UTC">UTC</option>
+                  <option value="America/New_York">America/New_York</option>
+                  <option value="Europe/London">Europe/London</option>
+                </Select>
+              </FormField>
+              <FormField label="Recurring">
+                <Select
+                  value={config.recurring}
+                  onChange={(e) =>
+                    patchConfig({
+                      recurring: e.target.value as CampaignCenterConfig["recurring"],
+                    })
+                  }
+                  aria-label="Recurring"
+                >
+                  <option value="none">None (one-time)</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </Select>
+              </FormField>
+              <label className="flex items-center gap-2 text-sm text-green-800">
+                <input
+                  type="checkbox"
+                  checked={config.autoPublish}
+                  onChange={(e) => patchConfig({ autoPublish: e.target.checked })}
+                />
+                Auto-publish at start
+              </label>
+              <label className="flex items-center gap-2 text-sm text-green-800">
+                <input
+                  type="checkbox"
+                  checked={config.autoUnpublish}
+                  onChange={(e) => patchConfig({ autoUnpublish: e.target.checked })}
+                />
+                Auto-unpublish at end
+              </label>
+              <label className="flex items-center gap-2 text-sm text-green-800 md:col-span-2">
+                <input
+                  type="checkbox"
+                  checked={config.showCountdown}
+                  onChange={(e) => patchConfig({ showCountdown: e.target.checked })}
+                />
+                Show countdown on storefront surfaces
+              </label>
+              <p className="md:col-span-2 text-xs text-green-700/60">
+                Festival templates pre-fill content — apply from the Content tab. Calendar view:{" "}
+                <Link href="/admin/marketing/campaigns/calendar" className="font-semibold text-terra-600 hover:underline">
+                  Marketing calendar
+                </Link>
+                .
+              </p>
+            </div>
           )}
 
           {tab === "coupon" && (
@@ -334,9 +452,20 @@ export default function CampaignBuilderClient({
             />
           )}
 
+          {validationErrors.length > 0 ? (
+            <ul className="rounded-2xl border border-terra-200 bg-terra-50 px-4 py-3 text-sm text-terra-800" role="alert">
+              {validationErrors.map((err) => (
+                <li key={err}>{err}</li>
+              ))}
+            </ul>
+          ) : null}
+
           <div className="flex flex-wrap gap-2 pt-2">
-            <Button type="button" disabled={pending} onClick={save}>
-              {campaign && !isDemo ? "Save campaign" : "Create campaign"}
+            <Button type="button" disabled={pending} onClick={() => save(false)}>
+              {campaign && !isDemo ? "Save draft" : "Create campaign"}
+            </Button>
+            <Button type="button" variant="secondary" disabled={pending} onClick={() => save(true)}>
+              Validate &amp; publish
             </Button>
             <Link
               href="/admin/marketing/campaigns/creative"
@@ -346,11 +475,20 @@ export default function CampaignBuilderClient({
             </Link>
           </div>
         </div>
+
+        {campaign && !isDemo ? (
+          <div className="rounded-3xl border border-cream-200 bg-white p-6">
+            <h2 className="font-heading text-lg font-bold text-green-900">Campaign analytics</h2>
+            <div className="mt-4">
+              <CampaignAnalyticsPreviewCards analytics={campaign.analytics} />
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
         <div className="flex gap-2" role="tablist" aria-label="Preview viewport">
-          {(["desktop", "mobile"] as const).map((v) => (
+          {(["desktop", "tablet", "mobile"] as const).map((v) => (
             <button
               key={v}
               type="button"

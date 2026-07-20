@@ -27,6 +27,7 @@ import {
   deleteHeroSlide,
   deleteTestimonial,
   reorderHeroSlides,
+  reorderHomepageSections,
   reorderTestimonials,
   saveSection,
   saveSettings,
@@ -278,18 +279,220 @@ export function AnnouncementEditor({ section }: { section: HomepageAdminData["se
     <SectionFrame
       sectionKey="announcement"
       title="Announcement Bar"
-      description="Slim banner shown at the very top of the site."
+      description="Slim banner at the top of every storefront page. Supports scheduling, CTA, and rotating messages."
       initialEnabled={section.isEnabled}
       initialConfig={section.config}
     >
       {(c, set) => (
         <>
-          <TextField label="Text" value={c.text} onChange={(v) => set({ text: v })} />
-          <TextField label="Link" value={c.link} onChange={(v) => set({ link: v })} placeholder="https://…" />
-          <TextField label="Background colour" value={c.background} onChange={(v) => set({ background: v })} placeholder="#0f5132" />
+          <AreaField
+            label="Primary text"
+            value={c.text}
+            onChange={(v) => set({ text: v })}
+            rows={2}
+            description="Supports emoji. Split rotating lines with new lines or •"
+          />
+          <AreaField
+            label="Extra rotating messages"
+            value={(c.rotating ?? []).join("\n")}
+            onChange={(v) =>
+              set({
+                rotating: v
+                  .split("\n")
+                  .map((s) => s.trim())
+                  .filter(Boolean),
+              })
+            }
+            rows={3}
+            description="One message per line — merged into the ticker."
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextField label="Background colour" value={c.background} onChange={(v) => set({ background: v })} placeholder="#0f5132" />
+            <TextField label="Text colour" value={c.textColor} onChange={(v) => set({ textColor: v })} placeholder="#faf7f2" />
+          </div>
+          <TextField label="Bar link (optional)" value={c.link} onChange={(v) => set({ link: v })} placeholder="/products" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextField label="CTA button label" value={c.ctaLabel} onChange={(v) => set({ ctaLabel: v })} placeholder="Shop now" />
+            <TextField label="CTA button URL" value={c.ctaUrl} onChange={(v) => set({ ctaUrl: v })} placeholder="/products" />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextField
+              label="Starts at (ISO or leave blank)"
+              value={c.startsAt}
+              onChange={(v) => set({ startsAt: v })}
+              placeholder="2026-08-01T00:00:00.000Z"
+            />
+            <TextField
+              label="Ends at (auto-hide)"
+              value={c.endsAt}
+              onChange={(v) => set({ endsAt: v })}
+              placeholder="2026-08-15T23:59:59.000Z"
+            />
+          </div>
+          <Checkbox
+            label="Sticky with header"
+            checked={c.sticky !== false}
+            onChange={(e) => set({ sticky: e.target.checked })}
+            description="Recommended on. Keeps the bar in the fixed header stack (avoids layout shift)."
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <NumberField
+              label="Rotation speed (ms)"
+              value={c.rotationSpeedMs ?? 40000}
+              min={8000}
+              max={120000}
+              onChange={(v) => set({ rotationSpeedMs: v })}
+            />
+            <NumberField
+              label="Max visible campaign lines"
+              value={c.maxVisible ?? 1}
+              min={1}
+              max={8}
+              onChange={(v) => set({ maxVisible: v })}
+            />
+          </div>
+          <Checkbox
+            label="Auto-play rotation"
+            checked={c.autoPlay !== false}
+            onChange={(e) => set({ autoPlay: e.target.checked })}
+          />
+          <Checkbox
+            label="Pause on hover"
+            checked={c.pauseOnHover !== false}
+            onChange={(e) => set({ pauseOnHover: e.target.checked })}
+          />
+          <Checkbox
+            label="Mobile swipe friendly"
+            checked={c.mobileSwipe !== false}
+            onChange={(e) => set({ mobileSwipe: e.target.checked })}
+            description="Enables horizontal touch panning on the ticker track."
+          />
         </>
       )}
     </SectionFrame>
+  );
+}
+
+export function PromotionsEditor({ section }: { section: HomepageAdminData["sections"]["promotions"] }) {
+  return (
+    <SectionFrame
+      sectionKey="promotions"
+      title="Promotional Cards"
+      description="Homepage promo blocks (New Arrival, Best Seller, Limited Offer, etc.)."
+      initialEnabled={section.isEnabled}
+      initialConfig={section.config}
+    >
+      {(c, set) => (
+        <>
+          <TextField label="Heading" value={c.heading} onChange={(v) => set({ heading: v })} />
+          <ArrayEditor
+            items={c.cards}
+            onChange={(cards) => set({ cards })}
+            newItem={() => ({ title: "", description: "", href: "/products", emoji: "" })}
+            itemLabel="Card"
+            addLabel="Add promo card"
+            renderItem={(item, update) => (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <TextField label="Title" value={item.title} onChange={(v) => update({ title: v })} />
+                <TextField label="Emoji / icon" value={item.emoji ?? ""} onChange={(v) => update({ emoji: v })} />
+                <TextField label="Description" value={item.description} onChange={(v) => update({ description: v })} />
+                <TextField label="Link" value={item.href} onChange={(v) => update({ href: v })} />
+                <TextField label="Image URL (optional)" value={item.imageUrl ?? ""} onChange={(v) => update({ imageUrl: v })} />
+              </div>
+            )}
+          />
+        </>
+      )}
+    </SectionFrame>
+  );
+}
+
+export function TrustStatsEditor({ section }: { section: HomepageAdminData["sections"]["trust_stats"] }) {
+  return (
+    <SectionFrame
+      sectionKey="trust_stats"
+      title="Trust & Social Proof"
+      description="Stats strip — happy customers, R&D years, certifications messaging."
+      initialEnabled={section.isEnabled}
+      initialConfig={section.config}
+    >
+      {(c, set) => (
+        <>
+          <TextField label="Heading (optional)" value={c.heading} onChange={(v) => set({ heading: v })} />
+          <ArrayEditor
+            items={c.stats}
+            onChange={(stats) => set({ stats })}
+            newItem={() => ({ value: "", label: "" })}
+            itemLabel="Stat"
+            addLabel="Add stat"
+            renderItem={(item, update) => (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <TextField label="Value" value={item.value} onChange={(v) => update({ value: v })} />
+                <TextField label="Label" value={item.label} onChange={(v) => update({ label: v })} />
+              </div>
+            )}
+          />
+        </>
+      )}
+    </SectionFrame>
+  );
+}
+
+export function LayoutEditor({ layout }: { layout: HomepageAdminData["sectionLayout"] }) {
+  const router = useRouter();
+  const [items, setItems] = useState(layout);
+  const saver = useSaver();
+
+  const move = (index: number, dir: -1 | 1) => {
+    const next = index + dir;
+    if (next < 0 || next >= items.length) return;
+    const copy = [...items];
+    const tmp = copy[index]!;
+    copy[index] = copy[next]!;
+    copy[next] = tmp;
+    setItems(copy);
+    saver.setSaved(false);
+  };
+
+  const onSave = () => {
+    saver.run(
+      () => reorderHomepageSections(items.map((i) => i.key)),
+      () => router.refresh(),
+    );
+  };
+
+  return (
+    <SectionShell
+      title="Section order"
+      description="Reorder homepage body sections. Enable/disable each section from its own editor tab."
+      pending={saver.pending}
+      saved={saver.saved}
+      error={saver.error}
+      dirty={JSON.stringify(items.map((i) => i.key)) !== JSON.stringify(layout.map((i) => i.key))}
+      onSave={onSave}
+    >
+      <ul className="space-y-2">
+        {items.map((item, index) => (
+          <li
+            key={item.key}
+            className="flex items-center justify-between gap-3 rounded-2xl border border-cream-200 bg-cream-50/60 px-4 py-3"
+          >
+            <div>
+              <p className="text-sm font-semibold text-green-950">{item.label}</p>
+              <p className="text-xs text-green-800/60">{item.isEnabled ? "Enabled" : "Disabled"} · {item.key}</p>
+            </div>
+            <div className="flex gap-1">
+              <IconBtn label="Move up" onClick={() => move(index, -1)} disabled={index === 0}>
+                <Icon name="chevronDown" size={16} className="rotate-180" />
+              </IconBtn>
+              <IconBtn label="Move down" onClick={() => move(index, 1)} disabled={index === items.length - 1}>
+                <Icon name="chevronDown" size={16} />
+              </IconBtn>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </SectionShell>
   );
 }
 
@@ -577,6 +780,10 @@ function HeroSlideCard({
     ctaUrl: slide.ctaUrl,
     secondaryCtaLabel: slide.secondaryCtaLabel,
     secondaryCtaUrl: slide.secondaryCtaUrl,
+    mobileImageUrl: slide.mobileImageUrl,
+    videoUrl: slide.videoUrl,
+    startsAt: slide.startsAt,
+    endsAt: slide.endsAt,
     isActive: slide.isActive,
   });
   const [snapshot, setSnapshot] = useState(() => JSON.stringify(form));
@@ -623,13 +830,42 @@ function HeroSlideCard({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <p className="mb-1.5 text-sm font-semibold text-green-900">Hero image</p>
+            <p className="mb-1.5 text-sm font-semibold text-green-900">Hero image (desktop)</p>
             <MediaPicker label="Hero image" value={form.imageUrl} onChange={(v) => set({ imageUrl: v })} />
+          </div>
+          <div>
+            <p className="mb-1.5 text-sm font-semibold text-green-900">Mobile image</p>
+            <MediaPicker
+              label="Mobile image"
+              value={form.mobileImageUrl ?? ""}
+              onChange={(v) => set({ mobileImageUrl: v })}
+            />
           </div>
           <div>
             <p className="mb-1.5 text-sm font-semibold text-green-900">Background</p>
             <MediaPicker label="Background" value={form.backgroundUrl} onChange={(v) => set({ backgroundUrl: v })} />
           </div>
+          <TextField
+            label="Background video URL (optional)"
+            value={form.videoUrl ?? ""}
+            onChange={(v) => set({ videoUrl: v })}
+            placeholder="https://…"
+          />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <TextField
+            label="Campaign starts at"
+            value={form.startsAt ?? ""}
+            onChange={(v) => set({ startsAt: v })}
+            placeholder="2026-10-01T00:00:00.000Z"
+          />
+          <TextField
+            label="Campaign ends at"
+            value={form.endsAt ?? ""}
+            onChange={(v) => set({ endsAt: v })}
+            placeholder="2026-10-20T23:59:59.000Z"
+          />
         </div>
 
         <NumberField label="Overlay opacity (%)" value={form.overlay} min={0} max={100} onChange={(v) => set({ overlay: v })} />

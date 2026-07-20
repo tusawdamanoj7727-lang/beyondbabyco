@@ -98,6 +98,7 @@ export type QueueStatus = (typeof QUEUE_STATUSES)[number];
 export const MARKETING_NAV = [
   { href: "/admin/marketing", label: "Dashboard" },
   { href: "/admin/marketing/campaigns", label: "Campaign Center" },
+  { href: "/admin/banners", label: "Banners" },
   { href: "/admin/marketing/campaigns/calendar", label: "Calendar" },
   { href: "/admin/marketing/campaigns/creative", label: "AI Creative" },
   { href: "/admin/marketing/email", label: "Email" },

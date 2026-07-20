@@ -69,49 +69,41 @@ export const listStorefrontProducts = cache(
       );
     }
 
-    if (params.category) {
-      const { data: cat } = await supabase
+    const filterLookups = await Promise.all([
+      params.category
+        ? supabase.from("categories").select("id").eq("slug", params.category).maybeSingle()
+        : Promise.resolve({ data: null as { id: string } | null }),
+      params.age
+        ? supabase
+            .from("categories")
+            .select("id")
+            .eq("slug", params.age)
+            .is("parent_id", null)
+            .maybeSingle()
+        : Promise.resolve({ data: null as { id: string } | null }),
+      params.type
+        ? supabase.from("subcategories").select("id").eq("slug", params.type).maybeSingle()
+        : Promise.resolve({ data: null as { id: string } | null }),
+      params.brand
+        ? supabase.from("brands").select("id").eq("slug", params.brand).maybeSingle()
+        : Promise.resolve({ data: null as { id: string } | null }),
+    ]);
+
+    const [catRes, ageRes, typeRes, brandRes] = filterLookups;
+
+    if (catRes.data) query = query.eq("category_id", catRes.data.id);
+
+    if (ageRes.data) {
+      const { data: children } = await supabase
         .from("categories")
         .select("id")
-        .eq("slug", params.category)
-        .maybeSingle();
-      if (cat) query = query.eq("category_id", cat.id);
+        .eq("parent_id", ageRes.data.id);
+      const ids = [ageRes.data.id, ...(children ?? []).map((c) => c.id)];
+      query = query.in("category_id", ids);
     }
 
-    if (params.age) {
-      const { data: ageCat } = await supabase
-        .from("categories")
-        .select("id")
-        .eq("slug", params.age)
-        .is("parent_id", null)
-        .maybeSingle();
-      if (ageCat) {
-        const { data: children } = await supabase
-          .from("categories")
-          .select("id")
-          .eq("parent_id", ageCat.id);
-        const ids = [ageCat.id, ...(children ?? []).map((c) => c.id)];
-        query = query.in("category_id", ids);
-      }
-    }
-
-    if (params.type) {
-      const { data: sub } = await supabase
-        .from("subcategories")
-        .select("id")
-        .eq("slug", params.type)
-        .maybeSingle();
-      if (sub) query = query.eq("subcategory_id", sub.id);
-    }
-
-    if (params.brand) {
-      const { data: brand } = await supabase
-        .from("brands")
-        .select("id")
-        .eq("slug", params.brand)
-        .maybeSingle();
-      if (brand) query = query.eq("brand_id", brand.id);
-    }
+    if (typeRes.data) query = query.eq("subcategory_id", typeRes.data.id);
+    if (brandRes.data) query = query.eq("brand_id", brandRes.data.id);
 
     if (params.inStock) {
       query = query.eq("status", "active").gt("stock", 0);
@@ -603,21 +595,20 @@ async function enrichStorefrontProducts(
     }
   }
 
-  const blurMap = await fetchBlurMapByUrls(
-    supabase,
-    [...imageMap.values()],
-  );
-
-  const { data: variantRows } = await supabase
+  const blurMapPromise = fetchBlurMapByUrls(supabase, [...imageMap.values()]);
+  const variantsPromise = supabase
     .from("product_variants")
-    .select("id, product_id")
+    .select("id, product_id, name, position")
     .in("product_id", productIds)
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .order("position", { ascending: true });
 
-  const variantsByProduct = new Map<string, string[]>();
+  const [blurMap, { data: variantRows }] = await Promise.all([blurMapPromise, variantsPromise]);
+
+  const variantsByProduct = new Map<string, { id: string; name: string | null }[]>();
   for (const variant of variantRows ?? []) {
     const list = variantsByProduct.get(variant.product_id) ?? [];
-    list.push(variant.id);
+    list.push({ id: variant.id, name: variant.name ?? null });
     variantsByProduct.set(variant.product_id, list);
   }
 
@@ -635,7 +626,8 @@ async function enrichStorefrontProducts(
       imageUrl,
       imageBlurDataUrl: imageUrl ? blurMap.get(imageUrl) ?? null : null,
     });
-    const variantIds = variantsByProduct.get(row.id) ?? [];
+    const variants = variantsByProduct.get(row.id) ?? [];
+    const variantIds = variants.map((v) => v.id);
     const variantStocks = variantIds.map((id) => variantStockMap.get(id) ?? 0);
     const { inStock, totalStock } = resolveStorefrontAvailability({
       slug: row.slug,
@@ -643,6 +635,7 @@ async function enrichStorefrontProducts(
       productStock: row.stock,
       variantStocks,
     });
+    const defaultVariant = variants[0] ?? null;
 
     const product = mapRowToStorefrontProduct(row, {
       categoryName: cat?.name ?? null,
@@ -656,7 +649,13 @@ async function enrichStorefrontProducts(
       imageBlurDataUrl: resolved.imageBlurDataUrl,
     });
 
-    return { ...product, inStock, stock: totalStock || product.stock };
+    return {
+      ...product,
+      inStock,
+      stock: totalStock || product.stock,
+      defaultVariantId: defaultVariant?.id ?? null,
+      defaultVariantName: defaultVariant?.name ?? null,
+    };
   });
 }
 

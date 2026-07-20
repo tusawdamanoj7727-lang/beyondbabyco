@@ -1,5 +1,3 @@
-"use client";
-
 import HomeSection from "@/components/homepage/HomeSection";
 import HomeSectionHeader from "@/components/homepage/HomeSectionHeader";
 import ProductCard from "@/components/catalog/ProductCard";
@@ -68,7 +66,7 @@ export default function FeaturedProducts({
   if (cards.length === 0) return null;
 
   return (
-    <HomeSection id="products" tone="white">
+    <HomeSection id="products" tone="white" reveal={false}>
       <HomeSectionHeader
         eyebrow={FEATURED_COPY.eyebrow}
         heading={sectionHeading}
@@ -77,11 +75,7 @@ export default function FeaturedProducts({
 
       <div className={cn("homepage-section-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4", homepageGridGap)}>
         {cards.map((product, index) => (
-          <div
-            key={product.id}
-            className="scroll-reveal-item h-full"
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
+          <div key={product.id} className="h-full">
             <ProductCard
               product={product}
               showListingCta

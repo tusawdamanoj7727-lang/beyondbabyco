@@ -118,20 +118,35 @@ export function mergeCartItems(local: CartItem[], remote: CartItem[]): CartItem[
   return Array.from(map.values()).sort((a, b) => a.addedAt - b.addedAt);
 }
 
-/** Guest-login merge: keep server lines, add only guest-only products (no qty sum). */
+/** Guest-login merge: productId + variantId keys; merge qty for identical lines; keep distinct variants. */
 export function mergeGuestCartIntoServer(local: CartItem[], remote: CartItem[]): CartItem[] {
-  const remoteByProduct = new Map(remote.map((item) => [item.productId, item]));
-  const merged = remote.map((item) => ({
-    ...item,
-    quantity: clampCartQuantity(item.quantity),
-  }));
+  const byLine = new Map<string, CartItem>();
 
-  for (const item of local) {
-    if (remoteByProduct.has(item.productId)) continue;
-    merged.push({ ...item, quantity: clampCartQuantity(item.quantity) });
+  for (const item of remote) {
+    const key = cartLineKey(item.productId, item.variantId);
+    byLine.set(key, {
+      ...item,
+      quantity: clampCartQuantity(item.quantity),
+    });
   }
 
-  return merged.sort((a, b) => a.addedAt - b.addedAt);
+  for (const item of local) {
+    const key = cartLineKey(item.productId, item.variantId);
+    const existing = byLine.get(key);
+    if (existing) {
+      byLine.set(key, {
+        ...existing,
+        quantity: clampCartQuantity(existing.quantity + item.quantity),
+      });
+      continue;
+    }
+    byLine.set(key, {
+      ...item,
+      quantity: clampCartQuantity(item.quantity),
+    });
+  }
+
+  return Array.from(byLine.values()).sort((a, b) => a.addedAt - b.addedAt);
 }
 
 export function cartSubtotal(items: CartItem[]): number {

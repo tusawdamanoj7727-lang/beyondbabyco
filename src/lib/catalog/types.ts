@@ -55,6 +55,9 @@ export interface StorefrontProduct {
   secondaryBadge?: string | null;
   /** GST % — 12 baby care, 18 cosmetics (from product.gst_rate). */
   gstRate: number;
+  /** First active variant — used when adding from list/bundle (not PDP). */
+  defaultVariantId?: string | null;
+  defaultVariantName?: string | null;
 }
 
 export interface StorefrontProductImage {

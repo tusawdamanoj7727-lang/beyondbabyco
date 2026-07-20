@@ -83,6 +83,24 @@ export async function saveSection(
   return { ok: true, error: null, id: data.id };
 }
 
+/** Reorder homepage body sections by key list (position = index + 1). */
+export async function reorderHomepageSections(orderedKeys: string[]): Promise<ActionResult> {
+  await guard();
+  const supabase = await createSupabaseServerClient();
+
+  await Promise.all(
+    orderedKeys.map((key, index) =>
+      supabase
+        .from("homepage_sections")
+        .update({ position: index + 1, updated_at: new Date().toISOString() })
+        .eq("key", key),
+    ),
+  );
+
+  revalidate();
+  return { ok: true, error: null };
+}
+
 // ----------------------------- Publishing -----------------------------
 
 export async function setHomepageStatus(status: PublishStatus): Promise<ActionResult> {
@@ -121,6 +139,10 @@ export interface HeroSlideInput {
   ctaUrl: string;
   secondaryCtaLabel: string;
   secondaryCtaUrl: string;
+  mobileImageUrl?: string;
+  videoUrl?: string;
+  startsAt?: string;
+  endsAt?: string;
   isActive: boolean;
 }
 
@@ -136,6 +158,10 @@ function heroRow(input: HeroSlideInput) {
     cta_url: input.ctaUrl || null,
     secondary_cta_label: input.secondaryCtaLabel || null,
     secondary_cta_url: input.secondaryCtaUrl || null,
+    mobile_image_url: input.mobileImageUrl || null,
+    video_url: input.videoUrl || null,
+    starts_at: input.startsAt || null,
+    ends_at: input.endsAt || null,
     is_active: input.isActive,
   };
 }

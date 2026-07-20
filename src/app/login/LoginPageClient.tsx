@@ -140,7 +140,7 @@ export default function LoginPageClient() {
         router.push(redirectTo);
         router.refresh();
       } else {
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -155,7 +155,13 @@ export default function LoginPageClient() {
         if (signUpError) throw signUpError;
         trackSignup({ method: "password" });
         trackAccountCreated({ method: "password" });
-        setMessage("Account created! Check your email to verify.");
+        if (signUpData.session) {
+          await ensureCustomerBootstrapAction({ welcome: true });
+          router.push(redirectTo);
+          router.refresh();
+        } else {
+          setMessage("Account created! Check your email to verify.");
+        }
       }
     } catch (err) {
       setError(mapSupabaseAuthError(err as AuthError));

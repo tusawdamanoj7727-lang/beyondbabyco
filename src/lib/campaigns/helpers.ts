@@ -1,5 +1,6 @@
 import type { CampaignStatus } from "@/lib/admin/marketing-types";
 
+import { campaignPriorityScore } from "./priority";
 import type {
   CalendarEvent,
   CampaignAnalyticsPreview,
@@ -34,15 +35,21 @@ export function sampleAnalytics(seed: string): CampaignAnalyticsPreview {
   const clicks = Math.round(impressions * (0.02 + (h % 50) / 1000));
   const conversions = Math.round(clicks * (0.03 + (h % 30) / 1000));
   const orders = Math.round(conversions * 0.85);
+  const revenue = conversions * (800 + (h % 1200));
+  const uniqueViews = Math.round(impressions * 0.65);
   return {
     impressions,
     clicks,
     ctr: impressions ? clicks / impressions : 0,
     conversions,
-    revenue: conversions * (800 + (h % 1200)),
+    revenue,
     couponUsage: Math.round(conversions * 0.4),
     orders,
     traffic: Math.round(impressions * 0.7),
+    uniqueViews,
+    averageOrderValue: orders ? revenue / orders : 0,
+    conversionRate: impressions ? conversions / impressions : 0,
+    returningCustomers: Math.round(orders * 0.22),
   };
 }
 
@@ -118,18 +125,44 @@ export function buildCalendarEvents(campaigns: CampaignCenterItem[]): CalendarEv
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }
 
+function scoreCampaign(c: CampaignCenterItem): number {
+  return campaignPriorityScore({
+    marketingType: c.config.marketingType,
+    priority: c.config.priority,
+    homepageSlot: c.config.homepageSlot,
+    name: c.name,
+    headline: c.config.headline,
+  });
+}
+
+/**
+ * Single winner per homepage slot using type-weighted priority engine.
+ * Order: Emergency → Flash → Festival → Launch → Free shipping → Evergreen.
+ */
 export function resolveActiveSlotCampaigns(
   campaigns: CampaignCenterItem[],
 ): Partial<Record<CampaignCenterItem["config"]["homepageSlot"] & string, CampaignCenterItem>> {
   const active = campaigns.filter((c) => c.lifecycle === "active" && c.config.homepageSlot);
   const bySlot: Partial<Record<string, CampaignCenterItem>> = {};
 
-  for (const c of active.sort((a, b) => b.config.priority - a.config.priority)) {
+  for (const c of active.sort((a, b) => scoreCampaign(b) - scoreCampaign(a))) {
     const slot = c.config.homepageSlot;
     if (slot && !bySlot[slot]) bySlot[slot] = c;
   }
 
   return bySlot;
+}
+
+/** Rotating announcements for a slot (fallback = highest priority first). */
+export function resolveRotatingSlotCampaigns(
+  campaigns: CampaignCenterItem[],
+  slot: NonNullable<CampaignCenterItem["config"]["homepageSlot"]>,
+  maxItems = 5,
+): CampaignCenterItem[] {
+  return campaigns
+    .filter((c) => c.lifecycle === "active" && c.config.homepageSlot === slot)
+    .sort((a, b) => scoreCampaign(b) - scoreCampaign(a))
+    .slice(0, Math.max(1, maxItems));
 }
 
 export function formatCampaignDate(iso: string | null | undefined): string {

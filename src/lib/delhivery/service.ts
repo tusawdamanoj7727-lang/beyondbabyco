@@ -361,7 +361,7 @@ export async function delhiveryTrackAndPersist(input: {
 
     await supabase.from("shipments").update(patch).eq("id", input.shipmentId);
 
-    onShipmentStatusChanged(input.orderId, mappedStatus);
+    await onShipmentStatusChanged(input.orderId, mappedStatus);
 
     if (mappedStatus === "delivered") {
       await supabase
@@ -540,7 +540,7 @@ export async function processDelhiveryWebhook(
 
   await supabase.from("shipments").update(patch).eq("id", shipment.id);
 
-  onShipmentStatusChanged(shipment.order_id, mapped);
+  await onShipmentStatusChanged(shipment.order_id, mapped);
 
   if (mapped === "delivered") {
     await supabase

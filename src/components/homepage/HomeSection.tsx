@@ -22,7 +22,7 @@ export default function HomeSection({
   children,
   className,
   compact = false,
-  reveal = true,
+  reveal = false,
 }: HomeSectionProps) {
   return (
     <section

@@ -8,6 +8,11 @@ import {
   revealAllScrollElements,
 } from "@/lib/a11y/scroll-reveal";
 
+function isCoarsePointerMobile(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+}
+
 /** One-shot IntersectionObserver for CSS reveal classes (replaces scroll-linked view timelines). */
 export default function ScrollRevealObserver() {
   useEffect(() => {
@@ -19,6 +24,7 @@ export default function ScrollRevealObserver() {
     let observer: IntersectionObserver | undefined;
     let mutation: MutationObserver | undefined;
     let cancelled = false;
+    const coarse = isCoarsePointerMobile();
 
     const setup = () => {
       if (cancelled) return;
@@ -32,7 +38,11 @@ export default function ScrollRevealObserver() {
             }
           }
         },
-        { threshold: 0.08, rootMargin: "0px 0px -4% 0px" },
+        {
+          threshold: coarse ? 0.02 : 0.08,
+          // Eagerly reveal slightly ahead of viewport on mobile to avoid late paints mid-scroll.
+          rootMargin: coarse ? "40px 0px 12% 0px" : "0px 0px -4% 0px",
+        },
       );
 
       function observe(root: ParentNode) {
@@ -45,6 +55,7 @@ export default function ScrollRevealObserver() {
 
       observe(document);
 
+      // Always watch for late-mounted below-fold islands (critical on mobile).
       mutation = new MutationObserver((records) => {
         for (const record of records) {
           record.addedNodes.forEach((node) => {
@@ -53,10 +64,15 @@ export default function ScrollRevealObserver() {
         }
       });
       mutation.observe(document.body, { childList: true, subtree: true });
+
+      // Extra re-scan after deferred chunks typically mount.
+      window.setTimeout(() => {
+        if (!cancelled) observe(document);
+      }, coarse ? 1800 : 600);
     };
 
     if (typeof requestIdleCallback !== "undefined") {
-      const idleId = requestIdleCallback(setup, { timeout: 1200 });
+      const idleId = requestIdleCallback(setup, { timeout: coarse ? 800 : 1200 });
       return () => {
         cancelled = true;
         cancelIdleCallback(idleId);

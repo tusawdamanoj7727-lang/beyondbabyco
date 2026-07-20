@@ -201,7 +201,7 @@ export async function updateOrderStatus(orderId: string, nextStatus: OrderStatus
   });
 
   revalidateOrders(orderId);
-  onOrderStatusChanged(orderId, nextStatus);
+  await onOrderStatusChanged(orderId, nextStatus);
   return { ok: true, error: null, id: orderId };
 }
 
@@ -427,9 +427,9 @@ export async function createRefund(input: {
   });
 
   revalidateOrders(parsed.data.order_id);
-  onRefundInitiated(parsed.data.order_id, `₹${refundAmount}`);
+  await onRefundInitiated(parsed.data.order_id, `₹${refundAmount}`);
   if (parsed.data.full) {
-    onRefundCompleted(parsed.data.order_id, `₹${refundAmount}`);
+    await onRefundCompleted(parsed.data.order_id, `₹${refundAmount}`);
   }
   return { ok: true, error: null, id: refund?.id };
 }

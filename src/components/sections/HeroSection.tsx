@@ -73,7 +73,7 @@ export default function HeroSection({ hero }: { hero: ResolvedHeroContent }) {
               )}
             </h1>
 
-            <AccentBar width="lg" align="left" />
+            <AccentBar width="lg" align="left" animated={false} />
 
             <p className="text-body prose-measure text-green-800/88">{hero.subtitle}</p>
 

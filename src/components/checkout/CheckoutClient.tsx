@@ -97,7 +97,10 @@ function loadRazorpayScript(): Promise<void> {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
-    script.onload = () => resolve();
+    script.onload = () => {
+      if (window.Razorpay) resolve();
+      else reject(new Error("Payment SDK loaded but Razorpay is unavailable"));
+    };
     script.onerror = () => reject(new Error("Could not load payment SDK"));
     document.body.appendChild(script);
   });
@@ -268,17 +271,15 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
 
   if (!hydrated) {
     return (
-      <div className="animate-pulse space-y-4" aria-busy="true" aria-label="Loading checkout">
-        <div className="h-10 w-48 rounded-xl bg-brand-forest/10" />
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="space-y-4 lg:col-span-2">
+        <div className="checkout-layout animate-pulse" aria-busy="true" aria-label="Loading checkout">
+          <div className="min-w-0 space-y-4">
+            <div className="h-10 w-48 rounded-xl bg-brand-forest/10" />
             <div className="h-36 rounded-2xl bg-brand-forest/5" />
             <div className="h-48 rounded-2xl bg-brand-forest/5" />
             <div className="h-28 rounded-2xl bg-brand-forest/5" />
           </div>
           <div className="h-80 rounded-3xl bg-brand-forest/5" />
         </div>
-      </div>
     );
   }
 
@@ -470,7 +471,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           code: data.code,
           couponId: data.couponId,
           discountAmount: data.savings,
-          freeShipping: false,
+          freeShipping: data.freeShipping,
         });
         trackCouponApplied({
           coupon: data.code,
@@ -566,7 +567,16 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           return;
         }
 
-        const rzp = new window.Razorpay!({
+        if (!window.Razorpay) {
+          capturePaymentError(new Error("Razorpay SDK missing after load"), {
+            orderId,
+            cartTotal: totals.total,
+          });
+          toast.error("Could not load payment. Please try again.");
+          return;
+        }
+
+        const rzp = new window.Razorpay({
           key: placeResult.razorpayKeyId,
           amount: Math.round((placeResult.grandTotal ?? totals.total) * 100),
           currency: "INR",
@@ -668,14 +678,14 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
     <>
       <CheckoutProgress currentStep={progressStep} />
       <form
-        className="grid gap-6 lg:grid-cols-[1fr_380px] lg:gap-8 xl:grid-cols-[1fr_420px]"
+        className="checkout-layout grid w-full min-w-0 gap-6 lg:gap-8"
         autoComplete="on"
         onSubmit={(e) => {
           e.preventDefault();
           openReview();
         }}
       >
-        <div className="space-y-5 sm:space-y-6">
+        <div className="min-w-0 space-y-5 sm:space-y-6">
           <CheckoutSection
             title="1. Customer Information"
             description={
@@ -894,7 +904,7 @@ export default function CheckoutClient({ initial }: { initial: CheckoutInitialDa
           </div>
         </div>
 
-        <div className="space-y-4 lg:sticky lg:top-32 lg:self-start">
+        <div className="min-w-0 space-y-4 lg:sticky lg:top-[calc(var(--site-header-h)+1rem)] lg:self-start">
           <CheckoutCouponBlock
             couponId={couponId}
             appliedCode={appliedCoupon?.code ?? null}
